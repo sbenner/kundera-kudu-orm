@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>kundera-parent</artifactId>
+		<groupId>com.impetus</groupId>
+		<version>3.14-SNAPSHOT</version>
+	</parent>
+
+	<groupId>com.impetus.kundera.client</groupId>
+	<artifactId>kundera-kudu</artifactId>
+	<name>kundera-kudu</name>
+
+	<properties>
+		<kudu.version>1.2.0</kudu.version>
+	</properties>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<url>http://artifactory.ooktioneer.com/nexus/content/repositories/snapshot/</url>
+		</snapshotRepository>
+		<repository>
+			<id>nexus-releases</id>
+			<url>http://artifactory.ooktioneer.com/nexus/content/repositories/repo</url>
+		</repository>
+	</distributionManagement>
+
+	<dependencies>
+		<!-- Kundera dependencies -->
+		<dependency>
+			<groupId>com.impetus.kundera</groupId>
+			<artifactId>kundera-core</artifactId>
+			<version>3.14-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.impetus.kundera</groupId>
+			<artifactId>kundera-core</artifactId>
+			<version>3.14-SNAPSHOT</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!--&lt;!&ndash; kudu dependencies &ndash;&gt;-->
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+        <dependency>
+            <groupId>com.stumbleupon</groupId>
+            <artifactId>async</artifactId>
+            <version>1.4.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+		<dependency>
+			<groupId>org.apache.kudu</groupId>
+			<artifactId>kudu-client</artifactId>
+			<version>${kudu.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.stumbleupon</groupId>
+                    <artifactId>async</artifactId>
+                </exclusion>
+            </exclusions>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<!-- NOTE: We don't need a groupId specification because the group is 
+					org.apache.maven.plugins ...which is assumed by default. -->
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			
+		</plugins>
+	</build>
+</project>

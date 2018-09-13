@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.impetus</groupId>
+	<artifactId>kundera-parent</artifactId>
+	<version>3.14-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+    <name>kundera</name>
+    <!--<url>https://github.com/Impetus/Kundera</url>-->
+
+
+    <distributionManagement>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<url>http://artifactory.ooktioneer.com/nexus/content/repositories/snapshot/</url>
+		</snapshotRepository>
+		<repository>
+			<id>nexus-releases</id>
+			<url>http://artifactory.ooktioneer.com/nexus/content/repositories/repo</url>
+		</repository>
+	</distributionManagement>
+
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	
+	</properties>
+
+    <modules>
+        <module>kundera-core</module>
+        <module>kundera-kudu</module>
+    </modules>
+
+
+    <profiles>
+		<profile>
+      			<id>release-sign-artifacts</id>
+      			<activation>
+				<property>
+          				<name>performRelease</name>
+         				 <value>true</value>
+       				 </property>
+      			</activation>
+     			 <build>
+				<plugins>
+					<plugin>
+         				   <groupId>org.apache.maven.plugins</groupId>
+         				   <artifactId>maven-gpg-plugin</artifactId>
+						<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-gpg-plugin -->
+						<version>1.6</version>
+						<executions>
+              					<execution>
+               						<id>sign-artifacts</id>
+							<phase>verify</phase>
+           						<goals>
+                  						<goal>sign</goal>
+                					</goals>
+              					</execution>
+            				   </executions>
+          				</plugin>
+        			</plugins>
+      			</build>
+    		</profile>
+
+	</profiles>
+
+	<build>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.2</version>
+				<configuration>
+				        <arguments>-DskipTests</arguments>
+			        </configuration>
+				<executions>
+					<execution>
+						<id>default</id>
+						<goals>
+							<goal>perform</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
+
