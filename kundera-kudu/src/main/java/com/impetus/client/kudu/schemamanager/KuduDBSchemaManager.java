@@ -16,6 +16,7 @@
 package com.impetus.client.kudu.schemamanager;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -350,17 +351,20 @@ public class KuduDBSchemaManager extends AbstractSchemaManager implements Schema
         // add other columns
         for (ColumnInfo columnInfo : tableInfo.getColumnMetadatas())
         {
-            ColumnTypeAttributes typeAttributes = new ColumnTypeAttributes.ColumnTypeAttributesBuilder().precision(
-                    columnInfo.getPrecision()
-            ).build();
+            ColumnTypeAttributes typeAttributes = null;
+            if(columnInfo.getType().isAssignableFrom(BigDecimal.class)) {
+                 typeAttributes = new ColumnTypeAttributes.ColumnTypeAttributesBuilder().precision(
+                        columnInfo.getPrecision()
+                ).build();
+            }
 
-            ColumnSchemaBuilder columnSchemaBuilder = new
-                    ColumnSchema.
+            ColumnSchemaBuilder columnSchemaBuilder = new ColumnSchema.
                             ColumnSchemaBuilder(columnInfo.getColumnName(),
                     KuduDBValidationClassMapper
                     .getValidTypeForClass(columnInfo.getType()))
-                    .typeAttributes(typeAttributes)
                     .nullable(columnInfo.isNullable());
+            if(typeAttributes!=null)
+                columnSchemaBuilder.typeAttributes(typeAttributes);
 
             columns.add(columnSchemaBuilder.build());
         }
