@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.impetus.client.kudu;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.apache.kudu.ColumnSchema;
@@ -96,6 +98,8 @@ public class KuduDBDataHandler
                 break;
             case INT64:
                 row.addLong(jpaColumnName, (Long) value);
+            case DECIMAL:
+                row.addDecimal(jpaColumnName, (BigDecimal) value);
                 break;
             case INT8:
                 row.addByte(jpaColumnName, (Byte) value);
@@ -104,6 +108,8 @@ public class KuduDBDataHandler
                 row.addString(jpaColumnName, (String) value);
                 break;
             case UNIXTIME_MICROS:
+                row.addTimestamp(jpaColumnName, (Timestamp)value);
+                break;
             default:
                 logger.error(type + " type is not supported by Kudu");
                 throw new KunderaException(type + " type is not supported by Kudu");
@@ -148,7 +154,11 @@ public class KuduDBDataHandler
         case STRING:
             return KuduPredicate.newComparisonPredicate(column, operator, (String) key);
         case UNIXTIME_MICROS:
-        default:
+            return KuduPredicate.newComparisonPredicate(column, operator, (Timestamp) key);
+        case DECIMAL:
+            return KuduPredicate.newComparisonPredicate(column, operator, (BigDecimal) key);
+
+            default:
             logger.error(type + " type is not supported by Kudu");
             throw new KunderaException(type + " type is not supported by Kudu");
         }
@@ -208,7 +218,10 @@ public class KuduDBDataHandler
             return result.getByte(jpaColumnName);
         case STRING:
             return result.getString(jpaColumnName);
+        case DECIMAL:
+            return result.getDecimal(jpaColumnName);
         case UNIXTIME_MICROS:
+            return result.getTimestamp(jpaColumnName);
         default:
             logger.error(jpaColumnName + " type is not supported by Kudu");
             throw new KunderaException(jpaColumnName + " type is not supported by Kudu");

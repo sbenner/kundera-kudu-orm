@@ -17,11 +17,11 @@
 
 	<distributionManagement>
 		<snapshotRepository>
-			<id>nexus-snapshots</id>
+			<id>snapshots</id>
 			<url>http://artifactory.ooktioneer.com/nexus/content/repositories/snapshot/</url>
 		</snapshotRepository>
 		<repository>
-			<id>nexus-releases</id>
+			<id>releases</id>
 			<url>http://artifactory.ooktioneer.com/nexus/content/repositories/repo</url>
 		</repository>
 	</distributionManagement>

@@ -4,7 +4,7 @@
 
     <parent>
         <groupId>com.impetus</groupId>
-        <artifactId>kundera-parent</artifactId>
+        <artifactId>kundera-orm</artifactId>
         <version>3.14-SNAPSHOT</version>
     </parent>
     <groupId>com.impetus.kundera</groupId>
@@ -15,11 +15,11 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>nexus-snapshots</id>
+            <id>snapshots</id>
             <url>http://artifactory.ooktioneer.com/nexus/content/repositories/snapshot/</url>
         </snapshotRepository>
         <repository>
-            <id>nexus-releases</id>
+            <id>releases</id>
             <url>http://artifactory.ooktioneer.com/nexus/content/repositories/repo</url>
         </repository>
     </distributionManagement>

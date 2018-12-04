@@ -625,7 +625,10 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
         if(col.isPresent()){
             Column columnAnnotation = col.get();
             columnInfo.setNullable(columnAnnotation.nullable());
+            columnInfo.setPrecision(columnAnnotation.precision());
+            columnInfo.setScale(columnAnnotation.scale());
         }
+
 
         if (column.getJavaType().isEnum())
         {

@@ -29,6 +29,7 @@ import javax.persistence.metamodel.EmbeddableType;
 import org.apache.commons.lang.StringUtils;
 import org.apache.kudu.ColumnSchema;
 import org.apache.kudu.ColumnSchema.ColumnSchemaBuilder;
+import org.apache.kudu.ColumnTypeAttributes;
 import org.apache.kudu.Schema;
 import org.apache.kudu.client.AlterTableOptions;
 import org.apache.kudu.client.CreateTableOptions;
@@ -349,11 +350,16 @@ public class KuduDBSchemaManager extends AbstractSchemaManager implements Schema
         // add other columns
         for (ColumnInfo columnInfo : tableInfo.getColumnMetadatas())
         {
+            ColumnTypeAttributes typeAttributes = new ColumnTypeAttributes.ColumnTypeAttributesBuilder().precision(
+                    columnInfo.getPrecision()
+            ).build();
+
             ColumnSchemaBuilder columnSchemaBuilder = new
                     ColumnSchema.
                             ColumnSchemaBuilder(columnInfo.getColumnName(),
                     KuduDBValidationClassMapper
                     .getValidTypeForClass(columnInfo.getType()))
+                    .typeAttributes(typeAttributes)
                     .nullable(columnInfo.isNullable());
 
             columns.add(columnSchemaBuilder.build());

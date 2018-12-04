@@ -39,6 +39,9 @@ public class ColumnInfo
     /** The type variable. */
     private Class type;
 
+    private int precision;
+    private int scale;
+
     /**
      * Instantiates a new column info.
      */
@@ -169,5 +172,21 @@ public class ColumnInfo
 
     public void setNullable(boolean nullable) {
         this.nullable = nullable;
+    }
+
+    public int getPrecision() {
+        return precision;
+    }
+
+    public void setPrecision(int precision) {
+        this.precision = precision;
+    }
+
+    public int getScale() {
+        return scale;
+    }
+
+    public void setScale(int scale) {
+        this.scale = scale;
     }
 }
