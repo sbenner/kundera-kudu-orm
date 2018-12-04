@@ -46,7 +46,7 @@ public class KuduDBValidationClassMapper
         validationClassMapper.put(java.sql.Date.class, Type.UNIXTIME_MICROS);
         validationClassMapper.put(java.util.Date.class, Type.UNIXTIME_MICROS);
         validationClassMapper.put(java.math.BigInteger.class, Type.INT64);
-        validationClassMapper.put(java.math.BigDecimal.class, Type.INT64);
+        validationClassMapper.put(java.math.BigDecimal.class, Type.DECIMAL);
 
         validationClassMapper.put(java.lang.Double.class, Type.DOUBLE);
         validationClassMapper.put(double.class, Type.DOUBLE);
