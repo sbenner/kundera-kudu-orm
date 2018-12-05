@@ -38,6 +38,7 @@ public class TableInfo
     private Class<?> idClazz;
 
 
+    private Class<?> tableType;
 
     private Map<String, Annotation> idFieldAnnotations;
 
@@ -395,5 +396,13 @@ public class TableInfo
 
     public void setIdFieldAnnotations(Map<String, Annotation> idFieldAnnotations) {
         this.idFieldAnnotations = idFieldAnnotations;
+    }
+
+    public Class<?> getTableType() {
+        return tableType;
+    }
+
+    public void setTableType(Class<?> tableType) {
+        this.tableType = tableType;
     }
 }

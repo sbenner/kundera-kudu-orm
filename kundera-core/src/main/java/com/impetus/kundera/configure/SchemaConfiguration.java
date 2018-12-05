@@ -134,9 +134,13 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
 
                 TableInfo tableInfo = new TableInfo(entityMetadata.getTableName(),
                         type.name(), idClass, idName);
+
+                tableInfo.setTableType(entityMetadata.getEntityClazz());
+
                 tableInfo
                         .setIdFieldAnnotations(((AbstractAttribute) entityMetadata
                         .getIdAttribute()).getFieldAnnotation().getAnnotations());
+
 
                 // check for tableInfos not empty and contains the present
                 // tableInfo.
@@ -286,6 +290,7 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
                         String pu = targetEntityMetadata.getPersistenceUnit();
                         Type targetEntityType = targetEntityMetadata.getType();
                         Class idClass = targetEntityMetadata.getIdAttribute().getJavaType();
+
                         String idName = ((AbstractAttribute) targetEntityMetadata.getIdAttribute()).getJPAColumnName();
                         TableInfo targetTableInfo = new TableInfo(targetEntityMetadata.getTableName(),
                                 targetEntityType.name(), idClass, idName);

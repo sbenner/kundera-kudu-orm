@@ -398,8 +398,8 @@ public class KuduDBSchemaManager extends AbstractSchemaManager implements Schema
         {
             CreateTableOptions builder = new CreateTableOptions();
 
-            if(tableInfo.getTableIdType().isAnnotationPresent(Hashable.class)){
-                Hashable hash = tableInfo.getTableIdType().getAnnotation(Hashable.class);
+            if(tableInfo.getTableType().isAnnotationPresent(Hashable.class)){
+                Hashable hash = tableInfo.getTableType().getAnnotation(Hashable.class);
                 builder.addHashPartitions(keys.stream().map(ColumnSchema::getName).collect(Collectors.toList()), hash.buckets());
             }
             else if (tableInfo.getTableIdType().isAnnotationPresent(Embeddable.class))
