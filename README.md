@@ -8,7 +8,7 @@
 Changes made
 =====================
 
-Modified core orm to support `nullable` fields. 
+1. Modified core orm to support `nullable` fields. 
 
 `com.impetus.kundera.configure.SchemaConfiguration` ignored `javax.persistence.Column` attributes.
 
@@ -19,6 +19,11 @@ in
                  String[] orderByColumns)
 `` method and to `com.impetus.kundera.configure.schema.ColumnInfo`
 added `nullable` field.
+
+2. Added `decimals` support along with dependency on `kudu-client 1.8.0`
+
+3. `Hash partitioning` for key fields added on table create
+
 
 
 Important Links
