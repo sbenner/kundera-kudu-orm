@@ -9,20 +9,18 @@ Changes made
 =====================
 
 1. Modified core orm to support `nullable` fields. 
-
 `com.impetus.kundera.configure.SchemaConfiguration` ignored `javax.persistence.Column` attributes.
+2. Added `decimal` support along with dependency on `kudu-client 1.8.0`
+e.g.
+`@Column(name = "price", precision = 18,scale = 4)
+BigDecimal price;`
+3. `Hash partitioning` for key fields added on table create. 
+Annotations added:
+`@Hashable(buckets=9)`
+and
+`@Hash`
 
-Changes made to `com.impetus.kundera.configure.SchemaConfiguration`
-in 
-``private ColumnInfo getColumn(TableInfo tableInfo, 
-    Attribute column, PropertyIndex indexedColumn,
-                 String[] orderByColumns)
-`` method and to `com.impetus.kundera.configure.schema.ColumnInfo`
-added `nullable` field.
 
-2. Added `decimals` support along with dependency on `kudu-client 1.8.0`
-
-3. `Hash partitioning` for key fields added on table create
 
 
 
