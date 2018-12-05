@@ -18,6 +18,10 @@ package com.impetus.kundera.configure.schema;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.Map;
+
 /**
  * The Class ColumnInfo holds column related information.
  * 
@@ -41,6 +45,8 @@ public class ColumnInfo
 
     private int precision;
     private int scale;
+
+    private Map<String, Annotation> fieldAnnotations;
 
     /**
      * Instantiates a new column info.
@@ -188,5 +194,13 @@ public class ColumnInfo
 
     public void setScale(int scale) {
         this.scale = scale;
+    }
+
+    public Map<String, Annotation> getFieldAnnotations() {
+        return fieldAnnotations;
+    }
+
+    public void setFieldAnnotations(Map<String, Annotation> fieldAnnotations) {
+        this.fieldAnnotations = fieldAnnotations;
     }
 }

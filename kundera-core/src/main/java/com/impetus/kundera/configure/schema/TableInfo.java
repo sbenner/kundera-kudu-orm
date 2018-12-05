@@ -15,10 +15,8 @@
  ******************************************************************************/
 package com.impetus.kundera.configure.schema;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.lang.annotation.Annotation;
+import java.util.*;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -38,6 +36,10 @@ public class TableInfo
 
     /** The table id class. */
     private Class<?> idClazz;
+
+
+
+    private Map<String, Annotation> idFieldAnnotations;
 
     /** The table id name. */
     private String idColumnName;
@@ -385,5 +387,13 @@ public class TableInfo
                 columnToBeIndexed.add(indexInfo);
             }
         }
+    }
+
+    public Map<String, Annotation> getIdFieldAnnotations() {
+        return idFieldAnnotations;
+    }
+
+    public void setIdFieldAnnotations(Map<String, Annotation> idFieldAnnotations) {
+        this.idFieldAnnotations = idFieldAnnotations;
     }
 }

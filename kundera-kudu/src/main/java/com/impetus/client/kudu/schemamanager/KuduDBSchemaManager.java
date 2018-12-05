@@ -17,16 +17,15 @@ package com.impetus.client.kudu.schemamanager;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import javax.persistence.Embeddable;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EmbeddableType;
 
+import com.impetus.kundera.metadata.model.attributes.DefaultSingularAttribute;
 import org.apache.commons.lang.StringUtils;
 import org.apache.kudu.ColumnSchema;
 import org.apache.kudu.ColumnSchema.ColumnSchemaBuilder;
@@ -327,46 +326,60 @@ public class KuduDBSchemaManager extends AbstractSchemaManager implements Schema
      */
     private void createKuduTable(TableInfo tableInfo)
     {
-        List<ColumnSchema> columns = new ArrayList<ColumnSchema>();
+        Set<ColumnSchema> keys = new HashSet<ColumnSchema>();
+        Set<ColumnSchema> columns = new HashSet<ColumnSchema>();
         // add key
+        keys.add(new ColumnSchema.
+                ColumnSchemaBuilder(tableInfo.getIdColumnName(),
+                KuduDBValidationClassMapper
+                        .getValidTypeForClass(tableInfo.getTableIdType())).key(true).build());
+
         if (tableInfo.getTableIdType().isAnnotationPresent(Embeddable.class))
         {
             // composite keys
-            MetamodelImpl metaModel = (MetamodelImpl) kunderaMetadata.getApplicationMetadata().getMetamodel(
+            MetamodelImpl metaModel = (MetamodelImpl)
+                    kunderaMetadata.getApplicationMetadata().getMetamodel(
                     puMetadata.getPersistenceUnitName());
             EmbeddableType embeddableIdType = metaModel.embeddable(tableInfo.getTableIdType());
             Field[] fields = tableInfo.getTableIdType().getDeclaredFields();
 
-            addPrimaryKeyColumnsFromEmbeddable(columns, embeddableIdType, fields, metaModel);
+            addPrimaryKeyColumnsFromEmbeddable(keys, embeddableIdType, fields, metaModel);
 
         }
-        else
+        else if(tableInfo.getIdFieldAnnotations().get("com.impetus.client.kudu.schemamanager.Hash")!=null)
         {
+            // simple key
+
+            for(ColumnInfo c: tableInfo.getColumnMetadatas()) {
+                if(c.getFieldAnnotations().containsKey("com.impetus.client.kudu.schemamanager.Hash")
+                        //&&!c.getColumnName().equals(tableInfo.getIdColumnName())
+                ) {
+                    keys.add(new ColumnSchema.
+                            ColumnSchemaBuilder(c.getColumnName(),
+                            KuduDBValidationClassMapper
+                                    .getValidTypeForClass(c.getType())).key(true).build());
+                }
+            }
+        }
+        else {
             // simple key
             columns.add(new ColumnSchema.
                     ColumnSchemaBuilder(tableInfo.getIdColumnName(),
                     KuduDBValidationClassMapper
-                    .getValidTypeForClass(tableInfo.getTableIdType())).key(true).build());
+                            .getValidTypeForClass(tableInfo.getTableIdType())).key(true).build());
         }
         // add other columns
         for (ColumnInfo columnInfo : tableInfo.getColumnMetadatas())
         {
-            ColumnTypeAttributes typeAttributes = null;
-            if(columnInfo.getType().isAssignableFrom(BigDecimal.class)) {
-                 typeAttributes = new ColumnTypeAttributes.ColumnTypeAttributesBuilder().precision(
-                        columnInfo.getPrecision()
-                ).build();
+            if(keys.stream().noneMatch(i->i.getName().equalsIgnoreCase(columnInfo.getColumnName()))) {
+                ColumnSchemaBuilder columnSchemaBuilder = new ColumnSchema.
+                        ColumnSchemaBuilder(columnInfo.getColumnName(),
+                        KuduDBValidationClassMapper
+                                .getValidTypeForClass(columnInfo.getType()))
+                        .nullable(columnInfo.isNullable());
+                setColumnTypeAttributes(columnInfo, columnSchemaBuilder);
+                columns.add(columnSchemaBuilder.build());
             }
-
-            ColumnSchemaBuilder columnSchemaBuilder = new ColumnSchema.
-                            ColumnSchemaBuilder(columnInfo.getColumnName(),
-                    KuduDBValidationClassMapper
-                    .getValidTypeForClass(columnInfo.getType()))
-                    .nullable(columnInfo.isNullable());
-            if(typeAttributes!=null)
-                columnSchemaBuilder.typeAttributes(typeAttributes);
-
-            columns.add(columnSchemaBuilder.build());
         }
 
         // add embedded columns
@@ -378,34 +391,32 @@ public class KuduDBSchemaManager extends AbstractSchemaManager implements Schema
                 continue;
             }
             buildColumnsFromEmbeddableColumn(embColumnInfo, columns);
+
         }
-        Schema schema = new Schema(columns);
+
         try
         {
             CreateTableOptions builder = new CreateTableOptions();
 
-            List<String> rangeKeys = new ArrayList<>();
-
-            // handle for composite Id
-            if (tableInfo.getTableIdType().isAnnotationPresent(Embeddable.class))
+            if(tableInfo.getTableIdType().isAnnotationPresent(Hashable.class)){
+                Hashable hash = tableInfo.getTableIdType().getAnnotation(Hashable.class);
+                builder.addHashPartitions(keys.stream().map(ColumnSchema::getName).collect(Collectors.toList()), hash.buckets());
+            }
+            else if (tableInfo.getTableIdType().isAnnotationPresent(Embeddable.class))
             {
-                Iterator<ColumnSchema> colIter = columns.iterator();
-                while (colIter.hasNext())
-                {
-                    ColumnSchema col = colIter.next();
-                    if (col.isKey())
-                    {
-                        rangeKeys.add(col.getName());
-                    }
-                }
+                builder.setRangePartitionColumns(keys.stream().map(ColumnSchema::getName).collect(Collectors.toList()));
             }
             else
             {
-                rangeKeys.add(tableInfo.getIdColumnName());
+                builder.setRangePartitionColumns(Arrays.asList(tableInfo.getIdColumnName()));
             }
 
-            // TODO: Hard Coded Range Partitioning
-            builder.setRangePartitionColumns(rangeKeys);
+           keys.addAll(columns);
+//            ;
+//            List<ColumnSchema> all = new ArrayList<>(keys);
+//            all.sort(Comparator.comparing(i->i.isKey()));
+            Schema schema = new Schema(keys.stream().sorted(Comparator.comparing(i->!i.isKey())).collect(Collectors.toList()));
+
             client.createTable(tableInfo.getTableName(), schema, builder);
             logger.debug("Table: " + tableInfo.getTableName() + " created successfully");
         }
@@ -417,7 +428,7 @@ public class KuduDBSchemaManager extends AbstractSchemaManager implements Schema
         }
     }
 
-    private void addPrimaryKeyColumnsFromEmbeddable(List<ColumnSchema> columns, EmbeddableType embeddable,
+    private void addPrimaryKeyColumnsFromEmbeddable(Set<ColumnSchema> columns, EmbeddableType embeddable,
             Field[] fields, MetamodelImpl metaModel)
     {
         for (Field f : fields)
@@ -427,14 +438,16 @@ public class KuduDBSchemaManager extends AbstractSchemaManager implements Schema
                 if (f.getType().isAnnotationPresent(Embeddable.class))
                 {
                     // nested
-                    addPrimaryKeyColumnsFromEmbeddable(columns, (EmbeddableType) metaModel.embeddable(f.getType()), f
+                    addPrimaryKeyColumnsFromEmbeddable(columns, (EmbeddableType)
+                            metaModel.embeddable(f.getType()), f
                             .getType().getDeclaredFields(), metaModel);
                 }
                 else
                 {
                     Attribute attribute = embeddable.getAttribute(f.getName());
                     columns.add(new ColumnSchema.ColumnSchemaBuilder(
-                            ((AbstractAttribute) attribute).getJPAColumnName(), KuduDBValidationClassMapper
+                            ((AbstractAttribute) attribute).getJPAColumnName(),
+                            KuduDBValidationClassMapper
                                     .getValidTypeForClass(f.getType())).key(true).build());
                 }
             }
@@ -442,15 +455,25 @@ public class KuduDBSchemaManager extends AbstractSchemaManager implements Schema
 
     }
 
-    private void buildColumnsFromEmbeddableColumn(EmbeddedColumnInfo embColumnInfo, List<ColumnSchema> columns)
+    private void buildColumnsFromEmbeddableColumn(EmbeddedColumnInfo embColumnInfo, Set<ColumnSchema> columns)
     {
         for (ColumnInfo columnInfo : embColumnInfo.getColumns())
         {
             ColumnSchemaBuilder columnSchemaBuilder = new ColumnSchema.ColumnSchemaBuilder(columnInfo.getColumnName(),
                     KuduDBValidationClassMapper.getValidTypeForClass(columnInfo.getType()));
+            setColumnTypeAttributes(columnInfo, columnSchemaBuilder);
             columns.add(columnSchemaBuilder.build());
         }
 
+    }
+
+    private void setColumnTypeAttributes(ColumnInfo columnInfo, ColumnSchemaBuilder columnSchemaBuilder) {
+        if(columnInfo.getType().isAssignableFrom(BigDecimal.class)) {
+            ColumnTypeAttributes typeAttributes = new ColumnTypeAttributes
+                    .ColumnTypeAttributesBuilder().precision(columnInfo.getPrecision()
+            ).scale(columnInfo.getScale()).build();
+            columnSchemaBuilder.typeAttributes(typeAttributes);
+        }
     }
 
     /*

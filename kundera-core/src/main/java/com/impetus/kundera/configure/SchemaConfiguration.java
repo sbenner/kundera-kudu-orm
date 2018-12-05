@@ -116,7 +116,7 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
 
             Map<String, EntityMetadata> entityMetadataMap = getEntityMetadataCol(appMetadata, persistenceUnit);
 
-            PersistenceUnitMetadata puMetadata = appMetadata.getPersistenceUnitMetadata(persistenceUnit);
+         //   PersistenceUnitMetadata puMetadata = appMetadata.getPersistenceUnitMetadata(persistenceUnit);
 
             // Iterate each entity metadata.
             for (EntityMetadata entityMetadata : entityMetadataMap.values())
@@ -126,13 +126,17 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
                 boolean found = false;
 
                 Type type = entityMetadata.getType();
-                Class idClassName = entityMetadata.getIdAttribute() != null
+                Class idClass = entityMetadata.getIdAttribute() != null
                         ? entityMetadata.getIdAttribute().getJavaType() : null;
 
                 String idName = entityMetadata.getIdAttribute() != null
                         ? ((AbstractAttribute) entityMetadata.getIdAttribute()).getJPAColumnName() : null;
 
-                TableInfo tableInfo = new TableInfo(entityMetadata.getTableName(), type.name(), idClassName, idName);
+                TableInfo tableInfo = new TableInfo(entityMetadata.getTableName(),
+                        type.name(), idClass, idName);
+                tableInfo
+                        .setIdFieldAnnotations(((AbstractAttribute) entityMetadata
+                        .getIdAttribute()).getFieldAnnotation().getAnnotations());
 
                 // check for tableInfos not empty and contains the present
                 // tableInfo.
@@ -141,11 +145,11 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
                     found = true;
                     int idx = tableInfos.indexOf(tableInfo);
                     tableInfo = tableInfos.get(idx);
-                    addColumnToTableInfo(entityMetadata, type, tableInfo);
+                    addColumnToTableInfo(entityMetadata,  tableInfo);
                 }
                 else
                 {
-                    addColumnToTableInfo(entityMetadata, type, tableInfo);
+                    addColumnToTableInfo(entityMetadata,  tableInfo);
                 }
 
                 List<Relation> relations = entityMetadata.getRelations();
@@ -228,8 +232,10 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
         IdDiscriptor keyValue = ((MetamodelImpl) metamodel).getKeyValue(entityMetadata.getEntityClazz().getName());
         if (keyValue != null && keyValue.getTableDiscriptor() != null)
         {
-            TableInfo tableGeneratorDiscriptor = new TableInfo(keyValue.getTableDiscriptor().getTable(),
-                    "CounterColumnType", String.class, keyValue.getTableDiscriptor().getPkColumnName());
+            TableInfo tableGeneratorDiscriptor = new TableInfo(
+                    keyValue.getTableDiscriptor().getTable(),
+                    "CounterColumnType", String.class,
+                    keyValue.getTableDiscriptor().getPkColumnName());
             if (!tableInfos.contains(tableGeneratorDiscriptor))
             {
                 tableGeneratorDiscriptor.addColumnInfo(getJoinColumn(tableGeneratorDiscriptor,
@@ -394,7 +400,7 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
      * @param type
      * @param tableInfo
      */
-    private void addColumnToTableInfo(EntityMetadata entityMetadata, Type type, TableInfo tableInfo)
+    private void addColumnToTableInfo(EntityMetadata entityMetadata,TableInfo tableInfo)
     {
         // Add columns to table info.
 
@@ -416,89 +422,68 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
             }
         }
 
-        Set attributes = entityType.getAttributes();
+        Set<Attribute> attributes = entityType.getAttributes();
 
-        Iterator<Attribute> iter = attributes.iterator();
-        while (iter.hasNext())
-        {
-            Attribute attr = iter.next();
-
-            if (!attr.isAssociation())
-            {
-                if (((MetamodelImpl) metaModel).isEmbeddable(attr.getJavaType()))
-                {
+        for (Attribute attr : attributes) {
+            if (!attr.isAssociation()) {
+                if (((MetamodelImpl) metaModel).isEmbeddable(attr.getJavaType())) {
 
                     EmbeddableType embeddable = metaModel.embeddable(attr.getJavaType());
 
                     EmbeddedColumnInfo embeddedColumnInfo = getEmbeddedColumn(tableInfo, embeddable, attr.getName(),
                             attr.getJavaType(), ((Field) ((Field) attr.getJavaMember())));
 
-                    if (!tableInfo.getEmbeddedColumnMetadatas().contains(embeddedColumnInfo))
-                    {
+                    if (!tableInfo.getEmbeddedColumnMetadatas().contains(embeddedColumnInfo)) {
                         tableInfo.addEmbeddedColumnInfo(embeddedColumnInfo);
                     }
-                }
-                else if (!attr.isCollection() && !((SingularAttribute) attr).isId())
-                {
+                } else if (!attr.isCollection() && !((SingularAttribute) attr).isId()) {
 
-                    if (((Field) attr.getJavaMember()).getAnnotation(Lob.class) != null)
-                    {
+                    if (((Field) attr.getJavaMember()).getAnnotation(Lob.class) != null) {
                         tableInfo.addLobColumnInfo(((AbstractAttribute) attr).getJPAColumnName());
                     }
 
                     ColumnInfo columnInfo = getColumn(tableInfo, attr,
                             columns.get(((AbstractAttribute) attr).getJPAColumnName()), null);
-                    if (!tableInfo.getColumnMetadatas().contains(columnInfo))
-                    {
+                    if (!tableInfo.getColumnMetadatas().contains(columnInfo)) {
                         tableInfo.addColumnInfo(columnInfo);
                     }
-                }
-                else if (attr.isCollection()
+                } else if (attr.isCollection()
                         && MetadataUtils.isBasicElementCollectionField((Field)
-                        attr.getJavaMember()))
-                {
-                    CollectionColumnInfo cci = new CollectionColumnInfo();
-                    cci.setCollectionColumnName(((AbstractAttribute) attr).getJPAColumnName());
-                    cci.setType(attr.getJavaType());
-                    cci.setGenericClasses(PropertyAccessorHelper.getGenericClasses((Field) attr.getJavaMember()));
-
-                    tableInfo.addCollectionColumnMetadata(cci);
+                        attr.getJavaMember())) {
+                    setCollectionColumnInfo(tableInfo, columns, attr);
+                    tableInfo.addCollectionColumnMetadata(setCollectionColumnInfo(tableInfo, columns, attr));
                     // add if collection column is indexed
-                    String jpaName = ((AbstractAttribute) attr).getJPAColumnName();
-                    PropertyIndex indexedColumn = columns.get(jpaName);
-                    if (indexedColumn != null && indexedColumn.getName() != null)
-                    {
-                        IndexInfo indexInfo = new IndexInfo(jpaName, indexedColumn.getMax(), indexedColumn.getMin(),
-                                indexedColumn.getIndexType(), indexedColumn.getName());
-                        tableInfo.addToIndexedColumnList(indexInfo);
-                        // Add more if required
-                    }
-                }
-                else if (attr.isCollection()
-                        && !MetadataUtils.isBasicElementCollectionField((Field) attr.getJavaMember()))
-                {
-                    CollectionColumnInfo eci = new CollectionColumnInfo();
-                    eci.setCollectionColumnName(((AbstractAttribute) attr).getJPAColumnName());
-                    eci.setType(attr.getJavaType());
-                    eci.setGenericClasses(PropertyAccessorHelper.getGenericClasses((Field) attr.getJavaMember()));
 
-                    tableInfo.addElementCollectionMetadata(eci);
+                } else if (attr.isCollection()
+                        && !MetadataUtils
+                        .isBasicElementCollectionField((Field) attr.getJavaMember())) {
+
+                    tableInfo.addElementCollectionMetadata(setCollectionColumnInfo(tableInfo, columns, attr));
                     // add if collection column is indexed
-                    String jpaName = ((AbstractAttribute) attr).getJPAColumnName();
-                    PropertyIndex indexedColumn = columns.get(jpaName);
-                    if (indexedColumn != null && indexedColumn.getName() != null)
-                    {
-                        IndexInfo indexInfo = new IndexInfo(jpaName, indexedColumn.getMax(), indexedColumn.getMin(),
-                                indexedColumn.getIndexType(), indexedColumn.getName());
-                        tableInfo.addToIndexedColumnList(indexInfo);
-                        // Add more if required
-                    }
+
                 }
 
             }
         }
 
         onInheritedProperty(tableInfo, entityType);
+    }
+
+    private CollectionColumnInfo setCollectionColumnInfo(TableInfo tableInfo, Map<String, PropertyIndex> columns, Attribute attr) {
+        CollectionColumnInfo cci = new CollectionColumnInfo();
+        cci.setCollectionColumnName(((AbstractAttribute) attr).getJPAColumnName());
+        cci.setType(attr.getJavaType());
+        cci.setGenericClasses(PropertyAccessorHelper.getGenericClasses((Field) attr.getJavaMember()));
+        String jpaName = ((AbstractAttribute) attr).getJPAColumnName();
+        PropertyIndex indexedColumn = columns.get(jpaName);
+        if (indexedColumn != null && indexedColumn.getName() != null)
+        {
+            IndexInfo indexInfo = new IndexInfo(jpaName, indexedColumn.getMax(), indexedColumn.getMin(),
+                    indexedColumn.getIndexType(), indexedColumn.getName());
+            tableInfo.addToIndexedColumnList(indexInfo);
+            // Add more if required
+        }
+        return cci;
     }
 
     /**
@@ -622,6 +607,8 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
                                 .getFieldAnnotation()
                                 .getAnnotation("javax.persistence.Column"));
 
+        columnInfo.setFieldAnnotations(((DefaultSingularAttribute) column).getFieldAnnotation().getAnnotations());
+
         if(col.isPresent()){
             Column columnAnnotation = col.get();
             columnInfo.setNullable(columnAnnotation.nullable());
@@ -639,6 +626,7 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
             columnInfo.setType(column.getJavaType());
         }
         columnInfo.setColumnName(((AbstractAttribute) column).getJPAColumnName());
+
         if (indexedColumn != null && indexedColumn.getName() != null)
         {
             columnInfo.setIndexable(true);
