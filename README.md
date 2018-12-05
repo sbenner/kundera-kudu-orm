@@ -10,7 +10,7 @@ Changes made
 
 * Modified core orm to support `nullable` fields. 
 
-`SchemaConfiguration` previously ignored `javax.persistence.Column` attributes.
+  `SchemaConfiguration` previously ignored `javax.persistence.Column` attributes.
 
 * Added `decimal` support along with dependency on `kudu-client 1.8.0`
    
@@ -21,9 +21,28 @@ BigDecimal price;`
 * `Hash partitioning` for key fields added on table create.
 
   Annotations added:  
-    `@Hashable(buckets=9)`
+    `@Hashable(buckets=9) ({ElementType.TYPE})`
         and
-    `@Hash`
+    `@Hash @Target({ElementType.METHOD, ElementType.FIELD})`
+
+    ```
+    @Entity
+    @Table(schema = "kudu@kudu_pu", name = "file_info")
+    @Data
+    @Hashable(buckets=9)
+    public class FileInfo  {
+      @Column(nullable = false, name = "date_added")
+        @Hash
+        private Timestamp dateAdded;
+    ....
+        @Id
+        @Hash
+        private String id;
+    ....
+        
+    }
+    ```
+
 
 
 
