@@ -2,14 +2,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>kundera-parent</artifactId>
+		<artifactId>kundera-orm</artifactId>
 		<groupId>com.impetus</groupId>
-		<version>3.14-SNAPSHOT</version>
+		<version>3.15-SNAPSHOT</version>
 	</parent>
 
 	<groupId>com.impetus.kundera.client</groupId>
 	<artifactId>kundera-kudu</artifactId>
 	<name>kundera-kudu</name>
+	<packaging>jar</packaging>
+	<version>3.15-SNAPSHOT</version>
 
 	<properties>
 		<kudu.version>1.2.0</kudu.version>
@@ -18,11 +20,11 @@
 	<distributionManagement>
 		<snapshotRepository>
 			<id>snapshots</id>
-			<url>http://artifactory.ooktioneer.com/nexus/content/repositories/snapshot/</url>
+			<url>http://artifactory.ooktioneer.com/nexus/repository/snapshot/</url>
 		</snapshotRepository>
 		<repository>
 			<id>releases</id>
-			<url>http://artifactory.ooktioneer.com/nexus/content/repositories/repo</url>
+			<url>http://artifactory.ooktioneer.com/nexus/repository/release</url>
 		</repository>
 	</distributionManagement>
 
@@ -31,13 +33,13 @@
 		<dependency>
 			<groupId>com.impetus.kundera</groupId>
 			<artifactId>kundera-core</artifactId>
-			<version>3.14-SNAPSHOT</version>
+			<version>3.15-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.impetus.kundera</groupId>
 			<artifactId>kundera-core</artifactId>
-			<version>3.14-SNAPSHOT</version>
+			<version>3.15-SNAPSHOT</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
@@ -78,6 +80,13 @@
                 </exclusion>
             </exclusions>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.yetus/audience-annotations -->
+		<dependency>
+			<groupId>org.apache.yetus</groupId>
+			<artifactId>audience-annotations</artifactId>
+			<version>0.9.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

@@ -12,4 +12,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Retention(RUNTIME)
 public @interface Hashable {
     public int buckets() default 1;
+    public int replicationFactor() default 1;
 }

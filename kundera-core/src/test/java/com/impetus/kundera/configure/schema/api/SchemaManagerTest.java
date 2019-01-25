@@ -45,6 +45,7 @@ public class SchemaManagerTest
     {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(PersistenceProperties.KUNDERA_DDL_AUTO_PREPARE, "create");
+        props.put(PersistenceProperties.KUNDERA_REPLICATION_FACTOR, "1");
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("metaDataTest", props);
         Assert.assertTrue(CoreSchemaManager.validateAction("create"));
         emf.close();
@@ -57,6 +58,7 @@ public class SchemaManagerTest
     {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(PersistenceProperties.KUNDERA_DDL_AUTO_PREPARE, "create-drop");
+        props.put(PersistenceProperties.KUNDERA_REPLICATION_FACTOR, "1");
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("metaDataTest", props);
         Assert.assertTrue(CoreSchemaManager.validateAction("create-drop"));
         Assert.assertFalse(CoreSchemaManager.validateAction("create"));
@@ -71,6 +73,7 @@ public class SchemaManagerTest
     {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(PersistenceProperties.KUNDERA_DDL_AUTO_PREPARE, "update");
+        props.put(PersistenceProperties.KUNDERA_REPLICATION_FACTOR, "1");
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("metaDataTest", props);
         Assert.assertFalse(CoreSchemaManager.validateAction("create-drop"));
         Assert.assertFalse(CoreSchemaManager.validateAction("create"));

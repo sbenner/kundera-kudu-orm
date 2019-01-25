@@ -65,6 +65,7 @@ public class AbstractPropertyReaderTest
         PropertyReader reader = new DummyPropertyReader(null, ((EntityManagerFactoryImpl) emf)
                 .getKunderaMetadataInstance().getApplicationMetadata().getPersistenceUnitMetadata(pu));
         ClientProperties cp = null;
+
         reader.read(pu);
         cp = DummyPropertyReader.dsmd.getClientProperties();
         assertValues(cp);

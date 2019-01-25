@@ -20,16 +20,18 @@ BigDecimal price;`
 
 * `Hash partitioning` for key fields added on table create.
 
-  Annotations added:  
-    `@Hashable(buckets=9) ({ElementType.TYPE})`
+  Annotations added with  
+  default values :
+    `@Hashable(buckets=1,replicationFactor=1) ({ElementType.TYPE})`
         and
     `@Hash @Target({ElementType.METHOD, ElementType.FIELD})`
 
+  Example: 
     ```
     @Entity
     @Table(schema = "kudu@kudu_pu", name = "file_info")
     @Data
-    @Hashable(buckets=9)
+    @Hashable(buckets=9,replicationFactor=3)
     public class FileInfo  {
       @Column(nullable = false, name = "date_added")
         @Hash
@@ -42,7 +44,13 @@ BigDecimal price;`
         
     }
     ```
-
+* `Default Replication Factor` added
+  
+ added for `hash partitioning` as written above and as a global default value
+ in `META-INF/persistence.xml` 
+ ```
+   <property name="kundera.replication.factor" value="1"/>
+ ```
 
 
 

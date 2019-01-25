@@ -75,6 +75,7 @@
 			<property name="kundera.port" value="9160" />
 			<property name="kundera.keyspace" value="KunderaTest" />
 			<property name="kundera.dialect" value="rdbms" />
+			
 			<property name="kundera.client.lookup.class"
 				value="com.impetus.kundera.client.CoreTestClientFactory" />
 			<!-- <property name="kundera.cache.provider.class" value="com.impetus.kundera.cache.ehcache.EhCacheProvider" 
@@ -91,7 +92,9 @@
 			<property name="kundera.port" value="9160" />
 			<property name="kundera.keyspace" value="KunderaXmlTest" />
 			<property name="kundera.dialect" value="cassandra" />
+			<property name="kundera.replication.factor" value="1"/>
 			<property name="kundera.ddl.auto.prepare" value="create" />
+			
 			<property name="kundera.client.lookup.class"
 				value="com.impetus.kundera.client.CoreTestClientFactory" />
 			<!-- <property name="kundera.cache.provider.class" value="com.impetus.kundera.cache.ehcache.EhCacheProvider" 
@@ -109,6 +112,7 @@
 			<property name="kundera.keyspace" value="KunderaXmlTest" />
 			<property name="kundera.dialect" value="cassandra" />
 			<property name="kundera.ddl.auto.prepare" value="create" />
+			<property name="kundera.replication.factor" value="1"/>
 			<property name="kundera.client.lookup.class"
 				value="com.impetus.kundera.client.CoreTestClientFactory" />
 			<!-- <property name="kundera.cache.provider.class" value="com.impetus.kundera.cache.ehcache.EhCacheProvider" 
@@ -126,6 +130,7 @@
 			<property name="kundera.port" value="9160" />
 			<property name="kundera.keyspace" value="KunderaXmlTest" />
 			<property name="kundera.dialect" value="cassandra" />
+			<property name="kundera.replication.factor" value="1"/>
 			<property name="kundera.ddl.auto.prepare" value="create" />
 			<property name="kundera.client.lookup.class"
 				value="com.impetus.kundera.client.CoreTestClientFactory" />
@@ -149,6 +154,7 @@
 			<property name="kundera.port" value="9160" />
 			<property name="kundera.keyspace" value="KunderaMetaDataTest" />
 			<property name="kundera.dialect" value="cassandra" />
+			<property name="kundera.replication.factor" value="1"/>
 			<property name="kundera.client.lookup.class"
 				value="com.impetus.kundera.client.CoreTestClientFactory" />
 			<!-- <property name="kundera.cache.provider.class" value="com.impetus.kundera.cache.ehcache.EhCacheProvider" 
@@ -176,6 +182,7 @@
 			<property name="kundera.port" value="9160" />
 			<property name="kundera.keyspace" value="KunderaTest" />
 			<property name="kundera.dialect" value="cassandra" />
+			<property name="kundera.replication.factor" value="1"/>
 			<property name="kundera.client.lookup.class"
 				value="com.impetus.kundera.client.CoreTestClientFactory" />
 			<!-- <property name="kundera.cache.provider.class" value="com.impetus.kundera.cache.ehcache.EhCacheProvider" 
@@ -220,6 +227,7 @@
 			<property name="kundera.port" value="9160" />
 			<property name="kundera.keyspace" value="KunderaTests" />
 			<property name="kundera.dialect" value="rdbms" />
+			<property name="kundera.replication.factor" value="1"/>
 			<property name="kundera.client.lookup.class"
 				value="com.impetus.kundera.client.CoreTestClientFactory" />
 			<!-- <property name="kundera.cache.provider.class" value="com.impetus.kundera.cache.ehcache.EhCacheProvider" 
@@ -239,6 +247,7 @@
 			<property name="kundera.port" value="9160" />
 			<property name="kundera.keyspace" value="KunderaTests" />
 			<property name="kundera.dialect" value="rdbms" />
+			<property name="kundera.replication.factor" value="1"/>
 			<property name="kundera.client.lookup.class"
 				value="com.impetus.kundera.client.CoreTestClientFactory" />
 			<property name="kundera.batch.size" value="5" />
@@ -253,6 +262,7 @@
 			<property name="kundera.nodes" value="localhost" />
 			<property name="kundera.port" value="9160" />
 			<property name="kundera.keyspace" value="KunderaTest" />
+			<property name="kundera.replication.factor" value="1"/>
 			<property name="kundera.client.lookup.class"
 				value="com.impetus.kundera.client.CoreTestClientFactory" />
 		</properties>
@@ -266,6 +276,7 @@
 			<property name="kundera.nodes" value="localhost" />
 			<property name="kundera.port" value="9160" />
 			<property name="kundera.keyspace" value="KunderaTest" />
+			<property name="kundera.replication.factor" value="1"/>
 			<property name="kundera.client.lookup.class"
 				value="com.impetus.kundera.client.CoreTestClientFactory" />
 		</properties>
@@ -281,6 +292,7 @@
 			<property name="kundera.nodes" value="localhost" />
 			<property name="kundera.port" value="9160" />
 			<property name="kundera.keyspace" value="testSchema" />
+			<property name="kundera.replication.factor" value="1"/>
 			<property name="kundera.client.lookup.class"
 				value="com.impetus.kundera.client.CoreTestClientFactory" />
 		</properties>
@@ -299,6 +311,7 @@
 			<property name="kundera.nodes" value="localhost" />
 			<property name="kundera.port" value="9160" />
 			<property name="kundera.keyspace" value="testSchema" />
+			<property name="kundera.replication.factor" value="1"/>
 			<property name="kundera.client.lookup.class"
 				value="com.impetus.kundera.client.CoreTestClientFactory" />
 		</properties>

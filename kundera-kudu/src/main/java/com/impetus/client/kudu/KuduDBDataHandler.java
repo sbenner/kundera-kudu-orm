@@ -98,6 +98,7 @@ public class KuduDBDataHandler
                 break;
             case INT64:
                 row.addLong(jpaColumnName, (Long) value);
+                break;
             case DECIMAL:
                 row.addDecimal(jpaColumnName, (BigDecimal) value);
                 break;

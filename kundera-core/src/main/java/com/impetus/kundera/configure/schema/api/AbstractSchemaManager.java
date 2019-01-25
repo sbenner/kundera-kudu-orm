@@ -43,6 +43,9 @@ public abstract class AbstractSchemaManager
     /** The port variable. */
     protected String port;
 
+
+    protected int replicationFactor;
+
     /** The host variable . */
     protected String[] hosts;
 
@@ -133,6 +136,11 @@ public abstract class AbstractSchemaManager
             userName = (String) externalProperties.get(PersistenceProperties.KUNDERA_USERNAME);
             password = (String) externalProperties.get(PersistenceProperties.KUNDERA_PASSWORD);
             schemaName = (String) externalProperties.get(PersistenceProperties.KUNDERA_KEYSPACE);
+
+            String replicationFactorProperty = (String)externalProperties.get(PersistenceProperties.KUNDERA_REPLICATION_FACTOR);
+            if(replicationFactorProperty!=null)
+                replicationFactor = Integer.valueOf(replicationFactorProperty);
+
             // get type of schema of operation.
             operationType = (String) externalProperties.get(PersistenceProperties.KUNDERA_DDL_AUTO_PREPARE);
             showQuery = KunderaCoreUtils.isShowQueryEnabled(externalProperties, puMetadata.getPersistenceUnitName(), kunderaMetadata);
@@ -155,6 +163,13 @@ public abstract class AbstractSchemaManager
             userName = puMetadata.getProperty(PersistenceProperties.KUNDERA_USERNAME);
             password = puMetadata.getProperty(PersistenceProperties.KUNDERA_PASSWORD);
         }
+
+
+        if(replicationFactor==0){
+            replicationFactor = Integer.valueOf(puMetadata.getProperty(PersistenceProperties.KUNDERA_REPLICATION_FACTOR));
+        }
+
+
         String[] hostArray = hostName.split(",");
         hosts = new String[hostArray.length];
         for (int i = 0; i < hostArray.length; i++)

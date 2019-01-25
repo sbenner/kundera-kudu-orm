@@ -199,6 +199,8 @@ public class KuduDBSchemaManager extends AbstractSchemaManager implements Schema
         {
             try
             {
+
+
                 if (!client.tableExists(tableInfo.getTableName()))
                 {
                     createKuduTable(tableInfo);
@@ -329,10 +331,9 @@ public class KuduDBSchemaManager extends AbstractSchemaManager implements Schema
         Set<ColumnSchema> keys = new HashSet<ColumnSchema>();
         Set<ColumnSchema> columns = new HashSet<ColumnSchema>();
         // add key
-        keys.add(new ColumnSchema.
-                ColumnSchemaBuilder(tableInfo.getIdColumnName(),
-                KuduDBValidationClassMapper
-                        .getValidTypeForClass(tableInfo.getTableIdType())).key(true).build());
+
+
+
 
         if (tableInfo.getTableIdType().isAnnotationPresent(Embeddable.class))
         {
@@ -368,6 +369,12 @@ public class KuduDBSchemaManager extends AbstractSchemaManager implements Schema
                     KuduDBValidationClassMapper
                             .getValidTypeForClass(tableInfo.getTableIdType())).key(true).build());
         }
+
+        if (!tableInfo.getTableIdType().isAnnotationPresent(Embeddable.class))
+        keys.add(new ColumnSchema.
+                ColumnSchemaBuilder(tableInfo.getIdColumnName(),
+                KuduDBValidationClassMapper
+                        .getValidTypeForClass(tableInfo.getTableIdType())).key(true).build());
         // add other columns
         for (ColumnInfo columnInfo : tableInfo.getColumnMetadatas())
         {
@@ -398,9 +405,14 @@ public class KuduDBSchemaManager extends AbstractSchemaManager implements Schema
         {
             CreateTableOptions builder = new CreateTableOptions();
 
+            builder.setNumReplicas(replicationFactor);
             if(tableInfo.getTableType().isAnnotationPresent(Hashable.class)){
                 Hashable hash = tableInfo.getTableType().getAnnotation(Hashable.class);
+                if(hash.replicationFactor()!=replicationFactor)
+                    builder.setNumReplicas(hash.replicationFactor());
+
                 builder.addHashPartitions(keys.stream().map(ColumnSchema::getName).collect(Collectors.toList()), hash.buckets());
+
             }
             else if (tableInfo.getTableIdType().isAnnotationPresent(Embeddable.class))
             {
