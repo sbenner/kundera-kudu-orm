@@ -16,34 +16,7 @@
 package com.impetus.kundera.persistence;
 
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.persistence.Cache;
-import javax.persistence.EntityGraph;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceContextType;
-import javax.persistence.PersistenceUnitUtil;
-import javax.persistence.Query;
-import javax.persistence.SynchronizationType;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.metamodel.Metamodel;
-import javax.persistence.spi.LoadState;
-import javax.persistence.spi.PersistenceUnitInfo;
-import javax.persistence.spi.PersistenceUnitTransactionType;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.impetus.kundera.Constants;
-import com.impetus.kundera.KunderaException;
-import com.impetus.kundera.KunderaPersistence;
-import com.impetus.kundera.PersistenceProperties;
-import com.impetus.kundera.PersistenceUtilHelper;
+import com.impetus.kundera.*;
 import com.impetus.kundera.cache.CacheException;
 import com.impetus.kundera.cache.CacheProvider;
 import com.impetus.kundera.cache.NonOperationalCacheProvider;
@@ -55,12 +28,22 @@ import com.impetus.kundera.loader.ClientFactory;
 import com.impetus.kundera.loader.ClientLifeCycleManager;
 import com.impetus.kundera.loader.CoreLoader;
 import com.impetus.kundera.metadata.KunderaMetadataManager;
-import com.impetus.kundera.metadata.model.ApplicationMetadata;
-import com.impetus.kundera.metadata.model.CoreMetadata;
-import com.impetus.kundera.metadata.model.EntityMetadata;
-import com.impetus.kundera.metadata.model.MetamodelImpl;
-import com.impetus.kundera.metadata.model.PersistenceUnitMetadata;
+import com.impetus.kundera.metadata.model.*;
 import com.impetus.kundera.property.PropertyAccessorHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.metamodel.Metamodel;
+import javax.persistence.spi.LoadState;
+import javax.persistence.spi.PersistenceUnitInfo;
+import javax.persistence.spi.PersistenceUnitTransactionType;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implementation class for {@link EntityManagerFactory}
@@ -219,12 +202,12 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
 
             for (String pu : persistenceUnits)
             {
-                ((ClientLifeCycleManager) clientFactories.get(pu)).destroy();
+                ((ClientLifeCycleManager) getClientFactories().get(pu)).destroy();
             }
             this.persistenceUnits = null;
             this.properties = null;
-            clientFactories.clear();
-            clientFactories = new ConcurrentHashMap<String, ClientFactory>();
+            getClientFactories().clear();
+            setClientFactories(new ConcurrentHashMap<String, ClientFactory>());
         }
         else
         {
@@ -405,8 +388,9 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
     {
         ClientMetadataBuilder builder = new ClientMetadataBuilder(getProperties(), kunderaMetadata,
                 getPersistenceUnits());
-        builder.buildClientFactoryMetadata(clientFactories, kunderaMetadata);
+        builder.buildClientFactoryMetadata(getClientFactories(), kunderaMetadata);
     }
+
 
     /**
      * Inits the second level cache.
@@ -474,7 +458,7 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
      */
     ClientFactory getClientFactory(final String pu)
     {
-        ClientFactory clientFactory = clientFactories.get(pu);
+        ClientFactory clientFactory = getClientFactories().get(pu);
         if (clientFactory != null)
         {
             return clientFactory;
@@ -490,6 +474,17 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
     public KunderaMetadata getKunderaMetadataInstance()
     {
         return kunderaMetadata;
+    }
+
+    /**
+     * ClientFactory map holds one clientfactory for one persistence unit
+     */
+    public Map<String, ClientFactory> getClientFactories() {
+        return clientFactories;
+    }
+
+    public void setClientFactories(Map<String, ClientFactory> clientFactories) {
+        this.clientFactories = clientFactories;
     }
 
     /**
