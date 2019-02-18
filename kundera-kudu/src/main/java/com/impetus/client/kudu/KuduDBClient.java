@@ -295,6 +295,13 @@ public class KuduDBClient extends ClientBase implements Client<KuduDBQuery>, Cli
     }
 
 
+    /**
+     * findAll records for an @Entity class with or without the limit()
+     *
+     * @param entityClass the entity class to retrieve the records for
+     * @param limit       the limit
+     * @return Stream.Builder of entity records
+     */
     public <E> Stream.Builder<E> findAll(Class<E> entityClass, long limit) {
         EntityMetadata entityMetadata = KunderaMetadataManager.getEntityMetadata(kunderaMetadata, entityClass);
 
