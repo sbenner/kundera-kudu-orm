@@ -51,7 +51,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Stream;
 
 /**
  * The Class KuduDBClient.
@@ -296,13 +295,14 @@ public class KuduDBClient extends ClientBase implements Client<KuduDBQuery>, Cli
 
 
     /**
-     * findAll records for an @Entity class with or without the limit()
+     * findAll records for an @Entity class with or without the limit() and process them if needed
      *
      * @param entityClass the entity class to retrieve the records for
+     * @param processor  your processor -
      * @param limit       the limit
      * @return Stream.Builder of entity records
      */
-    public <E> Stream.Builder<E> findAll(Class<E> entityClass, long limit) {
+    public <E> void streamAll(Class<E> entityClass, KuduRowProcessor processor, long limit) {
         EntityMetadata entityMetadata = KunderaMetadataManager.getEntityMetadata(kunderaMetadata, entityClass);
 
         MetamodelImpl metaModel = (MetamodelImpl) kunderaMetadata.getApplicationMetadata()
@@ -315,34 +315,28 @@ public class KuduDBClient extends ClientBase implements Client<KuduDBQuery>, Cli
         KuduScannerBuilder scannerBuilder = kuduClient.newScannerBuilder(table);
         KuduScanner scanner = null;
 
-        if (limit > 0)
+        if (limit > 0) {
             scannerBuilder.limit(limit);
+        }
 
         scanner = scannerBuilder.build();
         AtomicLong rownum = new AtomicLong();
         Object entity = null;
-        Stream.Builder<E> empStreamBuilder = Stream.builder();
         while (scanner.hasMoreRows()) {
             RowResultIterator results = getRowResults(entityMetadata, scanner);
-
             while (results.hasNext()) {
-
                 RowResult result = results.next();
                 entity = KunderaCoreUtils.createNewInstance(entityClass);
                 populateEntity(entity, result, entityType, metaModel);
-
-                empStreamBuilder.add((E) entity);
                 if (rownum.incrementAndGet() == scanner.getLimit()) {
                     break;
                 }
-                //  logger.debug(result.rowToString());
+                processor.process(entity);
             }
-
             if (results.getNumRows() > scanner.getLimit()) {
                 break;
             }
         }
-        return empStreamBuilder;
 
     }
 

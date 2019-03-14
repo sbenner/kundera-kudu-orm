@@ -15,11 +15,6 @@
  ******************************************************************************/
 package com.impetus.client.kudu;
 
-import java.util.Map;
-import java.util.Properties;
-
-import org.apache.kudu.client.KuduClient;
-
 import com.impetus.client.kudu.query.KuduDBEntityReader;
 import com.impetus.client.kudu.schemamanager.KuduDBSchemaManager;
 import com.impetus.kundera.KunderaException;
@@ -27,6 +22,11 @@ import com.impetus.kundera.client.Client;
 import com.impetus.kundera.configure.schema.api.SchemaManager;
 import com.impetus.kundera.loader.GenericClientFactory;
 import com.impetus.kundera.metadata.model.PersistenceUnitMetadata;
+import org.apache.kudu.client.KuduClient;
+import org.apache.kudu.client.KuduException;
+
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * A factory for creating KuduDBClient objects.
@@ -65,6 +65,12 @@ public class KuduDBClientFactory extends GenericClientFactory
     @Override
     public void destroy()
     {
+        try {
+            this.kuduClient.close();
+        } catch (KuduException e) {
+            e.printStackTrace();
+        }
+
         // TODO Auto-generated method stub
 
     }
@@ -91,9 +97,9 @@ public class KuduDBClientFactory extends GenericClientFactory
             pumProps.putAll(puProperties);
         }
 
-        String kuduMasterHost = (String) pumProps.getProperty("kundera.nodes");
+        String kuduMasterHost = pumProps.getProperty("kundera.nodes");
 
-        String kuduMasterPort = (String) pumProps.getProperty("kundera.port");
+        String kuduMasterPort = pumProps.getProperty("kundera.port");
 
         if (kuduMasterHost == null || kuduMasterPort == null)
         {
