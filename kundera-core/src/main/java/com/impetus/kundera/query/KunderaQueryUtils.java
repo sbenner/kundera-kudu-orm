@@ -122,7 +122,11 @@ public final class KunderaQueryUtils
             {
                 if (selExp.toActualText().indexOf(".") > 0)
                 {
-                    columns.add(selExp.toActualText().split("[.]")[1]);
+                    String expAfterDot = selExp.toActualText().split("[.]")[1];
+                    if(expAfterDot.contains(")")){
+                        expAfterDot = expAfterDot.substring(0,expAfterDot.indexOf(")"));
+                    }
+                    columns.add(expAfterDot);
                 }
             }
             else if (selExp instanceof CollectionExpression)
@@ -133,7 +137,11 @@ public final class KunderaQueryUtils
                 {
                     if (exp.toActualText().indexOf(".") > 0)
                     {
-                        columns.add(exp.toActualText().split("[.]")[1]);
+                        String expAfterDot = exp.toActualText().split("[.]")[1];
+                        if(expAfterDot.contains(")")){
+                            expAfterDot = expAfterDot.substring(0,expAfterDot.indexOf(")"));
+                        }
+                        columns.add(expAfterDot);
                     }
                 }
             }

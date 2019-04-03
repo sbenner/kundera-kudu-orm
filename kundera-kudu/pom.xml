@@ -4,14 +4,14 @@
 	<parent>
 		<artifactId>kundera-orm</artifactId>
 		<groupId>com.impetus</groupId>
-		<version>3.15-SNAPSHOT</version>
+		<version>3.16-SNAPSHOT</version>
 	</parent>
 
 	<groupId>com.impetus.kundera.client</groupId>
 	<artifactId>kundera-kudu</artifactId>
 	<name>kundera-kudu</name>
 	<packaging>jar</packaging>
-	<version>3.15-SNAPSHOT</version>
+	<version>3.16-SNAPSHOT</version>
 
 	<properties>
 		<kudu.version>1.2.0</kudu.version>

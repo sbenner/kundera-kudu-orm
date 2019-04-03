@@ -5,13 +5,12 @@
     <parent>
         <groupId>com.impetus</groupId>
         <artifactId>kundera-orm</artifactId>
-        <version>3.15-SNAPSHOT</version>
+        <version>3.16-SNAPSHOT</version>
     </parent>
     <groupId>com.impetus.kundera</groupId>
     <artifactId>kundera-core</artifactId>
     <packaging>jar</packaging>
-    <version>3.15-SNAPSHOT</version>
-    <url>http://maven.apache.org</url>
+    <version>3.16-SNAPSHOT</version>
 
     <distributionManagement>
         <snapshotRepository>

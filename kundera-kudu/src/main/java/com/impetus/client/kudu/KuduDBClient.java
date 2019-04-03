@@ -295,12 +295,14 @@ public class KuduDBClient extends ClientBase implements Client<KuduDBQuery>, Cli
 
 
     /**
-     * findAll records for an @Entity class with or without the limit() and process them if needed
+     *
+     * findAll records for an @Entity class
+     * with or without the limit() and process them if needed
+     * useful for processing all rows in a table - regardless of a table size
      *
      * @param entityClass the entity class to retrieve the records for
      * @param processor  your processor -
-     * @param limit       the limit
-     * @return Stream.Builder of entity records
+     * @param limit       the limit     *
      */
     public <E> void streamAll(Class<E> entityClass, KuduRowProcessor processor, long limit) {
         EntityMetadata entityMetadata = KunderaMetadataManager.getEntityMetadata(kunderaMetadata, entityClass);
@@ -314,6 +316,8 @@ public class KuduDBClient extends ClientBase implements Client<KuduDBQuery>, Cli
 
         KuduScannerBuilder scannerBuilder = kuduClient.newScannerBuilder(table);
         KuduScanner scanner = null;
+
+
 
         if (limit > 0) {
             scannerBuilder.limit(limit);
