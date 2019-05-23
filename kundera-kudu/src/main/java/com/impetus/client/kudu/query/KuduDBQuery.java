@@ -15,33 +15,6 @@
  ******************************************************************************/
 package com.impetus.client.kudu.query;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-
-import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.EntityType;
-
-import org.apache.kudu.ColumnSchema;
-import org.apache.kudu.Type;
-import org.apache.kudu.client.KuduClient;
-import org.apache.kudu.client.KuduPredicate;
-import org.apache.kudu.client.KuduScanner;
-import org.apache.kudu.client.KuduScanner.KuduScannerBuilder;
-import org.apache.kudu.client.KuduTable;
-import org.apache.kudu.client.RowResult;
-import org.apache.kudu.client.RowResultIterator;
-import org.eclipse.persistence.jpa.jpql.parser.AndExpression;
-import org.eclipse.persistence.jpa.jpql.parser.ComparisonExpression;
-import org.eclipse.persistence.jpa.jpql.parser.Expression;
-import org.eclipse.persistence.jpa.jpql.parser.InExpression;
-import org.eclipse.persistence.jpa.jpql.parser.JPQLExpression;
-import org.eclipse.persistence.jpa.jpql.parser.WhereClause;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.client.kudu.KuduDBClient;
 import com.impetus.client.kudu.KuduDBDataHandler;
 import com.impetus.client.kudu.KuduDBValidationClassMapper;
@@ -60,6 +33,21 @@ import com.impetus.kundera.query.KunderaQueryUtils;
 import com.impetus.kundera.query.Query;
 import com.impetus.kundera.query.QueryImpl;
 import com.impetus.kundera.utils.KunderaCoreUtils;
+import org.apache.kudu.ColumnSchema;
+import org.apache.kudu.Type;
+import org.apache.kudu.client.*;
+import org.apache.kudu.client.KuduScanner.KuduScannerBuilder;
+import org.eclipse.persistence.jpa.jpql.parser.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.EntityType;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * The Class KuduDBQuery.
@@ -109,6 +97,7 @@ public class KuduDBQuery extends QueryImpl implements Query
     {
         List results = new ArrayList();
 
+
         if (!MetadataUtils.useSecondryIndex(((ClientBase) client).getClientMetadata()))
         {
             results.addAll(populateUsingLucene(m, client, null, getKunderaQuery().getResult()));
@@ -147,6 +136,7 @@ public class KuduDBQuery extends QueryImpl implements Query
                 Expression whereExp = whereClause.getConditionalExpression();
                 parseAndBuildFilters(entityType, scannerBuilder, whereExp);
             }
+
 
             KuduScanner scanner = scannerBuilder.build();
 

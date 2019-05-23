@@ -16,6 +16,8 @@
 package com.impetus.client.kudu;
 
 import com.impetus.client.kudu.query.KuduDBQuery;
+import com.impetus.client.kudu.schemamanager.Hash;
+import com.impetus.client.kudu.schemamanager.Hashable;
 import com.impetus.kundera.KunderaException;
 import com.impetus.kundera.client.Client;
 import com.impetus.kundera.client.ClientBase;
@@ -41,6 +43,7 @@ import org.apache.kudu.client.KuduScanner.KuduScannerBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EmbeddableType;
@@ -681,7 +684,23 @@ public class KuduDBClient extends ClientBase implements Client<KuduDBQuery>, Cli
         Object value = PropertyAccessorHelper.getObject(entity, field);
         Type idType = KuduDBValidationClassMapper.getValidTypeForClass(field.getType());
 
-        if (entityType.getAttribute(idColumnName).getJavaType().isAnnotationPresent(Embeddable.class)) {
+        if (entityMetadata.getEntityClazz().isAnnotationPresent(Hashable.class)) {
+
+            Class superClazz = entityMetadata.getEntityClazz().getSuperclass();
+            if (superClazz != null) {
+                Field[] fields = superClazz.getDeclaredFields();
+                for (Field f : fields) {
+                    if (f.isAnnotationPresent(Hash.class)) {
+                        Object v = PropertyAccessorHelper.getObject(entity, f);
+                        Type t = KuduDBValidationClassMapper.getValidTypeForClass(f.getType());
+                        KuduDBDataHandler.addToRow(row, f.getAnnotation(Column.class).name(), v, t);
+                    }
+                }
+
+            }
+
+
+        } else if (entityType.getAttribute(idColumnName).getJavaType().isAnnotationPresent(Embeddable.class)) {
             // Composite Id
             EmbeddableType embeddableIdType = metaModel.embeddable(entityType.getAttribute(idColumnName).getJavaType());
             Field[] fields = entityType.getAttribute(idColumnName).getJavaType().getDeclaredFields();
