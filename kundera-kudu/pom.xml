@@ -13,9 +13,9 @@
 	<packaging>jar</packaging>
 	<version>3.16-SNAPSHOT</version>
 
-	<properties>
-		<kudu.version>1.2.0</kudu.version>
-	</properties>
+    <!--	<properties>-->
+    <!--		<kudu.version>1.2.0</kudu.version>-->
+    <!--	</properties>-->
 
 	<distributionManagement>
 		<snapshotRepository>
@@ -33,15 +33,7 @@
 		<dependency>
 			<groupId>com.impetus.kundera</groupId>
 			<artifactId>kundera-core</artifactId>
-			<version>3.15-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.impetus.kundera</groupId>
-			<artifactId>kundera-core</artifactId>
-			<version>3.15-SNAPSHOT</version>
-			<type>test-jar</type>
-			<scope>test</scope>
+            <version>3.16-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>

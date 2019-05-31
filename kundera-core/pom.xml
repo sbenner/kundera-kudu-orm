@@ -7,6 +7,7 @@
         <artifactId>kundera-orm</artifactId>
         <version>3.16-SNAPSHOT</version>
     </parent>
+
     <groupId>com.impetus.kundera</groupId>
     <artifactId>kundera-core</artifactId>
     <packaging>jar</packaging>
@@ -75,11 +76,13 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.7.5</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
         <dependency>
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
-            <version>3.21.0-GA</version>
+            <version>3.24.1-GA</version>
         </dependency>
+
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
@@ -140,29 +143,29 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.2</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                        <configuration>
-                             <!--<classifier>tests</classifier>-->
-                             <!--<filesets> -->
-                                 <!--<fileset> <directory>${project.basedir}/target/test-classes/com/impetus/kundera/index/</directory>-->
-                             <!--</fileset> </filesets>-->
-                            <!--<excludes>-->
-                                <!--<exclude>**/index/LuceneIndexer.class</exclude>-->
-                                <!--<exclude>**/persistence/EntityReaderTest.class</exclude>-->
-                            <!--</excludes>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-jar-plugin</artifactId>-->
+            <!--                <version>2.2</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <goals>-->
+            <!--                            <goal>test-jar</goal>-->
+            <!--                        </goals>-->
+            <!--                        <configuration>-->
+            <!--                             &lt;!&ndash;<classifier>tests</classifier>&ndash;&gt;-->
+            <!--                             &lt;!&ndash;<filesets> &ndash;&gt;-->
+            <!--                                 &lt;!&ndash;<fileset> <directory>${project.basedir}/target/test-classes/com/impetus/kundera/index/</directory>&ndash;&gt;-->
+            <!--                             &lt;!&ndash;</fileset> </filesets>&ndash;&gt;-->
+            <!--                            &lt;!&ndash;<excludes>&ndash;&gt;-->
+            <!--                                &lt;!&ndash;<exclude>**/index/LuceneIndexer.class</exclude>&ndash;&gt;-->
+            <!--                                &lt;!&ndash;<exclude>**/persistence/EntityReaderTest.class</exclude>&ndash;&gt;-->
+            <!--                            &lt;!&ndash;</excludes>&ndash;&gt;-->
 
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+            <!--                        </configuration>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
         </plugins>
 
 

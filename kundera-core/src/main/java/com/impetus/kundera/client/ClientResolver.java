@@ -15,19 +15,18 @@
  ******************************************************************************/
 package com.impetus.kundera.client;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.kundera.PersistenceProperties;
 import com.impetus.kundera.loader.ClientFactory;
 import com.impetus.kundera.loader.GenericClientFactory;
 import com.impetus.kundera.metadata.model.PersistenceUnitMetadata;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Resolver class for client. It instantiates client factory and discover
@@ -114,32 +113,7 @@ public final class ClientResolver
 
             m.invoke(clientFactory, kunderaMetadata);
             
-        }
-        catch (InstantiationException e)
-        {
-            onError(e);
-        }
-        catch (IllegalAccessException e)
-        {
-            onError(e);
-        }
-        catch (ClassNotFoundException e)
-        {
-            onError(e);
-        }
-        catch (SecurityException e)
-        {
-            onError(e);
-        }
-        catch (NoSuchMethodException e)
-        {
-            onError(e);
-        }
-        catch (IllegalArgumentException e)
-        {
-            onError(e);
-        }
-        catch (InvocationTargetException e)
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SecurityException | NoSuchMethodException | IllegalArgumentException | InvocationTargetException e)
         {
             onError(e);
         }

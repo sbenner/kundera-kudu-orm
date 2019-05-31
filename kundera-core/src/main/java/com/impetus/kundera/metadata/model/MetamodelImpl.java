@@ -15,23 +15,11 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.model;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.EmbeddableType;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.ManagedType;
-import javax.persistence.metamodel.Metamodel;
-import javax.persistence.metamodel.StaticMetamodel;
-import javax.persistence.metamodel.Type.PersistenceType;
-
 import com.impetus.kundera.metadata.model.attributes.AbstractAttribute;
+
+import javax.persistence.metamodel.*;
+import javax.persistence.metamodel.Type.PersistenceType;
+import java.util.*;
 
 /**
  * The Class MetamodelImpl implements <code> MetaModel</code> interface.
@@ -46,7 +34,6 @@ public class MetamodelImpl implements Metamodel
 {
     /** The entity metadata map. */
     Map<String, EntityMetadata> entityMetadataMap;
-
     /** The entity name to class map. */
     Map<String, Class<?>> entityNameToClassMap;
 
