@@ -687,6 +687,10 @@ public class KuduDBClient extends ClientBase implements Client<KuduDBQuery>, Cli
         if (entityMetadata.getEntityClazz().isAnnotationPresent(Hashable.class)) {
 
             Class superClazz = entityMetadata.getEntityClazz().getSuperclass();
+
+            if (superClazz != null && superClazz instanceof java.lang.Object)
+                superClazz = entityMetadata.getEntityClazz();
+
             if (superClazz != null) {
                 Field[] fields = superClazz.getDeclaredFields();
                 for (Field f : fields) {
