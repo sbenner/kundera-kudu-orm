@@ -49,10 +49,7 @@ import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.EntityType;
 import java.lang.reflect.Field;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -685,14 +682,8 @@ public class KuduDBClient extends ClientBase implements Client<KuduDBQuery>, Cli
         Type idType = KuduDBValidationClassMapper.getValidTypeForClass(field.getType());
 
         if (entityMetadata.getEntityClazz().isAnnotationPresent(Hashable.class)) {
-
-            Class superClazz = entityMetadata.getEntityClazz().getSuperclass();
-
-            if (superClazz != null && superClazz instanceof java.lang.Object)
-                superClazz = entityMetadata.getEntityClazz();
-
-            if (superClazz != null) {
-                Field[] fields = superClazz.getDeclaredFields();
+            List<Field> fields = new ArrayList(Arrays.asList(entityMetadata.getEntityClazz().getSuperclass().getDeclaredFields()));
+            fields.addAll(new ArrayList(Arrays.asList(entityMetadata.getEntityClazz().getDeclaredFields())));
                 for (Field f : fields) {
                     if (f.isAnnotationPresent(Hash.class)) {
                         Object v = PropertyAccessorHelper.getObject(entity, f);
@@ -700,8 +691,6 @@ public class KuduDBClient extends ClientBase implements Client<KuduDBQuery>, Cli
                         KuduDBDataHandler.addToRow(row, f.getAnnotation(Column.class).name(), v, t);
                     }
                 }
-
-            }
 
 
         } else if (entityType.getAttribute(idColumnName).getJavaType().isAnnotationPresent(Embeddable.class)) {
