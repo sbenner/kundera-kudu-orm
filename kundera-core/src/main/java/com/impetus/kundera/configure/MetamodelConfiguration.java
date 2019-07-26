@@ -42,13 +42,13 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.Metamodel;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * The Metamodel configurer: a) Configure application meta data b) loads entity
@@ -105,45 +105,42 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
      */
 
 
-    public Iterable<Class> scanForClasses(String packageName) throws Exception,
-            IOException, URISyntaxException {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-//        String path = packageName.replace('.', '/');
-//        Enumeration<URL> resources = classLoader.getResources(path);
-//        List<File> dirs = new ArrayList<File>();
-//        Set<Class> classes = new HashSet<>();
+    private synchronized Iterator list(ClassLoader CL)
+            throws NoSuchFieldException, SecurityException,
+            IllegalArgumentException, IllegalAccessException {
+        Class CL_class = CL.getClass();
+        while (CL_class != java.lang.ClassLoader.class) {
+            CL_class = CL_class.getSuperclass();
+        }
+        java.lang.reflect.Field ClassLoader_classes_field = CL_class
+                .getDeclaredField("classes");
+        ClassLoader_classes_field.setAccessible(true);
+        Vector classes = (Vector) ClassLoader_classes_field.get(CL);
+        return classes.listIterator();
+    }
 
-        Class clClass = classLoader.getClass();
-        while (clClass != java.lang.ClassLoader.class) {
-            clClass = clClass.getSuperclass();
+
+    public synchronized Iterable<Class> scanForClasses(String packageName) throws Exception {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+        List<Class> classList = new ArrayList<>();
+        List<Class> out = new ArrayList<>();
+
+        while (classLoader != null) {
+            // System.out.println("ClassLoader: " + myCL);
+            classList.addAll((List<Class>) StreamSupport.stream(
+                    Spliterators.spliteratorUnknownSize(list(classLoader), Spliterator.ORDERED),
+                    false).collect(Collectors.toList()));
+
+            classLoader = classLoader.getParent();
+        }
+        for (Class c : classList) {
+            if (c.getName().toLowerCase().startsWith(packageName))
+                out.add(c);
         }
 
-        Field classesField = clClass.getDeclaredField("classes");
-        classesField.setAccessible(true);
-        List loadedClassesList =
-                Arrays.asList(((Vector) classesField.get(classLoader)).toArray());
+        return out;
 
-        return (Iterable<Class>) loadedClassesList.stream().filter(o ->
-                ((Class) o).getName().startsWith(packageName)
-        ).collect(Collectors.toList());
-
-//
-//        while (resources.hasMoreElements()) {
-//            URL resource = resources.nextElement();
-//            if (resource.getProtocol().equalsIgnoreCase("jar")) {
-//                File f = Paths.get(resource.getFile().split("file:")[1].split("!")[0]).toFile();
-//                classes.addAll(findClasses(f, packageName));
-//            } else {
-//                URI uri = new URI(resource.toString());
-//                dirs.add(new File(uri.getPath()));
-//            }
-//        }
-//
-//        for (File directory : dirs) {
-//            classes.addAll(findClasses(directory, packageName));
-//        }
-
-        //return classes;
     }
 
     private List<Class> findClasses(File directory, String packageName) throws Exception {
@@ -232,7 +229,8 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
                     });
 
                 } catch (Exception e) {
-                    log.error(e.getMessage());
+                    e.printStackTrace();
+                    //log.error(e.getMessage());
                 }
 
             }
