@@ -42,14 +42,13 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.Metamodel;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
 /**
  * The Metamodel configurer: a) Configure application meta data b) loads entity
@@ -65,6 +64,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
     private static Logger log = LoggerFactory.getLogger(MetamodelConfiguration.class);
 
     private ValidationFactory factory;
+
 
     /**
      * Constructor using persistence units as parameter.
@@ -108,26 +108,42 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
     public Iterable<Class> scanForClasses(String packageName) throws Exception,
             IOException, URISyntaxException {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        String path = packageName.replace('.', '/');
-        Enumeration<URL> resources = classLoader.getResources(path);
-        List<File> dirs = new ArrayList<File>();
-        Set<Class> classes = new HashSet<>();
-        while (resources.hasMoreElements()) {
-            URL resource = resources.nextElement();
-            if (resource.getProtocol().equalsIgnoreCase("jar")) {
-                File f = Paths.get(resource.getFile().split("file:")[1].split("!")[0]).toFile();
-                classes.addAll(findClasses(f, packageName));
-            } else {
-                URI uri = new URI(resource.toString());
-                dirs.add(new File(uri.getPath()));
-            }
+//        String path = packageName.replace('.', '/');
+//        Enumeration<URL> resources = classLoader.getResources(path);
+//        List<File> dirs = new ArrayList<File>();
+//        Set<Class> classes = new HashSet<>();
+
+        Class clClass = classLoader.getClass();
+        while (clClass != java.lang.ClassLoader.class) {
+            clClass = clClass.getSuperclass();
         }
 
-        for (File directory : dirs) {
-            classes.addAll(findClasses(directory, packageName));
-        }
+        Field classesField = clClass.getDeclaredField("classes");
+        classesField.setAccessible(true);
+        List loadedClassesList =
+                Arrays.asList(((Vector) classesField.get(classLoader)).toArray());
 
-        return classes;
+        return (Iterable<Class>) loadedClassesList.stream().filter(o ->
+                ((Class) o).getName().startsWith(packageName)
+        ).collect(Collectors.toList());
+
+//
+//        while (resources.hasMoreElements()) {
+//            URL resource = resources.nextElement();
+//            if (resource.getProtocol().equalsIgnoreCase("jar")) {
+//                File f = Paths.get(resource.getFile().split("file:")[1].split("!")[0]).toFile();
+//                classes.addAll(findClasses(f, packageName));
+//            } else {
+//                URI uri = new URI(resource.toString());
+//                dirs.add(new File(uri.getPath()));
+//            }
+//        }
+//
+//        for (File directory : dirs) {
+//            classes.addAll(findClasses(directory, packageName));
+//        }
+
+        //return classes;
     }
 
     private List<Class> findClasses(File directory, String packageName) throws Exception {
@@ -138,7 +154,6 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
             Enumeration e = jarFile.entries();
             try {
                 while (e.hasMoreElements()) {
-
                     JarEntry je = (JarEntry) e.nextElement();
                     if (je.isDirectory() || !je.getName().endsWith(".class")) {
                         continue;
@@ -146,8 +161,15 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
                     // -6 because of .class
                     String className = je.getName().substring(0, je.getName().length() - 6);
                     className = className.replace('/', '.');
-                    Class c = Class.forName(className);
                     log.info(className);
+                    className =
+                            className.contains("-INF") ?
+                                    className.substring(
+                                            className.lastIndexOf("-INF") + 13) :
+                                    className;
+                    log.info(className);
+                    Class c = Class.forName(className);
+
                     if (c.isAnnotationPresent(Entity.class))
                         classes.add(Class.forName(className));
 
@@ -190,6 +212,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         URL[] resources = null;
         String client = null;
         List<URL> managedURLs = null;
+        Iterable<Class> additionalClasses = null;
         if (persistentUnitMetadataMap == null || persistentUnitMetadataMap.isEmpty()) {
             log.error("It is necessary to load Persistence Unit metadata  for persistence unit " + persistenceUnit
                     + " first before loading entity metadata.");
@@ -202,8 +225,8 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
             String packageToScan = puMetadata.getProperty("scan.package");
             if (StringUtils.isNotEmpty(packageToScan)) {
                 try {
-                    Iterable<Class> additionaClasses = scanForClasses(packageToScan);
-                    additionaClasses.forEach(i ->
+                    additionalClasses = scanForClasses(packageToScan);
+                    additionalClasses.forEach(i ->
                     {
                         classesToScan.add(i.getName());
                     });
@@ -261,6 +284,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
             resources = managedURLs.toArray(new URL[]{});
         }
 
+
         // All entities to load should be annotated with @Entity
         reader.addValidAnnotations(Entity.class.getName());
 
@@ -274,6 +298,8 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         Map<String, List<String>> puToClazzMap = new HashMap<String, List<String>>();
         Map<String, IdDiscriptor> entityNameToKeyDiscriptorMap = new HashMap<String, IdDiscriptor>();
         List<Class<?>> classes = new ArrayList<Class<?>>();
+
+
         if (resources != null && resources.length > 0) {
             for (URL resource : resources) {
                 try {
@@ -309,6 +335,21 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
 
             }
         }
+
+        if (additionalClasses != null) {
+            for (Class clazz : additionalClasses) {
+                try {
+                    Class c = scanClassAndPutMetadata(clazz, entityMetadataMap, entityNameToClassMap,
+                            persistenceUnit, client, puToClazzMap, entityNameToKeyDiscriptorMap);
+                    if (c != null) classes.add(c);
+
+                } catch (Exception e) {
+                    log.error("err", e);
+                }
+            }
+        }
+
+
         ((MetamodelImpl) metamodel).setEntityMetadataMap(entityMetadataMap);
         appMetadata.getMetamodelMap().put(persistenceUnit, metamodel);
         appMetadata.setClazzToPuMap(puToClazzMap);
@@ -404,7 +445,8 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
                     }
 
                     // TODO :
-                    onValidateClientProperties(classes, clazz, persistenceUnit);
+                    classes.add(clazz);
+                    //onValidateClientProperties(classes, clazz, persistenceUnit);
                 }
             }
         } catch (ClassNotFoundException e) {
@@ -420,6 +462,59 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
 
         return classes;
     }
+
+    private synchronized Class<?> scanClassAndPutMetadata(Class clazz, Map<String, EntityMetadata> entityMetadataMap, Map<String, Class<?>> entityNameToClassMap,
+                                                          String persistenceUnit, String client, Map<String, List<String>> clazzToPuMap,
+                                                          Map<String, IdDiscriptor> entityNameToKeyDiscriptorMap) throws IOException {
+
+        //List<Class<?>> classes = new ArrayList<Class<?>>();
+        try {
+
+            // check if the current class has one?
+            if (clazz.isAnnotationPresent(Entity.class) && clazz.isAnnotationPresent(Table.class)) {
+                this.factory.validate(clazz);
+                // get the name of entity to be used for entity to class map
+                // if or not annotated with name
+                String entityName = getEntityName(clazz);
+
+                if ((entityNameToClassMap.containsKey(entityName) && !entityNameToClassMap.get(entityName)
+                        .getName().equals(clazz.getName()))) {
+                    throw new MetamodelLoaderException("Name conflict between classes "
+                            + entityNameToClassMap.get(entityName).getName() + " and " + clazz.getName()
+                            + ". Make sure no two entity classes with the same name "
+                            + " are specified for persistence unit " + persistenceUnit);
+                }
+                entityNameToClassMap.put(entityName, clazz);
+
+                EntityMetadata metadata = entityMetadataMap.get(clazz);
+                if (null == metadata) {
+                    log.debug("Metadata not found in cache for " + clazz.getName());
+                    // double check locking.
+                    synchronized (this) {
+                        MetadataBuilder metadataBuilder = new MetadataBuilder(persistenceUnit, client,
+                                KunderaCoreUtils.getExternalProperties(persistenceUnit, externalPropertyMap,
+                                        persistenceUnits), kunderaMetadata);
+                        metadata = metadataBuilder.buildEntityMetadata(clazz);
+                        // in case entity's pu does not belong to parse
+                        // persistence unit, it will be null.
+                        if (metadata != null) {
+                            entityMetadataMap.put(clazz.getName(), metadata);
+                            mapClazztoPu(clazz, persistenceUnit, clazzToPuMap);
+                            processGeneratedValueAnnotation(clazz, persistenceUnit, metadata,
+                                    entityNameToKeyDiscriptorMap);
+                        }
+                    }
+                }
+            } else {
+                return null;
+            }
+
+        } catch (Exception e) {
+            log.error("Class " + clazz.getName() + " not found, it won't be loaded as entity");
+        }
+        return clazz;
+    }
+
 
     /**
      * @param clazz
