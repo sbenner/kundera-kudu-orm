@@ -46,11 +46,15 @@ BigDecimal price;`
     ```
 * `Default Replication Factor` added
   
- added for `hash partitioning` as written above and as a global default value
+ added for `hash partitioning` annotation as written above and as a global default value
  in `META-INF/persistence.xml` 
  ```
    <property name="kundera.replication.factor" value="1"/>
  ```
-
+added `scan.package` property for external scans for entity presence
+in other libraries or paths
+ ```
+   <property name="scan.package" value="com.test.persistence"/>
+ ```
 
 

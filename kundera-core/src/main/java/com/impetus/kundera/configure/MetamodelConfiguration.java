@@ -33,6 +33,8 @@ import com.impetus.kundera.validation.rules.RuleValidationException;
 import javassist.bytecode.AnnotationsAttribute;
 import javassist.bytecode.ClassFile;
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +49,7 @@ import java.net.URLClassLoader;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.jar.JarInputStream;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -119,6 +122,32 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         return classes.listIterator();
     }
 
+    @SuppressWarnings("resource")
+    public JSONObject getCrunchifyClassNamesFromJar(String crunchifyJarName) {
+        JSONArray listofClasses = new JSONArray();
+        JSONObject crunchifyObject = new JSONObject();
+        try {
+            JarInputStream crunchifyJarFile = new JarInputStream(new FileInputStream(crunchifyJarName));
+            JarEntry crunchifyJar;
+
+            while (true) {
+                crunchifyJar = crunchifyJarFile.getNextJarEntry();
+                if (crunchifyJar == null) {
+                    break;
+                }
+                if ((crunchifyJar.getName().endsWith(".class"))) {
+                    String className = crunchifyJar.getName().replaceAll("/", "\\.");
+                    String myClass = className.substring(0, className.lastIndexOf('.'));
+                    listofClasses.put(myClass);
+                }
+            }
+            crunchifyObject.put("Jar File Name", crunchifyJarName);
+            crunchifyObject.put("List of Class", listofClasses);
+        } catch (Exception e) {
+            System.out.println("Oops.. Encounter an issue while parsing jar" + e.toString());
+        }
+        return crunchifyObject;
+    }
 
     public synchronized Iterable<Class> scanForClasses(String packageName) throws Exception {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -169,6 +198,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
 
                     if (c.isAnnotationPresent(Entity.class))
                         classes.add(Class.forName(className));
+
 
                 }
             } catch (Exception ex) {
@@ -300,10 +330,11 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
 
         if (resources != null && resources.length > 0) {
             for (URL resource : resources) {
+                InputStream is = null;
                 try {
                     ResourceIterator itr = reader.getResourceIterator(resource, reader.getFilter());
 
-                    InputStream is = null;
+
                     while ((is = itr.next()) != null) {
                         classes.addAll(scanClassAndPutMetadata(is, reader, entityMetadataMap, entityNameToClassMap,
                                 persistenceUnit, client, puToClazzMap, entityNameToKeyDiscriptorMap));
@@ -312,6 +343,16 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
                     log.error("Error while retrieving and storing entity metadata. Details:", e);
                     throw new MetamodelLoaderException("Error while retrieving and storing entity metadata");
 
+                } finally {
+                    if (is != null) {
+                        try {
+                            is.close();
+                        } catch (Exception e) {
+                            log.error("Error while retrieving and storing entity metadata. Details:", e);
+                            throw new MetamodelLoaderException("cant close stream");
+
+                        }
+                    }
                 }
             }
         } else if (iStreams != null) {
@@ -413,7 +454,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
                     if ((entityNameToClassMap.containsKey(entityName) && !entityNameToClassMap.get(entityName)
                             .getName().equals(clazz.getName()))) {
                         throw new MetamodelLoaderException("Name conflict between classes "
-                                + entityNameToClassMap.get(entityName).getName() + " and " + clazz.getName()
+                                + entityNameToClassMap.ысфget(entityName).getName() + " and " + clazz.getName()
                                 + ". Make sure no two entity classes with the same name "
                                 + " are specified for persistence unit " + persistenceUnit);
                     }
