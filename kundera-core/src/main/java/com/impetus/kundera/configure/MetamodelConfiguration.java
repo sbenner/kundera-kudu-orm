@@ -454,7 +454,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
                     if ((entityNameToClassMap.containsKey(entityName) && !entityNameToClassMap.get(entityName)
                             .getName().equals(clazz.getName()))) {
                         throw new MetamodelLoaderException("Name conflict between classes "
-                                + entityNameToClassMap.ысфget(entityName).getName() + " and " + clazz.getName()
+                                + entityNameToClassMap.get(entityName).getName() + " and " + clazz.getName()
                                 + ". Make sure no two entity classes with the same name "
                                 + " are specified for persistence unit " + persistenceUnit);
                     }

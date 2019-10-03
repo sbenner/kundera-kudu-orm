@@ -101,12 +101,33 @@ public class KuduDBClientFactory extends GenericClientFactory
 
         String kuduMasterPort = pumProps.getProperty("kundera.port");
 
+        String read = pumProps.getProperty("kudu.read.timeout");
+        String op = pumProps.getProperty("kudu.op.timeout");
+
+        Long readTimeout = null;
+        Long opTimeout = null;
+        if (read != null)
+            readTimeout = Long.valueOf(read);
+
+        if (op != null)
+            opTimeout = Long.valueOf(op);
+
+
         if (kuduMasterHost == null || kuduMasterPort == null)
         {
             throw new KunderaException("Hostname/IP or Port is null.");
         }
+        KuduClient.KuduClientBuilder builder = new KuduClient.KuduClientBuilder(
+                kuduMasterHost + ":" + kuduMasterPort);
+        if (read != null) {
+            builder = builder.defaultSocketReadTimeoutMs(readTimeout * 1000);
+        }
+        if (op != null) {
+            builder = builder.defaultOperationTimeoutMs(opTimeout * 1000);
+        }
+        kuduClient = builder.build();
 
-        kuduClient = new KuduClient.KuduClientBuilder(kuduMasterHost + ":" + kuduMasterPort).build();
+
     }
 
     /*

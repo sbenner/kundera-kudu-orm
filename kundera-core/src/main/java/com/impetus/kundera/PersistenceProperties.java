@@ -74,6 +74,9 @@ public interface PersistenceProperties
      */
     public static final String KUNDERA_INDEX_HOME_DIR = "index.home.dir";
 
+    public static final String SCAN_PACKAGE = "scan.package";
+    public static final String KUDU_READ_TIMEOUT = "kudu.read.timeout";
+    public static final String KUDU_OP_TIMEOUT = "kudu.op.timeout";
     /** Option to create schema. */
     public static final String KUNDERA_DDL_AUTO_PREPARE = "kundera.ddl.auto.prepare";
 

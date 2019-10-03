@@ -178,7 +178,8 @@ public class KuduDBQuery extends QueryImpl implements Query
      * @param whereExp
      *            the where exp
      */
-    private void parseAndBuildFilters(EntityType entityType, KuduScannerBuilder scannerBuilder, Expression whereExp)
+    private void parseAndBuildFilters(EntityType entityType,
+                                      KuduScannerBuilder scannerBuilder, Expression whereExp)
     {
         if (whereExp instanceof ComparisonExpression)
         {
