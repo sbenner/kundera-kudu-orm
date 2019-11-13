@@ -56,5 +56,10 @@ in other libraries or paths
  ```
    <property name="scan.package" value="com.test.persistence"/>
  ```
+ added honoring of socket operation timeouts and socket read timeouts
+ ```
+   <property name="kudu.read.timeout" value="600"/>
+   <property name="kudu.op.timeout" value="900"/>
+ ```
 
 
