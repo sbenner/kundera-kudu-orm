@@ -15,29 +15,6 @@
  ******************************************************************************/
 package com.impetus.client.kudu.schemamanager;
 
-import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
-
-import javax.persistence.Embeddable;
-import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.EmbeddableType;
-
-import com.impetus.kundera.metadata.model.attributes.DefaultSingularAttribute;
-import org.apache.commons.lang.StringUtils;
-import org.apache.kudu.ColumnSchema;
-import org.apache.kudu.ColumnSchema.ColumnSchemaBuilder;
-import org.apache.kudu.ColumnTypeAttributes;
-import org.apache.kudu.Schema;
-import org.apache.kudu.client.AlterTableOptions;
-import org.apache.kudu.client.CreateTableOptions;
-import org.apache.kudu.client.KuduClient;
-import org.apache.kudu.client.KuduTable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.client.kudu.KuduDBDataHandler;
 import com.impetus.client.kudu.KuduDBValidationClassMapper;
 import com.impetus.kundera.KunderaException;
@@ -51,6 +28,26 @@ import com.impetus.kundera.metadata.model.MetamodelImpl;
 import com.impetus.kundera.metadata.model.attributes.AbstractAttribute;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.utils.ReflectUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.kudu.ColumnSchema;
+import org.apache.kudu.ColumnSchema.ColumnSchemaBuilder;
+import org.apache.kudu.ColumnTypeAttributes;
+import org.apache.kudu.Schema;
+import org.apache.kudu.client.AlterTableOptions;
+import org.apache.kudu.client.CreateTableOptions;
+import org.apache.kudu.client.KuduClient;
+import org.apache.kudu.client.KuduTable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.Embeddable;
+import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.EmbeddableType;
+import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 /**
  * The Class KuduDBSchemaManager.
@@ -271,6 +268,7 @@ public class KuduDBSchemaManager extends AbstractSchemaManager implements Schema
         if (!KuduDBDataHandler.hasColumn(schema, columnInfo.getColumnName()))
         {
             // add if column is not in schema
+
             alterTableOptions.addNullableColumn(columnInfo.getColumnName(),
                     KuduDBValidationClassMapper.getValidTypeForClass(columnInfo.getType()));
             updated.set(true);

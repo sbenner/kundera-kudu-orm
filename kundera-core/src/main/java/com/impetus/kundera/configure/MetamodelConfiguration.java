@@ -50,8 +50,6 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * The Metamodel configurer: a) Configure application meta data b) loads entity
@@ -108,6 +106,19 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
      */
 
 
+    private synchronized List<Class> listVector(ClassLoader CL)
+            throws NoSuchFieldException, SecurityException,
+            IllegalArgumentException, IllegalAccessException {
+        Class CL_class = CL.getClass();
+        while (CL_class != java.lang.ClassLoader.class) {
+            CL_class = CL_class.getSuperclass();
+        }
+        java.lang.reflect.Field ClassLoader_classes_field = CL_class
+                .getDeclaredField("classes");
+        ClassLoader_classes_field.setAccessible(true);
+        return Collections.list(((Vector) ClassLoader_classes_field.get(CL)).elements());
+    }
+
     private synchronized Iterator list(ClassLoader CL)
             throws NoSuchFieldException, SecurityException,
             IllegalArgumentException, IllegalAccessException {
@@ -150,16 +161,17 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
     }
 
     public synchronized Iterable<Class> scanForClasses(String packageName) throws Exception {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader()
 
         List<Class> classList = new ArrayList<>();
         List<Class> out = new ArrayList<>();
 
         while (classLoader != null) {
             // System.out.println("ClassLoader: " + myCL);
-            classList.addAll((List<Class>) StreamSupport.stream(
-                    Spliterators.spliteratorUnknownSize(list(classLoader), Spliterator.ORDERED),
-                    false).collect(Collectors.toList()));
+            classList.addAll(listVector(classLoader));
+//            classList.addAll((List<Class>) StreamSupport.stream(
+//                    Spliterators.spliteratorUnknownSize(list(classLoader), Spliterator.ORDERED),
+//                    true).collect(Collectors.toList()));
 
             classLoader = classLoader.getParent();
         }
