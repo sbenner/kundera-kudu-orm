@@ -44,12 +44,16 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.Metamodel;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.net.*;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
+import java.util.stream.Collectors;
 
 /**
  * The Metamodel configurer: a) Configure application meta data b) loads entity
@@ -119,6 +123,42 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         return Collections.list(((Vector) ClassLoader_classes_field.get(CL)).elements());
     }
 
+    public Iterable<Class> scanForClasses(String packageName) throws Exception {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        String path = packageName.replace('.', '/');
+        Enumeration<URL> resources = classLoader.getResources(path);
+        List<File> dirs = new ArrayList<File>();
+        List<Class> classes = new ArrayList<Class>();
+        while (resources.hasMoreElements()) {
+            URL resource = resources.nextElement();
+            URI uri = new URI(resource.toString());
+            try {
+                if(uri.getScheme().equalsIgnoreCase("jar")){
+                    List<JarEntry>l =((JarURLConnection)resource.openConnection()).getJarFile().stream().collect(Collectors.toList());
+                    l.stream().map(o->{
+                        try {
+                            return pickClassFromJarEntry(o);
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }).filter(Objects::nonNull).forEach(classes::add);
+
+
+                }
+                else if (uri.getPath() != null&&!uri.getScheme().equalsIgnoreCase("jar")) {
+                    dirs.add(new File(uri.getPath()));
+                }
+            }catch (Exception e)  {e.printStackTrace();}
+        }
+
+        for (File directory : dirs) {
+            classes.addAll(findClasses(directory, packageName));
+        }
+
+        return classes;
+    }
+
     private synchronized Iterator list(ClassLoader CL)
             throws NoSuchFieldException, SecurityException,
             IllegalArgumentException, IllegalAccessException {
@@ -152,37 +192,32 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
                     listofClasses.put(myClass);
                 }
             }
-            crunchifyObject.put("Jar File Name", crunchifyJarName);
-            crunchifyObject.put("List of Class", listofClasses);
+            crunchifyObject.put("jar_name", crunchifyJarName);
+            crunchifyObject.put("classes_list", listofClasses);
         } catch (Exception e) {
             System.out.println("Oops.. Encounter an issue while parsing jar" + e.toString());
         }
         return crunchifyObject;
     }
 
-    public synchronized Iterable<Class> scanForClasses(String packageName) throws Exception {
-        ClassLoader classLoader = ClassLoader.getSystemClassLoader()
 
-        List<Class> classList = new ArrayList<>();
-        List<Class> out = new ArrayList<>();
-
-        while (classLoader != null) {
-            // System.out.println("ClassLoader: " + myCL);
-            classList.addAll(listVector(classLoader));
-//            classList.addAll((List<Class>) StreamSupport.stream(
-//                    Spliterators.spliteratorUnknownSize(list(classLoader), Spliterator.ORDERED),
-//                    true).collect(Collectors.toList()));
-
-            classLoader = classLoader.getParent();
+    private Class pickClassFromJarEntry(JarEntry je) throws ClassNotFoundException{
+        if (je.isDirectory() || !je.getName().endsWith(".class")) {
+         return null;
         }
-        for (Class c : classList) {
-            if (c.getName().toLowerCase().startsWith(packageName))
-                out.add(c);
-        }
-
-        return out;
-
+        String className = je.getName().substring(0, je.getName().length() - 6);
+        className = className.replace('/', '.');
+        log.info(className);
+        className =
+                className.contains("-INF") ?
+                        className.substring(
+                                className.lastIndexOf("-INF") + 13) :
+                        className;
+        log.info(className);
+        Class c = Class.forName(className);
+        return c;
     }
+
 
     private List<Class> findClasses(File directory, String packageName) throws Exception {
         List<Class> classes = new ArrayList<Class>();
@@ -193,23 +228,12 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
             try {
                 while (e.hasMoreElements()) {
                     JarEntry je = (JarEntry) e.nextElement();
-                    if (je.isDirectory() || !je.getName().endsWith(".class")) {
-                        continue;
-                    }
-                    // -6 because of .class
-                    String className = je.getName().substring(0, je.getName().length() - 6);
-                    className = className.replace('/', '.');
-                    log.info(className);
-                    className =
-                            className.contains("-INF") ?
-                                    className.substring(
-                                            className.lastIndexOf("-INF") + 13) :
-                                    className;
-                    log.info(className);
-                    Class c = Class.forName(className);
 
-                    if (c.isAnnotationPresent(Entity.class))
-                        classes.add(Class.forName(className));
+                    // -6 because of .class
+                    Class c = pickClassFromJarEntry(je);
+
+                    if (c!=null&&c.isAnnotationPresent(Entity.class))
+                        classes.add(c);
 
 
                 }
