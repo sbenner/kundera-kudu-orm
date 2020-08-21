@@ -15,17 +15,6 @@
  */
 package com.impetus.kundera.persistence.context;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.kundera.graph.Node;
 import com.impetus.kundera.graph.NodeLink;
 import com.impetus.kundera.graph.ObjectGraph;
@@ -35,30 +24,39 @@ import com.impetus.kundera.metadata.model.EntityMetadata;
 import com.impetus.kundera.persistence.PersistenceDelegator;
 import com.impetus.kundera.property.PropertyAccessorHelper;
 import com.impetus.kundera.utils.ObjectUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Base class for all cache required in persistence context
- * 
+ *
  * @author amresh.singh
  */
-public class CacheBase
-{
+public class CacheBase {
     private static Logger log = LoggerFactory.getLogger(CacheBase.class);
 
     private Map<String, Node> nodeMappings;
 
     private Set<Node> headNodes;
 
+    volatile boolean janitorStarted;
+
     private com.impetus.kundera.cache.Cache l2Cache;
 
     private PersistenceCache persistenceCache;
 
-    public CacheBase(com.impetus.kundera.cache.Cache l2Cache, PersistenceCache pc)
-    {
+    public CacheBase(com.impetus.kundera.cache.Cache l2Cache, PersistenceCache pc, int cacheCapacity) {
         this.headNodes = new HashSet<Node>();
-        this.nodeMappings = new ConcurrentHashMap<String, Node>();
+        this.nodeMappings = new ConcurrentHashMap<String, Node>(cacheCapacity);
         this.l2Cache = l2Cache;
         this.persistenceCache = pc;
+        if (!janitorStarted) {
+            janitorStarted = true;
+            new Thread(new CacheBaseJanitor(nodeMappings, this)).start();
+        }
     }
 
     public Node getNodeFromCache(String nodeId, PersistenceDelegator pd)
@@ -84,13 +82,20 @@ public class CacheBase
         return getNodeFromCache(nodeId, pd);
     }
 
-    public synchronized void addNodeToCache(Node node)
-    {
+    public synchronized void addNodeToCache(Node node) {
         // Make a deep copy of Node data and and set into node
         // Original data object is now detached from Node and is possibly
         // referred by user code
-        Object nodeDataCopy = ObjectUtils.deepCopy(node.getData(), node.getPersistenceDelegator().getKunderaMetadata());
+
+        if (nodeMappings.size() >= persistenceCache.getCacheCapacity()) {
+            return;
+        }
+
+
+        Object nodeDataCopy = ObjectUtils.deepCopy(node.getData(),
+                node.getPersistenceDelegator().getKunderaMetadata());
         node.setData(nodeDataCopy);
+        node.setCreationTime(System.currentTimeMillis());
 
         /*
          * check if this node already exists in cache node mappings If yes,
@@ -183,12 +188,11 @@ public class CacheBase
         addHeadNode(graph.getHeadNode());
     }
 
-    private void logCacheEvent(String eventType, String nodeId)
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug("Node: " + nodeId + ":: " + eventType + " Persistence Context");
-        }
+    private void logCacheEvent(String eventType, String nodeId) {
+        //if (log.isDebugEnabled())
+        //{
+        log.debug("Node: " + nodeId + ":: " + eventType + " Persistence Context");
+        //}
     }
 
     /**

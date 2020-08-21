@@ -15,38 +15,6 @@
  ******************************************************************************/
 package com.impetus.kundera.persistence;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.persistence.EntityExistsException;
-import javax.persistence.EntityGraph;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.EntityTransaction;
-import javax.persistence.FlushModeType;
-import javax.persistence.LockModeType;
-import javax.persistence.PersistenceContextType;
-import javax.persistence.Query;
-import javax.persistence.StoredProcedureQuery;
-import javax.persistence.TransactionRequiredException;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.CriteriaUpdate;
-import javax.persistence.metamodel.Metamodel;
-import javax.persistence.spi.PersistenceUnitTransactionType;
-import javax.transaction.UserTransaction;
-
-import org.apache.commons.lang.NotImplementedException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.kundera.Constants;
 import com.impetus.kundera.KunderaException;
 import com.impetus.kundera.cache.Cache;
@@ -57,6 +25,24 @@ import com.impetus.kundera.persistence.context.PersistenceCache;
 import com.impetus.kundera.persistence.jta.KunderaJTAUserTransaction;
 import com.impetus.kundera.query.KunderaTypedQuery;
 import com.impetus.kundera.query.QueryImpl;
+import org.apache.commons.lang.NotImplementedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
+import javax.persistence.metamodel.Metamodel;
+import javax.persistence.spi.PersistenceUnitTransactionType;
+import javax.transaction.UserTransaction;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Class EntityManagerImpl.
@@ -84,73 +70,104 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
     /** Properties provided by user at the time of EntityManager Creation. */
     private final PersistenceDelegator persistenceDelegator;
 
-    /** Persistence Context Type (Transaction/ Extended) */
+    /**
+     * Persistence Context Type (Transaction/ Extended)
+     */
     private final PersistenceContextType persistenceContextType;
 
-    /** Transaction Type (JTA/ RESOURCE_LOCAL) */
+    /**
+     * Transaction Type (JTA/ RESOURCE_LOCAL)
+     */
     private final PersistenceUnitTransactionType transactionType;
 
-    private final PersistenceCache persistenceCache;
+    private static PersistenceCache persistenceCache;
 
     private UserTransaction utx;
 
+    int cacheCapacity = 50000;
+
     private EntityTransaction entityTransaction;
+
 
     /**
      * Instantiates a new entity manager impl.
-     * 
+     *
      * @param factory
      *            the factory
      * @param properties
      *            the properties
      */
     EntityManagerImpl(final EntityManagerFactory factory, final Map properties, PersistenceUnitTransactionType transactionType,
-            final PersistenceContextType persistenceContextType)
-    {
+            final PersistenceContextType persistenceContextType) {
         this(factory, transactionType, persistenceContextType);
         this.properties = properties;
+        try {
+            Integer capacity = (int) properties.get("kundera.l1.cache.capacity");
+            if (capacity != null) {
+                this.cacheCapacity = capacity;
+                logger.info("Cache capacity is: " + this.cacheCapacity);
+            }
+        } catch (Exception e) {
+        }
+
+        persistenceCache = getInstance(factory, this.cacheCapacity);
 
         getPersistenceDelegator().populateClientProperties(this.properties);
     }
 
     /**
      * Instantiates a new entity manager impl.
-     * 
+     *
      * @param factory
      *            the factory
      */
+
+
     EntityManagerImpl(final EntityManagerFactory factory, final PersistenceUnitTransactionType transactionType,
-            final PersistenceContextType persistenceContextType)
-    {
+            final PersistenceContextType persistenceContextType) {
         this.factory = factory;
 
-        if (logger.isDebugEnabled())
-        {
+        if (logger.isDebugEnabled()) {
             logger.debug("Creating EntityManager for persistence unit : " + getPersistenceUnit());
         }
         this.persistenceContextType = persistenceContextType;
 
-        this.persistenceCache = new PersistenceCache((Cache) factory.getCache());
+        try {
+            Integer capacity = (int) properties.get("kundera.l1.cache.capacity");
+            if (capacity != null) {
+                this.cacheCapacity = capacity;
+                logger.info("Cache capacity is: " + this.cacheCapacity);
+            }
+        } catch (Exception e) {
+        }
+
+        this.persistenceCache = getInstance(factory, this.cacheCapacity);
+
         this.persistenceCache.setPersistenceContextType(this.persistenceContextType);
 
         this.transactionType = transactionType;
         this.persistenceDelegator = new PersistenceDelegator(
-                ((EntityManagerFactoryImpl) this.factory).getKunderaMetadataInstance(), this.persistenceCache);
+                ((EntityManagerFactoryImpl) this.factory).getKunderaMetadataInstance(), getInstance(factory, this.cacheCapacity));
 
-        for (String pu : ((EntityManagerFactoryImpl) this.factory).getPersistenceUnits())
-        {
+        for (String pu : ((EntityManagerFactoryImpl) this.factory).getPersistenceUnits()) {
             this.persistenceDelegator.loadClient(pu, discoverClient(pu));
         }
 
-        if (logger.isDebugEnabled())
-        {
+        if (logger.isDebugEnabled()) {
             logger.debug("Created EntityManager for persistence unit : " + getPersistenceUnit());
         }
     }
 
+    public static synchronized PersistenceCache getInstance(EntityManagerFactory factory, int cacheCapacity) {
+        if (persistenceCache == null) {
+            persistenceCache = new PersistenceCache((Cache) factory.getCache(), cacheCapacity);
+        }
+        return persistenceCache;
+    }
+
     /**
      * Make an instance managed and persistent.
-     * 
+     *
      * @param entity
      * @throws EntityExistsException
      *             if the entity already exists. (If the entity already exists,

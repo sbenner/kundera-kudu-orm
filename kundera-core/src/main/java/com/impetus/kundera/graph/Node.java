@@ -15,19 +15,6 @@
  */
 package com.impetus.kundera.graph;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.PostLoad;
-import javax.persistence.PostPersist;
-import javax.persistence.PostRemove;
-import javax.persistence.PostUpdate;
-import javax.persistence.PrePersist;
-import javax.persistence.PreRemove;
-import javax.persistence.PreUpdate;
-
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
 import com.impetus.kundera.KunderaException;
 import com.impetus.kundera.client.Client;
 import com.impetus.kundera.graph.NodeLink.LinkProperty;
@@ -42,6 +29,11 @@ import com.impetus.kundera.persistence.PersistenceDelegator;
 import com.impetus.kundera.persistence.context.PersistenceCache;
 import com.impetus.kundera.persistence.event.EntityEventDispatcher;
 import com.impetus.kundera.utils.ObjectUtils;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import javax.persistence.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Represents a node in object graph
@@ -60,6 +52,7 @@ public class Node implements NodeStateContext
     // Actual node data
     private Object data;
 
+    private long creationTime;
     // Current node state as defined in state machine
     private NodeState currentNodeState;
 
@@ -708,27 +701,28 @@ public class Node implements NodeStateContext
         }
     }
 
-    private void onPostEvent(EntityMetadata metadata, EntityEvent event)
-    {
-        try
-        {
+    private void onPostEvent(EntityMetadata metadata, EntityEvent event) {
+        try {
             this.eventDispatcher.fireEventListeners(metadata, this.data, EntityEvent.getPostEvent(event));
-        }
-        catch (Exception es)
-        {
+        } catch (Exception es) {
             throw new KunderaException(es);
         }
     }
 
-    private enum EntityEvent
-    {
-        UPDATE, PERSIST, REMOVE,FIND;
+    public long getCreationTime() {
+        return creationTime;
+    }
 
-        private final static Class getPreEvent(EntityEvent event)
-        {
+    public void setCreationTime(long creationTime) {
+        this.creationTime = creationTime;
+    }
+
+    private enum EntityEvent {
+        UPDATE, PERSIST, REMOVE, FIND;
+
+        private final static Class getPreEvent(EntityEvent event) {
             Class clazz = null;
-            switch (event)
-            {
+            switch (event) {
             case PERSIST:
                 clazz = PrePersist.class;
                 break;

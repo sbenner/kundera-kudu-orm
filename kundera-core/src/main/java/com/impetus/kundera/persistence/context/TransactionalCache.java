@@ -24,9 +24,8 @@ package com.impetus.kundera.persistence.context;
 public class TransactionalCache extends CacheBase
 {
 
-    public TransactionalCache(com.impetus.kundera.cache.Cache l2Cache, PersistenceCache pc)
-    {
-        super(l2Cache, pc);
+    public TransactionalCache(com.impetus.kundera.cache.Cache l2Cache, PersistenceCache pc, int capacity) {
+        super(l2Cache, pc, capacity);
     }
 
 

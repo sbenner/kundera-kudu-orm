@@ -96,6 +96,7 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
 
         this.configurePersistenceUnit(puInfo, properties);
         this.util = new KunderaPersistenceUnitUtil(cache);
+
         this.configure(puInfo.getPersistenceUnitName(), properties);
     }
 
@@ -115,6 +116,7 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
 
         this.configurePersistenceUnit(persistenceUnit, properties);
         this.util = new KunderaPersistenceUnitUtil(cache);
+
         this.configure(persistenceUnit, properties);
     }
 

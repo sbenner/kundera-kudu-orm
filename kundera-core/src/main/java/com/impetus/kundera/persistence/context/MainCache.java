@@ -24,9 +24,8 @@ package com.impetus.kundera.persistence.context;
 public class MainCache extends CacheBase
 {
 
-    public MainCache(com.impetus.kundera.cache.Cache l2Cache, PersistenceCache pc)
-    {
-        super(l2Cache,pc);
+    public MainCache(com.impetus.kundera.cache.Cache l2Cache, PersistenceCache pc, int cacheCapacity) {
+        super(l2Cache, pc, cacheCapacity);
     }
 
 }

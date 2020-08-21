@@ -20,13 +20,16 @@ import javax.persistence.PersistenceContextType;
 /**
  * Implementation of Persistence Context as defined in JPA. Acts as a cache of
  * entities.
- * 
+ *
  * @author amresh.singh
  */
-public class PersistenceCache
-{
+public class PersistenceCache {
     /* Main Cache of entity objects */
-    private CacheBase mainCache;
+    private final CacheBase mainCache;
+
+    private int cacheCapacity;
+
+
 
 /*     Cache of embedded objects 
     private CacheBase embeddedCache;
@@ -53,21 +56,17 @@ public class PersistenceCache
      * table
      */
     // private Map<String, JoinTableData> joinTableDataMap;
-
-    public PersistenceCache()
-    {
-        initialize(null,this);
-    }
-    
-    public PersistenceCache(com.impetus.kundera.cache.Cache l2Cache)
-    {
-        initialize(l2Cache,this);
+    public PersistenceCache() {
+        this.mainCache = new MainCache(null, this, cacheCapacity);
     }
 
-    private void initialize(com.impetus.kundera.cache.Cache l2Cache, PersistenceCache pc)
-    {
-        mainCache = new MainCache(l2Cache,this);
-//        embeddedCache = new EmbeddedCache(l2Cache);
+    public PersistenceCache(com.impetus.kundera.cache.Cache l2Cache, int cacheCapacity) {
+        this.mainCache = new MainCache(l2Cache, this, cacheCapacity);
+    }
+
+    private void initialize(com.impetus.kundera.cache.Cache l2Cache, PersistenceCache pc, int cacheCapacity) {
+        //mainCache = new MainCache(l2Cache,this,cacheCapacity);
+        //embeddedCache = new EmbeddedCache(l2Cache);
 //        elementCollectionCache = new ElementCollectionCache(l2Cache);
 //        transactionalCache = new TransactionalCache(l2Cache);
 
@@ -79,13 +78,11 @@ public class PersistenceCache
 
     /**
      * Cleaned out the data.
-     * 
+     *
      */
-    public void clean()
-    {
+    public void clean() {
         // Clear main cache.
-        if (mainCache != null)
-        {
+        if (mainCache != null) {
             mainCache.clear();
         }
 
@@ -106,12 +103,11 @@ public class PersistenceCache
     /**
      * @return the mainCache
      */
-    public CacheBase getMainCache()
-    {
+    public CacheBase getMainCache() {
         return mainCache;
     }
 
-/*    *//**
+    /*    *//**
      * @param mainCache
      *            the mainCache to set
      *//*
@@ -171,21 +167,26 @@ public class PersistenceCache
         this.transactionalCache = transactionalCache;
     }
 */
+
     /**
      * @return the persistenceContextType
      */
-    public PersistenceContextType getPersistenceContextType()
-    {
+    public PersistenceContextType getPersistenceContextType() {
         return persistenceContextType;
     }
 
     /**
-     * @param persistenceContextType
-     *            the persistenceContextType to set
+     * @param persistenceContextType the persistenceContextType to set
      */
-    public void setPersistenceContextType(PersistenceContextType persistenceContextType)
-    {
+    public void setPersistenceContextType(PersistenceContextType persistenceContextType) {
         this.persistenceContextType = persistenceContextType;
     }
 
+    public int getCacheCapacity() {
+        return cacheCapacity;
+    }
+
+    public void setCacheCapacity(int cacheCapacity) {
+        this.cacheCapacity = cacheCapacity;
+    }
 }
