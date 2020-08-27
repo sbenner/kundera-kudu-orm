@@ -216,7 +216,6 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("class " + c);
         return c;
     }
 
