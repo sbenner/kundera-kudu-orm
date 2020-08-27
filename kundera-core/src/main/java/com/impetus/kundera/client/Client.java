@@ -15,18 +15,16 @@
  ******************************************************************************/
 package com.impetus.kundera.client;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.Query;
-
-import com.impetus.kundera.generator.AutoGenerator;
 import com.impetus.kundera.generator.Generator;
 import com.impetus.kundera.graph.Node;
 import com.impetus.kundera.index.IndexManager;
 import com.impetus.kundera.loader.ClientFactory;
 import com.impetus.kundera.persistence.EntityReader;
 import com.impetus.kundera.persistence.context.jointable.JoinTableData;
+
+import javax.persistence.Query;
+import java.util.List;
+import java.util.Map;
 
 /**
  * In Kundera, <b>Clients</b> act as a translator of JPA calls to

@@ -133,8 +133,11 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
             URI uri = new URI(resource.toString());
             try {
                 if(uri.getScheme().equalsIgnoreCase("jar")){
-                    List<JarEntry>l =((JarURLConnection)resource.openConnection()).getJarFile().stream().collect(Collectors.toList());
-                    l.stream().map(this::pickClassFromJarEntry).filter(Objects::nonNull).forEach(classes::add);
+                    List<JarEntry> l = ((JarURLConnection) resource.openConnection()).getJarFile().stream().collect(Collectors.toList());
+                    l.stream().map(
+                            o -> this.pickClassFromJarEntry(o, packageName)
+
+                    ).filter(Objects::nonNull).forEach(classes::add);
 
                 }
                 else if (uri.getPath() != null&&!uri.getScheme().equalsIgnoreCase("jar")) {
@@ -192,7 +195,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
     }
 
 
-    private Class pickClassFromJarEntry(JarEntry je) {
+    private Class pickClassFromJarEntry(JarEntry je, String packageName) {
         if (je.isDirectory() || !je.getName().endsWith(".class")) {
             return null;
         }
@@ -200,18 +203,20 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         try {
             String className = je.getName().substring(0, je.getName().length() - 6);
             className = className.replace('/', '.');
-            log.info(className);
             className =
                     className.contains("-INF") ?
                             className.substring(
                                     className.lastIndexOf("-INF") + 13) :
                             className;
-            log.info(className);
 
-            c = Class.forName(className);
+            if (className.startsWith(packageName)) {
+                c = Class.forName(className);
+                System.out.println("Loaded " + className);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        System.out.println("class " + c);
         return c;
     }
 
@@ -227,7 +232,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
                     JarEntry je = (JarEntry) e.nextElement();
 
                     // -6 because of .class
-                    Class c = pickClassFromJarEntry(je);
+                    Class c = pickClassFromJarEntry(je, packageName);
 
 
                     if (c != null && c.isAnnotationPresent(Entity.class))
