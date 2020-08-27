@@ -44,11 +44,10 @@ import javax.persistence.Table;
 import javax.persistence.metamodel.Metamodel;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.net.*;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.net.JarURLConnection;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -135,15 +134,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
             try {
                 if(uri.getScheme().equalsIgnoreCase("jar")){
                     List<JarEntry>l =((JarURLConnection)resource.openConnection()).getJarFile().stream().collect(Collectors.toList());
-                    l.stream().map(o->{
-                        try {
-                            return pickClassFromJarEntry(o);
-                        } catch (ClassNotFoundException e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    }).filter(Objects::nonNull).forEach(classes::add);
-
+                    l.stream().map(this::pickClassFromJarEntry).filter(Objects::nonNull).forEach(classes::add);
 
                 }
                 else if (uri.getPath() != null&&!uri.getScheme().equalsIgnoreCase("jar")) {
@@ -201,20 +192,26 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
     }
 
 
-    private Class pickClassFromJarEntry(JarEntry je) throws ClassNotFoundException{
+    private Class pickClassFromJarEntry(JarEntry je) {
         if (je.isDirectory() || !je.getName().endsWith(".class")) {
-         return null;
+            return null;
         }
-        String className = je.getName().substring(0, je.getName().length() - 6);
-        className = className.replace('/', '.');
-        log.info(className);
-        className =
-                className.contains("-INF") ?
-                        className.substring(
-                                className.lastIndexOf("-INF") + 13) :
-                        className;
-        log.info(className);
-        Class c = Class.forName(className);
+        Class c = null;
+        try {
+            String className = je.getName().substring(0, je.getName().length() - 6);
+            className = className.replace('/', '.');
+            log.info(className);
+            className =
+                    className.contains("-INF") ?
+                            className.substring(
+                                    className.lastIndexOf("-INF") + 13) :
+                            className;
+            log.info(className);
+
+            c = Class.forName(className);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return c;
     }
 
@@ -232,7 +229,8 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
                     // -6 because of .class
                     Class c = pickClassFromJarEntry(je);
 
-                    if (c!=null&&c.isAnnotationPresent(Entity.class))
+
+                    if (c != null && c.isAnnotationPresent(Entity.class))
                         classes.add(c);
 
 
