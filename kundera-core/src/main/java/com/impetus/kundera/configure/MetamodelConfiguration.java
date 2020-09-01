@@ -139,11 +139,12 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
 
                     ).filter(Objects::nonNull).forEach(classes::add);
 
-                }
-                else if (uri.getPath() != null&&!uri.getScheme().equalsIgnoreCase("jar")) {
+                } else if (uri.getPath() != null && !uri.getScheme().equalsIgnoreCase("jar")) {
                     dirs.add(new File(uri.getPath()));
                 }
-            }catch (Exception e)  {e.printStackTrace();}
+            } catch (Exception e) {
+                log.error(e.getMessage(), e);
+            }
         }
 
         for (File directory : dirs) {
@@ -189,7 +190,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
             crunchifyObject.put("jar_name", crunchifyJarName);
             crunchifyObject.put("classes_list", listofClasses);
         } catch (Exception e) {
-            System.out.println("Oops.. Encounter an issue while parsing jar" + e.toString());
+            log.error(e.getMessage(), e);
         }
         return crunchifyObject;
     }
@@ -211,10 +212,10 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
 
             if (className.startsWith(packageName)) {
                 c = Class.forName(className);
-                System.out.println("Loaded " + className);
+                log.info("Loaded " + className);
             }
         } catch (NoClassDefFoundError | ClassNotFoundException e) {
-            e.printStackTrace();
+            log.error(e.getMessage(), e);
         }
         return c;
     }
@@ -240,7 +241,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
 
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                log.error(ex.getMessage(), ex);
             }
 
             return classes;
@@ -297,8 +298,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
                     });
 
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    //log.error(e.getMessage());
+                    log.error(e.getMessage(), e);
                 }
 
             }
