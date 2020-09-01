@@ -213,7 +213,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
                 c = Class.forName(className);
                 System.out.println("Loaded " + className);
             }
-        } catch (Exception e) {
+        } catch (NoClassDefFoundError | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return c;
