@@ -15,49 +15,19 @@
  ******************************************************************************/
 package com.impetus.kundera.configure;
 
-import java.lang.reflect.Field;
-import java.util.*;
-import java.util.Map.Entry;
-
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Lob;
-import javax.persistence.OrderBy;
-import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.EmbeddableType;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.Metamodel;
-import javax.persistence.metamodel.SingularAttribute;
-
-
-import com.impetus.kundera.metadata.model.attributes.DefaultSingularAttribute;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.kundera.Constants;
 import com.impetus.kundera.PersistenceProperties;
 import com.impetus.kundera.client.ClientResolver;
-import com.impetus.kundera.configure.schema.CollectionColumnInfo;
-import com.impetus.kundera.configure.schema.ColumnInfo;
-import com.impetus.kundera.configure.schema.EmbeddedColumnInfo;
-import com.impetus.kundera.configure.schema.IndexInfo;
-import com.impetus.kundera.configure.schema.SchemaGenerationException;
-import com.impetus.kundera.configure.schema.TableInfo;
+import com.impetus.kundera.configure.schema.*;
 import com.impetus.kundera.configure.schema.api.SchemaManager;
 import com.impetus.kundera.loader.ClientFactory;
 import com.impetus.kundera.metadata.KunderaMetadataManager;
 import com.impetus.kundera.metadata.MetadataUtils;
-import com.impetus.kundera.metadata.model.ApplicationMetadata;
-import com.impetus.kundera.metadata.model.EntityMetadata;
+import com.impetus.kundera.metadata.model.*;
 import com.impetus.kundera.metadata.model.EntityMetadata.Type;
-import com.impetus.kundera.metadata.model.IdDiscriptor;
-import com.impetus.kundera.metadata.model.JoinTableMetadata;
-import com.impetus.kundera.metadata.model.MetamodelImpl;
-import com.impetus.kundera.metadata.model.PersistenceUnitMetadata;
-import com.impetus.kundera.metadata.model.PropertyIndex;
-import com.impetus.kundera.metadata.model.Relation;
 import com.impetus.kundera.metadata.model.Relation.ForeignKey;
 import com.impetus.kundera.metadata.model.attributes.AbstractAttribute;
+import com.impetus.kundera.metadata.model.attributes.DefaultSingularAttribute;
 import com.impetus.kundera.metadata.model.type.AbstractManagedType;
 import com.impetus.kundera.metadata.processor.IndexProcessor;
 import com.impetus.kundera.metadata.validator.EntityValidator;
@@ -65,6 +35,17 @@ import com.impetus.kundera.metadata.validator.EntityValidatorImpl;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.property.PropertyAccessorHelper;
 import com.impetus.kundera.utils.KunderaCoreUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Lob;
+import javax.persistence.OrderBy;
+import javax.persistence.metamodel.*;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * Schema configuration implementation to support ddl_schema_creation
@@ -230,21 +211,18 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
      * @param isCompositeId
      */
     private void addTableGenerator(ApplicationMetadata appMetadata, String persistenceUnit, List<TableInfo> tableInfos,
-            EntityMetadata entityMetadata)
-    {
+            EntityMetadata entityMetadata) {
         Metamodel metamodel = appMetadata.getMetamodel(persistenceUnit);
-        IdDiscriptor keyValue = ((MetamodelImpl) metamodel).getKeyValue(entityMetadata.getEntityClazz().getName());
-        if (keyValue != null && keyValue.getTableDiscriptor() != null)
-        {
-            TableInfo tableGeneratorDiscriptor = new TableInfo(
-                    keyValue.getTableDiscriptor().getTable(),
+        IdDescriptor keyValue = ((MetamodelImpl) metamodel).getKeyValue(entityMetadata.getEntityClazz().getName());
+        if (keyValue != null && keyValue.getTableDescriptor() != null) {
+            TableInfo tableGeneratorDescriptor = new TableInfo(
+                    keyValue.getTableDescriptor().getTable(),
                     "CounterColumnType", String.class,
-                    keyValue.getTableDiscriptor().getPkColumnName());
-            if (!tableInfos.contains(tableGeneratorDiscriptor))
-            {
-                tableGeneratorDiscriptor.addColumnInfo(getJoinColumn(tableGeneratorDiscriptor,
-                        keyValue.getTableDiscriptor().getValueColumnName(), Long.class));
-                tableInfos.add(tableGeneratorDiscriptor);
+                    keyValue.getTableDescriptor().getPkColumnName());
+            if (!tableInfos.contains(tableGeneratorDescriptor)) {
+                tableGeneratorDescriptor.addColumnInfo(getJoinColumn(tableGeneratorDescriptor,
+                        keyValue.getTableDescriptor().getValueColumnName(), Long.class));
+                tableInfos.add(tableGeneratorDescriptor);
             }
         }
     }
@@ -576,11 +554,11 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
         List<ColumnInfo> columns = new ArrayList<ColumnInfo>();
 
         Set attributes = embeddableType.getAttributes();
-        Iterator<Attribute> iter = attributes.iterator();
+        Iterator iter = attributes.iterator();
 
         while (iter.hasNext())
         {
-            Attribute attr = iter.next();
+            Attribute attr = (Attribute) iter.next();
             columns.add(getColumn(tableInfo, attr, indexedColumns.get(attr.getName()), orderByColumns));
         }
         embeddedColumnInfo.setColumns(columns);
@@ -619,6 +597,7 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
             columnInfo.setNullable(columnAnnotation.nullable());
             columnInfo.setPrecision(columnAnnotation.precision());
             columnInfo.setScale(columnAnnotation.scale());
+
         }
 
 

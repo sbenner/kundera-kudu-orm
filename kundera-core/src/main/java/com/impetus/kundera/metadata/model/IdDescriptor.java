@@ -18,18 +18,16 @@ package com.impetus.kundera.metadata.model;
 import javax.persistence.GenerationType;
 
 /**
- * Class IdDiscriptor holds all information about generating id.
- * 
+ * Class IdDescriptor holds all information about generating id.
+ *
  * @author Kuldeep.kumar
- * 
  */
-public class IdDiscriptor
-{
+public class IdDescriptor {
     private GenerationType strategy;
 
-    private TableGeneratorDiscriptor tableDiscriptor;
+    private TableGeneratorDescriptor tableDescriptor;
 
-    private SequenceGeneratorDiscriptor sequenceDiscriptor;
+    private SequenceGeneratorDescriptor sequenceDescriptor;
 
     /**
      * @return the strategy
@@ -49,37 +47,33 @@ public class IdDiscriptor
     }
 
     /**
-     * @return the tableDiscriptor
+     * @return the tableDescriptor
      */
-    public TableGeneratorDiscriptor getTableDiscriptor()
-    {
-        return tableDiscriptor;
+    public TableGeneratorDescriptor getTableDescriptor() {
+        return tableDescriptor;
     }
 
     /**
-     * @param tableDiscriptor
-     *            the tableDiscriptor to set
+     * @param tableDescriptor
+     *            the tableDescriptor to set
      */
-    public void setTableDiscriptor(TableGeneratorDiscriptor tableDiscriptor)
-    {
-        this.tableDiscriptor = tableDiscriptor;
+    public void setTableDescriptor(TableGeneratorDescriptor tableDescriptor) {
+        this.tableDescriptor = tableDescriptor;
     }
 
     /**
-     * @return the sequenceDiscriptor
+     * @return the sequenceDescriptor
      */
-    public SequenceGeneratorDiscriptor getSequenceDiscriptor()
-    {
-        return sequenceDiscriptor;
+    public SequenceGeneratorDescriptor getSequenceDescriptor() {
+        return sequenceDescriptor;
     }
 
     /**
-     * @param sequenceDiscriptor
-     *            the sequenceDiscriptor to set
+     * @param sequenceDescriptor
+     *            the sequenceDescriptor to set
      */
-    public void setSequenceDiscriptor(SequenceGeneratorDiscriptor sequenceDiscriptor)
-    {
-        this.sequenceDiscriptor = sequenceDiscriptor;
+    public void setSequenceDescriptor(SequenceGeneratorDescriptor sequenceDescriptor) {
+        this.sequenceDescriptor = sequenceDescriptor;
     }
 
 }

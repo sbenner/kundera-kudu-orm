@@ -19,8 +19,8 @@ import com.impetus.kundera.generator.AutoGenerator;
 import com.impetus.kundera.generator.IdentityGenerator;
 import com.impetus.kundera.generator.SequenceGenerator;
 import com.impetus.kundera.generator.TableGenerator;
-import com.impetus.kundera.metadata.model.SequenceGeneratorDiscriptor;
-import com.impetus.kundera.metadata.model.TableGeneratorDiscriptor;
+import com.impetus.kundera.metadata.model.SequenceGeneratorDescriptor;
+import com.impetus.kundera.metadata.model.TableGeneratorDescriptor;
 
 /**
  * The Class CoreTestIdGenerator.
@@ -36,15 +36,14 @@ public class CoreTestIdGenerator implements AutoGenerator, TableGenerator, Seque
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.generator.TableGenerator#generate(com.impetus.kundera
-     * .metadata.model.TableGeneratorDiscriptor,
+     * .metadata.model.TableGeneratorDescriptor,
      * com.impetus.kundera.client.ClientBase, java.lang.Object)
      */
     @Override
-    public Object generate(TableGeneratorDiscriptor discriptor, ClientBase client, String dataType)
-    {
+    public Object generate(TableGeneratorDescriptor descriptor, ClientBase client, String dataType) {
         return ++idCount;
     }
 
@@ -63,15 +62,14 @@ public class CoreTestIdGenerator implements AutoGenerator, TableGenerator, Seque
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.generator.SequenceGenerator#generate(com.impetus.
-     * kundera.metadata.model.SequenceGeneratorDiscriptor,
+     * kundera.metadata.model.SequenceGeneratorDescriptor,
      * com.impetus.kundera.client.Client, java.lang.Object)
      */
     @Override
-    public Object generate(SequenceGeneratorDiscriptor discriptor, Client<?> client, String dataType)
-    {
+    public Object generate(SequenceGeneratorDescriptor descriptor, Client<?> client, String dataType) {
         return ++idCount;
     }
 

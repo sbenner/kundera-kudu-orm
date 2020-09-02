@@ -19,7 +19,6 @@ package com.impetus.kundera.configure.schema;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.util.Map;
 
 /**
@@ -31,16 +30,26 @@ public class ColumnInfo
 {
 
     private boolean nullable = true;
-    /** The is indexable variable for indexing the column. */
+    /**
+     * The is indexable variable for indexing the column.
+     */
     private boolean isIndexable = false;
 
-    /** The column name variable . */
+    /**
+     * The column name variable .
+     */
     private String columnName;
-    
-    /** The column order by variable . */
-    private String order;
 
-    /** The type variable. */
+    /**
+     * The column order by variable .
+     */
+    private String orderBy;
+
+    private int order;
+
+    /**
+     * The type variable.
+     */
     private Class type;
 
     private int precision;
@@ -89,17 +98,16 @@ public class ColumnInfo
     @Override
     /**
      * returns the string representation of object .
-     * 
+     *
      */
-    public String toString()
-    {
+    public String toString() {
         String strBuilder = "type:==> " + type +
                 " | columnName: ==>" +
                 columnName +
                 " | isIndexable: ==>" +
                 isIndexable +
                 " | orderby: ==>" +
-                order;
+                orderBy;
         return strBuilder;
     }
 
@@ -157,19 +165,16 @@ public class ColumnInfo
      * @param type
      *            the type to set
      */
-    public void setType(Class type)
-    {
+    public void setType(Class type) {
         this.type = type;
     }
 
-    public void setOrderBy(String order)
-    {
-        this.order = order;
+    public String getOrderBy() {
+        return orderBy;
     }
 
-    public String getOrderBy()
-    {
-        return order;
+    public void setOrderBy(String order) {
+        this.orderBy = order;
     }
 
     public boolean isNullable() {
@@ -202,5 +207,13 @@ public class ColumnInfo
 
     public void setFieldAnnotations(Map<String, Annotation> fieldAnnotations) {
         this.fieldAnnotations = fieldAnnotations;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 }

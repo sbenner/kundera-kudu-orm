@@ -15,89 +15,79 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.processor;
 
-import java.lang.reflect.Field;
-import java.util.Map;
+import com.impetus.kundera.metadata.model.EntityMetadata;
+import com.impetus.kundera.metadata.model.IdDescriptor;
+import com.impetus.kundera.metadata.model.SequenceGeneratorDescriptor;
+import com.impetus.kundera.metadata.model.TableGeneratorDescriptor;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.TableGenerator;
-
-import com.impetus.kundera.metadata.model.EntityMetadata;
-import com.impetus.kundera.metadata.model.IdDiscriptor;
-import com.impetus.kundera.metadata.model.SequenceGeneratorDiscriptor;
-import com.impetus.kundera.metadata.model.TableGeneratorDiscriptor;
+import java.lang.reflect.Field;
+import java.util.Map;
 
 public class GeneratedValueProcessor
 {
     public void process(Class<?> clazz, Field idField, EntityMetadata m,
-            Map<String, IdDiscriptor> entityNameToKeyDiscriptorMap)
+                        Map<String, IdDescriptor> entityNameToKeyDescriptorMap)
     {
-        IdDiscriptor keyValue = new IdDiscriptor();
+        IdDescriptor keyValue = new IdDescriptor();
 
         GeneratedValue value = idField.getAnnotation(GeneratedValue.class);
         String generatorName = value.generator();
         GenerationType generationType = value.strategy();
 
-        switch (generationType)
-        {
-        case TABLE:
-            TableGeneratorDiscriptor tgd = processTableGenerator(clazz, idField, m, generatorName);
-            keyValue.setTableDiscriptor(tgd);
-            keyValue.setStrategy(GenerationType.TABLE);
-            break;
-        case SEQUENCE:
-            SequenceGeneratorDiscriptor sgd = processSequenceGenerator(clazz, idField, m, generatorName);
-            keyValue.setSequenceDiscriptor(sgd);
-            keyValue.setStrategy(GenerationType.SEQUENCE);
-            break;
-        case IDENTITY:
-            keyValue.setStrategy(GenerationType.IDENTITY);
-            break;
-        case AUTO:
-            // No need of Any Generator
-            keyValue.setStrategy(GenerationType.AUTO);
-            break;
+        switch (generationType) {
+            case TABLE:
+                TableGeneratorDescriptor tgd = processTableGenerator(clazz, idField, m, generatorName);
+                keyValue.setTableDescriptor(tgd);
+                keyValue.setStrategy(GenerationType.TABLE);
+                break;
+            case SEQUENCE:
+                SequenceGeneratorDescriptor sgd = processSequenceGenerator(clazz, idField, m, generatorName);
+                keyValue.setSequenceDescriptor(sgd);
+                keyValue.setStrategy(GenerationType.SEQUENCE);
+                break;
+            case IDENTITY:
+                keyValue.setStrategy(GenerationType.IDENTITY);
+                break;
+            case AUTO:
+                // No need of Any Generator
+                keyValue.setStrategy(GenerationType.AUTO);
+                break;
         }
-        entityNameToKeyDiscriptorMap.put(clazz.getName(), keyValue);
+        entityNameToKeyDescriptorMap.put(clazz.getName(), keyValue);
     }
 
-    private SequenceGeneratorDiscriptor processSequenceGenerator(Class<?> clazz, Field idField, EntityMetadata m,
-            String generatorName)
-    {
-        SequenceGeneratorDiscriptor sgd = null;
-        if (!generatorName.isEmpty())
-        {
+    private SequenceGeneratorDescriptor processSequenceGenerator(Class<?> clazz, Field idField, EntityMetadata m,
+                                                                 String generatorName) {
+        SequenceGeneratorDescriptor sgd = null;
+        if (!generatorName.isEmpty()) {
             SequenceGenerator sequenceGenerator = idField.getAnnotation(SequenceGenerator.class);
-            if (sequenceGenerator == null || !sequenceGenerator.name().equals(generatorName))
-            {
+            if (sequenceGenerator == null || !sequenceGenerator.name().equals(generatorName)) {
                 sequenceGenerator = clazz.getAnnotation(SequenceGenerator.class);
             }
-            sgd = new SequenceGeneratorDiscriptor(sequenceGenerator, m.getSchema());
-        }
-        else
-        {
-            sgd = new SequenceGeneratorDiscriptor(m.getSchema());
+            sgd = new SequenceGeneratorDescriptor(sequenceGenerator, m.getSchema());
+        } else {
+            sgd = new SequenceGeneratorDescriptor(m.getSchema());
         }
         return sgd;
     }
 
-    private TableGeneratorDiscriptor processTableGenerator(Class<?> clazz, Field idField, EntityMetadata m,
-            String generatorName)
-    {
-        TableGeneratorDiscriptor tgd = null;
-        if (!generatorName.isEmpty())
-        {
+    private TableGeneratorDescriptor processTableGenerator(Class<?> clazz, Field idField, EntityMetadata m,
+                                                           String generatorName) {
+        TableGeneratorDescriptor tgd = null;
+        if (!generatorName.isEmpty()) {
             TableGenerator tableGenerator = idField.getAnnotation(TableGenerator.class);
-            if (tableGenerator == null || !tableGenerator.name().equals(generatorName))
-            {
+            if (tableGenerator == null || !tableGenerator.name().equals(generatorName)) {
                 tableGenerator = clazz.getAnnotation(TableGenerator.class);
             }
-            tgd = new TableGeneratorDiscriptor(tableGenerator, m.getSchema(), m.getTableName());
+            tgd = new TableGeneratorDescriptor(tableGenerator, m.getSchema(), m.getTableName());
         }
         else
         {
-            tgd = new TableGeneratorDiscriptor(m.getSchema(), m.getTableName());
+            tgd = new TableGeneratorDescriptor(m.getSchema(), m.getTableName());
         }
         return tgd;
     }

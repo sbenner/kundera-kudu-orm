@@ -19,13 +19,11 @@ import javax.persistence.TableGenerator;
 import javax.persistence.UniqueConstraint;
 
 /**
- * TableGeneratorDiscriptor class holds the information about table generator.
- * 
+ * TableGeneratorDescriptor class holds the information about table generator.
+ *
  * @author Kuldeep.Mishra
- * 
  */
-public class TableGeneratorDiscriptor
-{
+public class TableGeneratorDescriptor {
     private static final String default_table_name = "kundera_sequences";
 
     private static final String default_pkColumn_name = "sequence_name";
@@ -54,8 +52,7 @@ public class TableGeneratorDiscriptor
 
     private UniqueConstraint[] uniqueConstraints;
 
-    public TableGeneratorDiscriptor(TableGenerator tableGenerator, String defaultSchemaName, String defaultPkColumnValue)
-    {
+    public TableGeneratorDescriptor(TableGenerator tableGenerator, String defaultSchemaName, String defaultPkColumnValue) {
         this.table = tableGenerator.table().isEmpty() ? default_table_name : tableGenerator.table();
         this.schema = tableGenerator.schema().isEmpty() ? defaultSchemaName : tableGenerator.schema();
         this.pkColumnName = tableGenerator.pkColumnName().isEmpty() ? default_pkColumn_name : tableGenerator
@@ -68,8 +65,7 @@ public class TableGeneratorDiscriptor
         this.allocationSize = tableGenerator.allocationSize();
     }
 
-    public TableGeneratorDiscriptor(String defaultSchemaName, String defaultPkColumnValue)
-    {
+    public TableGeneratorDescriptor(String defaultSchemaName, String defaultPkColumnValue) {
         this.table = default_table_name;
         this.schema = defaultSchemaName;
         this.pkColumnName = default_pkColumn_name;

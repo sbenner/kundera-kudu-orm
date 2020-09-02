@@ -18,14 +18,12 @@ package com.impetus.kundera.metadata.model;
 import javax.persistence.SequenceGenerator;
 
 /**
- * SequenceGeneratorDiscriptor class holds the information about sequence
+ * SequenceGeneratorDescriptor class holds the information about sequence
  * generator.
- * 
+ *
  * @author Kuldeep.Mishra
- * 
  */
-public class SequenceGeneratorDiscriptor
-{
+public class SequenceGeneratorDescriptor {
     private static final int default_initial_value = 1;
 
     private static final String default_sequence_name = "sequence_name";
@@ -42,8 +40,7 @@ public class SequenceGeneratorDiscriptor
 
     private String catalog;
 
-    public SequenceGeneratorDiscriptor(SequenceGenerator sequenceGenerator, String defaultSchemaName)
-    {
+    public SequenceGeneratorDescriptor(SequenceGenerator sequenceGenerator, String defaultSchemaName) {
         this.initialValue = sequenceGenerator.initialValue();
         this.allocationSize = sequenceGenerator.allocationSize();
         this.sequenceName = sequenceGenerator.sequenceName().isEmpty() ? default_sequence_name : sequenceGenerator
@@ -51,8 +48,7 @@ public class SequenceGeneratorDiscriptor
         this.schemaName = sequenceGenerator.schema().isEmpty() ? defaultSchemaName : sequenceGenerator.schema();
     }
 
-    public SequenceGeneratorDiscriptor(String defaultSchemaName)
-    {
+    public SequenceGeneratorDescriptor(String defaultSchemaName) {
         this.initialValue = default_initial_value;
         this.allocationSize = default_allocation_size;
         this.sequenceName = default_sequence_name;

@@ -16,7 +16,7 @@
 package com.impetus.kundera.generator;
 
 import com.impetus.kundera.client.ClientBase;
-import com.impetus.kundera.metadata.model.TableGeneratorDiscriptor;
+import com.impetus.kundera.metadata.model.TableGeneratorDescriptor;
 
 /**
  * {@link TableGenerator} interface , all client should implement this interface
@@ -30,15 +30,12 @@ public interface TableGenerator extends Generator
 
     /**
      * Generate.
-     * 
-     * @param discriptor
-     *            the discriptor
-     * @param client
-     *            the client
-     * @param dataType
-     *            the data type
+     *
+     * @param descriptor the descriptor
+     * @param client     the client
+     * @param dataType   the data type
      * @return the object
      */
-    public Object generate(TableGeneratorDiscriptor discriptor, ClientBase client, String dataType);
+    public Object generate(TableGeneratorDescriptor descriptor, ClientBase client, String dataType);
 
 }

@@ -16,7 +16,7 @@
 package com.impetus.kundera.generator;
 
 import com.impetus.kundera.client.Client;
-import com.impetus.kundera.metadata.model.SequenceGeneratorDiscriptor;
+import com.impetus.kundera.metadata.model.SequenceGeneratorDescriptor;
 
 /**
  * {@link IdentityGenerator} interface , all client should implement this
@@ -30,14 +30,11 @@ public interface IdentityGenerator extends Generator
 
     /**
      * Generate.
-     * 
-     * @param discriptor
-     *            the discriptor
-     * @param client
-     *            the client
-     * @param dataType
-     *            the data type
+     *
+     * @param descriptor the descriptor
+     * @param client     the client
+     * @param dataType   the data type
      * @return the object
      */
-    public Object generate(SequenceGeneratorDiscriptor discriptor, Client<?> client, String dataType);
+    public Object generate(SequenceGeneratorDescriptor descriptor, Client<?> client, String dataType);
 }

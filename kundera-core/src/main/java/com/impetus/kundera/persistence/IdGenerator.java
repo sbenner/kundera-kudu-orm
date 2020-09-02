@@ -15,14 +15,7 @@
  ******************************************************************************/
 package com.impetus.kundera.persistence;
 
-import javax.persistence.GenerationType;
-import javax.persistence.metamodel.Metamodel;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.kundera.KunderaException;
-import com.impetus.kundera.PersistenceProperties;
 import com.impetus.kundera.client.Client;
 import com.impetus.kundera.client.ClientBase;
 import com.impetus.kundera.generator.AutoGenerator;
@@ -31,12 +24,16 @@ import com.impetus.kundera.generator.SequenceGenerator;
 import com.impetus.kundera.generator.TableGenerator;
 import com.impetus.kundera.metadata.KunderaMetadataManager;
 import com.impetus.kundera.metadata.model.EntityMetadata;
-import com.impetus.kundera.metadata.model.IdDiscriptor;
+import com.impetus.kundera.metadata.model.IdDescriptor;
 import com.impetus.kundera.metadata.model.MetamodelImpl;
-import com.impetus.kundera.metadata.model.PersistenceUnitMetadata;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.property.PropertyAccessorHelper;
 import com.impetus.kundera.utils.KunderaCoreUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.GenerationType;
+import javax.persistence.metamodel.Metamodel;
 
 /**
  * Generate id for entity when {@GeneratedValue} annotation
@@ -61,7 +58,7 @@ public class IdGenerator
     private Object generateId(Object e, EntityMetadata m, Client<?> client, final KunderaMetadata kunderaMetadata)
     {
         Metamodel metamodel = KunderaMetadataManager.getMetamodel(kunderaMetadata, m.getPersistenceUnit());
-        IdDiscriptor keyValue = ((MetamodelImpl) metamodel).getKeyValue(e.getClass().getName());
+        IdDescriptor keyValue = ((MetamodelImpl) metamodel).getKeyValue(e.getClass().getName());
 
         if (keyValue != null)
         {
@@ -161,21 +158,18 @@ public class IdGenerator
 
     /**
      * Generate Id when given sequence generation strategy.
-     * 
+     *
      * @param m
      * @param client
      * @param keyValue
      * @param e
      */
-    private Object onSequenceGenerator(EntityMetadata m, Client<?> client, IdDiscriptor keyValue, Object e)
-    {
+    private Object onSequenceGenerator(EntityMetadata m, Client<?> client, IdDescriptor keyValue, Object e) {
         Object seqgenerator = getAutoGenClazz(client);
-        if (seqgenerator instanceof SequenceGenerator)
-        {
+        if (seqgenerator instanceof SequenceGenerator) {
             Object generatedId = ((SequenceGenerator) seqgenerator).generate(
-                    keyValue.getSequenceDiscriptor(), client, m.getIdAttribute().getJavaType().getSimpleName());
-            try
-            {
+                    keyValue.getSequenceDescriptor(), client, m.getIdAttribute().getJavaType().getSimpleName());
+            try {
                 generatedId = PropertyAccessorHelper.fromSourceToTargetClass(m.getIdAttribute().getJavaType(),
                         generatedId.getClass(), generatedId);
                 PropertyAccessorHelper.setId(e, m, generatedId);
@@ -194,21 +188,18 @@ public class IdGenerator
 
     /**
      * Generate Id when given table generation strategy.
-     * 
+     *
      * @param m
      * @param client
      * @param keyValue
      * @param e
      */
-    private Object onTableGenerator(EntityMetadata m, Client<?> client, IdDiscriptor keyValue, Object e)
-    {
-        Object tablegenerator = getAutoGenClazz(client);   
-        if (tablegenerator instanceof TableGenerator)
-        {
-            Object generatedId = ((TableGenerator) tablegenerator).generate(keyValue.getTableDiscriptor(),
+    private Object onTableGenerator(EntityMetadata m, Client<?> client, IdDescriptor keyValue, Object e) {
+        Object tablegenerator = getAutoGenClazz(client);
+        if (tablegenerator instanceof TableGenerator) {
+            Object generatedId = ((TableGenerator) tablegenerator).generate(keyValue.getTableDescriptor(),
                     (ClientBase) client, m.getIdAttribute().getJavaType().getSimpleName());
-            try
-            {
+            try {
                 generatedId = PropertyAccessorHelper.fromSourceToTargetClass(m.getIdAttribute().getJavaType(),
                         generatedId.getClass(), generatedId);
                 PropertyAccessorHelper.setId(e, m, generatedId);

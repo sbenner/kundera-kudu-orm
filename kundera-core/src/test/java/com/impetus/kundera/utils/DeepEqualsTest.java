@@ -15,21 +15,12 @@
  ******************************************************************************/
 package com.impetus.kundera.utils;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
-import junit.framework.TestCase;
-
 import com.impetus.kundera.entity.album.AlbumUni_1_M_1_M;
 import com.impetus.kundera.entity.photo.PhotoUni_1_M_1_M;
 import com.impetus.kundera.entity.photographer.PhotographerUni_1_M_1_M;
+import junit.framework.TestCase;
+
+import java.util.*;
 
 /**
  * Test for DeepEquals (equals() and hashCode())
@@ -600,14 +591,14 @@ public class DeepEqualsTest extends TestCase
         c24.setPhotoCaption(originalPhotoCaption);
 
         // Case 3: Change Album object
-        String originalAlbumDiscription = b22.getAlbumDescription();
+        String originalAlbumDescription = b22.getAlbumDescription();
         b22.setAlbumDescription("Second Album of Second Photographer");
 
         assertTrue(DeepEquals.deepEquals(a1, a2));
         assertFalse(DeepEquals.deepEquals(b12, b22));
         assertTrue(DeepEquals.deepEquals(c14, c24));
 
-        b22.setAlbumDescription(originalAlbumDiscription);
+        b22.setAlbumDescription(originalAlbumDescription);
 
         // Case 4: Change album and photo object
         c24.setPhotoCaption("AAAAAAAAAAAAA");
@@ -617,7 +608,7 @@ public class DeepEqualsTest extends TestCase
         assertFalse(DeepEquals.deepEquals(b12, b22));
         assertFalse(DeepEquals.deepEquals(c14, c24));
 
-        b22.setAlbumDescription(originalAlbumDiscription);
+        b22.setAlbumDescription(originalAlbumDescription);
         c24.setPhotoCaption(originalPhotoCaption);
 
         // Case 5: Change Photographer object
@@ -650,7 +641,7 @@ public class DeepEqualsTest extends TestCase
         assertTrue(DeepEquals.deepEquals(c14, c24));
 
         a2.setPhotographerName(originalPhotographerName);
-        b22.setAlbumDescription(originalAlbumDiscription);
+        b22.setAlbumDescription(originalAlbumDescription);
 
         // Case 8: Change Photographer, album and photo object
         c24.setPhotoCaption("AAAAAAAAAAAAA");
@@ -662,7 +653,7 @@ public class DeepEqualsTest extends TestCase
         assertFalse(DeepEquals.deepEquals(c14, c24));
 
         a2.setPhotographerName(originalPhotographerName);
-        b22.setAlbumDescription(originalAlbumDiscription);
+        b22.setAlbumDescription(originalAlbumDescription);
         c24.setPhotoCaption(originalPhotoCaption);
     }
 }

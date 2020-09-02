@@ -37,24 +37,34 @@ public class MetamodelImpl implements Metamodel
     /** The entity name to class map. */
     Map<String, Class<?>> entityNameToClassMap;
 
-    /** The managed types. */
+    /**
+     * The managed types.
+     */
     private Map<Class<?>, EntityType<?>> entityTypes;
 
-    /** The embeddables. */
+    /**
+     * The embeddables.
+     */
     private Map<Class<?>, ManagedType<?>> embeddables;
 
-    /** The mapped super class types. */
+    /**
+     * The mapped super class types.
+     */
     private Map<Class<?>, ManagedType<?>> mappedSuperClassTypes;
 
-    /** Entity name to id discriptor. */
-    private Map<String, IdDiscriptor> keyValues;
+    /**
+     * Entity name to id descriptor.
+     */
+    private Map<String, IdDescriptor> keyValues;
 
-    /** Entity name to List of Secondary tables */
+    /**
+     * Entity name to List of Secondary tables
+     */
     private Map<Class<?>, List<String>> classToTables;
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.metamodel.Metamodel#entity(java.lang.Class)
      */
     @Override
@@ -394,25 +404,20 @@ public class MetamodelImpl implements Metamodel
     /**
      * @return the keyValues
      */
-    public IdDiscriptor getKeyValue(String entityName)
-    {
-        if (keyValues != null)
-        {
+    public IdDescriptor getKeyValue(String entityName) {
+        if (keyValues != null) {
             return this.keyValues.get(entityName);
         }
         return null;
     }
 
     /**
-     * @param keyValues
-     *            the keyValues to set
+     * @param keyDescriptors the keyDescriptors to set
      */
-    public void addKeyValues(Map<String, IdDiscriptor> keyDiscriptors)
-    {
-        if (keyValues == null)
-        {
-            keyValues = new HashMap<String, IdDiscriptor>();
+    public void addKeyValues(Map<String, IdDescriptor> keyDescriptors) {
+        if (keyValues == null) {
+            keyValues = new HashMap<String, IdDescriptor>();
         }
-        this.keyValues.putAll(keyDiscriptors);
+        this.keyValues.putAll(keyDescriptors);
     }
 }

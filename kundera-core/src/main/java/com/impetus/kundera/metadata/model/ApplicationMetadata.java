@@ -15,21 +15,14 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.model;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.persistence.metamodel.Metamodel;
-import javax.persistence.spi.PersistenceUnitTransactionType;
-
+import com.impetus.kundera.metadata.processor.MetaModelBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.impetus.kundera.metadata.processor.MetaModelBuilder;
+import javax.persistence.metamodel.Metamodel;
+import javax.persistence.spi.PersistenceUnitTransactionType;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Application metadata refers to metdata specific to application(e.g. metamodel
@@ -376,7 +369,7 @@ public class ApplicationMetadata
             this.metamodelMap.remove(pu);
             ((MetamodelImpl) metamodel).setEntityMetadataMap(null);
             ((MetamodelImpl) metamodel).setEntityNameToClassMap(null);
-            ((MetamodelImpl) metamodel).addKeyValues(new HashMap<String, IdDiscriptor>());
+            ((MetamodelImpl) metamodel).addKeyValues(new HashMap<String, IdDescriptor>());
         }
         MetaModelBuilder builder = getMetaModelBuilder(pu);
         if (builder != null)

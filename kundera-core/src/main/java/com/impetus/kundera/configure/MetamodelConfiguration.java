@@ -103,9 +103,9 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
     }
 
     /**
-     * Load entity metadata.
+     * list classes
      *
-     * @param persistenceUnit the persistence unit
+     * @param CL the ClassLoader unit
      */
 
 
@@ -122,6 +122,12 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         return Collections.list(((Vector) ClassLoader_classes_field.get(CL)).elements());
     }
 
+
+    /**
+     * scan jar for classes
+     *
+     * @param packageName package name to scan for classes in
+     */
     public Iterable<Class> scanForClasses(String packageName) throws Exception {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         String path = packageName.replace('.', '/');
@@ -200,7 +206,6 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         if (je.isDirectory() || !je.getName().endsWith(".class")) {
             return null;
         }
-        Class c = null;
         try {
             String className = je.getName().substring(0, je.getName().length() - 6);
             className = className.replace('/', '.');
@@ -211,13 +216,17 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
                             className;
 
             if (className.startsWith(packageName)) {
-                c = Class.forName(className);
-                log.info("Loaded " + className);
+                Class c = Class.forName(className);
+                if (c.isAnnotationPresent(Entity.class)) {
+                    log.info("Loaded " + className);
+                    return c;
+                }
+
             }
         } catch (NoClassDefFoundError | ClassNotFoundException e) {
             log.error(e.getMessage(), e);
         }
-        return c;
+        return null;
     }
 
 
@@ -233,8 +242,6 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
 
                     // -6 because of .class
                     Class c = pickClassFromJarEntry(je, packageName);
-
-
                     if (c != null && c.isAnnotationPresent(Entity.class))
                         classes.add(c);
 
@@ -362,7 +369,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         Map<String, EntityMetadata> entityMetadataMap = ((MetamodelImpl) metamodel).getEntityMetadataMap();
         Map<String, Class<?>> entityNameToClassMap = ((MetamodelImpl) metamodel).getEntityNameToClassMap();
         Map<String, List<String>> puToClazzMap = new HashMap<String, List<String>>();
-        Map<String, IdDiscriptor> entityNameToKeyDiscriptorMap = new HashMap<String, IdDiscriptor>();
+        Map<String, IdDescriptor> entityNameToKeyDescriptorMap = new HashMap<String, IdDescriptor>();
         List<Class<?>> classes = new ArrayList<Class<?>>();
 
 
@@ -375,7 +382,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
 
                     while ((is = itr.next()) != null) {
                         classes.addAll(scanClassAndPutMetadata(is, reader, entityMetadataMap, entityNameToClassMap,
-                                persistenceUnit, client, puToClazzMap, entityNameToKeyDiscriptorMap));
+                                persistenceUnit, client, puToClazzMap, entityNameToKeyDescriptorMap));
                     }
                 } catch (IOException e) {
                     log.error("Error while retrieving and storing entity metadata. Details:", e);
@@ -398,7 +405,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
                 for (InputStream is : iStreams) {
                     try {
                         classes.addAll(scanClassAndPutMetadata(is, reader, entityMetadataMap, entityNameToClassMap,
-                                persistenceUnit, client, puToClazzMap, entityNameToKeyDiscriptorMap));
+                                persistenceUnit, client, puToClazzMap, entityNameToKeyDescriptorMap));
                     } finally {
                         if (is != null) {
                             is.close();
@@ -417,7 +424,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
             for (Class clazz : additionalClasses) {
                 try {
                     Class c = scanClassAndPutMetadata(clazz, entityMetadataMap, entityNameToClassMap,
-                            persistenceUnit, client, puToClazzMap, entityNameToKeyDiscriptorMap);
+                            persistenceUnit, client, puToClazzMap, entityNameToKeyDescriptorMap);
                     if (c != null) classes.add(c);
 
                 } catch (Exception e) {
@@ -430,7 +437,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         ((MetamodelImpl) metamodel).setEntityMetadataMap(entityMetadataMap);
         appMetadata.getMetamodelMap().put(persistenceUnit, metamodel);
         appMetadata.setClazzToPuMap(puToClazzMap);
-        ((MetamodelImpl) metamodel).addKeyValues(entityNameToKeyDiscriptorMap);
+        ((MetamodelImpl) metamodel).addKeyValues(entityNameToKeyDescriptorMap);
         // assign JPA metamodel.
         ((MetamodelImpl) metamodel).assignEmbeddables(kunderaMetadata.getApplicationMetadata()
                 .getMetaModelBuilder(persistenceUnit).getEmbeddables());
@@ -443,19 +450,22 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
     /**
      * Scan class and put metadata.
      *
-     * @param bits                 the bits
-     * @param reader               the reader
-     * @param entityMetadataMap    the entity metadata map
-     * @param entityNameToClassMap the entity name to class map
-     * @param keyDiscriptor
-     * @param persistence          unit the persistence unit.
+     * @param bits                         the bits
+     * @param reader                       the reader
+     * @param entityMetadataMap            the entity metadata map
+     * @param entityNameToClassMap         the entity name to class map
+     * @param entityNameToKeyDescriptorMap
+     * @param persistenceUnit              persistence unit.
      * @throws IOException             Signals that an I/O exception has occurred.
      * @throws RuleValidationException
      */
     private List<Class<?>> scanClassAndPutMetadata(InputStream bits, Reader reader,
-                                                   Map<String, EntityMetadata> entityMetadataMap, Map<String, Class<?>> entityNameToClassMap,
-                                                   String persistenceUnit, String client, Map<String, List<String>> clazzToPuMap,
-                                                   Map<String, IdDiscriptor> entityNameToKeyDiscriptorMap) throws IOException {
+                                                   Map<String, EntityMetadata> entityMetadataMap,
+                                                   Map<String, Class<?>> entityNameToClassMap,
+                                                   String persistenceUnit,
+                                                   String client,
+                                                   Map<String, List<String>> clazzToPuMap,
+                                                   Map<String, IdDescriptor> entityNameToKeyDescriptorMap) throws IOException {
         DataInputStream dstream = new DataInputStream(new BufferedInputStream(bits));
         ClassFile cf = null;
         String className = null;
@@ -515,7 +525,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
                                     entityMetadataMap.put(clazz.getName(), metadata);
                                     mapClazztoPu(clazz, persistenceUnit, clazzToPuMap);
                                     processGeneratedValueAnnotation(clazz, persistenceUnit, metadata,
-                                            entityNameToKeyDiscriptorMap);
+                                            entityNameToKeyDescriptorMap);
                                 }
                             }
                         }
@@ -542,7 +552,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
 
     private synchronized Class<?> scanClassAndPutMetadata(Class clazz, Map<String, EntityMetadata> entityMetadataMap, Map<String, Class<?>> entityNameToClassMap,
                                                           String persistenceUnit, String client, Map<String, List<String>> clazzToPuMap,
-                                                          Map<String, IdDiscriptor> entityNameToKeyDiscriptorMap) throws IOException {
+                                                          Map<String, IdDescriptor> entityNameToKeyDescriptorMap) throws IOException {
 
         //List<Class<?>> classes = new ArrayList<Class<?>>();
         try {
@@ -578,7 +588,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
                             entityMetadataMap.put(clazz.getName(), metadata);
                             mapClazztoPu(clazz, persistenceUnit, clazzToPuMap);
                             processGeneratedValueAnnotation(clazz, persistenceUnit, metadata,
-                                    entityNameToKeyDiscriptorMap);
+                                    entityNameToKeyDescriptorMap);
                         }
                     }
                 }
@@ -645,7 +655,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
     }
 
     private void processGeneratedValueAnnotation(Class<?> clazz, String persistenceUnit, EntityMetadata m,
-                                                 Map<String, IdDiscriptor> entityNameToKeyDiscriptorMap) {
+                                                 Map<String, IdDescriptor> entityNameToKeyDescriptorMap) {
         GeneratedValueProcessor processer = new GeneratedValueProcessor();
         String pu = m.getPersistenceUnit();
 
@@ -656,7 +666,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
             Field f = (Field) m.getIdAttribute().getJavaMember();
 
             if (f.isAnnotationPresent(GeneratedValue.class)) {
-                processer.process(clazz, f, m, entityNameToKeyDiscriptorMap);
+                processer.process(clazz, f, m, entityNameToKeyDescriptorMap);
             }
         }
     }
@@ -677,9 +687,9 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
  
 /*
     private void processGeneratedValueAnnotation(Class<?> clazz, String persistenceUnit, EntityMetadata m,
-            Map<String, IdDiscriptor> entityNameToKeyDiscriptorMap)
+            Map<String, IdDescriptor> entityNameToKeyDescriptorMap)
     {
-        GeneratedValueProcessor processer = new GeneratedValueProcessor();
+        GeneratedValueProcessor processor = new GeneratedValueProcessor();
         String pu = m.getPersistenceUnit() getPersistenceUnitOfEntity(clazz) ;
         
         Map<String, Object> externalProperties = KunderaCoreUtils.getExternalProperties(persistenceUnit,
@@ -701,7 +711,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
 
             if (f.isAnnotationPresent(GeneratedValue.class))
             {
-                processer.process(clazz, f, m, entityNameToKeyDiscriptorMap);
+                processor.process(clazz, f, m, entityNameToKeyDescriptorMap);
             }
         }
     }*/

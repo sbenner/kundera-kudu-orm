@@ -25,7 +25,10 @@ import java.lang.reflect.Field;
 public final class Column
 {
 
-    /** name of the column. */
+    private int order = 0;
+    /**
+     * name of the column.
+     */
     private String name;
 
     private boolean nullable=true;
@@ -93,8 +96,7 @@ public final class Column
      * @param isIndexable
      *            the isIndexable to set
      */
-    public void setIndexable(boolean isIndexable)
-    {
+    public void setIndexable(boolean isIndexable) {
         this.isIndexable = isIndexable;
     }
 
@@ -104,5 +106,13 @@ public final class Column
 
     public void setNullable(boolean nullable) {
         this.nullable = nullable;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 }
