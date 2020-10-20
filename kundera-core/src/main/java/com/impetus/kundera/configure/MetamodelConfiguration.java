@@ -288,22 +288,32 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         URL u = Thread.currentThread().getContextClassLoader()
                 .getResource("/");
         if (u != null) {
-            String origJar = u.toString().split("!")[0];
+            String origJar = u.toString().split("!")[0]+"!/";
             try {
                 List<JarEntry> entryList = listJarContent(origJar);
                 if (entryList.size() > 0) {
                     for (JarEntry je : entryList) {
-                        byte[] b = extractContentFromJar(origJar,
-                                je.getName());
-                        JarInputStream is = new JarInputStream(new ByteArrayInputStream(b));
 
-                        while (is.getNextJarEntry() != null) {
-                            JarEntry internalJarEntry = is.getNextJarEntry();
-                            if (internalJarEntry != null && internalJarEntry.getName().endsWith(".class")) {
-                                Class c = pickClassFromJarEntry(internalJarEntry, packageName);
-                                if (c != null && c.isAnnotationPresent(Entity.class))
-                                    out.add(c);
+
+                        if (je != null && je.getName().endsWith(".class")) {
+                            Class c = pickClassFromJarEntry(je, packageName);
+                            if (c != null && c.isAnnotationPresent(Entity.class))
+                                out.add(c);
+                        }else {
+                            if(je.getName().endsWith(".jar")) {
+                                byte[] b = extractContentFromJar(origJar,
+                                        je.getName());
+                                JarInputStream is = new JarInputStream(new ByteArrayInputStream(b));
+                                while (is.getNextJarEntry() != null) {
+                                    JarEntry internalJarEntry = is.getNextJarEntry();
+                                    if (internalJarEntry != null && internalJarEntry.getName().endsWith(".class")) {
+                                        Class c = pickClassFromJarEntry(internalJarEntry, packageName);
+                                        if (c != null && c.isAnnotationPresent(Entity.class))
+                                            out.add(c);
+                                    }
+                                }
                             }
+
                         }
                     }
                 }
