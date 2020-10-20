@@ -21,39 +21,30 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 
-
-
-
 @Entity
-public class CarPart
-{
+public class CarPart {
     @Id
     private String id;
 
     @ManyToOne
     private CarPartResource resource;
-    
- 
 
-    public String getId()
-    {
+
+    public String getId() {
         return id;
     }
 
-    public void setId(String id)
-    {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public CarPartResource getResource()
-    {
+    public CarPartResource getResource() {
         return resource;
     }
 
-    public void setResource(CarPartResource resource)
-    {
+    public void setResource(CarPartResource resource) {
         this.resource = resource;
     }
-    
-   
+
+
 }

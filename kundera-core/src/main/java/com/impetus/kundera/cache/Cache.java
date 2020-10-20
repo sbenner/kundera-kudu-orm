@@ -18,35 +18,31 @@ package com.impetus.kundera.cache;
 /**
  * Implementors define a caching algorithm. All implementors <b>must</b> be
  * threadsafe.
- * 
+ *
  * @author animesh.kumar
  */
-public interface Cache extends javax.persistence.Cache
-{
+public interface Cache extends javax.persistence.Cache {
 
     /**
      * Size.
-     * 
+     *
      * @return the int
      */
     int size();
 
     /**
      * Get an item from the cache.
-     * 
-     * @param key
-     *            the key
+     *
+     * @param key the key
      * @return the object
      */
     Object get(Object key);
 
     /**
      * Add an item to the cache.
-     * 
-     * @param key
-     *            the key
-     * @param value
-     *            the value
+     *
+     * @param key   the key
+     * @param value the value
      */
     void put(Object key, Object value);
 

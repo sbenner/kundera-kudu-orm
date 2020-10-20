@@ -32,17 +32,14 @@ public class IdDescriptor {
     /**
      * @return the strategy
      */
-    public GenerationType getStrategy()
-    {
+    public GenerationType getStrategy() {
         return strategy;
     }
 
     /**
-     * @param strategy
-     *            the strategy to set
+     * @param strategy the strategy to set
      */
-    public void setStrategy(GenerationType strategy)
-    {
+    public void setStrategy(GenerationType strategy) {
         this.strategy = strategy;
     }
 
@@ -54,8 +51,7 @@ public class IdDescriptor {
     }
 
     /**
-     * @param tableDescriptor
-     *            the tableDescriptor to set
+     * @param tableDescriptor the tableDescriptor to set
      */
     public void setTableDescriptor(TableGeneratorDescriptor tableDescriptor) {
         this.tableDescriptor = tableDescriptor;
@@ -69,8 +65,7 @@ public class IdDescriptor {
     }
 
     /**
-     * @param sequenceDescriptor
-     *            the sequenceDescriptor to set
+     * @param sequenceDescriptor the sequenceDescriptor to set
      */
     public void setSequenceDescriptor(SequenceGeneratorDescriptor sequenceDescriptor) {
         this.sequenceDescriptor = sequenceDescriptor;

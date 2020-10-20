@@ -15,28 +15,23 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
+import com.impetus.kundera.property.PropertyAccessor;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.property.PropertyAccessor;
-
 /**
  * @author amresh.singh
- * 
  */
-public class BooleanAccessorTest
-{
+public class BooleanAccessorTest {
     PropertyAccessor<Boolean> accessor;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         accessor = new BooleanAccessor();
     }
 
@@ -44,8 +39,7 @@ public class BooleanAccessorTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         accessor = null;
     }
 
@@ -55,15 +49,14 @@ public class BooleanAccessorTest
      * .
      */
     @Test
-    public void testFromBytes()
-    {
+    public void testFromBytes() {
         Assert.assertFalse(accessor.fromBytes(Boolean.class, null));
-        
+
         byte[] b = accessor.toBytes(new Boolean(true));
-        
+
         Boolean bb = accessor.fromBytes(Boolean.class, b);
         Assert.assertEquals(true, bb.booleanValue());
-        
+
     }
 
     /**
@@ -72,11 +65,10 @@ public class BooleanAccessorTest
      * .
      */
     @Test
-    public void testToBytes()
-    {
+    public void testToBytes() {
         Assert.assertNull(accessor.toBytes(null));
         byte[] b = accessor.toBytes(new Boolean(true));
-        
+
         Boolean bb = accessor.fromBytes(Boolean.class, b);
         Assert.assertEquals(true, bb.booleanValue());
     }
@@ -87,8 +79,7 @@ public class BooleanAccessorTest
      * .
      */
     @Test
-    public void testToStringObject()
-    {
+    public void testToStringObject() {
         Assert.assertNull(accessor.toString(null));
 
         Assert.assertEquals("true", accessor.toString(new Boolean(true)));
@@ -101,8 +92,7 @@ public class BooleanAccessorTest
      * .
      */
     @Test
-    public void testFromString()
-    {
+    public void testFromString() {
         Assert.assertNull(accessor.fromString(Boolean.class, null));
 
         Assert.assertTrue(accessor.fromString(Boolean.class, "true"));
@@ -115,8 +105,7 @@ public class BooleanAccessorTest
      * .
      */
     @Test
-    public void testGetCopy()
-    {
+    public void testGetCopy() {
         Assert.assertNull(accessor.getCopy(null));
 
         Assert.assertTrue(accessor.getCopy(new Boolean(true)));
@@ -130,8 +119,7 @@ public class BooleanAccessorTest
      * .
      */
     @Test
-    public void testGetInstance()
-    {
+    public void testGetInstance() {
         Assert.assertTrue((Boolean) accessor.getInstance(Boolean.class));
     }
 

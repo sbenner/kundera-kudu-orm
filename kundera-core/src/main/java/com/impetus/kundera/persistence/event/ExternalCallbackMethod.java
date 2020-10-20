@@ -20,61 +20,50 @@ import java.lang.reflect.Method;
 
 /**
  * Class to hold class-method instances for EntityListeners.
- * 
+ *
  * @author animesh.kumar
  */
-public final class ExternalCallbackMethod implements CallbackMethod
-{
+public final class ExternalCallbackMethod implements CallbackMethod {
 
-    /** The clazz. */
+    /**
+     * The clazz.
+     */
     private Class<?> clazz;
 
-    /** The method. */
+    /**
+     * The method.
+     */
     private Method method;
 
     /**
      * Instantiates a new external callback method.
-     * 
-     * @param clazz
-     *            the clazz
-     * @param method
-     *            the method
+     *
+     * @param clazz  the clazz
+     * @param method the method
      */
-    public ExternalCallbackMethod(Class<?> clazz, Method method)
-    {
+    public ExternalCallbackMethod(Class<?> clazz, Method method) {
         this.clazz = clazz;
         this.method = method;
     }
 
-    public void invoke(Object entity) throws EventListenerException
-    {
+    public void invoke(Object entity) throws EventListenerException {
         if (!method.isAccessible())
             method.setAccessible(true);
-        try
-        {
-            method.invoke(clazz.newInstance(), new Object[] { entity });
-        }
-        catch (IllegalArgumentException e)
-        {
+        try {
+            method.invoke(clazz.newInstance(), new Object[]{entity});
+        } catch (IllegalArgumentException e) {
             throw new EventListenerException(e);
-        }
-        catch (IllegalAccessException e)
-        {
+        } catch (IllegalAccessException e) {
             throw new EventListenerException(e);
-        }
-        catch (InvocationTargetException e)
-        {
+        } catch (InvocationTargetException e) {
             throw new EventListenerException(e);
-        }
-        catch (InstantiationException e)
-        {
+        } catch (InstantiationException e) {
             throw new EventListenerException(e);
         }
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(clazz.getName() + "." + method.getName());
         return builder.toString();

@@ -15,23 +15,20 @@
  ******************************************************************************/
 package com.impetus.kundera.graph;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-
 import com.impetus.kundera.graph.NodeLink.LinkProperty;
 import com.impetus.kundera.lifecycle.states.NodeState;
 import com.impetus.kundera.persistence.context.PersistenceCache;
 
+import javax.persistence.CascadeType;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author amresh.singh
  */
-public class StoreBuilder
-{
+public class StoreBuilder {
 
-    public static Node buildStoreNode(PersistenceCache pc, NodeState initialState, CascadeType cascadeType)
-    {
+    public static Node buildStoreNode(PersistenceCache pc, NodeState initialState, CascadeType cascadeType) {
 
         Store store = new Store();
         BillingCounter b1 = new BillingCounter();

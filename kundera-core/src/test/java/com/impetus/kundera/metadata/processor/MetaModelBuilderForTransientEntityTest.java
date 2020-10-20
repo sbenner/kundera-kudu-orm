@@ -1,10 +1,17 @@
 /**
- * 
+ *
  */
 package com.impetus.kundera.metadata.processor;
 
-import java.lang.reflect.Field;
-import java.util.Map;
+import com.impetus.kundera.metadata.entities.EmbeddableTransientEntity;
+import com.impetus.kundera.metadata.entities.TransientEntity;
+import com.impetus.kundera.metadata.model.type.AbstractManagedType;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.Attribute.PersistentAttributeType;
@@ -13,25 +20,14 @@ import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.Type.PersistenceType;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.impetus.kundera.metadata.entities.EmbeddableTransientEntity;
-import com.impetus.kundera.metadata.entities.TransientEntity;
-import com.impetus.kundera.metadata.model.type.AbstractManagedType;
+import java.lang.reflect.Field;
+import java.util.Map;
 
 /**
  * @author Kuldeep Mishra
- * 
+ *
  */
-public class MetaModelBuilderForTransientEntityTest
-{
+public class MetaModelBuilderForTransientEntityTest {
 
     /** the log used by this class. */
     private static Logger log = LoggerFactory.getLogger(MetaModelBuilderForTransientEntityTest.class);
@@ -44,8 +40,7 @@ public class MetaModelBuilderForTransientEntityTest
      * @throws java.lang.Exception
      */
     @Before
-    public <X extends Class, T extends Object> void setUp() throws Exception
-    {
+    public <X extends Class, T extends Object> void setUp() throws Exception {
         builder = new MetaModelBuilder<X, T>();
     }
 
@@ -53,31 +48,26 @@ public class MetaModelBuilderForTransientEntityTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         builder = null;
     }
 
     @Test
-    public <X extends Class, T extends Object> void testEntityWithTransientAttribute()
-    {
+    public <X extends Class, T extends Object> void testEntityWithTransientAttribute() {
 
         X clazz = (X) TransientEntity.class;
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         Field[] field = TransientEntity.class.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(TransientEntity.class, f);
         }
 
         MetaModelBuilder.class.getDeclaredFields();
         Field embeddableField;
-        try
-        {
+        try {
             embeddableField = builder.getClass().getDeclaredField("embeddables");
-            if (!embeddableField.isAccessible())
-            {
+            if (!embeddableField.isAccessible()) {
                 embeddableField.setAccessible(true);
             }
             Map<Class<?>, AbstractManagedType<?>> embeddables = ((Map<Class<?>, AbstractManagedType<?>>) embeddableField
@@ -85,8 +75,7 @@ public class MetaModelBuilderForTransientEntityTest
             Assert.assertEquals(1, embeddables.size());
 
             Field managedTypeField = builder.getClass().getDeclaredField("managedType");
-            if (!managedTypeField.isAccessible())
-            {
+            if (!managedTypeField.isAccessible()) {
                 managedTypeField.setAccessible(true);
             }
 
@@ -99,28 +88,20 @@ public class MetaModelBuilderForTransientEntityTest
             Attribute<X, String> attribute = (Attribute<X, String>) embeddableType.getAttribute("embeddedField");
             assertOnEmbeddableType(EmbeddableTransientEntity.class, attribute, embeddableType, "embeddedField",
                     Float.class);
-        }
-        catch (SecurityException e)
-        {
+        } catch (SecurityException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (NoSuchFieldException e)
-        {
+        } catch (NoSuchFieldException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (IllegalArgumentException e)
-        {
+        } catch (IllegalArgumentException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (IllegalAccessException e)
-        {
+        } catch (IllegalAccessException e) {
             Assert.fail(e.getMessage());
         }
     }
 
     /**
      * Assert on managed type.
-     * 
+     *
      * @param <X>
      *            the generic type
      * @param builder
@@ -133,10 +114,9 @@ public class MetaModelBuilderForTransientEntityTest
      * @throws IllegalAccessException
      *             the illegal access exception
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private <X> AbstractManagedType<X> assertOnManagedType(MetaModelBuilder builder, Field managedTypeField,
-            Class<?> clazz) throws IllegalAccessException
-    {
+                                                           Class<?> clazz) throws IllegalAccessException {
         log.info("Assert on managedType");
         AbstractManagedType<X> managedType = (AbstractManagedType<X>) managedTypeField.get(builder);
         Assert.assertNotNull(managedType);
@@ -151,7 +131,7 @@ public class MetaModelBuilderForTransientEntityTest
 
     /**
      * Assert on embeddable type.
-     * 
+     *
      * @param <X>
      *            the generic type
      * @param entityClazz
@@ -165,10 +145,9 @@ public class MetaModelBuilderForTransientEntityTest
      * @param attributeClazz
      *            the attribute clazz
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private <X> void assertOnEmbeddableType(Class entityClazz, Attribute<X, String> attribute,
-            EmbeddableType<X> embeddableType, String attributeName, Class attributeClazz)
-    {
+                                            EmbeddableType<X> embeddableType, String attributeName, Class attributeClazz) {
         Assert.assertNotSame(entityClazz.getDeclaredFields().length, embeddableType.getAttributes().size());
         Assert.assertEquals(1, embeddableType.getAttributes().size());
         Assert.assertEquals(entityClazz, embeddableType.getJavaType());
@@ -180,15 +159,14 @@ public class MetaModelBuilderForTransientEntityTest
 
     /**
      * Assert on embeddable.
-     * 
+     *
      * @param embeddableAttrib
      *            the embeddable attrib
      * @param clazz
      *            the clazz
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void assertOnEmbeddable(SingularAttribute embeddableAttrib, Class clazz)
-    {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private void assertOnEmbeddable(SingularAttribute embeddableAttrib, Class clazz) {
         Assert.assertNotNull(embeddableAttrib);
         Assert.assertEquals(PersistentAttributeType.EMBEDDED, embeddableAttrib.getPersistentAttributeType());
         Assert.assertEquals(PersistenceType.EMBEDDABLE, embeddableAttrib.getType().getPersistenceType());

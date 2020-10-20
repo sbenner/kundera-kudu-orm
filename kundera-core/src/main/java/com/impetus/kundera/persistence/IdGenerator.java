@@ -38,52 +38,44 @@ import javax.persistence.metamodel.Metamodel;
 /**
  * Generate id for entity when {@GeneratedValue} annotation
  * given.
- * 
+ *
  * @author Kuldeep.Mishra
- * 
  */
-public class IdGenerator
-{
-    /** The Constant log. */
+public class IdGenerator {
+    /**
+     * The Constant log.
+     */
     private static final Logger log = LoggerFactory.getLogger(IdGenerator.class);
 
     public Object generateAndSetId(Object e, EntityMetadata m, PersistenceDelegator pd,
-            final KunderaMetadata kunderaMetadata)
-    {
+                                   final KunderaMetadata kunderaMetadata) {
         Metamodel metamodel = KunderaMetadataManager.getMetamodel(kunderaMetadata, m.getPersistenceUnit());
         Client<?> client = pd.getClient(m);
         return generateId(e, m, client, kunderaMetadata);
     }
 
-    private Object generateId(Object e, EntityMetadata m, Client<?> client, final KunderaMetadata kunderaMetadata)
-    {
+    private Object generateId(Object e, EntityMetadata m, Client<?> client, final KunderaMetadata kunderaMetadata) {
         Metamodel metamodel = KunderaMetadataManager.getMetamodel(kunderaMetadata, m.getPersistenceUnit());
         IdDescriptor keyValue = ((MetamodelImpl) metamodel).getKeyValue(e.getClass().getName());
 
-        if (keyValue != null)
-        {
+        if (keyValue != null) {
 
-            if (!client.getQueryImplementor().getSimpleName().equalsIgnoreCase("RDBMSQuery"))
-            {
-                if (client != null)
-                {
+            if (!client.getQueryImplementor().getSimpleName().equalsIgnoreCase("RDBMSQuery")) {
+                if (client != null) {
                     GenerationType type = keyValue.getStrategy();
-                    switch (type)
-                    {
-                    case TABLE:
-                        return onTableGenerator(m, client, keyValue, e);
-                    case SEQUENCE:
-                        return onSequenceGenerator(m, client, keyValue, e);
-                    case AUTO:
-                        return onAutoGenerator(m, client, e);
-                    case IDENTITY:
-                        throw new UnsupportedOperationException(GenerationType.class.getSimpleName() + "." + type
-                                + " Strategy not supported by this client :" + client.getClass().getName());
+                    switch (type) {
+                        case TABLE:
+                            return onTableGenerator(m, client, keyValue, e);
+                        case SEQUENCE:
+                            return onSequenceGenerator(m, client, keyValue, e);
+                        case AUTO:
+                            return onAutoGenerator(m, client, e);
+                        case IDENTITY:
+                            throw new UnsupportedOperationException(GenerationType.class.getSimpleName() + "." + type
+                                    + " Strategy not supported by this client :" + client.getClass().getName());
                     }
                 }
-            }
-            else
-            {
+            } else {
                 int hashCode = e.hashCode();
                 Object generatedId = PropertyAccessorHelper.fromSourceToTargetClass(m.getIdAttribute().getJavaType(),
                         Integer.class, new Integer(hashCode));
@@ -97,29 +89,24 @@ public class IdGenerator
 
     /**
      * Generate Id when given auto generation strategy.
-     * 
+     *
      * @param m
      * @param client
      * @param e
      * @param kunderaMetadata
      */
-    private Object onAutoGenerator(EntityMetadata m, Client<?> client, Object e)
-    {
+    private Object onAutoGenerator(EntityMetadata m, Client<?> client, Object e) {
         Object autogenerator = getAutoGenClazz(client);
-        
-        if (autogenerator instanceof AutoGenerator)
-        {
-            
-            Object generatedId = ((AutoGenerator)autogenerator).generate(client, m.getIdAttribute().getJavaType().getSimpleName());
-            try
-            {
+
+        if (autogenerator instanceof AutoGenerator) {
+
+            Object generatedId = ((AutoGenerator) autogenerator).generate(client, m.getIdAttribute().getJavaType().getSimpleName());
+            try {
                 generatedId = PropertyAccessorHelper.fromSourceToTargetClass(m.getIdAttribute().getJavaType(),
                         generatedId.getClass(), generatedId);
                 PropertyAccessorHelper.setId(e, m, generatedId);
                 return generatedId;
-            }
-            catch (IllegalArgumentException iae)
-            {
+            } catch (IllegalArgumentException iae) {
                 log.error("Unknown data type for ids : " + m.getIdAttribute().getJavaType());
                 throw new KunderaException("Unknown data type for ids : " + m.getIdAttribute().getJavaType(), iae);
             }
@@ -128,27 +115,20 @@ public class IdGenerator
                 + " Strategy not supported by this client :" + client.getClass().getName());
     }
 
-    private Generator getAutoGenClazz(Client<?> client)
-    {
+    private Generator getAutoGenClazz(Client<?> client) {
         Generator autoGenerator = null;
-        String autoGen = ((ClientBase)client).getAutoGenerator();
-        if (null != autoGen)
-        {
+        String autoGen = ((ClientBase) client).getAutoGenerator();
+        if (null != autoGen) {
             Class autogenClazz;
-            try
-            {
+            try {
                 autogenClazz = Class.forName(autoGen);
                 autoGenerator = (Generator) (KunderaCoreUtils.createNewInstance(autogenClazz));
-            }
-            catch (ClassNotFoundException cnfe)
-            {
+            } catch (ClassNotFoundException cnfe) {
                 log.error("The autogen custom class is invalid");
                 throw new KunderaException("The autogen custom class should implement AutoGenerator class", cnfe);
             }
 
-        }
-        else
-        {
+        } else {
 
             autoGenerator = ((Generator) client.getIdGenerator());
 
@@ -174,9 +154,7 @@ public class IdGenerator
                         generatedId.getClass(), generatedId);
                 PropertyAccessorHelper.setId(e, m, generatedId);
                 return generatedId;
-            }
-            catch (IllegalArgumentException iae)
-            {
+            } catch (IllegalArgumentException iae) {
                 log.error("Unknown integral data type for ids : " + m.getIdAttribute().getJavaType());
                 throw new KunderaException("Unknown integral data type for ids : " + m.getIdAttribute().getJavaType(),
                         iae);
@@ -204,9 +182,7 @@ public class IdGenerator
                         generatedId.getClass(), generatedId);
                 PropertyAccessorHelper.setId(e, m, generatedId);
                 return generatedId;
-            }
-            catch (IllegalArgumentException iae)
-            {
+            } catch (IllegalArgumentException iae) {
                 log.error("Unknown integral data type for ids : " + m.getIdAttribute().getJavaType());
                 throw new KunderaException("Unknown integral data type for ids : " + m.getIdAttribute().getJavaType(),
                         iae);

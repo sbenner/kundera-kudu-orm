@@ -15,25 +15,16 @@
  ******************************************************************************/
 package com.impetus.kundera.entity.album;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
 import com.impetus.kundera.entity.photo.PhotoUni_M_M_1_1;
+
+import javax.persistence.*;
 
 /**
  * @author amresh.singh
- * 
  */
 @Entity
 @Table(name = "ALBUM", schema = "KunderaTest@kunderatest")
-public class AlbumUni_M_M_1_1
-{
+public class AlbumUni_M_M_1_1 {
     @Id
     @Column(name = "ALBUM_ID")
     private String albumId;
@@ -49,13 +40,11 @@ public class AlbumUni_M_M_1_1
     @JoinColumn(name = "PHOTO_ID")
     private PhotoUni_M_M_1_1 photo;
 
-    public AlbumUni_M_M_1_1()
-    {
+    public AlbumUni_M_M_1_1() {
 
     }
 
-    public AlbumUni_M_M_1_1(String albumId, String name, String description)
-    {
+    public AlbumUni_M_M_1_1(String albumId, String name, String description) {
         this.albumId = albumId;
         this.albumName = name;
         this.albumDescription = description;
@@ -64,68 +53,56 @@ public class AlbumUni_M_M_1_1
     /**
      * @return the albumId
      */
-    public String getAlbumId()
-    {
+    public String getAlbumId() {
         return albumId;
     }
 
     /**
-     * @param albumId
-     *            the albumId to set
+     * @param albumId the albumId to set
      */
-    public void setAlbumId(String albumId)
-    {
+    public void setAlbumId(String albumId) {
         this.albumId = albumId;
     }
 
     /**
      * @return the albumName
      */
-    public String getAlbumName()
-    {
+    public String getAlbumName() {
         return albumName;
     }
 
     /**
-     * @param albumName
-     *            the albumName to set
+     * @param albumName the albumName to set
      */
-    public void setAlbumName(String albumName)
-    {
+    public void setAlbumName(String albumName) {
         this.albumName = albumName;
     }
 
     /**
      * @return the albumDescription
      */
-    public String getAlbumDescription()
-    {
+    public String getAlbumDescription() {
         return albumDescription;
     }
 
     /**
-     * @param albumDescription
-     *            the albumDescription to set
+     * @param albumDescription the albumDescription to set
      */
-    public void setAlbumDescription(String albumDescription)
-    {
+    public void setAlbumDescription(String albumDescription) {
         this.albumDescription = albumDescription;
     }
 
     /**
      * @return the photo
      */
-    public PhotoUni_M_M_1_1 getPhoto()
-    {
+    public PhotoUni_M_M_1_1 getPhoto() {
         return photo;
     }
 
     /**
-     * @param photo
-     *            the photo to set
+     * @param photo the photo to set
      */
-    public void setPhoto(PhotoUni_M_M_1_1 photo)
-    {
+    public void setPhoto(PhotoUni_M_M_1_1 photo) {
         this.photo = photo;
     }
 

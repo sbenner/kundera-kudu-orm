@@ -19,10 +19,8 @@ import java.lang.reflect.Field;
 
 /**
  * @author Chhavi Gangwal
- *
  */
-public interface FieldRule extends IRule
-{
+public interface FieldRule extends IRule {
     /**
      * @param f
      * @param fieldValue
@@ -30,7 +28,7 @@ public interface FieldRule extends IRule
      * @throws RuleValidationException
      */
     boolean validate(Field f, Object fieldValue) throws RuleValidationException;
-    
+
     /**
      * @param f
      * @return

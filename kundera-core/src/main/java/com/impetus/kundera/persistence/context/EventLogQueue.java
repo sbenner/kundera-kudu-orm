@@ -15,74 +15,82 @@
  ******************************************************************************/
 package com.impetus.kundera.persistence.context;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.impetus.kundera.KunderaException;
 import com.impetus.kundera.persistence.context.EventLog.EventType;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * The Class EventLogQueue.
- * 
+ *
  * @author vivek.mishra
  */
-class EventLogQueue
-{
+class EventLogQueue {
 
-    /** The insert events. */
-    private Map<Object, EventLog> insertEvents;
+    private final static int logSize = 10000; //keep only this number for rollback
+    /**
+     * The insert events.
+     */
+    private static final Map<Object, EventLog> insertEvents = new ConcurrentHashMap<Object, EventLog>();
 
-    /** The update events. */
-    private Map<Object, EventLog> updateEvents;
+    /**
+     * The update events.
+     */
+    private static final Map<Object, EventLog> updateEvents = new ConcurrentHashMap<Object, EventLog>();
 
-    /** The delete events. */
-    private Map<Object, EventLog> deleteEvents;
+    /**
+     * The delete events.
+     */
+    private static final Map<Object, EventLog> deleteEvents = new ConcurrentHashMap<Object, EventLog>();
 
     /**
      * On event.
-     * 
-     * @param log
-     *            the log
-     * @param eventType
-     *            the event type
+     *
+     * @param log       the log
+     * @param eventType the event type
      */
-    void onEvent(EventLog log, EventType eventType)
-    {
+    void onEvent(EventLog log, EventType eventType) {
 
-        switch (eventType)
-        {
-        case INSERT:
+        switch (eventType) {
+            case INSERT:
+                if (insertEvents.size() < logSize) {
+                    onInsert(log);
+                } else {
+                    insertEvents.clear();
+                }
+                break;
 
-            onInsert(log);
-            break;
+            case UPDATE:
+                if (updateEvents.size() < logSize) {
+                    onUpdate(log);
+                } else {
+                    updateEvents.clear();
+                }
 
-        case UPDATE:
-            onUpdate(log);
-            break;
+                break;
 
-        case DELETE:
-            onDelete(log);
-            break;
+            case DELETE:
+                if (deleteEvents.size() < logSize) {
+                    onDelete(log);
+                } else {
+                    deleteEvents.clear();
+                }
+                break;
 
-        default:
+            default:
 
-            throw new KunderaException("Invalid event type:" + eventType);
+                throw new KunderaException("Invalid event type:" + eventType);
         }
 
     }
 
     /**
      * On delete.
-     * 
-     * @param log
-     *            the log
+     *
+     * @param log the log
      */
-    private void onDelete(EventLog log)
-    {
-        if (deleteEvents == null)
-        {
-            deleteEvents = new ConcurrentHashMap<Object, EventLog>();
-        }
+    private void onDelete(EventLog log) {
 
         deleteEvents.put(log.getEntityId(), log);
 
@@ -90,33 +98,20 @@ class EventLogQueue
 
     /**
      * On update.
-     * 
-     * @param log
-     *            the log
+     *
+     * @param log the log
      */
-    private void onUpdate(EventLog log)
-    {
-        if (updateEvents == null)
-        {
-            updateEvents = new ConcurrentHashMap<Object, EventLog>();
-
-        }
+    private void onUpdate(EventLog log) {
 
         updateEvents.put(log.getEntityId(), log);
     }
 
     /**
      * On insert.
-     * 
-     * @param log
-     *            the log
+     *
+     * @param log the log
      */
-    private void onInsert(EventLog log)
-    {
-        if (insertEvents == null)
-        {
-            insertEvents = new ConcurrentHashMap<Object, EventLog>();
-        }
+    private void onInsert(EventLog log) {
 
         insertEvents.put(log.getEntityId(), log);
 
@@ -125,55 +120,36 @@ class EventLogQueue
     /**
      * Clear.
      */
-    void clear()
-    {
-        if (this.insertEvents != null)
-        {
-            insertEvents.clear();
-            insertEvents = null;
-
-        }
-        if (this.updateEvents != null)
-        {
-            updateEvents.clear();
-            updateEvents = null;
-
-        }
-        if (this.deleteEvents != null)
-        {
-            deleteEvents.clear();
-            deleteEvents = null;
-
-        }
+    void clear() {
+        insertEvents.clear();
+        updateEvents.clear();
+        deleteEvents.clear();
     }
 
     /**
      * Gets the insert events.
-     * 
+     *
      * @return the insert events
      */
-    Map<Object, EventLog> getInsertEvents()
-    {
+    Map<Object, EventLog> getInsertEvents() {
         return insertEvents;
     }
 
     /**
      * Gets the update events.
-     * 
+     *
      * @return the update events
      */
-    Map<Object, EventLog> getUpdateEvents()
-    {
+    Map<Object, EventLog> getUpdateEvents() {
         return updateEvents;
     }
 
     /**
      * Gets the delete events.
-     * 
+     *
      * @return the delete events
      */
-    Map<Object, EventLog> getDeleteEvents()
-    {
+    Map<Object, EventLog> getDeleteEvents() {
         return deleteEvents;
     }
 

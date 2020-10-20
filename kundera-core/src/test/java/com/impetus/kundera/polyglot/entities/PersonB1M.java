@@ -15,24 +15,16 @@
  ******************************************************************************/
 package com.impetus.kundera.polyglot.entities;
 
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
 
+import javax.persistence.*;
+import java.util.Set;
+
 @Entity
 @Table(name = "PERSON", schema = "KunderaTests@patest")
-@IndexCollection(columns = { @Index(name = "personName") })
-public class PersonB1M
-{
+@IndexCollection(columns = {@Index(name = "personName")})
+public class PersonB1M {
     @Id
     @Column(name = "PERSON_ID")
     private String personId;
@@ -44,33 +36,27 @@ public class PersonB1M
 //    @JoinColumn(name="PERSON_ID")
     private Set<AddressB1M> addresses;
 
-    public String getPersonId()
-    {
+    public String getPersonId() {
         return personId;
     }
 
-    public String getPersonName()
-    {
-        return personName;
-    }
-
-    public void setPersonName(String personName)
-    {
-        this.personName = personName;
-    }
-
-    public void setPersonId(String personId)
-    {
+    public void setPersonId(String personId) {
         this.personId = personId;
     }
 
-    public Set<AddressB1M> getAddresses()
-    {
+    public String getPersonName() {
+        return personName;
+    }
+
+    public void setPersonName(String personName) {
+        this.personName = personName;
+    }
+
+    public Set<AddressB1M> getAddresses() {
         return addresses;
     }
 
-    public void setAddresses(Set<AddressB1M> addresses)
-    {
+    public void setAddresses(Set<AddressB1M> addresses) {
         this.addresses = addresses;
     }
 }

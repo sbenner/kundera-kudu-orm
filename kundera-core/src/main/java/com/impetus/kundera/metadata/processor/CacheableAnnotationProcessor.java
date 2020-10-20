@@ -15,13 +15,12 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.processor;
 
-import javax.persistence.Cacheable;
-
+import com.impetus.kundera.metadata.MetadataProcessor;
+import com.impetus.kundera.metadata.model.EntityMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.impetus.kundera.metadata.MetadataProcessor;
-import com.impetus.kundera.metadata.model.EntityMetadata;
+import javax.persistence.Cacheable;
 
 /**
  * The MetadataProcessor implementation to scan for EntityListener class/method
@@ -32,31 +31,30 @@ import com.impetus.kundera.metadata.model.EntityMetadata;
  * InternalCallback methods must NOT accept any parameter. 7. EntityListeners
  * are state-less. 8. EnternalCallbackMethods must be fired before
  * InternalCallbackMethods.
- * 
+ *
  * @author animesh.kumar
  */
 
-public class CacheableAnnotationProcessor implements MetadataProcessor
-{
+public class CacheableAnnotationProcessor implements MetadataProcessor {
 
-    /** the log used by this class. */
+    /**
+     * the log used by this class.
+     */
     private static Logger log = LoggerFactory.getLogger(CacheableAnnotationProcessor.class);
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.metadata.MetadataProcessor#process(java.lang.Class,
      * com.impetus.kundera.metadata.model.EntityMetadata)
      */
     @Override
-    public final void process(final Class<?> entityClass, EntityMetadata metadata)
-    {
+    public final void process(final Class<?> entityClass, EntityMetadata metadata) {
 
         Cacheable cacheable = (Cacheable) entityClass.getAnnotation(Cacheable.class);
 
-        if (null != cacheable)
-        {
+        if (null != cacheable) {
             metadata.setCacheable(cacheable.value());
         }
     }

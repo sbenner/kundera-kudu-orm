@@ -20,25 +20,22 @@ import javax.persistence.metamodel.Type;
 
 /**
  * Default implementation of {@link MappedSuperclassType}
- * 
+ *
  * <code> DefaultMappedSuperClass</code> implements
  * <code>MappedSuperclassType</code> interface, invokes constructor with
  * PersistenceType.MAPPED_SUPERCLASS. Default implementation of {@link Type}
  * interface is provided by {@link AbstractType}
- * 
+ *
+ * @param <X> Embeddable generic java type.
  * @author vivek.mishra
- * @param <X>
- *            Embeddable generic java type.
  */
-public class DefaultMappedSuperClass<X> extends AbstractIdentifiableType<X> implements MappedSuperclassType<X>
-{
+public class DefaultMappedSuperClass<X> extends AbstractIdentifiableType<X> implements MappedSuperclassType<X> {
 
     /**
      * Default constructor using fields.
      */
     public DefaultMappedSuperClass(Class<X> clazz, javax.persistence.metamodel.Type.PersistenceType persistenceType,
-            AbstractIdentifiableType<? super X> superClazzType)
-    {
+                                   AbstractIdentifiableType<? super X> superClazzType) {
         super(clazz, persistenceType, superClazzType);
     }
 

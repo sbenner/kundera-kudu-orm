@@ -15,30 +15,25 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
-import java.sql.Date;
-
+import com.impetus.kundera.property.PropertyAccessor;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.property.PropertyAccessor;
+import java.sql.Date;
 
 /**
  * @author amresh.singh
- *
  */
-public class SQLDateAccessorTest
-{
+public class SQLDateAccessorTest {
     PropertyAccessor<Date> accessor;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         accessor = new SQLDateAccessor();
     }
 
@@ -46,8 +41,7 @@ public class SQLDateAccessorTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         accessor = null;
     }
 
@@ -55,33 +49,31 @@ public class SQLDateAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.SQLDateAccessor#fromBytes(java.lang.Class, byte[])}.
      */
     @Test
-    public void testFromBytes()
-    {
+    public void testFromBytes() {
         Assert.assertNull(accessor.fromBytes(Date.class, null));
-        
-        long l = System.currentTimeMillis();        
+
+        long l = System.currentTimeMillis();
         Date d = new Date(l);
         byte[] b = accessor.toBytes(d);
-        
+
         Date d2 = accessor.fromBytes(Date.class, b);
-        
-        Assert.assertEquals(d, d2);       
+
+        Assert.assertEquals(d, d2);
     }
 
     /**
      * Test method for {@link com.impetus.kundera.property.accessor.SQLDateAccessor#toBytes(java.lang.Object)}.
      */
     @Test
-    public void testToBytes()
-    {
+    public void testToBytes() {
         Assert.assertNull(accessor.toBytes(null));
-        
-        long l = System.currentTimeMillis();        
-        Date d = new Date(l);       
+
+        long l = System.currentTimeMillis();
+        Date d = new Date(l);
         byte[] b = accessor.toBytes(d);
-        
+
         Date d2 = accessor.fromBytes(Date.class, b);
-        
+
         Assert.assertEquals(d, d2);
     }
 
@@ -89,59 +81,55 @@ public class SQLDateAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.SQLDateAccessor#toString(java.lang.Object)}.
      */
     @Test
-    public void testToStringObject()
-    {
+    public void testToStringObject() {
         Assert.assertNull(accessor.toString(null));
-        
-        long l = System.currentTimeMillis();        
-        Date d = new Date(l);        
-        
+
+        long l = System.currentTimeMillis();
+        Date d = new Date(l);
+
         Assert.assertEquals(String.valueOf(d.getTime()), accessor.toString(d));
-        
+
     }
 
     /**
      * Test method for {@link com.impetus.kundera.property.accessor.SQLDateAccessor#fromString(java.lang.Class, java.lang.String)}.
      */
     @Test
-    public void testFromString()
-    {
+    public void testFromString() {
         Assert.assertNull(accessor.fromString(Date.class, null));
-        
-        long l = System.currentTimeMillis();        
-        Date d = new Date(l);        
+
+        long l = System.currentTimeMillis();
+        Date d = new Date(l);
         Date d2 = accessor.fromString(Date.class, "" + l);
         Assert.assertEquals(d, d2);
-        
+
         Assert.assertEquals(d.getYear(), accessor.fromString(Date.class, d2.toString()).getYear());
         Assert.assertEquals(d.getMonth(), accessor.fromString(Date.class, d2.toString()).getMonth());
-        Assert.assertEquals(d.getDate(), accessor.fromString(Date.class, d2.toString()).getDate());        
+        Assert.assertEquals(d.getDate(), accessor.fromString(Date.class, d2.toString()).getDate());
     }
 
     /**
      * Test method for {@link com.impetus.kundera.property.accessor.SQLDateAccessor#getCopy(java.lang.Object)}.
      */
     @Test
-    public void testGetCopy()
-    {
+    public void testGetCopy() {
         long l = System.currentTimeMillis();
         Date d = new Date(l);
-        
+
         Date d2 = accessor.getCopy(d);
         Assert.assertNotNull(d2);
-        Assert.assertTrue(d.equals(d2));        
+        Assert.assertTrue(d.equals(d2));
     }
 
     /**
      * Test method for {@link com.impetus.kundera.property.accessor.SQLDateAccessor#getInstance(java.lang.Class)}.
      */
     @Test
-    public void testGetInstance()
-    {
+    public void testGetInstance() {
         Object o = accessor.getInstance(Date.class);
         Assert.assertNotNull(o);
-        
-        Assert.assertEquals(Integer.MAX_VALUE, ((Date) o).getTime());        
+
+        Assert.assertEquals(Integer.MAX_VALUE, ((Date) o).getTime());
     }
 
 }

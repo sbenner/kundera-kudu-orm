@@ -62,17 +62,17 @@ public class KuduDBClient extends ClientBase implements Client<KuduDBQuery>, Cli
     /**
      * The logger.
      */
-    private static Logger logger = LoggerFactory.getLogger(KuduDBClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(KuduDBClient.class);
 
     /**
      * The kudu client.
      */
-    private KuduClient kuduClient;
+    private final KuduClient kuduClient;
 
     /**
      * The reader.
      */
-    private EntityReader reader;
+    private final EntityReader reader;
 
     /**
      * Instantiates a new kudu db client.
@@ -219,7 +219,7 @@ public class KuduDBClient extends ClientBase implements Client<KuduDBQuery>, Cli
                 Object value = PropertyAccessorHelper.getObject(key, f);
                 if (f.getType().isAnnotationPresent(Embeddable.class)) {
                     // nested
-                    addPredicatesToScannerBuilder(scannerBuilder, (EmbeddableType) metaModel.embeddable(f.getType()),
+                    addPredicatesToScannerBuilder(scannerBuilder, metaModel.embeddable(f.getType()),
                             f.getType().getDeclaredFields(), metaModel, value);
                 } else {
 
@@ -295,13 +295,12 @@ public class KuduDBClient extends ClientBase implements Client<KuduDBQuery>, Cli
 
 
     /**
-     *
      * findAll records for an @Entity class
      * with or without the limit() and process them if needed
      * useful for processing all rows in a table - regardless of a table size
      *
      * @param entityClass the entity class to retrieve the records for
-     * @param processor  your processor -
+     * @param processor   your processor -
      * @param limit       the limit     *
      */
     public <E> void streamAll(Class<E> entityClass, KuduRowProcessor processor, long limit) {
@@ -316,7 +315,6 @@ public class KuduDBClient extends ClientBase implements Client<KuduDBQuery>, Cli
 
         KuduScannerBuilder scannerBuilder = kuduClient.newScannerBuilder(table);
         KuduScanner scanner = null;
-
 
 
         if (limit > 0) {
@@ -541,7 +539,8 @@ public class KuduDBClient extends ClientBase implements Client<KuduDBQuery>, Cli
      * @see com.impetus.kundera.client.Client#getIdGenerator()
      */
 
-    /**дшьше
+    /**
+     * дшьше
      * Gets the id generator.
      *
      * @return the id generator
@@ -684,13 +683,13 @@ public class KuduDBClient extends ClientBase implements Client<KuduDBQuery>, Cli
         if (entityMetadata.getEntityClazz().isAnnotationPresent(Hashable.class)) {
             List<Field> fields = new ArrayList(Arrays.asList(entityMetadata.getEntityClazz().getSuperclass().getDeclaredFields()));
             fields.addAll(new ArrayList(Arrays.asList(entityMetadata.getEntityClazz().getDeclaredFields())));
-                for (Field f : fields) {
-                    if (f.isAnnotationPresent(Hash.class)) {
-                        Object v = PropertyAccessorHelper.getObject(entity, f);
-                        Type t = KuduDBValidationClassMapper.getValidTypeForClass(f.getType());
-                        KuduDBDataHandler.addToRow(row, f.getAnnotation(Column.class).name(), v, t);
-                    }
+            for (Field f : fields) {
+                if (f.isAnnotationPresent(Hash.class)) {
+                    Object v = PropertyAccessorHelper.getObject(entity, f);
+                    Type t = KuduDBValidationClassMapper.getValidTypeForClass(f.getType());
+                    KuduDBDataHandler.addToRow(row, f.getAnnotation(Column.class).name(), v, t);
                 }
+            }
 
 
         } else if (entityType.getAttribute(idColumnName).getJavaType().isAnnotationPresent(Embeddable.class)) {
@@ -735,7 +734,7 @@ public class KuduDBClient extends ClientBase implements Client<KuduDBQuery>, Cli
                 Object value = PropertyAccessorHelper.getObject(key, f);
                 if (f.getType().isAnnotationPresent(Embeddable.class)) {
                     // nested
-                    addPrimaryKeyToRow(row, (EmbeddableType) metaModel.embeddable(f.getType()),
+                    addPrimaryKeyToRow(row, metaModel.embeddable(f.getType()),
                             f.getType().getDeclaredFields(), metaModel, value);
                 } else {
                     Attribute attribute = embeddable.getAttribute(f.getName());

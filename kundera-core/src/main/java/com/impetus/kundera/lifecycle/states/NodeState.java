@@ -15,29 +15,21 @@
  ******************************************************************************/
 package com.impetus.kundera.lifecycle.states;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.CascadeType;
-
 import com.impetus.kundera.graph.Node;
 import com.impetus.kundera.graph.NodeLink;
 import com.impetus.kundera.graph.NodeLink.LinkProperty;
 import com.impetus.kundera.lifecycle.NodeStateContext;
 
+import javax.persistence.CascadeType;
+import java.util.List;
+import java.util.Map;
+
 /**
  * State machine class for Node state
- * 
+ *
  * @author amresh
- * 
  */
-public abstract class NodeState
-{
-    public enum OPERATION
-    {
-        PERSIST, MERGE, REMOVE, REFRESH, DETACH
-    }
-
+public abstract class NodeState {
     public abstract void initialize(NodeStateContext nodeStateContext);
 
     // Life cycle Management
@@ -74,25 +66,20 @@ public abstract class NodeState
     /**
      * @param nodeStateContext
      */
-    void moveNodeToNextState(NodeStateContext nodeStateContext, NodeState nextState)
-    {
+    void moveNodeToNextState(NodeStateContext nodeStateContext, NodeState nextState) {
         nodeStateContext.setCurrentNodeState(nextState);
     }
 
     /**
      * @param nodeStateContext
      */
-    void recursivelyPerformOperation(NodeStateContext nodeStateContext, OPERATION operation)
-    {
+    void recursivelyPerformOperation(NodeStateContext nodeStateContext, OPERATION operation) {
         Map<NodeLink, Node> children = nodeStateContext.getChildren();
-        if (children != null)
-        {
-            for (NodeLink nodeLink : children.keySet())
-            {
+        if (children != null) {
+            for (NodeLink nodeLink : children.keySet()) {
                 List<CascadeType> cascadeTypes = (List<CascadeType>) nodeLink.getLinkProperty(LinkProperty.CASCADE);
 
-                switch (operation)
-                {
+                switch (operation) {
                 /*case PERSIST:
                     if (cascadeTypes.contains(CascadeType.PERSIST) || cascadeTypes.contains(CascadeType.ALL))
                     {
@@ -123,23 +110,25 @@ public abstract class NodeState
                     }
                     break;*/
 
-                case REFRESH:
-                    if (cascadeTypes.contains(CascadeType.REFRESH) || cascadeTypes.contains(CascadeType.ALL))
-                    {
-                        Node childNode = children.get(nodeLink);
-                        childNode.refresh();
-                    }
-                    break;
-                case DETACH:
-                    if (cascadeTypes.contains(CascadeType.DETACH) || cascadeTypes.contains(CascadeType.ALL))
-                    {
-                        Node childNode = children.get(nodeLink);
-                        childNode.detach();
-                    }
-                    break;
+                    case REFRESH:
+                        if (cascadeTypes.contains(CascadeType.REFRESH) || cascadeTypes.contains(CascadeType.ALL)) {
+                            Node childNode = children.get(nodeLink);
+                            childNode.refresh();
+                        }
+                        break;
+                    case DETACH:
+                        if (cascadeTypes.contains(CascadeType.DETACH) || cascadeTypes.contains(CascadeType.ALL)) {
+                            Node childNode = children.get(nodeLink);
+                            childNode.detach();
+                        }
+                        break;
                 }
 
             }
         }
+    }
+
+    public enum OPERATION {
+        PERSIST, MERGE, REMOVE, REFRESH, DETACH
     }
 }

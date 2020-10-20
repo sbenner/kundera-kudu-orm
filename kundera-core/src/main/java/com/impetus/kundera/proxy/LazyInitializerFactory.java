@@ -15,48 +15,39 @@
  ******************************************************************************/
 package com.impetus.kundera.proxy;
 
-import java.lang.reflect.Method;
-
-import javax.persistence.PersistenceException;
-
 import com.impetus.kundera.metadata.model.EntityMetadata;
 import com.impetus.kundera.persistence.PersistenceDelegator;
 
+import javax.persistence.PersistenceException;
+import java.lang.reflect.Method;
+
 /**
  * Interface LazyInitializerFactory
- * 
+ * <p>
  * Creates Lazily loadable proxies for @Entity classes.
- * 
+ *
  * @author animesh.kumar
  */
-public interface LazyInitializerFactory
-{
+public interface LazyInitializerFactory {
 
     /**
      * Get Lazily loadable @Entity proxy.
-     * 
-     * @param entityName
-     *            the entity name
-     * @param persistentClass
-     *            the persistent class
-     * @param getIdentifierMethod
-     *            the get identifier method
-     * @param setIdentifierMethod
-     *            the set identifier method
-     * @param id
-     *            the id
-     * @param persistenceDelegator
-     *            the persistence delegator
+     *
+     * @param entityName           the entity name
+     * @param persistentClass      the persistent class
+     * @param getIdentifierMethod  the get identifier method
+     * @param setIdentifierMethod  the set identifier method
+     * @param id                   the id
+     * @param persistenceDelegator the persistence delegator
      * @return the proxy
-     * @throws PersistenceException
-     *             the persistence exception
+     * @throws PersistenceException the persistence exception
      */
     KunderaProxy getProxy(final String entityName, final Class<?> persistentClass, final Method getIdentifierMethod,
-            final Method setIdentifierMethod, final Object id, final PersistenceDelegator pd);
+                          final Method setIdentifierMethod, final Object id, final PersistenceDelegator pd);
 
     /**
      * Returns proxy instance for a given entity name, null if none exists
-     * 
+     *
      * @param entityName
      * @return
      */
@@ -66,7 +57,7 @@ public interface LazyInitializerFactory
      * Clears all proxy objects stored in this factory
      */
     void clearProxies();
-    
+
     /**
      * Sets the entity e as "owner" into proxy it holds.
      */

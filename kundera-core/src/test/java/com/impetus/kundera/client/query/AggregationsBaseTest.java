@@ -15,45 +15,39 @@
  ******************************************************************************/
 package com.impetus.kundera.client.query;
 
+import com.impetus.kundera.query.Person;
+import junit.framework.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.impetus.kundera.query.Person;
-import com.impetus.kundera.query.Person.Day;
-
 /**
  * The Class AggregationsBaseTest.
- * 
+ *
  * @author: karthikp.manchala
- * 
  */
-public abstract class AggregationsBaseTest
-{
+public abstract class AggregationsBaseTest {
 
-    /** The emf. */
+    /**
+     * The emf.
+     */
     protected EntityManagerFactory emf;
 
-    /** The em. */
+    /**
+     * The em.
+     */
     protected EntityManager em;
 
-    /** The person. */
+    /**
+     * The person.
+     */
     private Person person;
 
     /**
@@ -63,34 +57,26 @@ public abstract class AggregationsBaseTest
 
     /**
      * Check if server running.
-     * 
+     *
      * @return true, if successful
      */
-    protected static boolean checkIfServerRunning()
-    {
-        try
-        {
+    protected static boolean checkIfServerRunning() {
+        try {
             Socket socket = new Socket("127.0.0.1", 9300);
             return socket.getInetAddress() != null;
-        }
-        catch (UnknownHostException e)
-        {
+        } catch (UnknownHostException e) {
             return false;
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             return false;
         }
     }
 
     /**
      * Inits the.
-     * 
-     * @throws InterruptedException
-     *             the interrupted exception
+     *
+     * @throws InterruptedException the interrupted exception
      */
-    protected void init() throws InterruptedException
-    {
+    protected void init() throws InterruptedException {
 
         createPerson("1", 20, "Amit", 100.0);
         createPerson("2", 10, "Dev", 200.0);
@@ -101,18 +87,13 @@ public abstract class AggregationsBaseTest
 
     /**
      * Creates the person.
-     * 
-     * @param id
-     *            the id
-     * @param age
-     *            the age
-     * @param name
-     *            the name
-     * @param salary
-     *            the salary
+     *
+     * @param id     the id
+     * @param age    the age
+     * @param name   the name
+     * @param salary the salary
      */
-    private void createPerson(String id, int age, String name, Double salary)
-    {
+    private void createPerson(String id, int age, String name, Double salary) {
         person = new Person();
         person.setAge(age);
 //        person.setDay(Day.FRIDAY);
@@ -125,8 +106,7 @@ public abstract class AggregationsBaseTest
     /**
      * Test min aggregation.
      */
-    protected void testAggregation()
-    {
+    protected void testAggregation() {
         testMinAggregation();
         testMultiMinAggregation();
         testMaxAggregation();
@@ -151,8 +131,7 @@ public abstract class AggregationsBaseTest
     /**
      * Test min aggregation.
      */
-    private void testMinAggregation()
-    {
+    private void testMinAggregation() {
         Person p = em.find(Person.class, "1");
         String queryString = "Select min(p.salary) from Person p";
         Query query = em.createQuery(queryString);
@@ -165,8 +144,7 @@ public abstract class AggregationsBaseTest
     /**
      * Test multi min aggregation.
      */
-    private void testMultiMinAggregation()
-    {
+    private void testMultiMinAggregation() {
 
         String queryString = "Select min(p.salary), min(p.age) from Person p where p.age > 20";
         Query query = em.createQuery(queryString);
@@ -180,8 +158,7 @@ public abstract class AggregationsBaseTest
     /**
      * Test max aggregation.
      */
-    private void testMaxAggregation()
-    {
+    private void testMaxAggregation() {
         String queryString = "Select max(p.age) from Person p";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -193,9 +170,7 @@ public abstract class AggregationsBaseTest
     /**
      * Test multi max aggregation.
      */
-    private void testMultiMaxAggregation()
-
-    {
+    private void testMultiMaxAggregation() {
         String queryString = "Select max(p.age), max(p.salary) from Person p";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -208,8 +183,7 @@ public abstract class AggregationsBaseTest
     /**
      * Test sum aggregation.
      */
-    private void testSumAggregation()
-    {
+    private void testSumAggregation() {
         String queryString = "Select sum(p.salary) from Person p";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -221,8 +195,7 @@ public abstract class AggregationsBaseTest
     /**
      * Test multi sum aggregation.
      */
-    private void testMultiSumAggregation()
-    {
+    private void testMultiSumAggregation() {
         String queryString = "Select sum(p.salary), sum(p.age) from Person p";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -235,8 +208,7 @@ public abstract class AggregationsBaseTest
     /**
      * Test avg aggregation.
      */
-    private void testAvgAggregation()
-    {
+    private void testAvgAggregation() {
         String queryString = "Select avg(p.salary) from Person p";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -248,8 +220,7 @@ public abstract class AggregationsBaseTest
     /**
      * Test multi avg aggregation.
      */
-    private void testMultiAvgAggregation()
-    {
+    private void testMultiAvgAggregation() {
         String avgQuery = "Select avg(p.salary), avg(p.age) from Person p";
         Query query = em.createQuery(avgQuery);
         List resultList = query.getResultList();
@@ -262,8 +233,7 @@ public abstract class AggregationsBaseTest
     /**
      * Test max min same field aggregation.
      */
-    private void testMaxMinSameFieldAggregation()
-    {
+    private void testMaxMinSameFieldAggregation() {
         String queryString = "Select max(p.age), min(p.age) from Person p";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -276,8 +246,7 @@ public abstract class AggregationsBaseTest
     /**
      * Test multi aggregation.
      */
-    private void testMultiAggregation()
-    {
+    private void testMultiAggregation() {
         String queryString = "Select min(p.age), min(p.salary), max(p.age), max(p.salary) from Person p";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -292,8 +261,7 @@ public abstract class AggregationsBaseTest
     /**
      * Test min max sum avg aggregation.
      */
-    private void testMinMaxSumAvgAggregation()
-    {
+    private void testMinMaxSumAvgAggregation() {
         String queryString = "Select min(p.salary), max(p.salary), sum(p.salary), avg(p.salary) from Person p";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -307,14 +275,11 @@ public abstract class AggregationsBaseTest
 
     /**
      * Test aggregation with where clause.
-     * 
-     * @throws InterruptedException
-     *             the interrupted exception
+     *
+     * @throws InterruptedException the interrupted exception
      */
-    private void testAggregationWithWhereClause()
-    {
-        try
-        {
+    private void testAggregationWithWhereClause() {
+        try {
             waitThread();
 
             String invalidQueryWithAndClause = "Select min(p.age) from Person p where p.personName = 'amit' AND p.age = 34";
@@ -364,9 +329,7 @@ public abstract class AggregationsBaseTest
             Assert.assertEquals(1, persons.size());
             Assert.assertEquals(90.0, persons.get(0));
             waitThread();
-        }
-        catch (InterruptedException e)
-        {
+        } catch (InterruptedException e) {
             logger.error(e.getMessage());
         }
     }
@@ -374,8 +337,7 @@ public abstract class AggregationsBaseTest
     /**
      * Test positional query.
      */
-    private void testPositionalQuery()
-    {
+    private void testPositionalQuery() {
         String queryString = "Select min(p.salary) from Person p where p.personName = ?1";
         Query query = em.createQuery(queryString);
         query.setParameter(1, "amit");
@@ -388,8 +350,7 @@ public abstract class AggregationsBaseTest
     /**
      * Test parameter query.
      */
-    private void testParameterQuery()
-    {
+    private void testParameterQuery() {
         String queryString = "Select p from Person p where p.personName = :personName";
         Query query = em.createQuery(queryString);
         query.setParameter("personName", "amit");
@@ -402,8 +363,7 @@ public abstract class AggregationsBaseTest
     /**
      * Test between.
      */
-    private void testBetween()
-    {
+    private void testBetween() {
         String queryString = "Select p from Person p where p.age between 20 and 34";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -414,8 +374,7 @@ public abstract class AggregationsBaseTest
     /**
      * Test between with expression.
      */
-    protected void testBetweenWithExpression()
-    {
+    protected void testBetweenWithExpression() {
         String queryString = "Select p from Person p where p.age between 15+5 and 40-6";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -426,8 +385,7 @@ public abstract class AggregationsBaseTest
     /**
      * Test between min.
      */
-    private void testBetweenMin()
-    {
+    private void testBetweenMin() {
         String queryString = "Select min(p.age) from Person p where p.age between 18 and 34";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -439,8 +397,7 @@ public abstract class AggregationsBaseTest
     /**
      * Test like query.
      */
-    private void testLikeQuery()
-    {
+    private void testLikeQuery() {
         String queryString = "Select min(p.age) from Person p where p.personName like '%mit'";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -451,12 +408,10 @@ public abstract class AggregationsBaseTest
 
     /**
      * Wait thread.
-     * 
-     * @throws InterruptedException
-     *             the interrupted exception
+     *
+     * @throws InterruptedException the interrupted exception
      */
-    protected void waitThread() throws InterruptedException
-    {
+    protected void waitThread() throws InterruptedException {
         Thread.sleep(2000);
     }
 }

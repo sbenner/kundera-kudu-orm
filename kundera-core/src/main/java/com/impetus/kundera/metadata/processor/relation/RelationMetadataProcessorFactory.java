@@ -15,57 +15,49 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.processor.relation;
 
-import java.lang.reflect.Field;
+import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-
-import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
+import java.lang.reflect.Field;
 
 /**
  * A factory for creating RelationMetadataProcessor objects.
- * 
+ *
  * @author Amresh Singh
  */
-public class RelationMetadataProcessorFactory
-{
+public class RelationMetadataProcessorFactory {
 
     /**
      * Gets the relation metadata processor.
-     * 
-     * @param relationField
-     *            the relation field
+     *
+     * @param relationField the relation field
      * @return the relation metadata processor
      */
-    public static RelationMetadataProcessor getRelationMetadataProcessor(Field relationField, KunderaMetadata kunderaMetadata)
-    {
+    public static RelationMetadataProcessor getRelationMetadataProcessor(Field relationField, KunderaMetadata kunderaMetadata) {
         RelationMetadataProcessor relProcessor = null;
 
         // OneToOne
-        if (relationField.isAnnotationPresent(OneToOne.class))
-        {
+        if (relationField.isAnnotationPresent(OneToOne.class)) {
             relProcessor = new OneToOneRelationMetadataProcessor(kunderaMetadata);
         }
 
         // OneToMany
-        else if (relationField.isAnnotationPresent(OneToMany.class))
-        {
+        else if (relationField.isAnnotationPresent(OneToMany.class)) {
             relProcessor = new OneToManyRelationMetadataProcessor(kunderaMetadata);
 
         }
 
         // ManyToOne
-        else if (relationField.isAnnotationPresent(ManyToOne.class))
-        {
+        else if (relationField.isAnnotationPresent(ManyToOne.class)) {
             relProcessor = new ManyToOneRelationMetadataProcessor(kunderaMetadata);
 
         }
 
         // ManyToMany
-        else if (relationField.isAnnotationPresent(ManyToMany.class))
-        {
+        else if (relationField.isAnnotationPresent(ManyToMany.class)) {
             relProcessor = new ManyToManyRelationMetadataProcessor(kunderaMetadata);
 
         }

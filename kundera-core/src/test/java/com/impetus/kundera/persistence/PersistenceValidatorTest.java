@@ -16,40 +16,34 @@
 package com.impetus.kundera.persistence;
 
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
  * @author amresh.singh
- *
  */
-public class PersistenceValidatorTest
-{
+public class PersistenceValidatorTest {
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
     }
 
     /**
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
     }
 
     /**
      * Test method for {@link com.impetus.kundera.persistence.PersistenceValidator#isValidEntityObject(java.lang.Object)}.
      */
     @Test
-    public void testIsValidEntityObject()
-    {
+    public void testIsValidEntityObject() {
         Assert.assertFalse(new PersistenceValidator().isValidEntityObject(null, null));
     }
 

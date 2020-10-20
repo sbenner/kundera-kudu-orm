@@ -1,12 +1,12 @@
 /**
  * Copyright 2013 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,29 +15,25 @@
  */
 package com.impetus.kundera.client;
 
+import com.impetus.kundera.loader.ClientFactory;
+import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
+import junit.framework.Assert;
+import org.junit.Test;
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import junit.framework.Assert;
-
-import org.junit.Test;
-
-import com.impetus.kundera.loader.ClientFactory;
-import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
-
 /**
  * @author vivek.mishra
- * 
+ *
  *         junit for {@link ClientResolver}
- * 
+ *
  */
-public class ClientResolverTest
-{
+public class ClientResolverTest {
     private final String persistenceUnit = "patest";
 
     @Test
-    public void test()
-    {
+    public void test() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnit);
         ClientResolver.getClientFactory(persistenceUnit, null,
                 ((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance());
@@ -47,18 +43,14 @@ public class ClientResolverTest
     }
 
     @Test
-    public void testInvalidPU()
-    {
+    public void testInvalidPU() {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnit);
         ClientResolver.getClientFactory(persistenceUnit, null,
                 ((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance());
-        try
-        {
+        try {
             ClientResolver.getClientFactory("metadatatest");
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (ClientResolverException crex)
-        {
+        } catch (ClientResolverException crex) {
             Assert.assertEquals("Client Factory Not Configured For Specified Client Type.", crex.getMessage());
         }
     }

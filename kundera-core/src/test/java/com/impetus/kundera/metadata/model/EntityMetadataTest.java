@@ -15,26 +15,22 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.model;
 
-import java.util.Map;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
+import com.impetus.kundera.metadata.KunderaMetadataManager;
+import com.impetus.kundera.metadata.processor.IndexProcessor;
+import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.metadata.KunderaMetadataManager;
-import com.impetus.kundera.metadata.processor.IndexProcessor;
-import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.util.Map;
 
 /**
  * @author Kuldeep Mishra
- * 
  */
-public class EntityMetadataTest
-{
+public class EntityMetadataTest {
     private String persistenceUnit = "metaDataTest";
 
     private EntityManagerFactory emf;
@@ -43,8 +39,7 @@ public class EntityMetadataTest
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         emf = getEntityManagerFactory(null);
     }
 
@@ -52,14 +47,12 @@ public class EntityMetadataTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
 
     }
 
     @Test
-    public void test()
-    {
+    public void test() {
         EntityMetadata entityMetadata = KunderaMetadataManager.getEntityMetadata(
                 ((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance(), Employe.class);
         Assert.assertNotNull(entityMetadata);
@@ -89,8 +82,7 @@ public class EntityMetadataTest
     }
 
     @Test
-    public void testEmbeddedCollection()
-    {
+    public void testEmbeddedCollection() {
         EntityMetadata entityMetadata = KunderaMetadataManager.getEntityMetadata(
                 ((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance(), KunderaUser.class);
         Assert.assertNotNull(entityMetadata);
@@ -104,22 +96,18 @@ public class EntityMetadataTest
 
     /**
      * Gets the entity manager factory.
-     * 
+     *
      * @param useLucene
      * @param property
-     * 
      * @return the entity manager factory
      */
-    private EntityManagerFactoryImpl getEntityManagerFactory(String property)
-    {
+    private EntityManagerFactoryImpl getEntityManagerFactory(String property) {
         return (EntityManagerFactoryImpl) Persistence.createEntityManagerFactory(persistenceUnit);
     }
 
     @Test
-    public void testColumn()
-    {
-        try
-        {
+    public void testColumn() {
+        try {
             Column column = new Column("EMP_NAME", Employe.class.getDeclaredField("empName"));
             column.setIndexable(true);
             Assert.assertTrue(column.isIndexable());
@@ -130,13 +118,9 @@ public class EntityMetadataTest
             Assert.assertTrue(column.isIndexable());
             Assert.assertEquals("age", column.getField().getName());
             Assert.assertEquals("AGE", column.getName());
-        }
-        catch (SecurityException e)
-        {
+        } catch (SecurityException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (NoSuchFieldException e)
-        {
+        } catch (NoSuchFieldException e) {
             Assert.fail(e.getMessage());
         }
     }

@@ -31,27 +31,25 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Resolver class for client. It instantiates client factory and discover
  * specific client.
- * 
+ *
  * @author vivek.mishra
  */
-public final class ClientResolver
-{
+public final class ClientResolver {
 
+    /**
+     * logger instance.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(ClientResolver.class);
     // /** The client factories. */
     static Map<String, ClientFactory> clientFactories = new ConcurrentHashMap<String, ClientFactory>();
 
-    /** logger instance. */
-    private static final Logger logger = LoggerFactory.getLogger(ClientResolver.class);
-
     /**
      * Gets the client factory.
-     * 
-     * @param persistenceUnit
-     *            the persistence unit
+     *
+     * @param persistenceUnit the persistence unit
      * @return the client factory
      */
-    public static ClientFactory getClientFactory(String persistenceUnit, Map<String, Object> puProperties,final KunderaMetadata kunderaMetadata)
-    {
+    public static ClientFactory getClientFactory(String persistenceUnit, Map<String, Object> puProperties, final KunderaMetadata kunderaMetadata) {
         ClientFactory clientFactory = instantiateClientFactory(persistenceUnit, puProperties, kunderaMetadata);
         clientFactories.put(persistenceUnit, clientFactory);
         return clientFactory;
@@ -59,67 +57,58 @@ public final class ClientResolver
 
     /**
      * Creates new instance of client factory for given persistence unit.
-     * 
+     *
      * @param persistenceUnit
      * @param puProperties
      * @param clientFactory
      * @return new instance of clientFactory
      */
     private static ClientFactory instantiateClientFactory(String persistenceUnit, Map<String, Object> puProperties,
-            final KunderaMetadata kunderaMetadata)
-    {
+                                                          final KunderaMetadata kunderaMetadata) {
         ClientFactory clientFactory = null;
         logger.info("Initializing client factory for: " + persistenceUnit);
         PersistenceUnitMetadata persistenceUnitMetadata = kunderaMetadata.getApplicationMetadata()
                 .getPersistenceUnitMetadata(persistenceUnit);
         String kunderaClientFactory = puProperties != null ? (String) puProperties
                 .get(PersistenceProperties.KUNDERA_CLIENT_FACTORY) : null;
-        if (kunderaClientFactory == null)
-        {
+        if (kunderaClientFactory == null) {
             kunderaClientFactory = persistenceUnitMetadata.getProperties().getProperty(
                     PersistenceProperties.KUNDERA_CLIENT_FACTORY);
         }
 
-        if (kunderaClientFactory == null)
-        {
+        if (kunderaClientFactory == null) {
             throw new ClientResolverException(
                     "<kundera.client.lookup.class> is missing from persistence.xml, please provide specific client factory. e.g., <property name=\"kundera.client.lookup.class\" value=\"com.impetus.client.cassandra.pelops.PelopsClientFactory\" />");
         }
-        try
-        {
+        try {
             clientFactory = (ClientFactory) Class.forName(kunderaClientFactory).newInstance();
 
             Method m = GenericClientFactory.class.getDeclaredMethod("setPersistenceUnit", String.class);
-            if (!m.isAccessible())
-            {
+            if (!m.isAccessible()) {
                 m.setAccessible(true);
             }
 
             m.invoke(clientFactory, persistenceUnit);
 
             m = GenericClientFactory.class.getDeclaredMethod("setExternalProperties", Map.class);
-            if (!m.isAccessible())
-            {
+            if (!m.isAccessible()) {
                 m.setAccessible(true);
             }
 
             m.invoke(clientFactory, puProperties);
-            
+
             m = GenericClientFactory.class.getDeclaredMethod("setKunderaMetadata", KunderaMetadata.class);
-            if (!m.isAccessible())
-            {
+            if (!m.isAccessible()) {
                 m.setAccessible(true);
             }
 
             m.invoke(clientFactory, kunderaMetadata);
-            
-        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SecurityException | NoSuchMethodException | IllegalArgumentException | InvocationTargetException e)
-        {
+
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SecurityException | NoSuchMethodException | IllegalArgumentException | InvocationTargetException e) {
             onError(e);
         }
 
-        if (clientFactory == null)
-        {
+        if (clientFactory == null) {
             logger.error("Client Factory Not Configured For Specified Client Type : ");
             throw new ClientResolverException("Client Factory Not Configured For Specified Client Type.");
         }
@@ -127,11 +116,9 @@ public final class ClientResolver
         return clientFactory;
     }
 
-    public static ClientFactory getClientFactory(String pu)
-    {
+    public static ClientFactory getClientFactory(String pu) {
         ClientFactory clientFactory = clientFactories.get(pu);
-        if (clientFactory != null)
-        {
+        if (clientFactory != null) {
             return clientFactory;
         }
         logger.error("Client Factory Not Configured For Specified Client Type : ");
@@ -141,8 +128,7 @@ public final class ClientResolver
     /**
      * @param e
      */
-    private static void onError(Exception e)
-    {
+    private static void onError(Exception e) {
         logger.error("Error while initializing client factory, Caused by: .", e.getMessage());
         throw new ClientResolverException(e);
     }

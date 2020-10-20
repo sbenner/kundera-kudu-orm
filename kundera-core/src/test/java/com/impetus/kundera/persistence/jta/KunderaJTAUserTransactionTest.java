@@ -15,43 +15,32 @@
  ******************************************************************************/
 package com.impetus.kundera.persistence.jta;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.Status;
-import javax.transaction.SystemException;
-import javax.transaction.UserTransaction;
-
+import com.impetus.kundera.KunderaException;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.impetus.kundera.KunderaException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.transaction.*;
 
 /**
  * Junit test case for {@link KunderaJTAUserTransaction}.
- * 
+ *
  * @author vivek.mishra
- * 
  */
-public class KunderaJTAUserTransactionTest
-{
+public class KunderaJTAUserTransactionTest {
     private UserTransaction utx;
 
     /**
      * Static initialisation and binding UserTransaction.
-     * 
+     *
      * @throws java.lang.Exception
      */
     @BeforeClass
-    public static void setUp() throws Exception
-    {
+    public static void setUp() throws Exception {
         System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.naming.java.javaURLContextFactory");
         System.setProperty(Context.URL_PKG_PREFIXES, "org.apache.naming");
 
@@ -66,12 +55,11 @@ public class KunderaJTAUserTransactionTest
 
     /**
      * Context lookup on before running each method.
-     * 
+     *
      * @throws Exception
      */
     @Before
-    public void setup() throws Exception
-    {
+    public void setup() throws Exception {
         Context ctx = new InitialContext();
         utx = (UserTransaction) ctx.lookup("java:comp/UserTransaction");
 
@@ -82,24 +70,17 @@ public class KunderaJTAUserTransactionTest
      * invocation of commit method.
      */
     @Test
-    public void testInitializeViaLookup()
-    {
-        try
-        {
+    public void testInitializeViaLookup() {
+        try {
             Assert.assertNotNull(utx);
             Assert.assertSame(KunderaJTAUserTransaction.class, utx.getClass());
             utx.begin();
             Assert.assertEquals(Status.STATUS_ACTIVE, utx.getStatus());
             // pass true, as transaction has already begun.
             assertOnCommit(utx, true);
-        }
-
-        catch (NotSupportedException nsuex)
-        {
+        } catch (NotSupportedException nsuex) {
             Assert.fail(nsuex.getMessage());
-        }
-        catch (SystemException ex)
-        {
+        } catch (SystemException ex) {
             Assert.fail(ex.getMessage());
         }
     }
@@ -108,57 +89,36 @@ public class KunderaJTAUserTransactionTest
      * Test case for: A) utx.begin was not invoked. B) Assert on invalid commit.
      */
     @Test
-    public void testInvalidCommit()
-    {
-        try
-        {
+    public void testInvalidCommit() {
+        try {
             Assert.assertNotNull(utx);
             Assert.assertSame(KunderaJTAUserTransaction.class, utx.getClass());
             // pass false, as transaction has not begun.
             assertOnCommit(utx, false);
-        }
-        catch (SystemException ex)
-        {
+        } catch (SystemException ex) {
             Assert.fail(ex.getMessage());
         }
     }
 
-    private void assertOnCommit(UserTransaction utx, boolean isValid) throws SystemException
-    {
-        try
-        {
+    private void assertOnCommit(UserTransaction utx, boolean isValid) throws SystemException {
+        try {
             utx.commit();
             Assert.assertEquals(Status.STATUS_NO_TRANSACTION, utx.getStatus());
-        }
-        catch (KunderaException kex)
-        {
-            if (!isValid)
-            {
+        } catch (KunderaException kex) {
+            if (!isValid) {
                 Assert.assertSame("No transaction in progress.", kex.getMessage());
-            }
-            else
-            {
+            } else {
                 Assert.fail(kex.getMessage());
             }
-        }
-        catch (SecurityException e)
-        {
+        } catch (SecurityException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (IllegalStateException e)
-        {
+        } catch (IllegalStateException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (RollbackException e)
-        {
+        } catch (RollbackException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (HeuristicMixedException e)
-        {
+        } catch (HeuristicMixedException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (HeuristicRollbackException e)
-        {
+        } catch (HeuristicRollbackException e) {
             Assert.fail(e.getMessage());
         }
     }
@@ -167,21 +127,16 @@ public class KunderaJTAUserTransactionTest
      * Method to test rollback
      */
     @Test
-    public void testRollback()
-    {
-        try
-        {
+    public void testRollback() {
+        try {
             Assert.assertNotNull(utx);
             Assert.assertSame(KunderaJTAUserTransaction.class, utx.getClass());
 
             // Rollback without begin of transaction.
-            try
-            {
+            try {
                 utx.rollback();
                 Assert.fail("Should have gone to catch block1");
-            }
-            catch (IllegalStateException isex)
-            {
+            } catch (IllegalStateException isex) {
                 Assert.assertEquals("Cannot locate a Transaction for rollback.", isex.getMessage());
             }
 
@@ -192,21 +147,15 @@ public class KunderaJTAUserTransactionTest
             utx.rollback();
             Assert.assertEquals(Status.STATUS_NO_TRANSACTION, utx.getStatus());
 
-        }
-
-        catch (NotSupportedException nsuex)
-        {
+        } catch (NotSupportedException nsuex) {
             Assert.fail(nsuex.getMessage());
-        }
-        catch (SystemException ex)
-        {
+        } catch (SystemException ex) {
             Assert.fail(ex.getMessage());
         }
     }
 
     @Test
-    public void testTransactionTimeOut() throws SystemException, NotSupportedException, SecurityException, IllegalStateException, RollbackException, HeuristicMixedException, HeuristicRollbackException
-    {
+    public void testTransactionTimeOut() throws SystemException, NotSupportedException, SecurityException, IllegalStateException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
         Assert.assertNotNull(utx);
         Assert.assertSame(KunderaJTAUserTransaction.class, utx.getClass());
 
@@ -220,23 +169,19 @@ public class KunderaJTAUserTransactionTest
 
         utx.setTransactionTimeout(202);
         Assert.assertEquals(0, ((KunderaJTAUserTransaction) utx).getTransactionTimeout());
-        
+
         utx.commit();
     }
 
     @Test
-    public void testMarkedRollback() throws SystemException, NotSupportedException
-    {
+    public void testMarkedRollback() throws SystemException, NotSupportedException {
         Assert.assertNotNull(utx);
         Assert.assertSame(KunderaJTAUserTransaction.class, utx.getClass());
 
-        try
-        {
+        try {
             utx.setRollbackOnly();
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (IllegalStateException iaex)
-        {
+        } catch (IllegalStateException iaex) {
             Assert.assertEquals("Cannot get Transaction for setRollbackOnly", iaex.getMessage());
         }
 
@@ -247,10 +192,9 @@ public class KunderaJTAUserTransactionTest
         utx.rollback();
     }
 
-    
+
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
         utx = null;
     }
 }

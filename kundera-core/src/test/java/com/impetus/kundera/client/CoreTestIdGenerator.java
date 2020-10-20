@@ -24,14 +24,14 @@ import com.impetus.kundera.metadata.model.TableGeneratorDescriptor;
 
 /**
  * The Class CoreTestIdGenerator.
- * 
+ *
  * @author: karthikp.manchala
- * 
  */
-public class CoreTestIdGenerator implements AutoGenerator, TableGenerator, SequenceGenerator, IdentityGenerator
-{
+public class CoreTestIdGenerator implements AutoGenerator, TableGenerator, SequenceGenerator, IdentityGenerator {
 
-    /** The id count. */
+    /**
+     * The id count.
+     */
     private static int idCount;
 
     /*
@@ -49,14 +49,13 @@ public class CoreTestIdGenerator implements AutoGenerator, TableGenerator, Seque
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.generator.AutoGenerator#generate(com.impetus.kundera
      * .client.Client, java.lang.Object)
      */
     @Override
-    public Object generate(Client<?> client, String dataType)
-    {
+    public Object generate(Client<?> client, String dataType) {
         return ++idCount;
     }
 

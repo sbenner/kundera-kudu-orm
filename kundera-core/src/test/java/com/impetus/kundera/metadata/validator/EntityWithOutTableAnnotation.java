@@ -22,25 +22,21 @@ import javax.persistence.Entity;
  * Invalid entity definition without @Table annotated field.
  */
 @Entity
-public class EntityWithOutTableAnnotation
-{
+public class EntityWithOutTableAnnotation {
 
     private String name;
-    
-    public EntityWithOutTableAnnotation()
-    {
-        
+
+    public EntityWithOutTableAnnotation() {
+
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
-    
-    
+
+
 }

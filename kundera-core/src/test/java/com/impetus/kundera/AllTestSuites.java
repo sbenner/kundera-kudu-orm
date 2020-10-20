@@ -21,16 +21,14 @@ import junit.framework.TestSuite;
 /**
  * The Class AllTestSuites.
  */
-public class AllTestSuites
-{
+public class AllTestSuites {
 
     /**
      * Suite.
-     * 
+     *
      * @return the test
      */
-    public static Test suite()
-    {
+    public static Test suite() {
         TestSuite suite = new TestSuite(AllTestSuites.class.getName());
         // $JUnit-BEGIN$
 

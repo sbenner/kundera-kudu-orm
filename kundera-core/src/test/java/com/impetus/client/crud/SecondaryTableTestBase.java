@@ -15,20 +15,16 @@
  ******************************************************************************/
 package com.impetus.client.crud;
 
+import org.junit.Assert;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.junit.Assert;
-
 /**
- * 
  * @author Kuldeep.Mishra
- *
  */
-public class SecondaryTableTestBase
-{
-    protected void testCRUD(EntityManagerFactory emf)
-    {
+public class SecondaryTableTestBase {
+    protected void testCRUD(EntityManagerFactory emf) {
         EntityManager em = emf.createEntityManager();
 
         EmbeddedEntity embeddedEntity = new EmbeddedEntity();

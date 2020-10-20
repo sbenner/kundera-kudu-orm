@@ -1,12 +1,12 @@
 /**
  * Copyright 2013 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,33 +15,29 @@
  */
 package com.impetus.kundera.persistence;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Junit to test load persistence unit specfic properties via external map.
- * 
+ *
  * @author shaheed.hussain
- * 
+ *
  */
-public class ExternalPropertyLoaderTest
-{
+public class ExternalPropertyLoaderTest {
 
     private EntityManagerFactory emf;
 
     @Before
-    public void setUpBefore() throws Exception
-    {
+    public void setUpBefore() throws Exception {
         Map propertyMap = new HashMap();
         propertyMap.put("kundera.nodes", "localhost");
         propertyMap.put("kundera.port", "9160");
@@ -51,8 +47,7 @@ public class ExternalPropertyLoaderTest
     }
 
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         emf.close();
     }
 
@@ -61,8 +56,7 @@ public class ExternalPropertyLoaderTest
      * been persisted.
      */
     @Test
-    public void test()
-    {
+    public void test() {
         EntityManager em = emf.createEntityManager();
         User user = new User();
         user.setFirstName("John");
@@ -73,7 +67,7 @@ public class ExternalPropertyLoaderTest
         em.clear();
 
         User found = em.find(User.class, user.getUserId()); // it is auto generated in-memory
-                                              // id
+        // id
         Assert.assertNotNull(found);
         Assert.assertEquals(user.getCity(), found.getCity());
         em.close();

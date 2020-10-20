@@ -1,32 +1,25 @@
 package com.impetus.kundera.persistence;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Selection;
-
+import com.impetus.kundera.query.Person;
 import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.query.Person;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.criteria.*;
 
 /**
  * Junit for {@link CriteriaBuilder}
- * 
- * TODO:: 
+ * <p>
+ * TODO::
  * 1) support for IN clause
  * 2) Composite object in where clause {Select u from CassandraPrimeUser u where u.key = :key}
- * @author vivek.mishra
  *
+ * @author vivek.mishra
  */
-public class KunderaCriteriaBuilderTest
-{
+public class KunderaCriteriaBuilderTest {
     private static final String PU = "patest";
 
     private EntityManagerFactory emf;
@@ -37,16 +30,14 @@ public class KunderaCriteriaBuilderTest
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
 
         emf = Persistence.createEntityManagerFactory(PU);
         em = emf.createEntityManager();
     }
 
     @Test
-    public void testWithoutWhereClause()
-    {
+    public void testWithoutWhereClause() {
         String expected = "Select p from Person p";
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
@@ -59,8 +50,7 @@ public class KunderaCriteriaBuilderTest
     }
 
     @Test
-    public void testSelectedClause()
-    {
+    public void testSelectedClause() {
         String expected = "Select p.personName from Person p";
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
@@ -73,8 +63,7 @@ public class KunderaCriteriaBuilderTest
     }
 
     @Test
-    public void testCountClause()
-    {
+    public void testCountClause() {
         String expected = "Select Count(p) from Person p";
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
@@ -86,8 +75,7 @@ public class KunderaCriteriaBuilderTest
     }
 
     @Test
-    public void testCountWithWhereClause()
-    {
+    public void testCountWithWhereClause() {
         String expected = "Select Count(p) from Person p where p.personName = \"vivek\" AND p.age = 32";
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
@@ -101,8 +89,7 @@ public class KunderaCriteriaBuilderTest
     }
 
     @Test
-    public void testWithWhereClause()
-    {
+    public void testWithWhereClause() {
         String expected = "Select p from Person p where p.personName = \"vivek\"";
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Person> personQuery = criteriaBuilder.createQuery(Person.class);
@@ -114,8 +101,7 @@ public class KunderaCriteriaBuilderTest
     }
 
     @Test
-    public void testWithANDClause()
-    {
+    public void testWithANDClause() {
         String expected = "Select p from Person p where p.personName = \"vivek\" AND p.age = 32";
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Person> personQuery = criteriaBuilder.createQuery(Person.class);
@@ -128,8 +114,7 @@ public class KunderaCriteriaBuilderTest
     }
 
     @Test
-    public void testWithANDGTClause()
-    {
+    public void testWithANDGTClause() {
         String expected = "Select p from Person p where p.personName = \"vivek\" AND p.age > 32";
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Person> personQuery = criteriaBuilder.createQuery(Person.class);
@@ -142,8 +127,7 @@ public class KunderaCriteriaBuilderTest
     }
 
     @Test
-    public void testWithANDGTEClause()
-    {
+    public void testWithANDGTEClause() {
         String expected = "Select p from Person p where p.personName = \"vivek\" AND p.age >= 32";
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Person> personQuery = criteriaBuilder.createQuery(Person.class);
@@ -156,8 +140,7 @@ public class KunderaCriteriaBuilderTest
     }
 
     @Test
-    public void testWithANDLTClause()
-    {
+    public void testWithANDLTClause() {
         String expected = "Select p from Person p where p.personName = \"vivek\" OR p.age < 32";
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Person> personQuery = criteriaBuilder.createQuery(Person.class);
@@ -170,8 +153,7 @@ public class KunderaCriteriaBuilderTest
     }
 
     @Test
-    public void testWithORLTEClause()
-    {
+    public void testWithORLTEClause() {
         String expected = "Select p from Person p where p.personName = \"vivek\" OR p.age <= 32";
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Person> personQuery = criteriaBuilder.createQuery(Person.class);
@@ -184,8 +166,7 @@ public class KunderaCriteriaBuilderTest
     }
 
     @Test
-    public void testWithORClause()
-    {
+    public void testWithORClause() {
         String expected = "Select p from Person p where p.personName = \"vivek\" OR p.age = 32";
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Person> personQuery = criteriaBuilder.createQuery(Person.class);
@@ -198,8 +179,7 @@ public class KunderaCriteriaBuilderTest
     }
 
     @Test
-    public void testWithBTWClause()
-    {
+    public void testWithBTWClause() {
         String expected = "Select p from Person p where p.age BETWEEN 10 AND 20";
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Person> personQuery = criteriaBuilder.createQuery(Person.class);
@@ -211,8 +191,7 @@ public class KunderaCriteriaBuilderTest
     }
 
     @Test
-    public void testWithANDBTWClause()
-    {
+    public void testWithANDBTWClause() {
         String expected = "Select p from Person p where p.personName = \"'vivek'\" AND p.age BETWEEN 10 AND 20";
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Person> personQuery = criteriaBuilder.createQuery(Person.class);
@@ -225,8 +204,7 @@ public class KunderaCriteriaBuilderTest
     }
 
     @Test
-    public void testWithMultiANDClause()
-    {
+    public void testWithMultiANDClause() {
         String expected = "Select p from Person p where p.personName = \"vivek\" AND p.age = 32 AND p.salary = 3200.01";
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Person> personQuery = criteriaBuilder.createQuery(Person.class);
@@ -239,8 +217,7 @@ public class KunderaCriteriaBuilderTest
     }
 
     @Test
-    public void testWithANDGTLTClause()
-    {
+    public void testWithANDGTLTClause() {
         String expected = "Select p from Person p where p.personName = \"vivek\" AND p.age > 32 AND p.salary <= 3200.01";
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<Person> personQuery = criteriaBuilder.createQuery(Person.class);
@@ -254,8 +231,7 @@ public class KunderaCriteriaBuilderTest
     }
 
     @Test
-    public void testOrderByWithCompositeClause()
-    {
+    public void testOrderByWithCompositeClause() {
         final String expected = "Select u from PersonnelEmbedded u where u.personalDetail.phoneNo = 91234567 ORDER BY u.personalDetail.emailId ASC";
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
         CriteriaQuery<PersonnelEmbedded> embedQuery = criteriaBuilder.createQuery(PersonnelEmbedded.class);
@@ -269,8 +245,7 @@ public class KunderaCriteriaBuilderTest
     }
 
     @Test
-    public void testOrderByClause()
-    {
+    public void testOrderByClause() {
         String expected = "Select p from Person p ORDER BY p.personName DESC";
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
@@ -284,8 +259,7 @@ public class KunderaCriteriaBuilderTest
     }
 
     @Test
-    public void testOrderByWithWhereClause()
-    {
+    public void testOrderByWithWhereClause() {
         String expected = "Select p from Person p where p.personName = \"vivek\" AND p.age > 32 AND p.salary <= 3200.01 ORDER BY p.personName DESC";
 
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -301,8 +275,7 @@ public class KunderaCriteriaBuilderTest
     }
 
     @Test
-    public void testMultiSelectedClause()
-    {
+    public void testMultiSelectedClause() {
         String expected = "Select p.personName,p.age from Person p";
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 

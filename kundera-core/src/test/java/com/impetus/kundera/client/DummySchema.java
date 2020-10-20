@@ -20,55 +20,45 @@ import java.util.Map;
 
 /**
  * Class acting as dummy schema, mocks schemas provided by most of the databases.
- * @author amresh.singh
  *
+ * @author amresh.singh
  */
-public class DummySchema
-{
-    
+public class DummySchema {
+
     private Map<String, DummyTable> tables;
-    
+
     /**
      * @return the tables
      */
-    public Map<String, DummyTable> getTables()
-    {
+    public Map<String, DummyTable> getTables() {
         return tables;
     }
-    
-    public DummyTable getTable(String tableName)
-    {
-     
-        if(tables == null) return null;
-        
+
+    public DummyTable getTable(String tableName) {
+
+        if (tables == null) return null;
+
         return tables.get(tableName);
     }
 
     /**
      * @param tables the tables to set
      */
-    public void addTable(String tableName, DummyTable table)
-    {
-        if(tables == null)
-        {
+    public void addTable(String tableName, DummyTable table) {
+        if (tables == null) {
             tables = new HashMap<String, DummyTable>();
         }
         tables.put(tableName, table);
     }
 
 
-
-
-    public void dropSchema()
-    {
-        if(tables != null)
-        {
-            for(DummyTable table : tables.values())
-            {
+    public void dropSchema() {
+        if (tables != null) {
+            for (DummyTable table : tables.values()) {
                 table.truncate();
             }
         }
         tables.clear();
-    }   
+    }
 
 }

@@ -20,20 +20,20 @@ import com.impetus.kundera.KunderaException;
 /**
  * Exception class for error scenarios involving resolution of clients. The
  * Class ClientResolverException.
- * 
+ *
  * @author impetus
  */
-public class ClientResolverException extends KunderaException
-{
+public class ClientResolverException extends KunderaException {
 
-    /** The Constant serialVersionUID. */
+    /**
+     * The Constant serialVersionUID.
+     */
     private static final long serialVersionUID = 1L;
 
     /**
-     * 
+     *
      */
-    public ClientResolverException()
-    {
+    public ClientResolverException() {
         super();
     }
 
@@ -41,8 +41,7 @@ public class ClientResolverException extends KunderaException
      * @param arg0
      * @param arg1
      */
-    public ClientResolverException(String arg0, Throwable arg1)
-    {
+    public ClientResolverException(String arg0, Throwable arg1) {
         super(arg0, arg1);
 
     }
@@ -50,8 +49,7 @@ public class ClientResolverException extends KunderaException
     /**
      * @param arg0
      */
-    public ClientResolverException(String arg0)
-    {
+    public ClientResolverException(String arg0) {
         super(arg0);
 
     }
@@ -59,8 +57,7 @@ public class ClientResolverException extends KunderaException
     /**
      * @param arg0
      */
-    public ClientResolverException(Throwable arg0)
-    {
+    public ClientResolverException(Throwable arg0) {
         super(arg0);
 
     }

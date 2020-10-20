@@ -15,20 +15,16 @@
  ******************************************************************************/
 package com.impetus.kundera.graph;
 
+import com.impetus.kundera.entity.PersonnelDTO;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.entity.PersonnelDTO;
-
 /**
  * @author amresh.singh
- * 
  */
-public class ObjectGraphUtilsTest
-{
+public class ObjectGraphUtilsTest {
     ObjectGraphUtils utils = new ObjectGraphUtils();
 
     String nodeId;
@@ -37,8 +33,7 @@ public class ObjectGraphUtilsTest
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
 
     }
 
@@ -46,8 +41,7 @@ public class ObjectGraphUtilsTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
     }
 
     /**
@@ -56,8 +50,7 @@ public class ObjectGraphUtilsTest
      * .
      */
     @Test
-    public void testGetNodeId()
-    {
+    public void testGetNodeId() {
         nodeId = utils.getNodeId("1", PersonnelDTO.class);
         Assert.assertEquals("com.impetus.kundera.entity.PersonnelDTO$1", nodeId);
     }
@@ -68,8 +61,7 @@ public class ObjectGraphUtilsTest
      * .
      */
     @Test
-    public void testGetEntityId()
-    {
+    public void testGetEntityId() {
         nodeId = utils.getNodeId("1", PersonnelDTO.class);
         Object entityId = utils.getEntityId("com.impetus.kundera.entity.PersonnelDTO$1");
         Assert.assertEquals("1", entityId.toString());

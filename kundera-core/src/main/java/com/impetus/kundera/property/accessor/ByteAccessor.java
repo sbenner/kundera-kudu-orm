@@ -15,44 +15,39 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
-import java.nio.ByteBuffer;
-
+import com.impetus.kundera.property.PropertyAccessException;
+import com.impetus.kundera.property.PropertyAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.impetus.kundera.property.PropertyAccessException;
-import com.impetus.kundera.property.PropertyAccessor;
+import java.nio.ByteBuffer;
 
 /**
  * The Class ByteAccessor.
- * 
+ *
  * @author Amresh Singh
  */
-public class ByteAccessor implements PropertyAccessor<Byte>
-{
+public class ByteAccessor implements PropertyAccessor<Byte> {
 
-    /** The log. */
+    /**
+     * The log.
+     */
     private static Logger log = LoggerFactory.getLogger(ByteAccessor.class);
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.property.PropertyAccessor#fromBytes(byte[])
      */
     @Override
-    public Byte fromBytes(Class targetClass, byte[] b)
-    {
-        try
-        {
-            if (b == null)
-            {
+    public Byte fromBytes(Class targetClass, byte[] b) {
+        try {
+            if (b == null) {
                 return null;
             }
             // return new Byte(new String(b, Constants.ENCODING));
             return (ByteBuffer.wrap(b).get());
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             log.warn("Number format exception caught!,returning null!");
             return null;
         }
@@ -60,15 +55,13 @@ public class ByteAccessor implements PropertyAccessor<Byte>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toBytes(java.lang.Object)
      */
     @Override
-    public byte[] toBytes(Object object)
-    {
-        if (object == null)
-        {
+    public byte[] toBytes(Object object) {
+        if (object == null) {
             return null;
         }
         Byte b = (Byte) object;
@@ -79,50 +72,42 @@ public class ByteAccessor implements PropertyAccessor<Byte>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toString(java.lang.Object)
      */
     @Override
-    public String toString(Object object)
-    {
+    public String toString(Object object) {
         return object != null ? object.toString() : null;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#fromString(java.lang.String
      * )
      */
     @Override
-    public Byte fromString(Class targetClass, String s)
-    {
-        try
-        {
-            if (s == null)
-            {
+    public Byte fromString(Class targetClass, String s) {
+        try {
+            if (s == null) {
                 return null;
             }
             Byte b = new Byte(s);
             return b;
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             log.error("Number fromat exception, Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
     }
 
     @Override
-    public Byte getCopy(Object object)
-    {
+    public Byte getCopy(Object object) {
         return object != null ? new Byte((Byte) object) : null;
     }
 
-    public Byte getInstance(Class<?> clazz)
-    {
+    public Byte getInstance(Class<?> clazz) {
         return Byte.MAX_VALUE;
     }
 }

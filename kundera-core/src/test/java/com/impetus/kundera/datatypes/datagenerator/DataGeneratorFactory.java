@@ -19,25 +19,21 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * The Class DataGeneratorFactory.
- * 
+ *
  * @author kuldeep.kumar
  */
 
-public class DataGeneratorFactory
-{
-    /** The map. */
+public class DataGeneratorFactory {
+    /**
+     * The map.
+     */
     private static Map<Class<?>, DataGenerator<?>> map = new HashMap<Class<?>, DataGenerator<?>>();
 
-    static
-    {
+    static {
         // Premitive Type generators
         map.put(boolean.class, new BooleanDataGenerator());
         map.put(byte.class, new ByteDataGenerator());
@@ -83,8 +79,7 @@ public class DataGeneratorFactory
     //
     // }
 
-    public DataGenerator<?> getDataGenerator(Class<?> clazz)
-    {
+    public DataGenerator<?> getDataGenerator(Class<?> clazz) {
         return map.get(clazz);
     }
 }

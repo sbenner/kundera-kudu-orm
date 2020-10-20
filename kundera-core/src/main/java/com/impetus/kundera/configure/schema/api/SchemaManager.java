@@ -15,18 +15,16 @@
  ******************************************************************************/
 package com.impetus.kundera.configure.schema.api;
 
-import java.util.List;
-
 import com.impetus.kundera.configure.schema.TableInfo;
+
+import java.util.List;
 
 /**
  * Interface to define methods to be implemented by different schema managers.
- * 
+ *
  * @author kuldeep.kumar
- * 
  */
-public interface SchemaManager
-{
+public interface SchemaManager {
     /**
      * Exports schema according to configured schema operation e.g.
      * {create,create-drop,update,validate}
@@ -41,9 +39,8 @@ public interface SchemaManager
 
     /**
      * validates the entity against the Client specific properties.
-     * 
+     *
      * @return
-     * 
      */
     boolean validateEntity(Class clazz);
 }

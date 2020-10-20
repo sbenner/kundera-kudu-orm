@@ -15,40 +15,35 @@
  ******************************************************************************/
 package com.impetus.kundera.configure;
 
-import java.util.Map;
-
 import com.impetus.kundera.metadata.model.PersistenceUnitMetadata;
+
+import java.util.Map;
 
 /**
  * Class Dummy Property Reader for test
- * 
+ *
  * @author Kuldeep Mishra
- * 
  */
-public class DummyPropertyReader extends AbstractPropertyReader implements PropertyReader
-{
+public class DummyPropertyReader extends AbstractPropertyReader implements PropertyReader {
 
     public static DummySchemaMetadata dsmd;
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.configure.AbstractPropertyReader#onXml(com.impetus
      * .kundera.configure.ClientProperties)
      */
 
-    public DummyPropertyReader(Map externalProperties, final PersistenceUnitMetadata puMetadata)
-    {
+    public DummyPropertyReader(Map externalProperties, final PersistenceUnitMetadata puMetadata) {
         super(externalProperties, puMetadata);
         dsmd = new DummySchemaMetadata();
     }
 
     @Override
-    public void onXml(ClientProperties cp)
-    {
-        if (cp != null)
-        {
+    public void onXml(ClientProperties cp) {
+        if (cp != null) {
             dsmd.setClientProperties(cp);
         }
 
@@ -56,12 +51,10 @@ public class DummyPropertyReader extends AbstractPropertyReader implements Prope
 
     /**
      * Dummy schema metadata for test.
-     * 
+     *
      * @author Kuldeep Mishra
-     * 
      */
-    public class DummySchemaMetadata
-    {
+    public class DummySchemaMetadata {
         /**
          * client properties.
          */
@@ -70,17 +63,14 @@ public class DummyPropertyReader extends AbstractPropertyReader implements Prope
         /**
          * @return the clientProperties
          */
-        public ClientProperties getClientProperties()
-        {
+        public ClientProperties getClientProperties() {
             return clientProperties;
         }
 
         /**
-         * @param clientProperties
-         *            the clientProperties to set
+         * @param clientProperties the clientProperties to set
          */
-        private void setClientProperties(ClientProperties clientProperties)
-        {
+        private void setClientProperties(ClientProperties clientProperties) {
             this.clientProperties = clientProperties;
         }
     }

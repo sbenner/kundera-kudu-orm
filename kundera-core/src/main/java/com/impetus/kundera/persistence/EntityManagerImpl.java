@@ -46,59 +46,57 @@ import java.util.Map;
 
 /**
  * The Class EntityManagerImpl.
- * 
+ *
  * @author animesh.kumar
  */
-public class EntityManagerImpl implements EntityManager, ResourceManager
-{
+public class EntityManagerImpl implements EntityManager, ResourceManager {
 
-    /** The Constant log. */
+    /**
+     * The Constant log.
+     */
     private static Logger logger = LoggerFactory.getLogger(EntityManagerImpl.class);
-
-    /** The factory. */
+    private static PersistenceCache persistenceCache;
+    /**
+     * The factory.
+     */
     private final EntityManagerFactory factory;
-
-    /** The closed. */
-    private boolean closed;
-
-    /** Flush mode for this EM, default is AUTO. */
-    private FlushModeType flushMode = FlushModeType.AUTO;
-
-    /** Properties provided by user at the time of EntityManager Creation. */
-    private Map<String, Object> properties;
-
-    /** Properties provided by user at the time of EntityManager Creation. */
+    /**
+     * Properties provided by user at the time of EntityManager Creation.
+     */
     private final PersistenceDelegator persistenceDelegator;
-
     /**
      * Persistence Context Type (Transaction/ Extended)
      */
     private final PersistenceContextType persistenceContextType;
-
     /**
      * Transaction Type (JTA/ RESOURCE_LOCAL)
      */
     private final PersistenceUnitTransactionType transactionType;
-
-    private static PersistenceCache persistenceCache;
-
-    private UserTransaction utx;
-
     int cacheCapacity = 50000;
-
+    /**
+     * The closed.
+     */
+    private boolean closed;
+    /**
+     * Flush mode for this EM, default is AUTO.
+     */
+    private FlushModeType flushMode = FlushModeType.AUTO;
+    /**
+     * Properties provided by user at the time of EntityManager Creation.
+     */
+    private Map<String, Object> properties;
+    private UserTransaction utx;
     private EntityTransaction entityTransaction;
 
 
     /**
      * Instantiates a new entity manager impl.
      *
-     * @param factory
-     *            the factory
-     * @param properties
-     *            the properties
+     * @param factory    the factory
+     * @param properties the properties
      */
     EntityManagerImpl(final EntityManagerFactory factory, final Map properties, PersistenceUnitTransactionType transactionType,
-            final PersistenceContextType persistenceContextType) {
+                      final PersistenceContextType persistenceContextType) {
         this(factory, transactionType, persistenceContextType);
         this.properties = properties;
         try {
@@ -118,13 +116,12 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
     /**
      * Instantiates a new entity manager impl.
      *
-     * @param factory
-     *            the factory
+     * @param factory the factory
      */
 
 
     EntityManagerImpl(final EntityManagerFactory factory, final PersistenceUnitTransactionType transactionType,
-            final PersistenceContextType persistenceContextType) {
+                      final PersistenceContextType persistenceContextType) {
         this.factory = factory;
 
         if (logger.isDebugEnabled()) {
@@ -147,7 +144,8 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
 
         this.transactionType = transactionType;
         this.persistenceDelegator = new PersistenceDelegator(
-                ((EntityManagerFactoryImpl) this.factory).getKunderaMetadataInstance(), getInstance(factory, this.cacheCapacity));
+                ((EntityManagerFactoryImpl) this.factory).getKunderaMetadataInstance(),
+                getInstance(factory, this.cacheCapacity));
 
         for (String pu : ((EntityManagerFactoryImpl) this.factory).getPersistenceUnits()) {
             this.persistenceDelegator.loadClient(pu, discoverClient(pu));
@@ -169,29 +167,22 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
      * Make an instance managed and persistent.
      *
      * @param entity
-     * @throws EntityExistsException
-     *             if the entity already exists. (If the entity already exists,
-     *             the EntityExistsException may be thrown when the persist
-     *             operation is invoked, or the EntityExistsException or another
-     *             PersistenceException may be thrown at flush or commit time.)
-     * @throws IllegalArgumentException
-     *             if the instance is not an entity
-     * @throws TransactionRequiredException
-     *             if invoked on a container-managed entity manager of type
-     *             PersistenceContextType.TRANSACTION and there is no
-     *             transaction
+     * @throws EntityExistsException        if the entity already exists. (If the entity already exists,
+     *                                      the EntityExistsException may be thrown when the persist
+     *                                      operation is invoked, or the EntityExistsException or another
+     *                                      PersistenceException may be thrown at flush or commit time.)
+     * @throws IllegalArgumentException     if the instance is not an entity
+     * @throws TransactionRequiredException if invoked on a container-managed entity manager of type
+     *                                      PersistenceContextType.TRANSACTION and there is no
+     *                                      transaction
      */
     @Override
-    public final void persist(Object e)
-    {
+    public final void persist(Object e) {
         checkClosed();
         checkTransactionNeeded();
-        try
-        {
+        try {
             getPersistenceDelegator().persist(e);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             // onRollBack.
             doRollback();
             throw new KunderaException(ex);
@@ -200,28 +191,22 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
 
     /**
      * Merge the state of the given entity into the current persistence context.
-     * 
+     *
      * @param entity
      * @return the managed instance that the state was merged to
-     * @throws IllegalArgumentException
-     *             if instance is not an entity or is a removed entity
-     * @throws TransactionRequiredException
-     *             if invoked on a container-managed entity manager of type
-     *             PersistenceContextType.TRANSACTION and there is no
-     *             transaction
+     * @throws IllegalArgumentException     if instance is not an entity or is a removed entity
+     * @throws TransactionRequiredException if invoked on a container-managed entity manager of type
+     *                                      PersistenceContextType.TRANSACTION and there is no
+     *                                      transaction
      * @see javax.persistence.EntityManager#merge(java.lang.Object)
      */
     @Override
-    public final <E> E merge(E e)
-    {
+    public final <E> E merge(E e) {
         checkClosed();
         checkTransactionNeeded();
-        try
-        {
+        try {
             return getPersistenceDelegator().merge(e);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             // on Rollback
             doRollback();
             throw new KunderaException(ex);
@@ -230,26 +215,20 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
 
     /**
      * Remove the entity instance.
-     * 
+     *
      * @param entity
-     * @throws IllegalArgumentException
-     *             if the instance is not an entity or is a detached entity
-     * @throws TransactionRequiredException
-     *             if invoked on a container-managed entity manager of type
-     *             PersistenceContextType.TRANSACTION and there is no
-     *             transaction
+     * @throws IllegalArgumentException     if the instance is not an entity or is a detached entity
+     * @throws TransactionRequiredException if invoked on a container-managed entity manager of type
+     *                                      PersistenceContextType.TRANSACTION and there is no
+     *                                      transaction
      */
     @Override
-    public final void remove(Object e)
-    {
+    public final void remove(Object e) {
         checkClosed();
         checkTransactionNeeded();
-        try
-        {
+        try {
             getPersistenceDelegator().remove(e);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             // on rollback.
             doRollback();
             throw new KunderaException(ex);
@@ -260,21 +239,19 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
      * Find by primary key. Search for an entity of the specified class and
      * primary key. If the entity instance is contained in the persistence
      * context it is returned from there.
-     * 
+     *
      * @param entityClass
      * @param primaryKey
      * @return the found entity instance or null if the entity does not exist
-     * @throws IllegalArgumentException
-     *             if the first argument does not denote an entity type or the
-     *             second argument is is not a valid type for that entity’s
-     *             primary key or is null
+     * @throws IllegalArgumentException if the first argument does not denote an entity type or the
+     *                                  second argument is is not a valid type for that entity’s
+     *                                  primary key or is null
      * @see javax.persistence.EntityManager#find(java.lang.Class,
-     *      java.lang.Object)
+     * java.lang.Object)
      */
 
     @Override
-    public final <E> E find(Class<E> entityClass, Object primaryKey)
-    {
+    public final <E> E find(Class<E> entityClass, Object primaryKey) {
         checkClosed();
         checkTransactionNeeded();
         return getPersistenceDelegator().findById(entityClass, primaryKey);
@@ -286,22 +263,19 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
      * contained in the persistence context it is returned from there. If a
      * vendor-specific property or hint is not recognized, it is silently
      * ignored.
-     * 
+     *
      * @param entityClass
      * @param primaryKey
-     * @param properties
-     *            standard and vendor-specific properties and hints
+     * @param properties  standard and vendor-specific properties and hints
      * @return the found entity instance or null if the entity does not exist
-     * @throws IllegalArgumentException
-     *             if the first argument does not denote an entity type or the
-     *             second argument is is not a valid type for that entity’s
-     *             primary key or is null
+     * @throws IllegalArgumentException if the first argument does not denote an entity type or the
+     *                                  second argument is is not a valid type for that entity’s
+     *                                  primary key or is null
      * @see javax.persistence.EntityManager#find(java.lang.Class,
-     *      java.lang.Object, java.util.Map)
+     * java.lang.Object, java.util.Map)
      */
     @Override
-    public <T> T find(Class<T> entityClass, Object primaryKey, Map<String, Object> properties)
-    {
+    public <T> T find(Class<T> entityClass, Object primaryKey, Map<String, Object> properties) {
         checkClosed();
         checkTransactionNeeded();
 
@@ -319,50 +293,45 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#find(java.lang.Class,
      * java.lang.Object, javax.persistence.LockModeType)
      */
     @Override
-    public <T> T find(Class<T> paramClass, Object paramObject, LockModeType paramLockModeType)
-    {
+    public <T> T find(Class<T> paramClass, Object paramObject, LockModeType paramLockModeType) {
         checkClosed();
         throw new NotImplementedException("Lock mode type currently not supported by Kundera");
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#find(java.lang.Class,
      * java.lang.Object, javax.persistence.LockModeType, java.util.Map)
      */
     @Override
-    public <T> T find(Class<T> arg0, Object arg1, LockModeType arg2, Map<String, Object> arg3)
-    {
+    public <T> T find(Class<T> arg0, Object arg1, LockModeType arg2, Map<String, Object> arg3) {
         checkClosed();
         throw new NotImplementedException("Lock mode type currently not supported by Kundera");
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#clear()
      */
     @Override
-    public final void clear()
-    {
+    public final void clear() {
         checkClosed();
 
         // TODO Do we need a client and persistenceDelegator close here?
-        if (!PersistenceUnitTransactionType.JTA.equals(this.transactionType))
-        {
+        if (!PersistenceUnitTransactionType.JTA.equals(this.transactionType)) {
             getPersistenceDelegator().clear();
         }
     }
 
     @Override
-    public final void close()
-    {
+    public final void close() {
         clear();
 
         getPersistenceDelegator().close();
@@ -373,16 +342,14 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
     /**
      * Check if the instance is a managed entity instance belonging to the
      * current persistence context.
-     * 
+     *
      * @param entity
      * @return boolean indicating if entity is in persistence context
-     * @throws IllegalArgumentException
-     *             if not an entity
+     * @throws IllegalArgumentException if not an entity
      * @see javax.persistence.EntityManager#contains(java.lang.Object)
      */
     @Override
-    public final boolean contains(Object entity)
-    {
+    public final boolean contains(Object entity) {
         checkClosed();
 
         return getPersistenceDelegator().contains(entity);
@@ -390,44 +357,40 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#createQuery(java.lang.String)
      */
     @Override
-    public final Query createQuery(String query)
-    {
+    public final Query createQuery(String query) {
         checkClosed();
         checkTransactionNeeded();
         return getPersistenceDelegator().createQuery(query);
     }
 
     @Override
-    public final void flush()
-    {
+    public final void flush() {
         checkClosed();
         getPersistenceDelegator().doFlush();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#getDelegate()
      */
     @Override
-    public final Object getDelegate()
-    {
+    public final Object getDelegate() {
         checkClosed();
         return getPersistenceDelegator().getDelegate();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#createNamedQuery(java.lang.String)
      */
     @Override
-    public final Query createNamedQuery(String name)
-    {
+    public final Query createNamedQuery(String name) {
         checkClosed();
         checkTransactionNeeded();
         return getPersistenceDelegator().createQuery(name);
@@ -435,25 +398,23 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#createNativeQuery(java.lang.String)
      */
     @Override
-    public final Query createNativeQuery(String sqlString)
-    {
+    public final Query createNativeQuery(String sqlString) {
         checkClosed();
         return getPersistenceDelegator().createQuery(sqlString, getPersistenceUnit());
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#createNativeQuery(java.lang.String,
      * java.lang.Class)
      */
     @Override
-    public final Query createNativeQuery(String sqlString, Class resultClass)
-    {
+    public final Query createNativeQuery(String sqlString, Class resultClass) {
         checkClosed();
         checkTransactionNeeded();
 
@@ -462,13 +423,12 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#createNativeQuery(java.lang.String,
      * java.lang.String)
      */
     @Override
-    public final Query createNativeQuery(String sqlString, String resultSetMapping)
-    {
+    public final Query createNativeQuery(String sqlString, String resultSetMapping) {
         checkClosed();
         throw new NotImplementedException("ResultSetMapping currently not supported by Kundera. "
                 + "Please use createNativeQuery(String sqlString, Class resultClass) instead.");
@@ -476,40 +436,42 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#getReference(java.lang.Class,
      * java.lang.Object)
      */
     @Override
-    public final <T> T getReference(Class<T> entityClass, Object primaryKey)
-    {
+    public final <T> T getReference(Class<T> entityClass, Object primaryKey) {
         checkClosed();
         throw new NotImplementedException("getReference currently not supported by Kundera");
     }
 
     @Override
-    public final FlushModeType getFlushMode()
-    {
+    public final FlushModeType getFlushMode() {
         checkClosed();
         return this.flushMode;
     }
 
+    @Override
+    public final void setFlushMode(FlushModeType flushMode) {
+        checkClosed();
+        this.flushMode = flushMode;
+        getPersistenceDelegator().setFlushMode(flushMode);
+    }
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#getTransaction()
      */
     @Override
-    public final EntityTransaction getTransaction()
-    {
+    public final EntityTransaction getTransaction() {
         checkClosed();
-        if (this.transactionType == PersistenceUnitTransactionType.JTA)
-        {
+        if (this.transactionType == PersistenceUnitTransactionType.JTA) {
             throw new IllegalStateException("A JTA EntityManager cannot use getTransaction()");
         }
 
-        if (this.entityTransaction == null)
-        {
+        if (this.entityTransaction == null) {
             this.entityTransaction = new KunderaEntityTransaction(this);
         }
         return this.entityTransaction;
@@ -517,32 +479,27 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#joinTransaction()
      */
     @Override
-    public final void joinTransaction()
-    {
+    public final void joinTransaction() {
         checkClosed();
-        if (this.utx != null)
-        {
+        if (this.utx != null) {
             return;
-        }
-        else
-        {
+        } else {
             throw new TransactionRequiredException("No transaction in progress");
         }
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#lock(java.lang.Object,
      * javax.persistence.LockModeType)
      */
     @Override
-    public final void lock(Object entity, LockModeType lockMode)
-    {
+    public final void lock(Object entity, LockModeType lockMode) {
         checkClosed();
         throw new NotImplementedException("lock currently not supported by Kundera");
     }
@@ -550,21 +507,17 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
     /**
      * Refresh the state of the instance from the database, overwriting changes
      * made to the entity, if any.
-     * 
+     *
      * @param entity
-     * @throws IllegalArgumentException
-     *             if the instance is not an entity or the entity is not managed
-     * @throws TransactionRequiredException
-     *             if invoked on a container-managed entity manager of type
-     *             PersistenceContextType.TRANSACTION and there is no
-     *             transaction
-     * @throws EntityNotFoundException
-     *             if the entity no longer exists in the database
+     * @throws IllegalArgumentException     if the instance is not an entity or the entity is not managed
+     * @throws TransactionRequiredException if invoked on a container-managed entity manager of type
+     *                                      PersistenceContextType.TRANSACTION and there is no
+     *                                      transaction
+     * @throws EntityNotFoundException      if the entity no longer exists in the database
      * @see javax.persistence.EntityManager#refresh(java.lang.Object)
      */
     @Override
-    public final void refresh(Object entity)
-    {
+    public final void refresh(Object entity) {
         checkClosed();
 
         checkTransactionNeeded();
@@ -577,24 +530,19 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
      * properties, and overwriting changes made to the entity, if any. If a
      * vendor-specific property or hint is not recognized, it is silently
      * ignored.
-     * 
+     *
      * @param entity
-     * @param properties
-     *            standard and vendor-specific properties and hints
-     * @throws IllegalArgumentException
-     *             if the instance is not an entity or the entity is not managed
-     * @throws TransactionRequiredException
-     *             if invoked on a container-managed entity manager of type
-     *             PersistenceContextType.TRANSACTION and there is no
-     *             transaction
-     * @throws EntityNotFoundException
-     *             if the entity no longer exists in the database
+     * @param properties standard and vendor-specific properties and hints
+     * @throws IllegalArgumentException     if the instance is not an entity or the entity is not managed
+     * @throws TransactionRequiredException if invoked on a container-managed entity manager of type
+     *                                      PersistenceContextType.TRANSACTION and there is no
+     *                                      transaction
+     * @throws EntityNotFoundException      if the entity no longer exists in the database
      * @see javax.persistence.EntityManager#refresh(java.lang.Object,
-     *      java.util.Map)
+     * java.util.Map)
      */
     @Override
-    public void refresh(Object entity, Map<String, Object> properties)
-    {
+    public void refresh(Object entity, Map<String, Object> properties) {
         checkClosed();
 
         // Store current properties in a variable for post-find reset
@@ -612,26 +560,24 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#lock(java.lang.Object,
      * javax.persistence.LockModeType, java.util.Map)
      */
     @Override
-    public void lock(Object paramObject, LockModeType paramLockModeType, Map<String, Object> paramMap)
-    {
+    public void lock(Object paramObject, LockModeType paramLockModeType, Map<String, Object> paramMap) {
         checkClosed();
         throw new NotImplementedException("Lock currently not supported by Kundera.");
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#refresh(java.lang.Object,
      * javax.persistence.LockModeType)
      */
     @Override
-    public void refresh(Object paramObject, LockModeType paramLockModeType)
-    {
+    public void refresh(Object paramObject, LockModeType paramLockModeType) {
         checkClosed();
         throw new NotImplementedException("Lock mode type currently not supported by Kundera.");
 
@@ -639,13 +585,12 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#refresh(java.lang.Object,
      * javax.persistence.LockModeType, java.util.Map)
      */
     @Override
-    public void refresh(Object paramObject, LockModeType paramLockModeType, Map<String, Object> paramMap)
-    {
+    public void refresh(Object paramObject, LockModeType paramLockModeType, Map<String, Object> paramMap) {
         checkClosed();
         throw new NotImplementedException("LockModeType currently not supported by Kundera.");
     }
@@ -656,19 +601,16 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
      * (including removal of the entity), will not be synchronized to the
      * database. Entities which previously referenced the detached entity will
      * continue to reference it.
-     * 
+     *
      * @param entity
-     * @throws IllegalArgumentException
-     *             if the instance is not an entity
+     * @throws IllegalArgumentException if the instance is not an entity
      * @see javax.persistence.EntityManager#detach(java.lang.Object)
      */
     @Override
-    public void detach(Object entity)
-    {
+    public void detach(Object entity) {
         checkClosed();
 
-        if (entity == null)
-        {
+        if (entity == null) {
             throw new IllegalArgumentException("Entity is null, can't detach it.");
         }
         getPersistenceDelegator().detach(entity);
@@ -676,12 +618,11 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#getLockMode(java.lang.Object)
      */
     @Override
-    public LockModeType getLockMode(Object paramObject)
-    {
+    public LockModeType getLockMode(Object paramObject) {
         checkClosed();
         throw new NotImplementedException("Lock mode type currently not supported by Kundera.");
     }
@@ -689,21 +630,17 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
     /**
      * Set an entity manager property or hint. If a vendor-specific property or
      * hint is not recognized, it is silently ignored.
-     * 
-     * @param propertyName
-     *            name of property or hint
+     *
+     * @param propertyName name of property or hint
      * @param value
-     * @throws IllegalArgumentException
-     *             if the second argument is not valid for the implementation
+     * @throws IllegalArgumentException if the second argument is not valid for the implementation
      * @see javax.persistence.EntityManager#setProperty(java.lang.String,
-     *      java.lang.Object)
+     * java.lang.Object)
      */
     @Override
-    public void setProperty(String paramString, Object paramObject)
-    {
+    public void setProperty(String paramString, Object paramObject) {
         checkClosed();
-        if (getProperties() == null)
-        {
+        if (getProperties() == null) {
             this.properties = new HashMap<String, Object>();
         }
 
@@ -713,14 +650,13 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * javax.persistence.EntityManager#createQuery(javax.persistence.criteria
      * .CriteriaQuery)
      */
     @Override
-    public <T> TypedQuery<T> createQuery(CriteriaQuery<T> paramCriteriaQuery)
-    {
+    public <T> TypedQuery<T> createQuery(CriteriaQuery<T> paramCriteriaQuery) {
         checkClosed();
 
         return this.createQuery(CriteriaQueryTranslator.translate(paramCriteriaQuery),
@@ -729,173 +665,144 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#createQuery(java.lang.String,
      * java.lang.Class)
      */
     @Override
-    public <T> TypedQuery<T> createQuery(String paramString, Class<T> paramClass)
-    {
+    public <T> TypedQuery<T> createQuery(String paramString, Class<T> paramClass) {
         Query q = createQuery(paramString);
         return onTypedQuery(paramClass, q);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#createNamedQuery(java.lang.String,
      * java.lang.Class)
      */
     @Override
-    public <T> TypedQuery<T> createNamedQuery(String paramString, Class<T> paramClass)
-    {
+    public <T> TypedQuery<T> createNamedQuery(String paramString, Class<T> paramClass) {
         Query q = createNamedQuery(paramString);
         return onTypedQuery(paramClass, q);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#unwrap(java.lang.Class)
      */
     @Override
-    public <T> T unwrap(Class<T> paramClass)
-    {
+    public <T> T unwrap(Class<T> paramClass) {
         checkClosed();
         throw new NotImplementedException("Unwrap currently not supported by Kundera");
-    }
-
-    @Override
-    public final void setFlushMode(FlushModeType flushMode)
-    {
-        checkClosed();
-        this.flushMode = flushMode;
-        getPersistenceDelegator().setFlushMode(flushMode);
     }
 
     /**
      * Get the properties and hints and associated values that are in effect for
      * the entity manager. Changing the contents of the map does not change the
      * configuration in effect.
-     * 
+     *
      * @return map of properties and hints in effect
      */
     @Override
-    public Map<String, Object> getProperties()
-    {
+    public Map<String, Object> getProperties() {
         checkClosed();
         return this.properties;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#getEntityManagerFactory()
      */
     @Override
-    public EntityManagerFactory getEntityManagerFactory()
-    {
+    public EntityManagerFactory getEntityManagerFactory() {
         checkClosed();
         return this.factory;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#getCriteriaBuilder()
      */
     @Override
-    public CriteriaBuilder getCriteriaBuilder()
-    {
+    public CriteriaBuilder getCriteriaBuilder() {
         checkClosed();
         return getEntityManagerFactory().getCriteriaBuilder();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#getMetamodel()
      */
     @Override
-    public Metamodel getMetamodel()
-    {
+    public Metamodel getMetamodel() {
         checkClosed();
         return getEntityManagerFactory().getMetamodel();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.EntityManager#isOpen()
      */
     @Override
-    public final boolean isOpen()
-    {
+    public final boolean isOpen() {
         return !closed;
     }
 
     /**
      * Check closed.
      */
-    private void checkClosed()
-    {
-        if (!isOpen())
-        {
+    private void checkClosed() {
+        if (!isOpen()) {
             throw new IllegalStateException("EntityManager has already been closed.");
         }
     }
 
-    private void checkTransactionNeeded()
-    {
+    private void checkTransactionNeeded() {
         onLookUp(transactionType);
 
         if ((getPersistenceContextType() != PersistenceContextType.TRANSACTION)
-                || (getPersistenceDelegator().isTransactionInProgress()))
-        {
+                || (getPersistenceDelegator().isTransactionInProgress())) {
             return;
         }
         throw new TransactionRequiredException(
                 "no transaction is in progress for a TRANSACTION type persistence context");
     }
 
-    private void onLookUp(PersistenceUnitTransactionType transactionType)
-    {
+    private void onLookUp(PersistenceUnitTransactionType transactionType) {
         // TODO transaction should not be null;
-        if (transactionType != null && transactionType.equals(PersistenceUnitTransactionType.JTA))
-        {
-            if (this.entityTransaction == null)
-            {
+        if (transactionType != null && transactionType.equals(PersistenceUnitTransactionType.JTA)) {
+            if (this.entityTransaction == null) {
                 this.entityTransaction = new KunderaEntityTransaction(this);
             }
             Context ctx;
-            try
-            {
+            try {
                 ctx = new InitialContext();
 
                 this.utx = (UserTransaction) ctx.lookup("java:comp/UserTransaction");
 
-                if (this.utx == null)
-                {
+                if (this.utx == null) {
                     throw new KunderaException(
                             "Lookup for UserTransaction returning null for :{java:comp/UserTransaction}");
                 }
                 // TODO what is need to check?
-                if (!(this.utx instanceof KunderaJTAUserTransaction))
-                {
+                if (!(this.utx instanceof KunderaJTAUserTransaction)) {
                     throw new KunderaException("Please bind [" + KunderaJTAUserTransaction.class.getName()
                             + "] for :{java:comp/UserTransaction} lookup" + this.utx.getClass());
                 }
 
-                if (!this.entityTransaction.isActive())
-                {
+                if (!this.entityTransaction.isActive()) {
                     this.entityTransaction.begin();
                     this.setFlushMode(FlushModeType.COMMIT);
                     ((KunderaJTAUserTransaction) this.utx).setImplementor(this);
                 }
 
-            }
-            catch (NamingException e)
-            {
+            } catch (NamingException e) {
                 logger.error("Error during initialization of entity manager, Caused by:", e);
                 throw new KunderaException(e);
             }
@@ -905,21 +812,19 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
 
     /**
      * Returns Persistence unit (or comma separated units) associated with EMF.
-     * 
+     *
      * @return the persistence unit
      */
-    private String getPersistenceUnit()
-    {
+    private String getPersistenceUnit() {
         return (String) getEntityManagerFactory().getProperties().get(Constants.PERSISTENCE_UNIT_NAME);
     }
 
     /**
      * Gets the persistence delegator.
-     * 
+     *
      * @return the persistence delegator
      */
-    PersistenceDelegator getPersistenceDelegator()
-    {
+    PersistenceDelegator getPersistenceDelegator() {
         checkClosed();
         return this.persistenceDelegator;
     }
@@ -927,38 +832,32 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
     /**
      * @return the persistenceContextType
      */
-    private PersistenceContextType getPersistenceContextType()
-    {
+    private PersistenceContextType getPersistenceContextType() {
         return this.persistenceContextType;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.persistence.EntityImplementor#doCommit()
      */
     @Override
-    public void doCommit()
-    {
+    public void doCommit() {
         checkClosed();
         this.entityTransaction.commit();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.persistence.EntityImplementor#doRollback()
      */
     @Override
-    public void doRollback()
-    {
+    public void doRollback() {
         checkClosed();
-        if (this.entityTransaction != null)
-        {
+        if (this.entityTransaction != null) {
             this.entityTransaction.rollback();
-        }
-        else
-        {
+        } else {
             getPersistenceDelegator().rollback();
         }
     }
@@ -966,19 +865,14 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
     /**
      * Validates if expected result class is matching with supplied one, else
      * throws {@link IllegalArgumentException}
-     * 
-     * @param <T>
-     *            object type
-     * @param paramClass
-     *            expected result class
-     * @param q
-     *            query
+     *
+     * @param <T>        object type
+     * @param paramClass expected result class
+     * @param q          query
      * @return typed query instance.
      */
-    private <T> TypedQuery<T> onTypedQuery(Class<T> paramClass, Query q)
-    {
-        if (paramClass.equals(((QueryImpl) q).getKunderaQuery().getEntityClass()) || paramClass.equals(Object.class))
-        {
+    private <T> TypedQuery<T> onTypedQuery(Class<T> paramClass, Query q) {
+        if (paramClass.equals(((QueryImpl) q).getKunderaQuery().getEntityClass()) || paramClass.equals(Object.class)) {
             return new KunderaTypedQuery<T>(q);
         }
 
@@ -988,22 +882,18 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
 
     /**
      * Gets the client.
-     * 
-     * @param persistenceUnit
-     *            the persistence unit
+     *
+     * @param persistenceUnit the persistence unit
      * @return the client
      */
-    private Client discoverClient(String persistenceUnit)
-    {
-        if (logger.isInfoEnabled())
-        {
+    private Client discoverClient(String persistenceUnit) {
+        if (logger.isInfoEnabled()) {
             logger.info("Returning client instance for persistence unit {}.", persistenceUnit);
         }
 
         ClientFactory clientFactory = ((EntityManagerFactoryImpl) getEntityManagerFactory())
                 .getClientFactory(persistenceUnit);
-        if (clientFactory != null)
-        {
+        if (clientFactory != null) {
             return clientFactory.getClientInstance();
         }
         throw new ClientResolverException("No client configured for persistence unit " + persistenceUnit + ".");
@@ -1011,80 +901,69 @@ public class EntityManagerImpl implements EntityManager, ResourceManager
 
 
     @Override
-    public <T> EntityGraph<T> createEntityGraph(Class<T> arg0)
-    {
+    public <T> EntityGraph<T> createEntityGraph(Class<T> arg0) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public EntityGraph<?> createEntityGraph(String arg0)
-    {
+    public EntityGraph<?> createEntityGraph(String arg0) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public StoredProcedureQuery createNamedStoredProcedureQuery(String arg0)
-    {
+    public StoredProcedureQuery createNamedStoredProcedureQuery(String arg0) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Query createQuery(CriteriaUpdate arg0)
-    {
+    public Query createQuery(CriteriaUpdate arg0) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public Query createQuery(CriteriaDelete arg0)
-    {
+    public Query createQuery(CriteriaDelete arg0) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public StoredProcedureQuery createStoredProcedureQuery(String arg0)
-    {
+    public StoredProcedureQuery createStoredProcedureQuery(String arg0) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public StoredProcedureQuery createStoredProcedureQuery(String arg0, Class... arg1)
-    {
+    public StoredProcedureQuery createStoredProcedureQuery(String arg0, Class... arg1) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public StoredProcedureQuery createStoredProcedureQuery(String arg0, String... arg1)
-    {
+    public StoredProcedureQuery createStoredProcedureQuery(String arg0, String... arg1) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public EntityGraph<?> getEntityGraph(String arg0)
-    {
+    public EntityGraph<?> getEntityGraph(String arg0) {
         //TODO: See https://github.com/impetus-opensource/Kundera/issues/457
         // Do nothing. Not yet implemented.
         return null;
     }
 
     @Override
-    public <T> List<EntityGraph<? super T>> getEntityGraphs(Class<T> arg0)
-    {
+    public <T> List<EntityGraph<? super T>> getEntityGraphs(Class<T> arg0) {
         //TODO: See https://github.com/impetus-opensource/Kundera/issues/457
         // Do nothing. Not yet implemented.
         return null;
     }
 
     @Override
-    public boolean isJoinedToTransaction()
-    {
+    public boolean isJoinedToTransaction() {
         //TODO: See https://github.com/impetus-opensource/Kundera/issues/457
         // Do nothing. Not yet implemented.
         return false;

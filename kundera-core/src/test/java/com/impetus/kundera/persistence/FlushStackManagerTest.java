@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,63 +15,30 @@
  */
 package com.impetus.kundera.persistence;
 
-import java.util.Collection;
-import java.util.Deque;
-import java.util.Set;
-
-import javax.persistence.Persistence;
-
+import com.impetus.kundera.configure.PersistenceUnitConfiguration;
+import com.impetus.kundera.entity.album.*;
+import com.impetus.kundera.entity.photo.*;
+import com.impetus.kundera.entity.photographer.*;
+import com.impetus.kundera.graph.*;
+import com.impetus.kundera.persistence.context.EventLog.EventType;
+import com.impetus.kundera.persistence.context.FlushManager;
+import com.impetus.kundera.persistence.context.PersistenceCache;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.configure.PersistenceUnitConfiguration;
-import com.impetus.kundera.entity.album.AlbumBi_1_1_1_1;
-import com.impetus.kundera.entity.album.AlbumUni_1_1_1_1;
-import com.impetus.kundera.entity.album.AlbumUni_1_1_1_M;
-import com.impetus.kundera.entity.album.AlbumUni_1_1_M_1;
-import com.impetus.kundera.entity.album.AlbumUni_1_M_1_M;
-import com.impetus.kundera.entity.album.AlbumUni_1_M_M_M;
-import com.impetus.kundera.entity.album.AlbumUni_M_1_1_M;
-import com.impetus.kundera.entity.album.AlbumUni_M_M_1_1;
-import com.impetus.kundera.entity.album.AlbumUni_M_M_M_M;
-import com.impetus.kundera.entity.photo.PhotoBi_1_1_1_1;
-import com.impetus.kundera.entity.photo.PhotoUni_1_1_1_1;
-import com.impetus.kundera.entity.photo.PhotoUni_1_1_1_M;
-import com.impetus.kundera.entity.photo.PhotoUni_1_1_M_1;
-import com.impetus.kundera.entity.photo.PhotoUni_1_M_1_M;
-import com.impetus.kundera.entity.photo.PhotoUni_1_M_M_M;
-import com.impetus.kundera.entity.photo.PhotoUni_M_1_1_M;
-import com.impetus.kundera.entity.photo.PhotoUni_M_M_1_1;
-import com.impetus.kundera.entity.photo.PhotoUni_M_M_M_M;
-import com.impetus.kundera.entity.photographer.PhotographerBi_1_1_1_1;
-import com.impetus.kundera.entity.photographer.PhotographerUni_1_1_1_1;
-import com.impetus.kundera.entity.photographer.PhotographerUni_1_1_1_M;
-import com.impetus.kundera.entity.photographer.PhotographerUni_1_1_M_1;
-import com.impetus.kundera.entity.photographer.PhotographerUni_1_M_1_M;
-import com.impetus.kundera.entity.photographer.PhotographerUni_1_M_M_M;
-import com.impetus.kundera.entity.photographer.PhotographerUni_M_1_1_M;
-import com.impetus.kundera.entity.photographer.PhotographerUni_M_M_1_1;
-import com.impetus.kundera.entity.photographer.PhotographerUni_M_M_M_M;
-import com.impetus.kundera.graph.BillingCounter;
-import com.impetus.kundera.graph.Node;
-import com.impetus.kundera.graph.ObjectGraph;
-import com.impetus.kundera.graph.ObjectGraphBuilder;
-import com.impetus.kundera.graph.ObjectGraphUtils;
-import com.impetus.kundera.graph.Store;
-import com.impetus.kundera.persistence.context.EventLog.EventType;
-import com.impetus.kundera.persistence.context.FlushManager;
-import com.impetus.kundera.persistence.context.PersistenceCache;
+import javax.persistence.Persistence;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.Set;
 
 /**
  * Test case for {@link FlushManager}
- * 
+ *
  * @author amresh.singh
  */
-public class FlushStackManagerTest
-{
+public class FlushStackManagerTest {
     private PersistenceCache pc;
 
     private ObjectGraphBuilder graphBuilder;
@@ -84,8 +51,7 @@ public class FlushStackManagerTest
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         emfImpl = getEntityManagerFactory();
         new PersistenceUnitConfiguration(null, emfImpl.getKunderaMetadataInstance(), "kunderatest").configure();
         pc = new PersistenceCache();
@@ -96,14 +62,12 @@ public class FlushStackManagerTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         emfImpl.close();
     }
 
     @Test
-    public void testFlashStockForStore()
-    {
+    public void testFlashStockForStore() {
 
         FlushManager flushManager = new FlushManager();
 
@@ -137,8 +101,7 @@ public class FlushStackManagerTest
     }
 
     @Test
-    public void test_1_1_1_1()
-    {
+    public void test_1_1_1_1() {
         FlushManager flushManager = new FlushManager();
         PhotographerUni_1_1_1_1 a = new PhotographerUni_1_1_1_1();
         a.setPhotographerId(1);
@@ -165,8 +128,7 @@ public class FlushStackManagerTest
     }
 
     @Test
-    public void test_multi_1_1_1_1()
-    {
+    public void test_multi_1_1_1_1() {
         FlushManager flushManager = new FlushManager();
 
         PhotographerBi_1_1_1_1 a = new PhotographerBi_1_1_1_1();
@@ -192,8 +154,7 @@ public class FlushStackManagerTest
     }
 
     @Test
-    public void test_1_1_1_M()
-    {
+    public void test_1_1_1_M() {
         FlushManager flushManager = new FlushManager();
         PhotographerUni_1_1_1_M a = new PhotographerUni_1_1_1_M();
         a.setPhotographerId(1);
@@ -220,8 +181,7 @@ public class FlushStackManagerTest
     }
 
     @Test
-    public void test_1_1_M_1()
-    {
+    public void test_1_1_M_1() {
         FlushManager flushManager = new FlushManager();
         PhotographerUni_1_1_M_1 a = new PhotographerUni_1_1_M_1();
         a.setPhotographerId(1);
@@ -265,8 +225,7 @@ public class FlushStackManagerTest
     }
 
     @Test
-    public void test_1_M_1_M()
-    {
+    public void test_1_M_1_M() {
         FlushManager flushManager = new FlushManager();
         PhotographerUni_1_M_1_M a = new PhotographerUni_1_M_1_M();
         a.setPhotographerId(1);
@@ -301,8 +260,7 @@ public class FlushStackManagerTest
     }
 
     @Test
-    public void test_1_M_M_M()
-    {
+    public void test_1_M_M_M() {
         FlushManager flushManager = new FlushManager();
         PhotographerUni_1_M_M_M a = new PhotographerUni_1_M_M_M();
         a.setPhotographerId(1);
@@ -335,8 +293,7 @@ public class FlushStackManagerTest
     }
 
     @Test
-    public void test_M_1_1_M()
-    {
+    public void test_M_1_1_M() {
         FlushManager flushManager = new FlushManager();
         PhotographerUni_M_1_1_M a1 = new PhotographerUni_M_1_1_M();
         a1.setPhotographerId(1);
@@ -393,8 +350,7 @@ public class FlushStackManagerTest
     }
 
     @Test
-    public void test_M_M_1_1()
-    {
+    public void test_M_M_1_1() {
         FlushManager flushManager = new FlushManager();
         PhotographerUni_M_M_1_1 a1 = new PhotographerUni_M_M_1_1();
         a1.setPhotographerId(1);
@@ -444,8 +400,7 @@ public class FlushStackManagerTest
     }
 
     @Test
-    public void test_M_M_M_M()
-    {
+    public void test_M_M_M_M() {
         FlushManager flushManager = new FlushManager();
 
         PhotographerUni_M_M_M_M a1 = new PhotographerUni_M_M_M_M();
@@ -501,18 +456,14 @@ public class FlushStackManagerTest
     }
 
     /**
-     * 
+     *
      */
-    private void markAllNodeAsDirty()
-    {
-        if (pc.getMainCache() != null)
-        {
+    private void markAllNodeAsDirty() {
+        if (pc.getMainCache() != null) {
             Set<Node> headNodes = pc.getMainCache().getHeadNodes();
-            if (headNodes != null)
-            {
+            if (headNodes != null) {
 
-                for (Node hn : headNodes)
-                {
+                for (Node hn : headNodes) {
                     if (hn != null)
                         hn.setDirty(true);
 
@@ -520,10 +471,8 @@ public class FlushStackManagerTest
             }
 
             Collection<Node> allNodes = pc.getMainCache().getAllNodes();
-            if (allNodes != null)
-            {
-                for (Node node : allNodes)
-                {
+            if (allNodes != null) {
+                for (Node node : allNodes) {
                     if (node != null)
                         node.setDirty(true);
                 }
@@ -533,14 +482,13 @@ public class FlushStackManagerTest
 
     /**
      * Gets the entity manager factory.
-     * 
+     *
      * @param useLucene
      * @param property
-     * 
+     *
      * @return the entity manager factory
      */
-    private EntityManagerFactoryImpl getEntityManagerFactory()
-    {
+    private EntityManagerFactoryImpl getEntityManagerFactory() {
         return (EntityManagerFactoryImpl) Persistence.createEntityManagerFactory(_persistenceUnit);
     }
 }

@@ -19,89 +19,86 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * The Class ClientMetadata.
- * 
+ *
  * @author amresh.singh
  */
-public class ClientMetadata
-{
+public class ClientMetadata {
 
-    /** The client implementor. */
+    /**
+     * The client implementor.
+     */
     private String clientImplementor;
 
-    /** The index implementor. */
+    /**
+     * The index implementor.
+     */
     private String indexImplementor;
 
-    /** The autogen implementor. */
+    /**
+     * The autogen implementor.
+     */
     private String autoGenImplementor;
+    /**
+     * The Lucene index dir.
+     */
+    private String LuceneIndexDir;
 
     /**
      * @return the autoGenImplementor
      */
-    public String getAutoGenImplementor()
-    {
+    public String getAutoGenImplementor() {
         return autoGenImplementor;
     }
 
     /**
      * @param autoGenImplementor the autoGenImplementor to set
      */
-    public void setAutoGenImplementor(String autoGenImplementor)
-    {
+    public void setAutoGenImplementor(String autoGenImplementor) {
         this.autoGenImplementor = autoGenImplementor;
     }
 
-    /** The Lucene index dir. */
-    private String LuceneIndexDir;
-
     /**
      * Gets the client implementor.
-     * 
+     *
      * @return the clientImplementor
      */
-    public String getClientImplementor()
-    {
+    public String getClientImplementor() {
         return clientImplementor;
     }
 
     /**
      * Sets the client implementor.
-     * 
-     * @param clientImplementor
-     *            the clientImplementor to set
+     *
+     * @param clientImplementor the clientImplementor to set
      */
-    public void setClientImplementor(String clientImplementor)
-    {
+    public void setClientImplementor(String clientImplementor) {
         this.clientImplementor = clientImplementor;
     }
 
     /**
      * Gets the index implementor.
-     * 
+     *
      * @return the indexImplementor
      */
-    public String getIndexImplementor()
-    {
+    public String getIndexImplementor() {
         return indexImplementor;
     }
 
     /**
      * Sets the index implementor.
-     * 
-     * @param indexImplementor
-     *            the indexImplementor to set
+     *
+     * @param indexImplementor the indexImplementor to set
      */
-    public void setIndexImplementor(String indexImplementor)
-    {
+    public void setIndexImplementor(String indexImplementor) {
         this.indexImplementor = indexImplementor;
     }
 
     /**
      * Checks if is use secondry index.
-     * 
+     *
      * @return the useSecondryIndex
      */
-    public boolean isUseSecondryIndex()
-    {
+    public boolean isUseSecondryIndex() {
         // if lucene directory and indexer class both not present then return
         // true.
 
@@ -111,22 +108,19 @@ public class ClientMetadata
 
     /**
      * Gets the lucene index dir.
-     * 
+     *
      * @return the luceneIndexDir
      */
-    public String getLuceneIndexDir()
-    {
+    public String getLuceneIndexDir() {
         return LuceneIndexDir;
     }
 
     /**
      * Sets the lucene index dir.
-     * 
-     * @param luceneIndexDir
-     *            the luceneIndexDir to set
+     *
+     * @param luceneIndexDir the luceneIndexDir to set
      */
-    public void setLuceneIndexDir(String luceneIndexDir)
-    {
+    public void setLuceneIndexDir(String luceneIndexDir) {
         LuceneIndexDir = luceneIndexDir;
     }
 

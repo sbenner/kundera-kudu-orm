@@ -15,96 +15,76 @@
  ******************************************************************************/
 package com.impetus.kundera.persistence.event;
 
+import javax.persistence.*;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.Table;
 
 /**
  * @author vivek.mishra
- *  Address entity with internal call backs.
+ * Address entity with internal call backs.
  */
 @Entity
 @Table(name = "ADDRESS", schema = "KunderaTest@kunderatest")
-public class AddressEntity
-{
+public class AddressEntity {
     @Id
     private String addressId;
-    
+
     @Column
     private String street;
-    
+
     @Column
     private String city;
 
-    @Column 
+    @Column
     private String fullAddress;
-    
-    @OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<AddressEntity> subaddresses;
-    
-    
-    public AddressEntity()
-    {
-        
+
+
+    public AddressEntity() {
+
     }
-    
-    public String getAddressId()
-    {
+
+    public String getAddressId() {
         return addressId;
     }
 
-    public void setAddressId(String addressId)
-    {
+    public void setAddressId(String addressId) {
         this.addressId = addressId;
     }
 
-    public String getStreet()
-    {
+    public String getStreet() {
         return street;
     }
 
-    public void setStreet(String street)
-    {
+    public void setStreet(String street) {
         this.street = street;
     }
 
-    public String getCity()
-    {
+    public String getCity() {
         return city;
     }
 
-    public void setCity(String city)
-    {
+    public void setCity(String city) {
         this.city = city;
     }
-    
+
     @PrePersist
-    public void  populateFullAddress()
-    {
-        this.fullAddress = street+","+city;
+    public void populateFullAddress() {
+        this.fullAddress = street + "," + city;
     }
-    
-    public String getFullAddress()
-    {
+
+    public String getFullAddress() {
         return this.fullAddress;
     }
 
-    public Set<AddressEntity> getSubaddresses()
-    {
+    public Set<AddressEntity> getSubaddresses() {
         return subaddresses;
     }
 
-    public void setSubaddresses(Set<AddressEntity> subaddresses)
-    {
+    public void setSubaddresses(Set<AddressEntity> subaddresses) {
         this.subaddresses = subaddresses;
     }
 
- 
+
 }

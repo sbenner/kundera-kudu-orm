@@ -15,23 +15,15 @@
  ******************************************************************************/
 package com.impetus.client.crud;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.SecondaryTable;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
- * 
  * @author Kuldeep.Mishra
- * 
  */
 @Table(name = "PRIMARY_TABLE")
 @SecondaryTable(name = "SECONDARY_TABLE")
 @Entity
-public class SecondaryTableEntity
-{
+public class SecondaryTableEntity {
     @Id
     @Column(name = "OBJECT_ID")
     private String objectId;
@@ -45,43 +37,35 @@ public class SecondaryTableEntity
     @Embedded
     private EmbeddedEntity embeddedEntity;
 
-    public String getObjectId()
-    {
+    public String getObjectId() {
         return objectId;
     }
 
-    public void setObjectId(String objectId)
-    {
+    public void setObjectId(String objectId) {
         this.objectId = objectId;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public int getAge()
-    {
+    public int getAge() {
         return age;
     }
 
-    public void setAge(int age)
-    {
+    public void setAge(int age) {
         this.age = age;
     }
 
-    public EmbeddedEntity getEmbeddedEntity()
-    {
+    public EmbeddedEntity getEmbeddedEntity() {
         return embeddedEntity;
     }
 
-    public void setEmbeddedEntity(EmbeddedEntity embeddedEntity)
-    {
+    public void setEmbeddedEntity(EmbeddedEntity embeddedEntity) {
         this.embeddedEntity = embeddedEntity;
     }
 

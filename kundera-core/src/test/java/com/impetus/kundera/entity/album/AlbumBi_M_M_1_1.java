@@ -15,29 +15,18 @@
  ******************************************************************************/
 package com.impetus.kundera.entity.album;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
 import com.impetus.kundera.entity.photo.PhotoBi_M_M_1_1;
 import com.impetus.kundera.entity.photographer.PhotographerBi_M_M_1_1;
 
+import javax.persistence.*;
+import java.util.List;
+
 /**
  * @author amresh.singh
- * 
  */
 @Entity
 @Table(name = "ALBUM", schema = "KunderaTest@kunderatest")
-public class AlbumBi_M_M_1_1
-{
+public class AlbumBi_M_M_1_1 {
     @Id
     @Column(name = "ALBUM_ID")
     private String albumId;
@@ -56,13 +45,11 @@ public class AlbumBi_M_M_1_1
     @ManyToMany(mappedBy = "albums", fetch = FetchType.LAZY)
     private List<PhotographerBi_M_M_1_1> photographers;
 
-    public AlbumBi_M_M_1_1()
-    {
+    public AlbumBi_M_M_1_1() {
 
     }
 
-    public AlbumBi_M_M_1_1(String albumId, String name, String description)
-    {
+    public AlbumBi_M_M_1_1(String albumId, String name, String description) {
         this.albumId = albumId;
         this.albumName = name;
         this.albumDescription = description;
@@ -71,85 +58,70 @@ public class AlbumBi_M_M_1_1
     /**
      * @return the albumId
      */
-    public String getAlbumId()
-    {
+    public String getAlbumId() {
         return albumId;
     }
 
     /**
-     * @param albumId
-     *            the albumId to set
+     * @param albumId the albumId to set
      */
-    public void setAlbumId(String albumId)
-    {
+    public void setAlbumId(String albumId) {
         this.albumId = albumId;
     }
 
     /**
      * @return the albumName
      */
-    public String getAlbumName()
-    {
+    public String getAlbumName() {
         return albumName;
     }
 
     /**
-     * @param albumName
-     *            the albumName to set
+     * @param albumName the albumName to set
      */
-    public void setAlbumName(String albumName)
-    {
+    public void setAlbumName(String albumName) {
         this.albumName = albumName;
     }
 
     /**
      * @return the albumDescription
      */
-    public String getAlbumDescription()
-    {
+    public String getAlbumDescription() {
         return albumDescription;
     }
 
     /**
-     * @param albumDescription
-     *            the albumDescription to set
+     * @param albumDescription the albumDescription to set
      */
-    public void setAlbumDescription(String albumDescription)
-    {
+    public void setAlbumDescription(String albumDescription) {
         this.albumDescription = albumDescription;
     }
 
     /**
      * @return the photo
      */
-    public PhotoBi_M_M_1_1 getPhoto()
-    {
+    public PhotoBi_M_M_1_1 getPhoto() {
         return photo;
     }
 
     /**
-     * @param photo
-     *            the photo to set
+     * @param photo the photo to set
      */
-    public void setPhoto(PhotoBi_M_M_1_1 photo)
-    {
+    public void setPhoto(PhotoBi_M_M_1_1 photo) {
         this.photo = photo;
     }
 
     /**
      * @return the photographers
      */
-    public List<PhotographerBi_M_M_1_1> getPhotographers()
-    {
+    public List<PhotographerBi_M_M_1_1> getPhotographers() {
         return photographers;
     }
 
     /**
-     * @param photographers
-     *            the photographers to set
+     * @param photographers the photographers to set
      */
-    public void setPhotographers(List<PhotographerBi_M_M_1_1> photographers)
-    {
+    public void setPhotographers(List<PhotographerBi_M_M_1_1> photographers) {
         this.photographers = photographers;
     }
 

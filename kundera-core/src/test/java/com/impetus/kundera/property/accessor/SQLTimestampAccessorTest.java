@@ -15,31 +15,26 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
-import java.sql.Timestamp;
-
+import com.impetus.kundera.property.PropertyAccessor;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.property.PropertyAccessor;
+import java.sql.Timestamp;
 
 /**
  * @author amresh.singh
- *
  */
-public class SQLTimestampAccessorTest
-{
+public class SQLTimestampAccessorTest {
     PropertyAccessor<Timestamp> accessor;
-    
+
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         accessor = new SQLTimestampAccessor();
     }
 
@@ -47,8 +42,7 @@ public class SQLTimestampAccessorTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         accessor = null;
     }
 
@@ -56,14 +50,13 @@ public class SQLTimestampAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.SQLTimestampAccessor#fromBytes(java.lang.Class, byte[])}.
      */
     @Test
-    public void testFromBytes()
-    {
+    public void testFromBytes() {
         Assert.assertNull(accessor.fromBytes(Timestamp.class, null));
-        
+
         long l = System.currentTimeMillis();
         Timestamp t = new Timestamp(l);
         byte[] b = accessor.toBytes(t);
-        
+
         Timestamp t2 = accessor.fromBytes(Timestamp.class, b);
         Assert.assertEquals(t, t2);
     }
@@ -72,68 +65,63 @@ public class SQLTimestampAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.SQLTimestampAccessor#toBytes(java.lang.Object)}.
      */
     @Test
-    public void testToBytes()
-    {
+    public void testToBytes() {
         Assert.assertNull(accessor.toBytes(null));
-        
+
         long l = System.currentTimeMillis();
         Timestamp t = new Timestamp(l);
         byte[] b = accessor.toBytes(t);
-        
+
         Timestamp t2 = accessor.fromBytes(Timestamp.class, b);
-        Assert.assertEquals(t, t2);        
+        Assert.assertEquals(t, t2);
     }
 
     /**
      * Test method for {@link com.impetus.kundera.property.accessor.SQLTimestampAccessor#toString(java.lang.Object)}.
      */
     @Test
-    public void testToStringObject()
-    {
+    public void testToStringObject() {
         Assert.assertNull(accessor.toString(null));
-        
+
         long l = System.currentTimeMillis();
-        Timestamp t = new Timestamp(l);        
-        Assert.assertEquals("" + l, accessor.toString(t));      
+        Timestamp t = new Timestamp(l);
+        Assert.assertEquals("" + l, accessor.toString(t));
     }
 
     /**
      * Test method for {@link com.impetus.kundera.property.accessor.SQLTimestampAccessor#fromString(java.lang.Class, java.lang.String)}.
      */
     @Test
-    public void testFromString()
-    {
-        Assert.assertNull(accessor.fromString(Timestamp.class, null));        
+    public void testFromString() {
+        Assert.assertNull(accessor.fromString(Timestamp.class, null));
         long currTime = System.currentTimeMillis();
         Timestamp t = accessor.fromString(Timestamp.class, currTime + "");
         Assert.assertEquals(currTime, t.getTime());
-        
+
         String s = t.toString();
         Timestamp t2 = accessor.fromString(Timestamp.class, s);
-        Assert.assertEquals(currTime, t2.getTime());        
+        Assert.assertEquals(currTime, t2.getTime());
     }
 
     /**
      * Test method for {@link com.impetus.kundera.property.accessor.SQLTimestampAccessor#getCopy(java.lang.Object)}.
      */
     @Test
-    public void testGetCopy()
-    {
+    public void testGetCopy() {
         Assert.assertNull(accessor.getCopy(null));
-        
+
         long currTime = System.currentTimeMillis();
         Timestamp t1 = new Timestamp(currTime);
         Timestamp t2 = accessor.getCopy(t1);
         Assert.assertNotNull(t2);
-        Assert.assertEquals(currTime, t2.getTime());        
+        Assert.assertEquals(currTime, t2.getTime());
     }
 
     /**
      * Test method for {@link com.impetus.kundera.property.accessor.SQLTimestampAccessor#getInstance(java.lang.Class)}.
      */
     @Test
-    public void testGetInstance()
-    {
+    public void testGetInstance() {
         Object o = accessor.getInstance(Timestamp.class);
         Assert.assertNotNull(o);
         Assert.assertTrue(o instanceof Timestamp);

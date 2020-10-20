@@ -17,22 +17,19 @@ package com.impetus.kundera.cache;
 
 /**
  * NonOperational Cache implementation.
- * 
+ *
  * @author animesh.kumar
- * 
  */
-public class NonOperationalCache implements Cache, javax.persistence.Cache
-{
+public class NonOperationalCache implements Cache, javax.persistence.Cache {
 
     /* @see com.impetus.kundera.cache.Cache#size() */
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.cache.Cache#size()
      */
     @Override
-    public int size()
-    {
+    public int size() {
         return 0;
     }
 
@@ -42,82 +39,75 @@ public class NonOperationalCache implements Cache, javax.persistence.Cache
      */
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.cache.Cache#put(java.lang.Object,
      * java.lang.Object)
      */
     @Override
-    public void put(final Object key, final Object value)
-    {
+    public void put(final Object key, final Object value) {
     }
 
     /* @see com.impetus.kundera.cache.Cache#get(java.lang.Object) */
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.cache.Cache#get(java.lang.Object)
      */
     @Override
-    public Object get(final Object key)
-    {
+    public Object get(final Object key) {
         return null;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.Cache#contains(java.lang.Class, java.lang.Object)
      */
     @Override
-    public boolean contains(Class paramClass, Object paramObject)
-    {
+    public boolean contains(Class paramClass, Object paramObject) {
         return false;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.Cache#evict(java.lang.Class, java.lang.Object)
      */
     @Override
-    public void evict(Class paramClass, Object paramObject)
-    {
+    public void evict(Class paramClass, Object paramObject) {
         //TODO: See https://github.com/impetus-opensource/Kundera/issues/457
         // do nothing.
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.Cache#evict(java.lang.Class)
      */
     @Override
-    public void evict(Class paramClass)
-    {
+    public void evict(Class paramClass) {
         //TODO: See https://github.com/impetus-opensource/Kundera/issues/457
         // do nothing.
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.Cache#evictAll()
      */
     @Override
-    public void evictAll()
-    {
+    public void evictAll() {
         //TODO: See https://github.com/impetus-opensource/Kundera/issues/457
         // do nothing.
 
     }
 
     @Override
-    public <T> T unwrap(Class<T> arg0)
-    {
+    public <T> T unwrap(Class<T> arg0) {
         //TODO: See https://github.com/impetus-opensource/Kundera/issues/457
         // do nothing.
         return null;
     }
 
-    
+
 }

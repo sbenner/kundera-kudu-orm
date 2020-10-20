@@ -20,21 +20,21 @@ import java.util.List;
 
 /**
  * @author amresh.singh
- *
  */
-public class CollectionColumnInfo 
-{
-    /** The collection column name variable .*/
-    private String collectionColumnName;  
-    
+public class CollectionColumnInfo {
+    /**
+     * The collection column name variable .
+     */
+    private String collectionColumnName;
+
     /**
      * Type of collection column among:
      * 1. java.util.List
      * 2. java.util.Set
-     * 3. java.util.Map 
+     * 3. java.util.Map
      */
     private Class<?> type;
-    
+
     /**
      * Generic classes of data held in collection
      * would hold one element for Set and List, two for Map
@@ -44,58 +44,52 @@ public class CollectionColumnInfo
     /**
      * @return the collectionColumnName
      */
-    public String getCollectionColumnName()
-    {
+    public String getCollectionColumnName() {
         return collectionColumnName;
     }
 
     /**
      * @param collectionColumnName the collectionColumnName to set
      */
-    public void setCollectionColumnName(String collectionColumnName)
-    {
+    public void setCollectionColumnName(String collectionColumnName) {
         this.collectionColumnName = collectionColumnName;
     }
 
     /**
      * @return the type
      */
-    public Class<?> getType()
-    {
+    public Class<?> getType() {
         return type;
     }
 
     /**
      * @param type the type to set
      */
-    public void setType(Class<?> type)
-    {
+    public void setType(Class<?> type) {
         this.type = type;
     }
 
     /**
      * @return the genericClasses
      */
-    public List<Class<?>> getGenericClasses()
-    {
+    public List<Class<?>> getGenericClasses() {
         return genericClasses;
     }
 
     /**
      * @param genericClasses the genericClasses to set
      */
-    public void setGenericClasses(List<Class<?>> genericClasses)
-    {
+    public void setGenericClasses(List<Class<?>> genericClasses) {
         this.genericClasses = genericClasses;
-    }   
-    
+    }
+
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(Object obj){
-    	
-    	//if object's class and column name matches then return true;
+    public boolean equals(Object obj) {
+
+        //if object's class and column name matches then return true;
         return (obj instanceof CollectionColumnInfo && ((CollectionColumnInfo) obj).collectionColumnName != null) && (this.collectionColumnName != null
                 && this.collectionColumnName.equals(((CollectionColumnInfo) obj).collectionColumnName));
     }

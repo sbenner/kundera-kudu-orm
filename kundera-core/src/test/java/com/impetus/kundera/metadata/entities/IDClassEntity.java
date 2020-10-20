@@ -17,10 +17,8 @@ package com.impetus.kundera.metadata.entities;
 
 /**
  * @author vivek.mishra
- * 
  */
-public class IDClassEntity
-{
+public class IDClassEntity {
 
     private int key;
 
@@ -29,34 +27,28 @@ public class IDClassEntity
     /**
      * @return the key
      */
-    public int getKey()
-    {
+    public int getKey() {
         return key;
     }
 
     /**
-     * @param key
-     *            the key to set
+     * @param key the key to set
      */
-    public void setKey(int key)
-    {
+    public void setKey(int key) {
         this.key = key;
     }
 
     /**
      * @return the str
      */
-    public String getStr()
-    {
+    public String getStr() {
         return str;
     }
 
     /**
-     * @param str
-     *            the str to set
+     * @param str the str to set
      */
-    public void setStr(String str)
-    {
+    public void setStr(String str) {
         this.str = str;
     }
 

@@ -22,38 +22,44 @@ import com.impetus.kundera.persistence.PersistenceDelegator;
 
 /**
  * @author amresh
- * 
  */
-public class PersistenceCacheManager
-{
+public class PersistenceCacheManager {
     private PersistenceCache persistenceCache;
 
-    public PersistenceCacheManager(PersistenceCache pc)
-    {
+    public PersistenceCacheManager(PersistenceCache pc) {
         this.persistenceCache = pc;
     }
 
-    public void clearPersistenceCache()
-    {
+    /**
+     * @param entity
+     * @param pd
+     * @param entityId
+     */
+    public static void addEntityToPersistenceCache(Object entity, PersistenceDelegator pd, Object entityId) {
+        MainCache mainCache = (MainCache) pd.getPersistenceCache().getMainCache();
+        String nodeId = ObjectGraphUtils.getNodeId(entityId, entity.getClass());
+        Node node = new Node(nodeId, entity.getClass(), new ManagedState(), pd.getPersistenceCache(), entityId, pd);
+        node.setData(entity);
+        node.setPersistenceDelegator(pd);
+        mainCache.addNodeToCache(node);
+    }
+    // cleanIndividualCache(pc.getEmbeddedCache());
+    // cleanIndividualCache(pc.getElementCollectionCache());
+    // cleanIndividualCache(pc.getTransactionalCache());
+
+    public void clearPersistenceCache() {
         persistenceCache.clean();
 
     } // cleanIndividualCache(pc.getMainCache());
-      // cleanIndividualCache(pc.getEmbeddedCache());
-      // cleanIndividualCache(pc.getElementCollectionCache());
-      // cleanIndividualCache(pc.getTransactionalCache());
 
-    private void cleanIndividualCache(CacheBase cache)
-    {
-        for (Node node : cache.getAllNodes())
-        {
+    private void cleanIndividualCache(CacheBase cache) {
+        for (Node node : cache.getAllNodes()) {
             node.clear();
         }
     }
 
-    public void markAllNodesNotTraversed()
-    {
-        for (Node node : persistenceCache.getMainCache().getAllNodes())
-        {
+    public void markAllNodesNotTraversed() {
+        for (Node node : persistenceCache.getMainCache().getAllNodes()) {
             node.setTraversed(false);
         }
 
@@ -71,21 +77,6 @@ public class PersistenceCacheManager
         {
             node.setTraversed(false);
         }*/
-    }
-
-    /**
-     * @param entity
-     * @param pd
-     * @param entityId
-     */
-    public static void addEntityToPersistenceCache(Object entity, PersistenceDelegator pd, Object entityId)
-    {
-        MainCache mainCache = (MainCache) pd.getPersistenceCache().getMainCache();
-        String nodeId = ObjectGraphUtils.getNodeId(entityId, entity.getClass());
-        Node node = new Node(nodeId, entity.getClass(), new ManagedState(), pd.getPersistenceCache(), entityId, pd);
-        node.setData(entity);
-        node.setPersistenceDelegator(pd);
-        mainCache.addNodeToCache(node);
     }
 
 }

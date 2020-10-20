@@ -15,22 +15,16 @@
  ******************************************************************************/
 package com.impetus.kundera.entity.photo;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
 import com.impetus.kundera.entity.album.AlbumBi_M_M_1_1;
+
+import javax.persistence.*;
 
 /**
  * @author amresh.singh
- * 
  */
 @Entity
 @Table(name = "PHOTO", schema = "KunderaTest@kunderatest")
-public class PhotoBi_M_M_1_1
-{
+public class PhotoBi_M_M_1_1 {
     @Id
     @Column(name = "PHOTO_ID")
     private String photoId;
@@ -44,13 +38,11 @@ public class PhotoBi_M_M_1_1
     @OneToOne(mappedBy = "photo")
     private AlbumBi_M_M_1_1 album;
 
-    public PhotoBi_M_M_1_1()
-    {
+    public PhotoBi_M_M_1_1() {
 
     }
 
-    public PhotoBi_M_M_1_1(String photoId, String caption, String description)
-    {
+    public PhotoBi_M_M_1_1(String photoId, String caption, String description) {
         this.photoId = photoId;
         this.photoCaption = caption;
         this.photoDescription = description;
@@ -59,68 +51,56 @@ public class PhotoBi_M_M_1_1
     /**
      * @return the photoId
      */
-    public String getPhotoId()
-    {
+    public String getPhotoId() {
         return photoId;
     }
 
     /**
-     * @param photoId
-     *            the photoId to set
+     * @param photoId the photoId to set
      */
-    public void setPhotoId(String photoId)
-    {
+    public void setPhotoId(String photoId) {
         this.photoId = photoId;
     }
 
     /**
      * @return the photoCaption
      */
-    public String getPhotoCaption()
-    {
+    public String getPhotoCaption() {
         return photoCaption;
     }
 
     /**
-     * @param photoCaption
-     *            the photoCaption to set
+     * @param photoCaption the photoCaption to set
      */
-    public void setPhotoCaption(String photoCaption)
-    {
+    public void setPhotoCaption(String photoCaption) {
         this.photoCaption = photoCaption;
     }
 
     /**
      * @return the photoDescription
      */
-    public String getPhotoDescription()
-    {
+    public String getPhotoDescription() {
         return photoDescription;
     }
 
     /**
-     * @param photoDescription
-     *            the photoDescription to set
+     * @param photoDescription the photoDescription to set
      */
-    public void setPhotoDescription(String photoDescription)
-    {
+    public void setPhotoDescription(String photoDescription) {
         this.photoDescription = photoDescription;
     }
 
     /**
      * @return the album
      */
-    public AlbumBi_M_M_1_1 getAlbum()
-    {
+    public AlbumBi_M_M_1_1 getAlbum() {
         return album;
     }
 
     /**
-     * @param album
-     *            the album to set
+     * @param album the album to set
      */
-    public void setAlbum(AlbumBi_M_M_1_1 album)
-    {
+    public void setAlbum(AlbumBi_M_M_1_1 album) {
         this.album = album;
     }
 

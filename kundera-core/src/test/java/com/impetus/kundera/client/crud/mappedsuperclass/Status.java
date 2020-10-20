@@ -1,7 +1,6 @@
 package com.impetus.kundera.client.crud.mappedsuperclass;
 
-public enum Status
-{
+public enum Status {
 
-    APPROVED,PENDING
+    APPROVED, PENDING
 }

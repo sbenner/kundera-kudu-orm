@@ -18,330 +18,285 @@ package com.impetus.kundera.validator;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.validation.constraints.AssertFalse;
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Future;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 /**
  * @author Chhavi Gangwal
- *
  */
 @Entity
-public class ValidationEntity
-{
-    
+public class ValidationEntity {
+
     @Id
-    private String  eId;
-    
+    private String eId;
+
     @Column
-    @NotNull(message="Age should not be null")
+    @NotNull(message = "Age should not be null")
     private int age;
-    
+
     @Column
-    @Null(message="The value should be null.")
+    @Null(message = "The value should be null.")
     private String nullField;
-    
+
     @Column
-    @AssertFalse(message="The  person type must be human")
+    @AssertFalse(message = "The  person type must be human")
     private boolean isHuman;
-    
+
     @Column
-    @AssertTrue(message="The person type must be I-human")
+    @AssertTrue(message = "The person type must be I-human")
     private boolean isIHuman;
-    
+
     @Column
-    @DecimalMax(message="Invalid Decimal max value.", value = "20")
+    @DecimalMax(message = "Invalid Decimal max value.", value = "20")
     private int decimalMax;
-    
-        
+
+
     @Column
-    @DecimalMin(message="Invalid Decimal min value.", value = "50")
+    @DecimalMin(message = "Invalid Decimal min value.", value = "50")
     private int decimalMin;
-    
-      
+
+
     @Column
-    @Digits(message="Invalid number.", fraction = 0, integer = 0)
+    @Digits(message = "Invalid number.", fraction = 0, integer = 0)
     private int digits;
-    
+
     @Column
-    @Future(message="Invalid future date.")
+    @Future(message = "Invalid future date.")
     private java.util.Date future;
-    
+
     @Column
-    @Past(message="Invalid past date")
+    @Past(message = "Invalid past date")
     private java.util.Date past;
-    
+
     @Column
-    @Pattern(message="Invalid pattern.", regexp = "^.+@.+\\.")
+    @Pattern(message = "Invalid pattern.", regexp = "^.+@.+\\.")
     private String pattern;
-    
+
     @Column
-    @Size(message="Invalid size.", max= 50, min=10)
+    @Size(message = "Invalid size.", max = 50, min = 10)
     private String size;
-    
+
     @Column
-    @Max(message="Invalid max value.", value = 100)
+    @Max(message = "Invalid max value.", value = 100)
     private String max;
-    
+
     @Column
-    @Min(message="Invalid min value.", value = -20)
+    @Min(message = "Invalid min value.", value = -20)
     private int min;
-    
+
     @NotNull
     @Size(min = 1, max = 256)
-    @Pattern(regexp="^.+@.+\\..+$")
-    @Column(name="email")
+    @Pattern(regexp = "^.+@.+\\..+$")
+    @Column(name = "email")
     private String email;
-   
-
-    /**
-     * @param age the age to set
-     */
-    public void setAge(int age)
-    {
-        this.age = age;
-    }
 
     /**
      * @return the age
      */
-    public int getAge()
-    {
+    public int getAge() {
         return age;
     }
 
     /**
-     * @param eId the eId to set
+     * @param age the age to set
      */
-    public void seteId(String eId)
-    {
-        this.eId = eId;
+    public void setAge(int age) {
+        this.age = age;
     }
 
     /**
      * @return the eId
      */
-    public String geteId()
-    {
+    public String geteId() {
         return eId;
     }
 
     /**
-     * @param isHuman the isHuman to set
+     * @param eId the eId to set
      */
-    public void setHuman(boolean isHuman)
-    {
-        this.isHuman = isHuman;
+    public void seteId(String eId) {
+        this.eId = eId;
     }
 
     /**
      * @return the isHuman
      */
-    public boolean isHuman()
-    {
+    public boolean isHuman() {
         return isHuman;
     }
 
     /**
-     * @param nullField the nullField to set
+     * @param isHuman the isHuman to set
      */
-    public void setNullField(String nullField)
-    {
-        this.nullField = nullField;
+    public void setHuman(boolean isHuman) {
+        this.isHuman = isHuman;
     }
 
     /**
      * @return the nullField
      */
-    public String getNullField()
-    {
+    public String getNullField() {
         return nullField;
     }
 
     /**
-     * @param isIHuman the isIHuman to set
+     * @param nullField the nullField to set
      */
-    public void setIHuman(boolean isIHuman)
-    {
-        this.isIHuman = isIHuman;
+    public void setNullField(String nullField) {
+        this.nullField = nullField;
     }
 
     /**
      * @return the isIHuman
      */
-    public boolean isIHuman()
-    {
+    public boolean isIHuman() {
         return isIHuman;
     }
 
     /**
-     * @param decimalMax the decimalMax to set
+     * @param isIHuman the isIHuman to set
      */
-    public void setDecimalMax(int decimalMax)
-    {
-        this.decimalMax = decimalMax;
+    public void setIHuman(boolean isIHuman) {
+        this.isIHuman = isIHuman;
     }
 
     /**
      * @return the decimalMax
      */
-    public int getDecimalMax()
-    {
+    public int getDecimalMax() {
         return decimalMax;
     }
 
     /**
-     * @param decimalMin the decimalMin to set
+     * @param decimalMax the decimalMax to set
      */
-    public void setDecimalMin(int decimalMin)
-    {
-        this.decimalMin = decimalMin;
+    public void setDecimalMax(int decimalMax) {
+        this.decimalMax = decimalMax;
     }
 
     /**
      * @return the decimalMin
      */
-    public int getDecimalMin()
-    {
+    public int getDecimalMin() {
         return decimalMin;
     }
 
     /**
-     * @param digits the digits to set
+     * @param decimalMin the decimalMin to set
      */
-    public void setDigits(int digits)
-    {
-        this.digits = digits;
+    public void setDecimalMin(int decimalMin) {
+        this.decimalMin = decimalMin;
     }
 
     /**
      * @return the digits
      */
-    public int getDigits()
-    {
+    public int getDigits() {
         return digits;
     }
 
     /**
-     * @param future the future to set
+     * @param digits the digits to set
      */
-    public void setFuture(java.util.Date future)
-    {
-        this.future = future;
+    public void setDigits(int digits) {
+        this.digits = digits;
     }
 
     /**
      * @return the future
      */
-    public java.util.Date getFuture()
-    {
+    public java.util.Date getFuture() {
         return future;
     }
 
     /**
-     * @param pastDate the past to set
+     * @param future the future to set
      */
-    public void setPast(java.util.Date pastDate)
-    {
-        this.past = pastDate;
+    public void setFuture(java.util.Date future) {
+        this.future = future;
     }
 
     /**
      * @return the past
      */
-    public java.util.Date getPast()
-    {
+    public java.util.Date getPast() {
         return past;
     }
 
     /**
-     * @param pattern the pattern to set
+     * @param pastDate the past to set
      */
-    public void setPattern(String pattern)
-    {
-        this.pattern = pattern;
+    public void setPast(java.util.Date pastDate) {
+        this.past = pastDate;
     }
 
     /**
      * @return the pattern
      */
-    public String getPattern()
-    {
+    public String getPattern() {
         return pattern;
     }
 
     /**
-     * @param size the size to set
+     * @param pattern the pattern to set
      */
-    public void setSize(String  size)
-    {
-        this.size = size;
+    public void setPattern(String pattern) {
+        this.pattern = pattern;
     }
 
     /**
      * @return the size
      */
-    public String getSize()
-    {
+    public String getSize() {
         return size;
     }
 
     /**
-     * @param max the max to set
+     * @param size the size to set
      */
-    public void setMax(String max)
-    {
-        this.max = max;
+    public void setSize(String size) {
+        this.size = size;
     }
 
     /**
      * @return the max
      */
-    public String getMax()
-    {
+    public String getMax() {
         return max;
     }
 
     /**
-     * @param min the min to set
+     * @param max the max to set
      */
-    public void setMin(int min)
-    {
-        this.min = min;
+    public void setMax(String max) {
+        this.max = max;
     }
 
     /**
      * @return the min
      */
-    public int getMin()
-    {
+    public int getMin() {
         return min;
     }
 
     /**
-     * @param email the email to set
+     * @param min the min to set
      */
-    public void setEmail(String email)
-    {
-        this.email = email;
+    public void setMin(int min) {
+        this.min = min;
     }
 
     /**
      * @return the email
      */
-    public String getEmail()
-    {
+    public String getEmail() {
         return email;
+    }
+
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
     }
 
 }

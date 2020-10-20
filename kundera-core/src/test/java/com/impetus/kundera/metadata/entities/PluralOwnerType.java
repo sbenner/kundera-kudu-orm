@@ -15,26 +15,17 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.entities;
 
+import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-
 /**
  * @author vivek.mishra
- * 
  */
 @Entity
-public class PluralOwnerType
-{
+public class PluralOwnerType {
     @Id
     @Column(name = "P_KEY")
     private Double primaryKey;
@@ -44,7 +35,7 @@ public class PluralOwnerType
     private Set<SetTypeAssociationEntity> setAssocition;
 
     @ManyToMany
-    @JoinTable(name = "OWNER_LIST", joinColumns = { @JoinColumn(name = "P_KEY") }, inverseJoinColumns = { @JoinColumn(name = "listKey") })
+    @JoinTable(name = "OWNER_LIST", joinColumns = {@JoinColumn(name = "P_KEY")}, inverseJoinColumns = {@JoinColumn(name = "listKey")})
     @Column(name = "list_type")
     private List<ListTypeAssociationEntity> listAssociation;
 
@@ -59,85 +50,70 @@ public class PluralOwnerType
     /**
      * @return the primaryKey
      */
-    public Double getPrimaryKey()
-    {
+    public Double getPrimaryKey() {
         return primaryKey;
     }
 
     /**
-     * @param primaryKey
-     *            the primaryKey to set
+     * @param primaryKey the primaryKey to set
      */
-    public void setPrimaryKey(Double primaryKey)
-    {
+    public void setPrimaryKey(Double primaryKey) {
         this.primaryKey = primaryKey;
     }
 
     /**
      * @return the setAssocition
      */
-    public Set<SetTypeAssociationEntity> getSetAssocition()
-    {
+    public Set<SetTypeAssociationEntity> getSetAssocition() {
         return setAssocition;
     }
 
     /**
-     * @param setAssocition
-     *            the setAssocition to set
+     * @param setAssocition the setAssocition to set
      */
-    public void setSetAssocition(Set<SetTypeAssociationEntity> setAssocition)
-    {
+    public void setSetAssocition(Set<SetTypeAssociationEntity> setAssocition) {
         this.setAssocition = setAssocition;
     }
 
     /**
      * @return the listAssociation
      */
-    public List<ListTypeAssociationEntity> getListAssociation()
-    {
+    public List<ListTypeAssociationEntity> getListAssociation() {
         return listAssociation;
     }
 
     /**
-     * @param listAssociation
-     *            the listAssociation to set
+     * @param listAssociation the listAssociation to set
      */
-    public void setListAssociation(List<ListTypeAssociationEntity> listAssociation)
-    {
+    public void setListAssociation(List<ListTypeAssociationEntity> listAssociation) {
         this.listAssociation = listAssociation;
     }
 
     /**
      * @return the collectionAssociation
      */
-    public Collection<CollectionTypeAssociationEntity> getCollectionAssociation()
-    {
+    public Collection<CollectionTypeAssociationEntity> getCollectionAssociation() {
         return collectionAssociation;
     }
 
     /**
-     * @param collectionAssociation
-     *            the collectionAssociation to set
+     * @param collectionAssociation the collectionAssociation to set
      */
-    public void setCollectionAssociation(Collection<CollectionTypeAssociationEntity> collectionAssociation)
-    {
+    public void setCollectionAssociation(Collection<CollectionTypeAssociationEntity> collectionAssociation) {
         this.collectionAssociation = collectionAssociation;
     }
 
     /**
      * @return the mapAssociation
      */
-    public Map<Integer, MapTypeAssociationEntity> getMapAssociation()
-    {
+    public Map<Integer, MapTypeAssociationEntity> getMapAssociation() {
         return mapAssociation;
     }
 
     /**
-     * @param mapAssociation
-     *            the mapAssociation to set
+     * @param mapAssociation the mapAssociation to set
      */
-    public void setMapAssociation(Map<Integer, MapTypeAssociationEntity> mapAssociation)
-    {
+    public void setMapAssociation(Map<Integer, MapTypeAssociationEntity> mapAssociation) {
         this.mapAssociation = mapAssociation;
     }
 

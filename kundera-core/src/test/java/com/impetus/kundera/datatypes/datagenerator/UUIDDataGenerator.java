@@ -2,8 +2,7 @@ package com.impetus.kundera.datatypes.datagenerator;
 
 import java.util.UUID;
 
-public class UUIDDataGenerator implements DataGenerator<UUID>
-{
+public class UUIDDataGenerator implements DataGenerator<UUID> {
 
     private static final UUID RANDOM_UUID = UUID.randomUUID();
 
@@ -12,29 +11,25 @@ public class UUIDDataGenerator implements DataGenerator<UUID>
     private static final UUID MIN_UUID = UUID.randomUUID();
 
     @Override
-    public UUID randomValue()
-    {
+    public UUID randomValue() {
 
         return RANDOM_UUID;
     }
 
     @Override
-    public UUID maxValue()
-    {
+    public UUID maxValue() {
 
         return MAX_UUID;
     }
 
     @Override
-    public UUID minValue()
-    {
+    public UUID minValue() {
 
         return MIN_UUID;
     }
 
     @Override
-    public UUID partialValue()
-    {
+    public UUID partialValue() {
 
         return null;
     }

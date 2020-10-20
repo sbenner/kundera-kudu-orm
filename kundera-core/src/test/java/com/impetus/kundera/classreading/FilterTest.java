@@ -16,25 +16,21 @@
 package com.impetus.kundera.classreading;
 
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
  * @author amresh.singh
- *
  */
-public class FilterTest
-{
+public class FilterTest {
     Filter filter;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         filter = new FilterImpl();
     }
 
@@ -42,8 +38,7 @@ public class FilterTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         filter = null;
     }
 
@@ -51,14 +46,13 @@ public class FilterTest
      * Test method for {@link com.impetus.kundera.classreading.Filter#accepts(java.lang.String)}.
      */
     @Test
-    public void testAccepts()
-    {
+    public void testAccepts() {
         String fileName = "/com/impetus/kundera/entities/User.class";
         Assert.assertTrue(filter.accepts(fileName));
-        
+
         fileName = "javax/persistence/EntityManager.class";
         Assert.assertFalse(filter.accepts(fileName));
-        
+
     }
 
 }

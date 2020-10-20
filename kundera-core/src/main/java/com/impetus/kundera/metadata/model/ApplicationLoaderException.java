@@ -17,12 +17,10 @@ package com.impetus.kundera.metadata.model;
 
 /**
  * Runtime exception handler class ApplicationLoader.
- * 
+ *
  * @author vivek.mishra
- * 
  */
-public class ApplicationLoaderException extends RuntimeException
-{
+public class ApplicationLoaderException extends RuntimeException {
 
     /**
      * Generated Serial version UID.
@@ -31,12 +29,10 @@ public class ApplicationLoaderException extends RuntimeException
 
     /**
      * Default constructor using fields.
-     * 
-     * @param errMsg
-     *            error message.
+     *
+     * @param errMsg error message.
      */
-    public ApplicationLoaderException(String errMsg)
-    {
+    public ApplicationLoaderException(String errMsg) {
         super(errMsg);
     }
 }

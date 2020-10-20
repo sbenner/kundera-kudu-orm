@@ -15,26 +15,24 @@
  ******************************************************************************/
 package com.impetus.kundera.service;
 
+import com.impetus.kundera.configure.ClientProperties.DataStore.Connection.Server;
+import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import com.impetus.kundera.configure.ClientProperties.DataStore.Connection.Server;
-import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
-
 /**
  * @author vivek.mishra
- *
- *  Dummy core host configuration class.
+ * <p>
+ * Dummy core host configuration class.
  */
-public class CoreHostConfiguration extends HostConfiguration
-{
+public class CoreHostConfiguration extends HostConfiguration {
 
     String hosts;
     String port;
 
-    public CoreHostConfiguration(Map externalProperties, List<Server> servers, String persistenceUnit, KunderaMetadata kunderaMetadata)
-    {
+    public CoreHostConfiguration(Map externalProperties, List<Server> servers, String persistenceUnit, KunderaMetadata kunderaMetadata) {
         super(externalProperties, servers, persistenceUnit, kunderaMetadata);
     }
 
@@ -42,9 +40,8 @@ public class CoreHostConfiguration extends HostConfiguration
      * @see com.impetus.kundera.service.HostConfiguration#buildHosts(java.util.List, java.util.List)
      */
     @Override
-    protected void buildHosts(List<Server> servers, List<Host> hostsList)
-    {
-     // do nothing
+    protected void buildHosts(List<Server> servers, List<Host> hostsList) {
+        // do nothing
 
     }
 
@@ -52,8 +49,7 @@ public class CoreHostConfiguration extends HostConfiguration
      * @see com.impetus.kundera.service.HostConfiguration#buildHosts(java.lang.String, java.lang.String, java.util.List)
      */
     @Override
-    protected void buildHosts(String hosts, String portAsString, List<Host> hostsList)
-    {
+    protected void buildHosts(String hosts, String portAsString, List<Host> hostsList) {
         this.hosts = hosts;
         this.port = portAsString;
     }
@@ -62,14 +58,12 @@ public class CoreHostConfiguration extends HostConfiguration
      * @see com.impetus.kundera.service.HostConfiguration#setConfig(com.impetus.kundera.service.Host, java.util.Properties, java.util.Map)
      */
     @Override
-    protected void setConfig(Host host, Properties props, Map puProperties)
-    {
+    protected void setConfig(Host host, Properties props, Map puProperties) {
         // do nothing
 
     }
-    
-    public void onValidation(final String host, final String port)
-    {
+
+    public void onValidation(final String host, final String port) {
         super.onValidation(host, port);
     }
 }

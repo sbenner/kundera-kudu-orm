@@ -51,13 +51,13 @@ import java.util.Map.Entry;
  * Schema configuration implementation to support ddl_schema_creation
  * functionality. e.g. kundera_ddl_auto_prepare
  * (create,create-drop,validate,update)
- * 
+ *
  * @author Kuldeep.Kumar
- * 
  */
-public class SchemaConfiguration extends AbstractSchemaConfiguration implements Configuration
-{
-    /** The log. */
+public class SchemaConfiguration extends AbstractSchemaConfiguration implements Configuration {
+    /**
+     * The log.
+     */
     private static Logger log = LoggerFactory.getLogger(SchemaConfiguration.class);
 
     /**
@@ -67,12 +67,10 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
 
     /**
      * Constructor using persistence units as parameter.
-     * 
-     * @param persistenceUnits
-     *            persistence units.
+     *
+     * @param persistenceUnits persistence units.
      */
-    public SchemaConfiguration(Map externalProperties, final KunderaMetadata metadata, String... persistenceUnits)
-    {
+    public SchemaConfiguration(Map externalProperties, final KunderaMetadata metadata, String... persistenceUnits) {
         super(persistenceUnits, externalProperties, metadata);
     }
 
@@ -80,15 +78,13 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
     /**
      * configure method responsible for creating pu to schema metadata map for
      * each entity in class path.
-     * 
+     *
      */
-    public void configure()
-    {
+    public void configure() {
         ApplicationMetadata appMetadata = kunderaMetadata.getApplicationMetadata();
 
         // TODO, FIXME: Refactoring is required.
-        for (String persistenceUnit : persistenceUnits)
-        {
+        for (String persistenceUnit : persistenceUnits) {
             EntityValidator validator = new EntityValidatorImpl(
                     KunderaCoreUtils.getExternalProperties(persistenceUnit, externalPropertyMap, persistenceUnits));
 
@@ -97,11 +93,10 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
 
             Map<String, EntityMetadata> entityMetadataMap = getEntityMetadataCol(appMetadata, persistenceUnit);
 
-         //   PersistenceUnitMetadata puMetadata = appMetadata.getPersistenceUnitMetadata(persistenceUnit);
+            //   PersistenceUnitMetadata puMetadata = appMetadata.getPersistenceUnitMetadata(persistenceUnit);
 
             // Iterate each entity metadata.
-            for (EntityMetadata entityMetadata : entityMetadataMap.values())
-            {
+            for (EntityMetadata entityMetadata : entityMetadataMap.values()) {
                 // get entity metadata(table info as well as columns)
                 // if table info exists, get it from map.
                 boolean found = false;
@@ -120,29 +115,25 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
 
                 tableInfo
                         .setIdFieldAnnotations(((AbstractAttribute) entityMetadata
-                        .getIdAttribute()).getFieldAnnotation().getAnnotations());
+                                .getIdAttribute()).getFieldAnnotation().getAnnotations());
 
 
                 // check for tableInfos not empty and contains the present
                 // tableInfo.
-                if (!tableInfos.isEmpty() && tableInfos.contains(tableInfo))
-                {
+                if (!tableInfos.isEmpty() && tableInfos.contains(tableInfo)) {
                     found = true;
                     int idx = tableInfos.indexOf(tableInfo);
                     tableInfo = tableInfos.get(idx);
-                    addColumnToTableInfo(entityMetadata,  tableInfo);
-                }
-                else
-                {
-                    addColumnToTableInfo(entityMetadata,  tableInfo);
+                    addColumnToTableInfo(entityMetadata, tableInfo);
+                } else {
+                    addColumnToTableInfo(entityMetadata, tableInfo);
                 }
 
                 List<Relation> relations = entityMetadata.getRelations();
 
                 parseRelations(persistenceUnit, tableInfos, entityMetadata, tableInfo, relations);
 
-                if (!found)
-                {
+                if (!found) {
                     tableInfos.add(tableInfo);
                 }
                 // Add table for GeneratedValue if opted TableStrategy
@@ -157,24 +148,20 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
         }
 
         // Need to iterate, as in case of non unary relations
-        for (String persistenceUnit : persistenceUnits)
-        {
+        for (String persistenceUnit : persistenceUnits) {
             PersistenceUnitMetadata puMetadata = appMetadata.getPersistenceUnitMetadata(persistenceUnit);
 
             Map externalPuMap = externalPropertyMap;
 
             // in case of polyglot.
-            if (persistenceUnits.length > 1 && externalPropertyMap != null)
-            {
+            if (persistenceUnits.length > 1 && externalPropertyMap != null) {
                 externalPuMap = (Map) externalPropertyMap.get(persistenceUnit);
             }
             if (externalPuMap != null && externalPuMap.get(PersistenceProperties.KUNDERA_DDL_AUTO_PREPARE) != null
-                    || puMetadata.getProperty(PersistenceProperties.KUNDERA_DDL_AUTO_PREPARE) != null)
-            {
+                    || puMetadata.getProperty(PersistenceProperties.KUNDERA_DDL_AUTO_PREPARE) != null) {
                 SchemaManager schemaManager = getSchemaManagerForPu(persistenceUnit);
 
-                if (schemaManager != null)
-                {
+                if (schemaManager != null) {
                     schemaManager.exportSchema(persistenceUnit, puToSchemaMetadata.get(persistenceUnit));
                 }
             }
@@ -183,18 +170,16 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
 
     /**
      * Return schema manager for pu.
-     * 
+     *
      * @param persistenceUnit
      * @return
      */
-    private SchemaManager getSchemaManagerForPu(final String persistenceUnit)
-    {
+    private SchemaManager getSchemaManagerForPu(final String persistenceUnit) {
         SchemaManager schemaManager = null;
         Map<String, Object> externalProperties = KunderaCoreUtils.getExternalProperties(persistenceUnit,
                 externalPropertyMap, persistenceUnits);
         if (getSchemaProperty(persistenceUnit, externalProperties) != null
-                && !getSchemaProperty(persistenceUnit, externalProperties).isEmpty())
-        {
+                && !getSchemaProperty(persistenceUnit, externalProperties).isEmpty()) {
             ClientFactory clientFactory = ClientResolver.getClientFactory(persistenceUnit);
             schemaManager = clientFactory != null ? clientFactory.getSchemaManager(externalProperties) : null;
         }
@@ -203,7 +188,7 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
 
     /**
      * Add tableGenerator to table info.
-     * 
+     *
      * @param appMetadata
      * @param persistenceUnit
      * @param tableInfos
@@ -211,7 +196,7 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
      * @param isCompositeId
      */
     private void addTableGenerator(ApplicationMetadata appMetadata, String persistenceUnit, List<TableInfo> tableInfos,
-            EntityMetadata entityMetadata) {
+                                   EntityMetadata entityMetadata) {
         Metamodel metamodel = appMetadata.getMetamodel(persistenceUnit);
         IdDescriptor keyValue = ((MetamodelImpl) metamodel).getKeyValue(entityMetadata.getEntityClazz().getName());
         if (keyValue != null && keyValue.getTableDescriptor() != null) {
@@ -229,7 +214,7 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
 
     /**
      * parse the relations of entites .
-     * 
+     *
      * @param persistenceUnit
      * @param tableInfos
      * @param entityMetadata
@@ -237,17 +222,13 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
      * @param relations
      */
     private void parseRelations(String persistenceUnit, List<TableInfo> tableInfos, EntityMetadata entityMetadata,
-            TableInfo tableInfo, List<Relation> relations)
-    {
-        for (Relation relation : relations)
-        {
-            if (relation != null)
-            {
+                                TableInfo tableInfo, List<Relation> relations) {
+        for (Relation relation : relations) {
+            if (relation != null) {
                 Class entityClass = relation.getTargetEntity();
                 EntityMetadata targetEntityMetadata = KunderaMetadataManager.getEntityMetadata(kunderaMetadata,
                         entityClass);
-                if (targetEntityMetadata == null)
-                {
+                if (targetEntityMetadata == null) {
                     log.error("Persistence unit for class : " + entityClass + " is not loaded");
                     throw new SchemaGenerationException(
                             "Persistence unit for class : " + entityClass + " is not loaded");
@@ -255,16 +236,12 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
                 ForeignKey relationType = relation.getType();
 
                 // if relation type is one to many or join by primary key
-                if (relationType.equals(ForeignKey.ONE_TO_MANY) && relation.getJoinColumnName(kunderaMetadata) != null)
-                {
+                if (relationType.equals(ForeignKey.ONE_TO_MANY) && relation.getJoinColumnName(kunderaMetadata) != null) {
                     // if self association
-                    if (targetEntityMetadata.equals(entityMetadata))
-                    {
+                    if (targetEntityMetadata.equals(entityMetadata)) {
                         tableInfo.addColumnInfo(getJoinColumn(tableInfo, relation.getJoinColumnName(kunderaMetadata),
                                 entityMetadata.getIdAttribute().getJavaType()));
-                    }
-                    else
-                    {
+                    } else {
                         String pu = targetEntityMetadata.getPersistenceUnit();
                         Type targetEntityType = targetEntityMetadata.getType();
                         Class idClass = targetEntityMetadata.getIdAttribute().getJavaType();
@@ -276,8 +253,7 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
                         // In case of different persistence unit. case for poly
                         // glot
                         // persistence.
-                        if (!pu.equals(persistenceUnit))
-                        {
+                        if (!pu.equals(persistenceUnit)) {
                             List<TableInfo> targetTableInfos = getSchemaInfo(pu);
 
                             addJoinColumnToInfo(relation.getJoinColumnName(kunderaMetadata), targetTableInfo,
@@ -285,38 +261,31 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
 
                             // add for newly discovered persistence unit.
                             puToSchemaMetadata.put(pu, targetTableInfos);
-                        }
-                        else
-                        {
+                        } else {
                             addJoinColumnToInfo(relation.getJoinColumnName(kunderaMetadata), targetTableInfo,
                                     tableInfos, entityMetadata);
                         }
                     }
                 }
                 // if relation type is one to one or many to one.
-                else if (relation.isUnary() && relation.getJoinColumnName(kunderaMetadata) != null)
-                {
-                    if (!relation.isJoinedByPrimaryKey())
-                    {
+                else if (relation.isUnary() && relation.getJoinColumnName(kunderaMetadata) != null) {
+                    if (!relation.isJoinedByPrimaryKey()) {
                         tableInfo.addColumnInfo(getJoinColumn(tableInfo, relation.getJoinColumnName(kunderaMetadata),
                                 targetEntityMetadata.getIdAttribute().getJavaType()));
                     }
                 }
                 // if relation type is many to many and relation via join table.
-                else if ((relationType.equals(ForeignKey.MANY_TO_MANY)) && (entityMetadata.isRelationViaJoinTable()))
-                {
+                else if ((relationType.equals(ForeignKey.MANY_TO_MANY)) && (entityMetadata.isRelationViaJoinTable())) {
                     JoinTableMetadata joinTableMetadata = relation.getJoinTableMetadata();
                     String joinTableName = joinTableMetadata != null ? joinTableMetadata.getJoinTableName() : null;
                     String joinColumnName = joinTableMetadata != null
                             ? (String) joinTableMetadata.getJoinColumns().toArray()[0] : null;
                     String inverseJoinColumnName = joinTableMetadata != null
                             ? (String) joinTableMetadata.getInverseJoinColumns().toArray()[0] : null;
-                    if (joinTableName != null)
-                    {
+                    if (joinTableName != null) {
                         TableInfo joinTableInfo = new TableInfo(joinTableName, Type.COLUMN_FAMILY.name(), String.class,
                                 "key");
-                        if (!tableInfos.isEmpty() && !tableInfos.contains(joinTableInfo) || tableInfos.isEmpty())
-                        {
+                        if (!tableInfos.isEmpty() && !tableInfos.contains(joinTableInfo) || tableInfos.isEmpty()) {
                             joinTableInfo.addColumnInfo(getJoinColumn(joinTableInfo, joinColumnName,
                                     entityMetadata.getIdAttribute().getJavaType()));
                             joinTableInfo.addColumnInfo(getJoinColumn(joinTableInfo, inverseJoinColumnName,
@@ -341,34 +310,27 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
 
     /**
      * adds join column name to the table Info of entity.
-     * 
+     *
      * @param joinColumn
      * @param targetTableInfo
      * @param targetTableInfos
      */
     private void addJoinColumnToInfo(String joinColumn, TableInfo targetTableInfo, List<TableInfo> targetTableInfos,
-            EntityMetadata m)
-    {
-        if (!joinColumn.equals(targetTableInfo.getIdColumnName()))
-        {
+                                     EntityMetadata m) {
+        if (!joinColumn.equals(targetTableInfo.getIdColumnName())) {
 
-            if (!targetTableInfos.isEmpty() && targetTableInfos.contains(targetTableInfo))
-            {
+            if (!targetTableInfos.isEmpty() && targetTableInfos.contains(targetTableInfo)) {
                 int idx = targetTableInfos.indexOf(targetTableInfo);
                 targetTableInfo = targetTableInfos.get(idx);
                 ColumnInfo columnInfoOfJoinColumn = getJoinColumn(targetTableInfo, joinColumn,
                         m.getIdAttribute().getBindableJavaType());
-                if (!targetTableInfo.getColumnMetadatas().contains(columnInfoOfJoinColumn))
-                {
+                if (!targetTableInfo.getColumnMetadatas().contains(columnInfoOfJoinColumn)) {
                     targetTableInfo.addColumnInfo(columnInfoOfJoinColumn);
                 }
-            }
-            else
-            {
+            } else {
                 ColumnInfo columnInfoOfJoinColumn = getJoinColumn(targetTableInfo, joinColumn,
                         m.getIdAttribute().getBindableJavaType());
-                if (!targetTableInfo.getColumnMetadatas().contains(columnInfoOfJoinColumn))
-                {
+                if (!targetTableInfo.getColumnMetadatas().contains(columnInfoOfJoinColumn)) {
                     targetTableInfo.addColumnInfo(columnInfoOfJoinColumn);
                 }
                 targetTableInfos.add(targetTableInfo);
@@ -378,13 +340,12 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
 
     /**
      * Adds column to table info of entity.
-     * 
+     *
      * @param entityMetadata
      * @param type
      * @param tableInfo
      */
-    private void addColumnToTableInfo(EntityMetadata entityMetadata,TableInfo tableInfo)
-    {
+    private void addColumnToTableInfo(EntityMetadata entityMetadata, TableInfo tableInfo) {
         // Add columns to table info.
 
         Metamodel metaModel = kunderaMetadata.getApplicationMetadata()
@@ -393,12 +354,10 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
         Map<String, PropertyIndex> columns = entityMetadata.getIndexProperties();
 
         // populate columnsToBeIndexed with composite indexes
-        for (Entry<String, PropertyIndex> c : columns.entrySet())
-        {
+        for (Entry<String, PropertyIndex> c : columns.entrySet()) {
             PropertyIndex indexedColumn = c.getValue();
             if (indexedColumn.getIndexType() != null
-                    && indexedColumn.getIndexType().toLowerCase().equals(Constants.COMPOSITE))
-            {
+                    && indexedColumn.getIndexType().toLowerCase().equals(Constants.COMPOSITE)) {
                 IndexInfo indexInfo = new IndexInfo(c.getKey(), indexedColumn.getMax(), indexedColumn.getMin(),
                         indexedColumn.getIndexType(), indexedColumn.getName());
                 tableInfo.addToIndexedColumnList(indexInfo);
@@ -459,8 +418,7 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
         cci.setGenericClasses(PropertyAccessorHelper.getGenericClasses((Field) attr.getJavaMember()));
         String jpaName = ((AbstractAttribute) attr).getJPAColumnName();
         PropertyIndex indexedColumn = columns.get(jpaName);
-        if (indexedColumn != null && indexedColumn.getName() != null)
-        {
+        if (indexedColumn != null && indexedColumn.getName() != null) {
             IndexInfo indexInfo = new IndexInfo(jpaName, indexedColumn.getMax(), indexedColumn.getMin(),
                     indexedColumn.getIndexType(), indexedColumn.getName());
             tableInfo.addToIndexedColumnList(indexInfo);
@@ -471,18 +429,14 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
 
     /**
      * Add {@link DiscriminatorColumn} for schema generation.
-     * 
-     * @param tableInfo
-     *            table info.
-     * @param entityType
-     *            entity type.
+     *
+     * @param tableInfo  table info.
+     * @param entityType entity type.
      */
-    private void onInheritedProperty(TableInfo tableInfo, EntityType entityType)
-    {
+    private void onInheritedProperty(TableInfo tableInfo, EntityType entityType) {
         String discrColumn = ((AbstractManagedType) entityType).getDiscriminatorColumn();
 
-        if (discrColumn != null)
-        {
+        if (discrColumn != null) {
             ColumnInfo columnInfo = new ColumnInfo();
             columnInfo.setColumnName(discrColumn);
             columnInfo.setType(String.class);
@@ -496,18 +450,14 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
 
     /**
      * Returns list of configured table/column families.
-     * 
-     * @param persistenceUnit
-     *            persistence unit, for which schema needs to be fetched.
-     * 
+     *
+     * @param persistenceUnit persistence unit, for which schema needs to be fetched.
      * @return list of {@link TableInfo}
      */
-    private List<TableInfo> getSchemaInfo(String persistenceUnit)
-    {
+    private List<TableInfo> getSchemaInfo(String persistenceUnit) {
         List<TableInfo> tableInfos = puToSchemaMetadata.get(persistenceUnit);
         // if no TableInfos for given persistence unit.
-        if (tableInfos == null)
-        {
+        if (tableInfos == null) {
             tableInfos = new ArrayList<TableInfo>();
         }
         return tableInfos;
@@ -515,15 +465,12 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
 
     /**
      * Returns map of entity metdata {@link EntityMetadata}.
-     * 
-     * @param appMetadata
-     *            application metadata
-     * @param persistenceUnit
-     *            persistence unit
+     *
+     * @param appMetadata     application metadata
+     * @param persistenceUnit persistence unit
      * @return map of entity metadata.
      */
-    private Map<String, EntityMetadata> getEntityMetadataCol(ApplicationMetadata appMetadata, String persistenceUnit)
-    {
+    private Map<String, EntityMetadata> getEntityMetadataCol(ApplicationMetadata appMetadata, String persistenceUnit) {
         Metamodel metaModel = appMetadata.getMetamodel(persistenceUnit);
         Map<String, EntityMetadata> entityMetadataMap = ((MetamodelImpl) metaModel).getEntityMetadataMap();
         return entityMetadataMap;
@@ -531,7 +478,7 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
 
     /**
      * Get Embedded column info.
-     * 
+     *
      * @param embeddableType
      * @param embeddableColName
      * @param embeddedEntityClass
@@ -539,12 +486,10 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
      * @return
      */
     private EmbeddedColumnInfo getEmbeddedColumn(TableInfo tableInfo, EmbeddableType embeddableType,
-            String embeddableColName, Class embeddedEntityClass, Field field)
-    {
+                                                 String embeddableColName, Class embeddedEntityClass, Field field) {
 
         String[] orderByColumns = null;
-        if (field.isAnnotationPresent(OrderBy.class))
-        {
+        if (field.isAnnotationPresent(OrderBy.class)) {
             OrderBy order = (OrderBy) field.getAnnotation(OrderBy.class);
             orderByColumns = order.value().split("\\s*,\\s*");
         }
@@ -556,8 +501,7 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
         Set attributes = embeddableType.getAttributes();
         Iterator iter = attributes.iterator();
 
-        while (iter.hasNext())
-        {
+        while (iter.hasNext()) {
             Attribute attr = (Attribute) iter.next();
             columns.add(getColumn(tableInfo, attr, indexedColumns.get(attr.getName()), orderByColumns));
         }
@@ -567,18 +511,15 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
 
     /**
      * getColumn method return ColumnInfo for the given column
-     * 
-     * @param Object
-     *            of Column.
+     *
+     * @param Object of Column.
      * @return Object of ColumnInfo.
      */
     private ColumnInfo getColumn(TableInfo tableInfo, Attribute column, PropertyIndex indexedColumn,
-            String[] orderByColumns)
-    {
+                                 String[] orderByColumns) {
         ColumnInfo columnInfo = new ColumnInfo();
 
-        if (column.getJavaType().isAnnotationPresent(OrderBy.class))
-        {
+        if (column.getJavaType().isAnnotationPresent(OrderBy.class)) {
             OrderBy order = (OrderBy) column.getJavaType().getAnnotation(OrderBy.class);
             orderByColumns = order.value().split("\\s*,\\s*");
 
@@ -586,13 +527,13 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
         columnInfo.setOrderBy(getOrderByColumn(orderByColumns, column));
 
         Optional<Column> col =
-                        Optional.ofNullable((Column) ((DefaultSingularAttribute) column)
-                                .getFieldAnnotation()
-                                .getAnnotation("javax.persistence.Column"));
+                Optional.ofNullable((Column) ((DefaultSingularAttribute) column)
+                        .getFieldAnnotation()
+                        .getAnnotation("javax.persistence.Column"));
 
         columnInfo.setFieldAnnotations(((DefaultSingularAttribute) column).getFieldAnnotation().getAnnotations());
 
-        if(col.isPresent()){
+        if (col.isPresent()) {
             Column columnAnnotation = col.get();
             columnInfo.setNullable(columnAnnotation.nullable());
             columnInfo.setPrecision(columnAnnotation.precision());
@@ -601,18 +542,14 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
         }
 
 
-        if (column.getJavaType().isEnum())
-        {
+        if (column.getJavaType().isEnum()) {
             columnInfo.setType(String.class);
-        }
-        else
-        {
+        } else {
             columnInfo.setType(column.getJavaType());
         }
         columnInfo.setColumnName(((AbstractAttribute) column).getJPAColumnName());
 
-        if (indexedColumn != null && indexedColumn.getName() != null)
-        {
+        if (indexedColumn != null && indexedColumn.getName() != null) {
             columnInfo.setIndexable(true);
             IndexInfo indexInfo = new IndexInfo(((AbstractAttribute) column).getJPAColumnName(), indexedColumn.getMax(),
                     indexedColumn.getMin(), indexedColumn.getIndexType(), indexedColumn.getName());
@@ -625,29 +562,21 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
 
     /**
      * getOrderByColumn method return order by value of the column
-     * 
-     * @param String
-     *            [] orderByColumns
-     * 
-     * @param Attribute
-     *            column
-     * 
+     *
+     * @param String    [] orderByColumns
+     * @param Attribute column
      * @return orderColumnValue.
      */
-    private String getOrderByColumn(String[] orderByColumns, Attribute column)
-    {
+    private String getOrderByColumn(String[] orderByColumns, Attribute column) {
 
-        if (orderByColumns != null)
-        {
-            for (String orderColumn : orderByColumns)
-            {
+        if (orderByColumns != null) {
+            for (String orderColumn : orderByColumns) {
                 String[] orderValue = orderColumn.split("\\s");
                 String orderColumnName = orderValue[0].substring(orderValue[0].lastIndexOf('.') + 1);
                 String orderColumnValue = orderValue[1];
 
                 if (orderColumnName.equals(((AbstractAttribute) column).getName())
-                        || orderColumnName.equals(((AbstractAttribute) column).getJPAColumnName()))
-                {
+                        || orderColumnName.equals(((AbstractAttribute) column).getJPAColumnName())) {
                     return orderColumnValue;
                 }
             }
@@ -658,15 +587,12 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
 
     /**
      * getJoinColumn method return ColumnInfo for the join column
-     * 
+     *
      * @param columnType
-     * 
-     * @param String
-     *            joinColumnName.
+     * @param String     joinColumnName.
      * @return ColumnInfo object columnInfo.
      */
-    private ColumnInfo getJoinColumn(TableInfo tableInfo, String joinColumnName, Class columnType)
-    {
+    private ColumnInfo getJoinColumn(TableInfo tableInfo, String joinColumnName, Class columnType) {
         ColumnInfo columnInfo = new ColumnInfo();
         columnInfo.setColumnName(joinColumnName);
         columnInfo.setIndexable(true);
@@ -681,21 +607,17 @@ public class SchemaConfiguration extends AbstractSchemaConfiguration implements 
     /**
      * getKunderaProperty method return auto schema generation property for give
      * persistence unit.
-     * 
+     *
      * @param externalProperties
-     * 
-     * @param String
-     *            persistenceUnit.
+     * @param String             persistenceUnit.
      * @return value of kundera auto ddl in form of String.
      */
-    private String getSchemaProperty(String persistenceUnit, Map<String, Object> externalProperties)
-    {
+    private String getSchemaProperty(String persistenceUnit, Map<String, Object> externalProperties) {
         PersistenceUnitMetadata persistenceUnitMetadata = kunderaMetadata.getApplicationMetadata()
                 .getPersistenceUnitMetadata(persistenceUnit);
         String autoDdlOption = externalProperties != null
                 ? (String) externalProperties.get(PersistenceProperties.KUNDERA_DDL_AUTO_PREPARE) : null;
-        if (autoDdlOption == null)
-        {
+        if (autoDdlOption == null) {
             autoDdlOption = persistenceUnitMetadata != null
                     ? persistenceUnitMetadata.getProperty(PersistenceProperties.KUNDERA_DDL_AUTO_PREPARE) : null;
         }

@@ -15,46 +15,33 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
-import java.io.UnsupportedEncodingException;
-
+import com.impetus.kundera.Constants;
+import com.impetus.kundera.property.PropertyAccessException;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.Constants;
-import com.impetus.kundera.property.PropertyAccessException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author amresh.singh
- * 
  */
-public class EnumAccessorTest
-{
-
-    enum Day
-    {
-        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
-    }
+public class EnumAccessorTest {
 
     Day day1 = Day.MONDAY;
-
     Day day2 = Day.TUESDAY;
-
     EnumAccessor accessor = new EnumAccessor();
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
     }
 
     /**
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
     }
 
     /**
@@ -63,10 +50,8 @@ public class EnumAccessorTest
      * .
      */
     @Test
-    public void testFromBytes()
-    {
-        try
-        {
+    public void testFromBytes() {
+        try {
             byte[] b = day1.name().getBytes(Constants.ENCODING);
 
             Day dd = (Day) accessor.fromBytes(Day.class, b);
@@ -77,13 +62,9 @@ public class EnumAccessorTest
 
             Assert.assertNull(o);
 
-        }
-        catch (UnsupportedEncodingException e)
-        {
+        } catch (UnsupportedEncodingException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (PropertyAccessException e)
-        {
+        } catch (PropertyAccessException e) {
             Assert.fail(e.getMessage());
         }
     }
@@ -94,10 +75,8 @@ public class EnumAccessorTest
      * .
      */
     @Test
-    public void testToBytes()
-    {
-        try
-        {
+    public void testToBytes() {
+        try {
             byte[] b = accessor.toBytes(day1);
             String s = new String(b, Constants.ENCODING);
             Assert.assertEquals(day1.MONDAY.name(), s);
@@ -106,13 +85,9 @@ public class EnumAccessorTest
 
             Assert.assertNull(b);
 
-        }
-        catch (PropertyAccessException e)
-        {
+        } catch (PropertyAccessException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (UnsupportedEncodingException e)
-        {
+        } catch (UnsupportedEncodingException e) {
             Assert.fail(e.getMessage());
         }
     }
@@ -123,8 +98,7 @@ public class EnumAccessorTest
      * .
      */
     @Test
-    public void testToStringObject()
-    {
+    public void testToStringObject() {
         String s = accessor.toString(day1);
         Assert.assertEquals(Day.MONDAY.name(), s);
 
@@ -138,10 +112,8 @@ public class EnumAccessorTest
      * .
      */
     @Test
-    public void testFromString()
-    {
-        try
-        {
+    public void testFromString() {
+        try {
             Day day11 = (Day) accessor.fromString(Day.class, day1.name());
             Assert.assertEquals(day1, day11);
 
@@ -156,9 +128,7 @@ public class EnumAccessorTest
 
             day = (Day) accessor.fromString(null, null);
             Assert.assertNull(day);
-        }
-        catch (PropertyAccessException e)
-        {
+        } catch (PropertyAccessException e) {
             Assert.fail(e.getMessage());
         }
     }
@@ -169,10 +139,8 @@ public class EnumAccessorTest
      * .
      */
     @Test
-    public void testGetCopy()
-    {
-        try
-        {
+    public void testGetCopy() {
+        try {
             Day day = Day.MONDAY;
             Day d = (Day) accessor.getCopy(day);
             Assert.assertNotNull(d);
@@ -180,9 +148,7 @@ public class EnumAccessorTest
 
             d = (Day) accessor.getCopy(null);
             Assert.assertNull(d);
-        }
-        catch (PropertyAccessException e)
-        {
+        } catch (PropertyAccessException e) {
             Assert.fail(e.getMessage());
         }
     }
@@ -193,17 +159,17 @@ public class EnumAccessorTest
      * .
      */
     @Test
-    public void testGetInstance()
-    {
-        try
-        {
+    public void testGetInstance() {
+        try {
             Day d = (Day) accessor.getInstance(Day.class);
             Assert.assertNull(d);
 
-        }
-        catch (PropertyAccessException e)
-        {
+        } catch (PropertyAccessException e) {
             Assert.fail(e.getMessage());
         }
+    }
+
+    enum Day {
+        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
     }
 }

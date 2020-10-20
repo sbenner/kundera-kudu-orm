@@ -15,27 +15,24 @@
  ******************************************************************************/
 package com.impetus.kundera.proxy;
 
+import com.impetus.kundera.proxy.collection.ProxyCollection;
+import javassist.util.proxy.ProxyFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import javassist.util.proxy.ProxyFactory;
-
-import com.impetus.kundera.proxy.collection.ProxyCollection;
-
 /**
  * Utility class for proxy objects
- * 
+ *
  * @author amresh.singh
  */
-public class ProxyHelper
-{
+public class ProxyHelper {
 
     static List<String> proxyTypes = new ArrayList<String>();
 
     static List<String> persistentCollectionTypes = new ArrayList<String>();
 
-    static
-    {
+    static {
         proxyTypes.add("org.hibernate.proxy.HibernateProxy");
         proxyTypes.add("org.hibernate.proxy.map.MapProxy");
         proxyTypes.add("org.hibernate.proxy.dom4j.Dom4jProxy");
@@ -50,38 +47,31 @@ public class ProxyHelper
         persistentCollectionTypes.add("org.hibernate.collection.internal.PersistentSortedMap");
     }
 
-    public static boolean isKunderaProxy(Object o)
-    {
+    public static boolean isKunderaProxy(Object o) {
         return o == null ? false : o instanceof KunderaProxy;
     }
 
-    public static boolean isHibernateProxy(Object o)
-    {
+    public static boolean isHibernateProxy(Object o) {
         return o == null ? false : proxyTypes.contains(o.getClass().getName());
     }
 
-    public static boolean isKunderaProxyCollection(Object collection)
-    {
+    public static boolean isKunderaProxyCollection(Object collection) {
         return collection == null ? false : collection instanceof ProxyCollection;
     }
 
-    public static boolean isPersistentCollection(Object collection)
-    {
+    public static boolean isPersistentCollection(Object collection) {
         return collection == null ? false : persistentCollectionTypes.contains(collection.getClass().getName());
     }
 
-    public static boolean isProxy(Object o)
-    {
+    public static boolean isProxy(Object o) {
         return isKunderaProxy(o) || isHibernateProxy(o) || ProxyFactory.isProxyClass(o.getClass());
     }
 
-    public static boolean isProxyCollection(Object o)
-    {
+    public static boolean isProxyCollection(Object o) {
         return isKunderaProxyCollection(o) || isPersistentCollection(o);
     }
 
-    public static boolean isProxyOrCollection(Object o)
-    {
+    public static boolean isProxyOrCollection(Object o) {
         return isProxy(o) || isProxyCollection(o);
     }
 }

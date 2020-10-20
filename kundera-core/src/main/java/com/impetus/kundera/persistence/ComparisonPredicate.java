@@ -20,39 +20,32 @@ import javax.persistence.criteria.Predicate;
 
 /**
  * Predicate implementation for "=","<",">","<=",">=" {@link Predicate}
- *  
- * @author vivek.mishra
  *
+ * @author vivek.mishra
  */
-public final class ComparisonPredicate extends AbstractPredicate
-{
+public final class ComparisonPredicate extends AbstractPredicate {
 
     private Expression<?> lhs;
     private Object rhs;
     private ConditionalOperator condition;
-    
-    public ComparisonPredicate(Expression<?> lhs,Object rhs, ConditionalOperator operator)
-    {
+
+    public ComparisonPredicate(Expression<?> lhs, Object rhs, ConditionalOperator operator) {
         this.lhs = lhs;
         this.rhs = rhs;
         this.condition = operator;
     }
-    
-    public Expression<?> getLhs()
-    {
+
+    public Expression<?> getLhs() {
         return lhs;
     }
 
-    public Object getRhs()
-    {
+    public Object getRhs() {
         return rhs;
     }
 
 
-
-    public ConditionalOperator getCondition()
-    {
+    public ConditionalOperator getCondition() {
         return this.condition;
     }
-    
+
 }

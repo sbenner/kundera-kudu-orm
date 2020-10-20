@@ -1,16 +1,17 @@
-
 package com.impetus.client.kudu.schemamanager;
 
-import java.lang.annotation.Target;
-import java.lang.annotation.Retention;
 import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Documented
-@Target({TYPE}) 
+@Target({TYPE})
 @Retention(RUNTIME)
 public @interface Hashable {
-    public int buckets() default 1;
-    public int replicationFactor() default 1;
+    int buckets() default 1;
+
+    int replicationFactor() default 1;
 }

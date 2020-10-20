@@ -19,41 +19,37 @@ import com.impetus.kundera.KunderaException;
 
 /**
  * The Class PropertyAccessException.
- * 
+ *
  * @author animesh.kumar
  */
-public class PropertyAccessException extends KunderaException
-{
+public class PropertyAccessException extends KunderaException {
 
-    /** The Constant serialVersionUID. */
+    /**
+     * The Constant serialVersionUID.
+     */
     private static final long serialVersionUID = 2920598132353417557L;
 
     /**
      * Instantiates a new property access exception.
      */
-    public PropertyAccessException()
-    {
+    public PropertyAccessException() {
     }
 
     /**
      * Instantiates a new property access exception.
-     * 
-     * @param message
-     *            the message
+     *
+     * @param message the message
      */
-    public PropertyAccessException(String message)
-    {
+    public PropertyAccessException(String message) {
         super(message);
     }
 
     /**
      * Instantiates a new property access exception.
-     * 
-     * @param cause
-     *            the cause
+     *
+     * @param cause the cause
      */
-    public PropertyAccessException(Throwable cause)
-    {
+    public PropertyAccessException(Throwable cause) {
         super(cause);
     }
 

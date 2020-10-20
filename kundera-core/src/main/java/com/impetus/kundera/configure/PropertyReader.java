@@ -17,15 +17,13 @@ package com.impetus.kundera.configure;
 
 /**
  * Property reader to read client specific property.
- * 
+ *
  * @author kuldeep.mishra
- * 
  */
-public interface PropertyReader
-{
+public interface PropertyReader {
     /**
      * reads all properties from property.
-     * 
+     *
      * @param string
      */
     void read(String string);

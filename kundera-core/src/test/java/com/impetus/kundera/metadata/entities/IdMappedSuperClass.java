@@ -22,11 +22,9 @@ import javax.persistence.MappedSuperclass;
 
 /**
  * @author vivek.mishra
- * 
  */
 @MappedSuperclass
-public class IdMappedSuperClass extends RootMappedSuperClass
-{
+public class IdMappedSuperClass extends RootMappedSuperClass {
     @Id
     private int id;
 
@@ -39,44 +37,36 @@ public class IdMappedSuperClass extends RootMappedSuperClass
     /**
      * @return the mappedInt
      */
-    public int getMappedInt()
-    {
+    public int getMappedInt() {
         return mappedInt;
     }
 
     /**
-     * @param mappedInt
-     *            the mappedInt to set
+     * @param mappedInt the mappedInt to set
      */
-    public void setMappedInt(int mappedInt)
-    {
+    public void setMappedInt(int mappedInt) {
         this.mappedInt = mappedInt;
     }
 
     /**
      * @return the mappedFloat
      */
-    public Float getMappedFloat()
-    {
+    public Float getMappedFloat() {
         return mappedFloat;
     }
 
     /**
-     * @param mappedFloat
-     *            the mappedFloat to set
+     * @param mappedFloat the mappedFloat to set
      */
-    public void setMappedFloat(Float mappedFloat)
-    {
+    public void setMappedFloat(Float mappedFloat) {
         this.mappedFloat = mappedFloat;
     }
 
-    public int getId()
-    {
+    public int getId() {
         return id;
     }
 
-    public void setId(int id)
-    {
+    public void setId(int id) {
         this.id = id;
     }
 

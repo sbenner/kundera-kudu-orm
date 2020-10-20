@@ -1,12 +1,12 @@
 /**
  * Copyright 2013 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,37 +15,32 @@
  */
 package com.impetus.kundera;
 
-import javax.persistence.spi.LoadState;
-
-import junit.framework.Assert;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.impetus.kundera.PersistenceUtilHelper.MetadataCache;
 import com.impetus.kundera.proxy.KunderaProxy;
 import com.impetus.kundera.proxy.cglib.CglibLazyInitializerFactory;
 import com.impetus.kundera.query.Person;
+import junit.framework.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.persistence.spi.LoadState;
 
 /**
- * @author vivek.mishra 
+ * @author vivek.mishra
  * junit for {@link PersistenceUtilHelper}.
- * 
+ *
  */
-public class PersistenceUtilHelperTest
-{
+public class PersistenceUtilHelperTest {
 
     private MetadataCache cache;
 
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         this.cache = new PersistenceUtilHelper.MetadataCache();
     }
 
     @Test
-    public void testisLoadedWithReferenceAsNull()
-    {
+    public void testisLoadedWithReferenceAsNull() {
         LoadState state = PersistenceUtilHelper.isLoadedWithReference(null, null, cache);
 
         Assert.assertNotNull(state);
@@ -53,8 +48,7 @@ public class PersistenceUtilHelperTest
     }
 
     @Test
-    public void testisLoadedWithReferenceAsLoaded()
-    {
+    public void testisLoadedWithReferenceAsLoaded() {
         Person p = new Person();
         p.setPersonName("Vivek");
         LoadState state = PersistenceUtilHelper.isLoadedWithReference(p, "personName", cache);
@@ -64,8 +58,7 @@ public class PersistenceUtilHelperTest
     }
 
     @Test
-    public void testisLoadedWithReferenceAsKunderaProxy() throws NoSuchMethodException, SecurityException
-    {
+    public void testisLoadedWithReferenceAsKunderaProxy() throws NoSuchMethodException, SecurityException {
         CglibLazyInitializerFactory factory = new CglibLazyInitializerFactory();
         KunderaProxy proxy = factory.getProxy("Person", Person.class,
                 Person.class.getDeclaredMethod("getPersonId", null),
@@ -78,8 +71,7 @@ public class PersistenceUtilHelperTest
     }
 
     @Test
-    public void testisLoadedWithoutReferenceAsNull()
-    {
+    public void testisLoadedWithoutReferenceAsNull() {
         LoadState state = PersistenceUtilHelper.isLoadedWithoutReference(null, null, cache);
 
         Assert.assertNotNull(state);
@@ -87,8 +79,7 @@ public class PersistenceUtilHelperTest
     }
 
     @Test
-    public void testisLoadedWithoutReferenceAsLoad()
-    {
+    public void testisLoadedWithoutReferenceAsLoad() {
         Person p = new Person();
         p.setPersonName("Vivek");
 
@@ -99,8 +90,7 @@ public class PersistenceUtilHelperTest
     }
 
     @Test
-    public void testisLoadedWithOutReferenceAsKunderaProxy() throws NoSuchMethodException, SecurityException
-    {
+    public void testisLoadedWithOutReferenceAsKunderaProxy() throws NoSuchMethodException, SecurityException {
         CglibLazyInitializerFactory factory = new CglibLazyInitializerFactory();
         KunderaProxy proxy = factory.getProxy("Person", Person.class,
                 Person.class.getDeclaredMethod("getPersonId", null),
@@ -110,13 +100,12 @@ public class PersistenceUtilHelperTest
 
         Assert.assertNotNull(state);
         Assert.assertEquals(LoadState.NOT_LOADED, state);
-        
+
 //        factory.
     }
-    
+
     @Test
-    public void testisLoadedWAsKunderaProxy() throws NoSuchMethodException, SecurityException
-    {
+    public void testisLoadedWAsKunderaProxy() throws NoSuchMethodException, SecurityException {
         CglibLazyInitializerFactory factory = new CglibLazyInitializerFactory();
         KunderaProxy proxy = factory.getProxy("Person", Person.class,
                 Person.class.getDeclaredMethod("getPersonId", null),
@@ -126,7 +115,7 @@ public class PersistenceUtilHelperTest
 
         Assert.assertNotNull(state);
         Assert.assertEquals(LoadState.NOT_LOADED, state);
-        
+
 //        factory.
     }
 

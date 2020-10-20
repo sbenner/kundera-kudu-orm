@@ -15,35 +15,35 @@
  ******************************************************************************/
 package com.impetus.kundera.persistence.event;
 
+import com.impetus.kundera.metadata.model.EntityMetadata;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import com.impetus.kundera.metadata.model.EntityMetadata;
-
 /**
  * The Class InternalCallbackMethod.
- * 
+ *
  * @author animesh.kumar
  */
-public final class InternalCallbackMethod implements CallbackMethod
-{
+public final class InternalCallbackMethod implements CallbackMethod {
 
-    /** The entity metadata. */
+    /**
+     * The entity metadata.
+     */
     private final EntityMetadata entityMetadata;
 
-    /** The method. */
+    /**
+     * The method.
+     */
     private Method method;
 
     /**
      * Instantiates a new internal callback method.
-     * 
-     * @param entityMetadata
-     *            TODO
-     * @param method
-     *            the method
+     *
+     * @param entityMetadata TODO
+     * @param method         the method
      */
-    public InternalCallbackMethod(EntityMetadata entityMetadata, Method method)
-    {
+    public InternalCallbackMethod(EntityMetadata entityMetadata, Method method) {
         this.entityMetadata = entityMetadata;
         this.method = method;
     }
@@ -54,35 +54,26 @@ public final class InternalCallbackMethod implements CallbackMethod
      */
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.ejb.event.CallbackMethod#invoke(java.lang.Object)
      */
-    public void invoke(Object entity) throws EventListenerException
-    {
+    public void invoke(Object entity) throws EventListenerException {
         if (!method.isAccessible())
             method.setAccessible(true);
-        try
-        {
-            method.invoke(entity, new Object[] {});
-        }
-        catch (IllegalArgumentException e)
-        {
+        try {
+            method.invoke(entity, new Object[]{});
+        } catch (IllegalArgumentException e) {
             throw new EventListenerException(e);
-        }
-        catch (IllegalAccessException e)
-        {
+        } catch (IllegalAccessException e) {
             throw new EventListenerException(e);
-        }
-        catch (InvocationTargetException e)
-        {
+        } catch (InvocationTargetException e) {
             throw new EventListenerException(e);
         }
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(this.entityMetadata.getEntityClazz().getName() + "." + method.getName());
         return builder.toString();

@@ -15,67 +15,59 @@
  ******************************************************************************/
 package com.impetus.kundera.index;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Annotation interface for column
- * 
+ *
  * @author Kuldeep Mishra
- * 
  */
-@Target({ ElementType.TYPE, ElementType.FIELD })
+@Target({ElementType.TYPE, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Index
-{
+public @interface Index {
 
     /**
      * Column to index.
-     * 
+     *
      * @return the string
      */
     public abstract String name();
 
     /**
      * Type of index.
-     * 
+     *
      * @return the string
      */
     public abstract String type() default "";
 
     /**
      * Max value of index column.
-     * 
+     *
      * @return
      */
     public abstract int max() default Integer.MAX_VALUE;
 
     /**
      * Min value of index column.
-     * 
+     *
      * @return
      */
     public abstract int min() default Integer.MIN_VALUE;
 
     /**
      * Name of index, if it is different that column name.
-     * 
+     *
      * @return index name.
      */
     public abstract String indexName() default "";
 
     /**
      * Type of index.
-     * 
+     *
      * @author Kuldeep.Mishra
-     * 
      */
-    public enum IndexType
-    {
+    public enum IndexType {
         normal, composite, unique
     }
 

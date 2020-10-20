@@ -19,26 +19,19 @@ import java.lang.reflect.InvocationTargetException;
 
 /**
  * Interface that defines how JPA Entity Listeners can be called.
- * 
+ *
  * @author animesh.kumar
  */
-public interface CallbackMethod
-{
+public interface CallbackMethod {
 
     /**
      * Invokes the method with entity object.
-     * 
-     * @param entity
-     *            the entity
-     * 
-     * @throws IllegalArgumentException
-     *             the illegal argument exception
-     * @throws IllegalAccessException
-     *             the illegal access exception
-     * @throws InvocationTargetException
-     *             the invocation target exception
-     * @throws InstantiationException
-     *             the instantiation exception
+     *
+     * @param entity the entity
+     * @throws IllegalArgumentException  the illegal argument exception
+     * @throws IllegalAccessException    the illegal access exception
+     * @throws InvocationTargetException the invocation target exception
+     * @throws InstantiationException    the instantiation exception
      */
     public void invoke(Object entity) throws EventListenerException;
 }

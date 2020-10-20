@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,15 +20,13 @@ import javax.persistence.spi.ProviderUtil;
 
 /**
  * {@link ProviderUtil} for {@link KunderaPersistence}
- * 
+ *
  * @author amresh.singh
  */
-public class KunderaPersistenceProviderUtil implements ProviderUtil
-{
+public class KunderaPersistenceProviderUtil implements ProviderUtil {
     KunderaPersistence provider;
 
-    public KunderaPersistenceProviderUtil(KunderaPersistence provider)
-    {
+    public KunderaPersistenceProviderUtil(KunderaPersistence provider) {
         this.provider = provider;
     }
 
@@ -44,15 +42,14 @@ public class KunderaPersistenceProviderUtil implements ProviderUtil
      * obtain a reference to an attribute value, as this could trigger the
      * loading of entity state if the entity has been provided by a different
      * provider.
-     * 
+     *
      * @param entity
      * @param attributeName
      *            name of attribute whose load status is to be determined
      * @return load status of the attribute
      */
     @Override
-    public LoadState isLoadedWithoutReference(Object paramObject, String paramString)
-    {
+    public LoadState isLoadedWithoutReference(Object paramObject, String paramString) {
         return PersistenceUtilHelper.isLoadedWithoutReference(paramObject, paramString, provider.getCache());
     }
 
@@ -68,15 +65,14 @@ public class KunderaPersistenceProviderUtil implements ProviderUtil
      * permitted to obtain a reference to the attribute value. (This access is
      * safe because providers which might trigger the loading of the attribute
      * state will have already been determined by isLoadedWithoutReference. )
-     * 
+     *
      * @param entity
      * @param attributeName
      *            name of attribute whose load status is to be determined
      * @return load status of the attribute
      */
     @Override
-    public LoadState isLoadedWithReference(Object paramObject, String paramString)
-    {
+    public LoadState isLoadedWithReference(Object paramObject, String paramString) {
         return PersistenceUtilHelper.isLoadedWithReference(paramObject, paramString, provider.getCache());
     }
 
@@ -92,14 +88,13 @@ public class KunderaPersistenceProviderUtil implements ProviderUtil
      * obtain a reference to any attribute value, as this could trigger the
      * loading of entity state if the entity has been provided by a different
      * provider.
-     * 
+     *
      * @param entity
      *            whose loaded status is to be determined
      * @return load status of the entity
      */
     @Override
-    public LoadState isLoaded(Object paramObject)
-    {
+    public LoadState isLoaded(Object paramObject) {
         return PersistenceUtilHelper.isLoaded(paramObject);
     }
 

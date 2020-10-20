@@ -15,31 +15,22 @@
  ******************************************************************************/
 package com.impetus.kundera.entity.album;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
 import com.impetus.kundera.entity.photo.PhotoBi_M_M_M_M;
 import com.impetus.kundera.entity.photographer.PhotographerBi_M_M_M_M;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Entity Class for album
- * 
+ *
  * @author amresh.singh
  */
 
 @Entity
 @Table(name = "ALBUM", schema = "KunderaTest@kunderatest")
-public class AlbumBi_M_M_M_M
-{
+public class AlbumBi_M_M_M_M {
     @Id
     @Column(name = "ALBUM_ID")
     private String albumId;
@@ -51,108 +42,90 @@ public class AlbumBi_M_M_M_M
     private String albumDescription;
 
     @ManyToMany
-    @JoinTable(name = "ALBUM_PHOTO", joinColumns = { @JoinColumn(name = "ALBUM_ID") }, inverseJoinColumns = { @JoinColumn(name = "PHOTO_ID") })
+    @JoinTable(name = "ALBUM_PHOTO", joinColumns = {@JoinColumn(name = "ALBUM_ID")}, inverseJoinColumns = {@JoinColumn(name = "PHOTO_ID")})
     private List<PhotoBi_M_M_M_M> photos;
 
     @ManyToMany(mappedBy = "albums", fetch = FetchType.LAZY)
     private List<PhotographerBi_M_M_M_M> photographers;
 
-    public AlbumBi_M_M_M_M()
-    {
+    public AlbumBi_M_M_M_M() {
 
     }
 
-    public AlbumBi_M_M_M_M(String albumId, String name, String description)
-    {
+    public AlbumBi_M_M_M_M(String albumId, String name, String description) {
         this.albumId = albumId;
         this.albumName = name;
         this.albumDescription = description;
     }
 
-    public String getAlbumId()
-    {
+    public String getAlbumId() {
         return albumId;
     }
 
-    public void setAlbumId(String albumId)
-    {
+    public void setAlbumId(String albumId) {
         this.albumId = albumId;
     }
 
     /**
      * @return the albumName
      */
-    public String getAlbumName()
-    {
+    public String getAlbumName() {
         return albumName;
     }
 
     /**
-     * @param albumName
-     *            the albumName to set
+     * @param albumName the albumName to set
      */
-    public void setAlbumName(String albumName)
-    {
+    public void setAlbumName(String albumName) {
         this.albumName = albumName;
     }
 
     /**
      * @return the albumDescription
      */
-    public String getAlbumDescription()
-    {
+    public String getAlbumDescription() {
         return albumDescription;
     }
 
     /**
-     * @param albumDescription
-     *            the albumDescription to set
+     * @param albumDescription the albumDescription to set
      */
-    public void setAlbumDescription(String albumDescription)
-    {
+    public void setAlbumDescription(String albumDescription) {
         this.albumDescription = albumDescription;
     }
 
     /**
      * @return the photos
      */
-    public List<PhotoBi_M_M_M_M> getPhotos()
-    {
-        if (this.photos == null || this.photos.isEmpty())
-        {
+    public List<PhotoBi_M_M_M_M> getPhotos() {
+        if (this.photos == null || this.photos.isEmpty()) {
             this.photos = new ArrayList<PhotoBi_M_M_M_M>();
         }
         return photos;
     }
 
     /**
-     * @param photos
-     *            the photos to set
+     * @param photos the photos to set
      */
-    public void setPhotos(List<PhotoBi_M_M_M_M> photos)
-    {
+    public void setPhotos(List<PhotoBi_M_M_M_M> photos) {
         this.photos = photos;
     }
 
-    public void addPhoto(PhotoBi_M_M_M_M photo)
-    {
+    public void addPhoto(PhotoBi_M_M_M_M photo) {
         getPhotos().add(photo);
     }
 
     /**
      * @return the photographers
      */
-    public List<PhotographerBi_M_M_M_M> getPhotographers()
-    {
+    public List<PhotographerBi_M_M_M_M> getPhotographers() {
         return photographers;
     }
 
     /**
-     * @param photographers
-     *            the photographers to set
+     * @param photographers the photographers to set
      */
-    public void setPhotographers(List<PhotographerBi_M_M_M_M> photographers)
-    {
+    public void setPhotographers(List<PhotographerBi_M_M_M_M> photographers) {
         this.photographers = photographers;
     }
 

@@ -15,52 +15,52 @@
  ******************************************************************************/
 package com.impetus.kundera.configure;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
 /**
  * The Class CorePersonalData.
  */
 @Embeddable
-@IndexCollection(columns = { @Index(name = "email"), @Index(name = "yahooId")})
-public class PersonalData
-{
+@IndexCollection(columns = {@Index(name = "email"), @Index(name = "yahooId")})
+public class PersonalData {
 
-    /** The website. */
+    /**
+     * The website.
+     */
     @Column(name = "department_website")
     private String website;
 
-    /** The email. */
+    /**
+     * The email.
+     */
     @Column(name = "department_email")
     private String email;
 
-    /** The yahoo id. */
+    /**
+     * The yahoo id.
+     */
     @Column(name = "department_yahoo_id")
     private String yahooId;
 
     /**
      * Instantiates a new core personal data.
      */
-    public PersonalData()
-    {
+    public PersonalData() {
 
     }
 
     /**
      * Instantiates a new core personal data.
-     * 
-     * @param website
-     *            the website
-     * @param email
-     *            the email
-     * @param yahooId
-     *            the yahoo id
+     *
+     * @param website the website
+     * @param email   the email
+     * @param yahooId the yahoo id
      */
-    public PersonalData(String website, String email, String yahooId)
-    {
+    public PersonalData(String website, String email, String yahooId) {
         this.website = website;
         this.email = email;
         this.yahooId = yahooId;
@@ -68,64 +68,55 @@ public class PersonalData
 
     /**
      * Gets the website.
-     * 
+     *
      * @return the website
      */
-    public String getWebsite()
-    {
+    public String getWebsite() {
         return website;
     }
 
     /**
      * Sets the website.
-     * 
-     * @param website
-     *            the new website
+     *
+     * @param website the new website
      */
-    public void setWebsite(String website)
-    {
+    public void setWebsite(String website) {
         this.website = website;
     }
 
     /**
      * Gets the email.
-     * 
+     *
      * @return the email
      */
-    public String getEmail()
-    {
+    public String getEmail() {
         return email;
     }
 
     /**
      * Sets the email.
-     * 
-     * @param email
-     *            the email to set
+     *
+     * @param email the email to set
      */
-    public void setEmail(String email)
-    {
+    public void setEmail(String email) {
         this.email = email;
     }
 
     /**
      * Gets the yahoo id.
-     * 
+     *
      * @return the yahoo id
      */
-    public String getYahooId()
-    {
+    public String getYahooId() {
         return yahooId;
     }
 
     /**
      * Sets the yahoo id.
-     * 
-     * @param yahooId
-     *            the new yahoo id
+     *
+     * @param yahooId the new yahoo id
      */
-    public void setYahooId(String yahooId)
-    {
+    public void setYahooId(String yahooId) {
         this.yahooId = yahooId;
     }
 }

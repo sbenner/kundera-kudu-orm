@@ -15,45 +15,40 @@
  ******************************************************************************/
 package com.impetus.kundera.configure;
 
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.kundera.client.ClientResolver;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.utils.KunderaCoreUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Map;
 
 /**
  * The Class ClientFactoryConfiguration load client metadata.
- * 
+ *
  * @author kuldeep.mishra
- * 
  */
-public class ClientFactoryConfiguraton extends AbstractSchemaConfiguration implements Configuration
-{
-    /** The log instance. */
+public class ClientFactoryConfiguraton extends AbstractSchemaConfiguration implements Configuration {
+    /**
+     * The log instance.
+     */
     private static Logger log = LoggerFactory.getLogger(ClientFactoryConfiguraton.class);
 
     /**
      * Constructor parameterised with persistence units.
-     * 
-     * @param persistenceUnits
-     *            persistence units.
+     *
+     * @param persistenceUnits persistence units.
      */
     public ClientFactoryConfiguraton(Map externalProperties, final KunderaMetadata kunderaMetadata,
-            String... persistenceUnits)
-    {
+                                     String... persistenceUnits) {
         super(persistenceUnits, externalProperties, kunderaMetadata);
     }
 
     @Override
-    public void configure()
-    {
+    public void configure() {
         // Invoke Client Loaders
 
-        for (String pu : persistenceUnits)
-        {
+        for (String pu : persistenceUnits) {
             log.info("Loading Client(s) For Persistence Unit(s) " + pu);
 
             Map<String, Object> puProperty = KunderaCoreUtils.getExternalProperties(pu, externalPropertyMap,

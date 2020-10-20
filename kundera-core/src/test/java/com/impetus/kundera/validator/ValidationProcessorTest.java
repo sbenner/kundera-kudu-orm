@@ -15,26 +15,6 @@
  ******************************************************************************/
 package com.impetus.kundera.validator;
 
-import java.lang.reflect.Field;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.metamodel.EntityType;
-import javax.validation.ValidationException;
-
-import junit.framework.Assert;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.kundera.KunderaException;
 import com.impetus.kundera.metadata.KunderaMetadataManager;
 import com.impetus.kundera.metadata.model.EntityMetadata;
@@ -45,25 +25,37 @@ import com.impetus.kundera.validation.ValidationFactory;
 import com.impetus.kundera.validation.ValidationFactoryGenerator;
 import com.impetus.kundera.validation.ValidationFactoryGenerator.ValidationFactoryType;
 import com.impetus.kundera.validation.rules.AttributeConstraintRule;
+import junit.framework.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.metamodel.EntityType;
+import javax.validation.ValidationException;
+import java.lang.reflect.Field;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
 
 /**
  * @author Chhavi Gangwal
- * 
  */
-public class ValidationProcessorTest
-{
-
-    /** the log used by this class. */
-    private static Logger log = LoggerFactory.getLogger(ValidationProcessorTest.class);
+public class ValidationProcessorTest {
 
     private static final String PU = "kunderatest";
-
-    private EntityManagerFactory emf;
-
-    private EntityManager em;
-
+    /**
+     * the log used by this class.
+     */
+    private static Logger log = LoggerFactory.getLogger(ValidationProcessorTest.class);
     protected Map propertyMap = null;
-
+    private EntityManagerFactory emf;
+    private EntityManager em;
     private KunderaMetadata kunderaMetadata;
 
     private ValidationFactoryGenerator generator = new ValidationFactoryGenerator();
@@ -74,8 +66,7 @@ public class ValidationProcessorTest
      * @throws Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         emf = Persistence.createEntityManagerFactory(PU, propertyMap);
         kunderaMetadata = ((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance();
         // kunderaMetadata.setApplicationMetadata(null);
@@ -88,10 +79,8 @@ public class ValidationProcessorTest
      * @throws ParseException
      */
     @Test
-    public void testValid() throws ParseException
-    {
-        try
-        {
+    public void testValid() throws ParseException {
+        try {
             String pastStr = "11-11-2012";
             String futStr = "11-11-2015";
             DateFormat df = new SimpleDateFormat("dd-mm-yyyy");
@@ -113,7 +102,7 @@ public class ValidationProcessorTest
             entity.setFuture(futDate);
             entity.setSize("hello232141423423535353453");
             entity.setEmail("abc@gcd.com");
-            
+
             validateEntityAttribute("age", entity, "Age should not be null");
             validateEntityAttribute("nullField", entity, "The value should be null.");
             validateEntityAttribute("isHuman", entity, "The  person type must be human");
@@ -129,9 +118,7 @@ public class ValidationProcessorTest
             validateEntityAttribute("min", entity, "Invalid min value.");
 
             //em.persist(entity);
-        }
-        catch (KunderaException e)
-        {
+        } catch (KunderaException e) {
             Assert.assertNotNull(e.getMessage());
         }
 
@@ -141,10 +128,8 @@ public class ValidationProcessorTest
      * @throws ParseException
      */
     @Test
-    public void testNull() throws ParseException
-    {
-        try
-        {
+    public void testNull() throws ParseException {
+        try {
 
             ValidationEntity entity = new ValidationEntity();
             entity.setAge(13);
@@ -175,9 +160,7 @@ public class ValidationProcessorTest
             validateEntityAttribute("size", entity, "");
             validateEntityAttribute("max", entity, "");
             validateEntityAttribute("min", entity, "");
-        }
-        catch (KunderaException e)
-        {
+        } catch (KunderaException e) {
 
             Assert.assertNotNull(e.getMessage());
         }
@@ -188,10 +171,8 @@ public class ValidationProcessorTest
      * @throws ParseException
      */
     @Test
-    public void testInValid() throws ParseException
-    {
-        try
-        {
+    public void testInValid() throws ParseException {
+        try {
             String pastStr = "11-11-2015";
             String futStr = "11-11-2012";
             DateFormat df = new SimpleDateFormat("dd-mm-yyyy");
@@ -229,9 +210,7 @@ public class ValidationProcessorTest
             validateEntityAttribute("min", entity, "Invalid min value.");
 
             em.persist(entity);
-        }
-        catch (KunderaException e)
-        {
+        } catch (KunderaException e) {
 
             Assert.assertNotNull(e.getMessage());
         }
@@ -244,8 +223,7 @@ public class ValidationProcessorTest
      * @return
      */
     private <X extends Class, T extends Object> void validateEntityAttribute(String fieldname, Object validationObject,
-            String message)
-    {
+                                                                             String message) {
 
         EntityMetadata entityMetadata = KunderaMetadataManager.getEntityMetadata(kunderaMetadata,
                 validationObject.getClass());
@@ -255,14 +233,11 @@ public class ValidationProcessorTest
 
         Field field = (Field) entityType.getAttribute(fieldname).getJavaMember();
 
-        try
-        {
+        try {
             factory.validate(field, validationObject, new AttributeConstraintRule());
 
-        }
-        catch (ValidationException e)
-        {
-           
+        } catch (ValidationException e) {
+
             Assert.assertEquals(message, e.getMessage());
             Assert.assertNotNull(e.getMessage());
         }

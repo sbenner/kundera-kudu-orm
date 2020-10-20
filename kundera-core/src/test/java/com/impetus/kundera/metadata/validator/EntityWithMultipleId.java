@@ -22,45 +22,39 @@ import javax.persistence.Table;
 
 /**
  * @author vivek.mishra
- * Invalid entity definition with multiple @Id annotated fields. 
+ * Invalid entity definition with multiple @Id annotated fields.
  */
 @Entity
 @Table
-public class EntityWithMultipleId
-{
+public class EntityWithMultipleId {
 
     @Id
     private String id1;
-    
+
     @Id
     private int id2;
-    
+
     @Column
     private String name;
 
-    public EntityWithMultipleId()
-    {
-        
+    public EntityWithMultipleId() {
+
     }
-    
-    public String getName()
-    {
+
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public String getId1()
-    {
+    public String getId1() {
         return id1;
     }
 
-    public int getId2()
-    {
+    public int getId2() {
         return id2;
     }
-        
+
 }

@@ -19,23 +19,19 @@ import com.impetus.kundera.KunderaException;
 
 /**
  * @author amresh.singh
- * 
  */
-public class MetamodelLoaderException extends KunderaException
-{
+public class MetamodelLoaderException extends KunderaException {
 
     /**
-     * 
+     *
      */
-    public MetamodelLoaderException()
-    {
+    public MetamodelLoaderException() {
     }
 
     /**
      * @param arg0
      */
-    public MetamodelLoaderException(String arg0)
-    {
+    public MetamodelLoaderException(String arg0) {
         super(arg0);
 
     }
@@ -43,8 +39,7 @@ public class MetamodelLoaderException extends KunderaException
     /**
      * @param arg0
      */
-    public MetamodelLoaderException(Throwable arg0)
-    {
+    public MetamodelLoaderException(Throwable arg0) {
         super(arg0);
 
     }
@@ -53,8 +48,7 @@ public class MetamodelLoaderException extends KunderaException
      * @param arg0
      * @param arg1
      */
-    public MetamodelLoaderException(String arg0, Throwable arg1)
-    {
+    public MetamodelLoaderException(String arg0, Throwable arg1) {
         super(arg0, arg1);
 
     }

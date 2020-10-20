@@ -15,40 +15,34 @@
  ******************************************************************************/
 package com.impetus.kundera.configure;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
+import com.impetus.kundera.configure.ClientProperties.DataStore;
+import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.configure.ClientProperties.DataStore;
-import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  * Abstract property reader test
- * 
+ *
  * @author Kuldeep Mishra
- * 
  */
-public class AbstractPropertyReaderTest
-{
+public class AbstractPropertyReaderTest {
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
     }
 
     /**
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
 
     }
 
@@ -58,8 +52,7 @@ public class AbstractPropertyReaderTest
      * .
      */
     @Test
-    public void testParseXML()
-    {
+    public void testParseXML() {
         String pu = "PropertyTest";
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(pu);
         PropertyReader reader = new DummyPropertyReader(null, ((EntityManagerFactoryImpl) emf)
@@ -72,8 +65,7 @@ public class AbstractPropertyReaderTest
     }
 
     // @Test
-    public void testParseXMLWithAsolutePath()
-    {
+    public void testParseXMLWithAsolutePath() {
         String pu = "PropertyTest";
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(pu);
         PropertyReader reader = new DummyPropertyReader(null, ((EntityManagerFactoryImpl) emf)
@@ -85,8 +77,7 @@ public class AbstractPropertyReaderTest
     }
 
     // @Test
-    public void testParseXMLWithVariable()
-    {
+    public void testParseXMLWithVariable() {
         String pu = "PropertyTest";
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(pu);
         PropertyReader reader = new DummyPropertyReader(null, ((EntityManagerFactoryImpl) emf)
@@ -97,18 +88,15 @@ public class AbstractPropertyReaderTest
         assertValues(cp);
     }
 
-    private void assertValues(ClientProperties cp)
-    {
+    private void assertValues(ClientProperties cp) {
         Assert.assertNotNull(cp);
         Assert.assertNotNull(cp.getDatastores());
         Assert.assertEquals(3, cp.getDatastores().size());
-        for (DataStore store : cp.getDatastores())
-        {
+        for (DataStore store : cp.getDatastores()) {
             Assert.assertNotNull(store);
             Assert.assertNotNull(store.getName());
             // Test for hbase properties.
-            if (store.getName().trim().equalsIgnoreCase("HBase"))
-            {
+            if (store.getName().trim().equalsIgnoreCase("HBase")) {
                 Assert.assertNotNull(store.getSchemas());
                 Assert.assertEquals(2, store.getSchemas().size());
                 Assert.assertEquals("KunderaHbaseXmlTest", store.getSchemas().get(0).getName());
@@ -129,8 +117,7 @@ public class AbstractPropertyReaderTest
 
             }
             // Test for mongo properties.
-            else if (store.getName().trim().equalsIgnoreCase("Mongo"))
-            {
+            else if (store.getName().trim().equalsIgnoreCase("Mongo")) {
                 Assert.assertNull(store.getSchemas());
                 Assert.assertNotNull(store.getConnection());
                 Assert.assertNotNull(store.getConnection().getProperties());
@@ -139,8 +126,7 @@ public class AbstractPropertyReaderTest
                 Assert.assertEquals(2, store.getConnection().getServers().size());
             }
             // Test for cassandra properties.
-            else if (store.getName().trim().equalsIgnoreCase("Cassandra"))
-            {
+            else if (store.getName().trim().equalsIgnoreCase("Cassandra")) {
                 Assert.assertNotNull(store.getSchemas());
                 Assert.assertEquals(3, store.getSchemas().size());
                 Assert.assertEquals("KunderaCassandraXmlTest", store.getSchemas().get(0).getName());

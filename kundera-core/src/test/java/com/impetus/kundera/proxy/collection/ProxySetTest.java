@@ -15,40 +15,35 @@
  ******************************************************************************/
 package com.impetus.kundera.proxy.collection;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.FetchType;
-import javax.persistence.Persistence;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.impetus.kundera.CoreTestUtilities;
 import com.impetus.kundera.metadata.model.Relation;
 import com.impetus.kundera.metadata.model.Relation.ForeignKey;
 import com.impetus.kundera.persistence.PersistenceDelegator;
 import com.impetus.kundera.persistence.event.AddressEntity;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.FetchType;
+import javax.persistence.Persistence;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * @author vivek.mishra junit for {@link ProxySet}
  */
-public class ProxySetTest
-{
+public class ProxySetTest {
     private EntityManagerFactory emf;
 
     private EntityManager em;
 
     @Before
-    public void setup()
-    {
+    public void setup() {
 
         emf = Persistence.createEntityManagerFactory("kunderatest");
         em = emf.createEntityManager();
@@ -56,8 +51,7 @@ public class ProxySetTest
     }
 
     @Test
-    public void test() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
-    {
+    public void test() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         AddressEntity p = new AddressEntity();
 
         AddressEntity subaddress = new AddressEntity();
@@ -105,8 +99,7 @@ public class ProxySetTest
 
         Iterator<AddressEntity> iter = proxySet.iterator();
         int counter = 0;
-        while (iter.hasNext())
-        {
+        while (iter.hasNext()) {
             Assert.assertNotNull(iter.next());
             ++counter;
         }
@@ -123,7 +116,7 @@ public class ProxySetTest
 
         proxySet.removeAll(subaddresses);
         Assert.assertNotNull(proxySet.getDataCollection());
-        Assert.assertTrue(((HashSet)proxySet.getDataCollection()).isEmpty());
+        Assert.assertTrue(((HashSet) proxySet.getDataCollection()).isEmpty());
 
         proxySet.clear();
         Assert.assertTrue(proxySet.isEmpty());
@@ -131,8 +124,7 @@ public class ProxySetTest
     }
 
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
 
     }
 

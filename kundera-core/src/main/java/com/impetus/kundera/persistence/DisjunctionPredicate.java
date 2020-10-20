@@ -15,30 +15,25 @@
  ******************************************************************************/
 package com.impetus.kundera.persistence;
 
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-
 /**
  * Implementation of OR {@link Predicate}
- * 
- * @author vivek.mishra
  *
+ * @author vivek.mishra
  */
-public class DisjunctionPredicate extends AbstractPredicate 
-{
+public class DisjunctionPredicate extends AbstractPredicate {
     private List<Expression<Boolean>> expressions = new ArrayList<Expression<Boolean>>();
 
-    DisjunctionPredicate()
-    {
-    
+    DisjunctionPredicate() {
+
     }
-    
-    DisjunctionPredicate(Expression<Boolean>...paramArrayOfExpression)
-    {
+
+    DisjunctionPredicate(Expression<Boolean>... paramArrayOfExpression) {
         this.expressions = Arrays.asList(paramArrayOfExpression);
     }
 
@@ -46,8 +41,7 @@ public class DisjunctionPredicate extends AbstractPredicate
      * @see javax.persistence.criteria.Predicate#getOperator()
      */
     @Override
-    public BooleanOperator getOperator()
-    {
+    public BooleanOperator getOperator() {
         return BooleanOperator.OR;
     }
 
@@ -55,8 +49,7 @@ public class DisjunctionPredicate extends AbstractPredicate
      * @see javax.persistence.criteria.Predicate#getExpressions()
      */
     @Override
-    public List<Expression<Boolean>> getExpressions()
-    {
+    public List<Expression<Boolean>> getExpressions() {
         return this.expressions;
     }
 

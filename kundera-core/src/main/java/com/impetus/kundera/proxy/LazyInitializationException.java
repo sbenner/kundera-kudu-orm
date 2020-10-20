@@ -20,25 +20,24 @@ import com.impetus.kundera.KunderaException;
 /**
  * The Class LazyInitializationException.
  */
-public class LazyInitializationException extends KunderaException
-{
+public class LazyInitializationException extends KunderaException {
 
-    /** The Constant serialVersionUID. */
+    /**
+     * The Constant serialVersionUID.
+     */
     private static final long serialVersionUID = 1L;
 
     /**
      * @param arg0
      */
-    public LazyInitializationException(String arg0)
-    {
+    public LazyInitializationException(String arg0) {
         super(arg0);
     }
 
     /**
      * @param arg0
      */
-    public LazyInitializationException(Throwable arg0)
-    {
+    public LazyInitializationException(Throwable arg0) {
         super(arg0);
     }
 

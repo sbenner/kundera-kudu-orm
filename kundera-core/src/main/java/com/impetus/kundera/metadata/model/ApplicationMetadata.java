@@ -28,22 +28,24 @@ import java.util.concurrent.ConcurrentHashMap;
  * Application metadata refers to metdata specific to application(e.g. metamodel
  * collection, persistence unit metdatas) Any reference which is out of
  * persistence unit metadata and entity specific metadata is held by this class.
- * 
+ *
  * @author amresh.singh
  */
-public class ApplicationMetadata
-{
-    /** Map of Entity Metadata. */
+public class ApplicationMetadata {
+    /**
+     * The Constant log.
+     */
+    private static Logger logger = LoggerFactory.getLogger(ApplicationMetadata.class);
+    /**
+     * Map of Entity Metadata.
+     */
     private Map<String, Metamodel> metamodelMap = new ConcurrentHashMap<String, Metamodel>();
-
-    /** Map of Persistence Unit Metadata. */
+    /**
+     * Map of Persistence Unit Metadata.
+     */
     private Map<String, PersistenceUnitMetadata> persistenceUnitMetadataMap = new ConcurrentHashMap<String, PersistenceUnitMetadata>();
 
-    /** The Constant log. */
-    private static Logger logger = LoggerFactory.getLogger(ApplicationMetadata.class);
-
     // private MetaModelBuilder metaModelBuilder = new MetaModelBuilder();
-
     private Map<String, MetaModelBuilder> metaModelBuilder = new ConcurrentHashMap<String, MetaModelBuilder>();
 
     /**
@@ -57,24 +59,17 @@ public class ApplicationMetadata
 
     /**
      * Adds the entity metadata.
-     * 
-     * @param persistenceUnit
-     *            the persistence unit
-     * @param clazz
-     *            the clazz
-     * @param entityMetadata
-     *            the entity metadata
+     *
+     * @param persistenceUnit the persistence unit
+     * @param clazz           the clazz
+     * @param entityMetadata  the entity metadata
      */
-    public void addEntityMetadata(String persistenceUnit, Class<?> clazz, EntityMetadata entityMetadata)
-    {
+    public void addEntityMetadata(String persistenceUnit, Class<?> clazz, EntityMetadata entityMetadata) {
         Metamodel metamodel = getMetamodelMap().get(persistenceUnit);
         Map<String, EntityMetadata> entityClassToMetadataMap = ((MetamodelImpl) metamodel).getEntityMetadataMap();
-        if (entityClassToMetadataMap == null || entityClassToMetadataMap.isEmpty())
-        {
+        if (entityClassToMetadataMap == null || entityClassToMetadataMap.isEmpty()) {
             entityClassToMetadataMap.put(clazz.getName(), entityMetadata);
-        }
-        else
-        {
+        } else {
             if (logger.isDebugEnabled())
                 logger.debug("Entity meta model already exists for persistence unit " + persistenceUnit + " and class "
                         + clazz + ". Noting needs to be done");
@@ -83,26 +78,21 @@ public class ApplicationMetadata
 
     /**
      * Adds the persistence unit metadata.
-     * 
-     * @param persistenceUnit
-     *            the persistence unit
-     * @param persistenceUnitMetadata
-     *            the persistence unit metadata
+     *
+     * @param persistenceUnit         the persistence unit
+     * @param persistenceUnitMetadata the persistence unit metadata
      */
-    public void addPersistenceUnitMetadata(Map<String, PersistenceUnitMetadata> metadata)
-    {
+    public void addPersistenceUnitMetadata(Map<String, PersistenceUnitMetadata> metadata) {
         getPersistenceUnitMetadataMap().putAll(metadata);
     }
 
     /**
      * Gets the metamodel map.
-     * 
+     *
      * @return the entityMetadataMap
      */
-    public Map<String, Metamodel> getMetamodelMap()
-    {
-        if (metamodelMap == null)
-        {
+    public Map<String, Metamodel> getMetamodelMap() {
+        if (metamodelMap == null) {
             metamodelMap = new HashMap<String, Metamodel>();
         }
         return metamodelMap;
@@ -110,106 +100,82 @@ public class ApplicationMetadata
 
     /**
      * Gets the persistence unit metadata.
-     * 
-     * @param persistenceUnit
-     *            the persistence unit
+     *
+     * @param persistenceUnit the persistence unit
      * @return the persistence unit metadata
      */
-    public PersistenceUnitMetadata getPersistenceUnitMetadata(String persistenceUnit)
-    {
+    public PersistenceUnitMetadata getPersistenceUnitMetadata(String persistenceUnit) {
         return getPersistenceUnitMetadataMap().get(persistenceUnit);
     }
 
     /**
      * Gets the metamodel.
-     * 
-     * @param persistenceUnit
-     *            the persistence unit
+     *
+     * @param persistenceUnit the persistence unit
      * @return the metamodel
      */
-    public Metamodel getMetamodel(String persistenceUnit)
-    {
+    public Metamodel getMetamodel(String persistenceUnit) {
         Map<String, Metamodel> model = getMetamodelMap();
         return persistenceUnit != null && model.containsKey(persistenceUnit) ? model.get(persistenceUnit) : null;
     }
 
     /**
      * Gets the persistence unit metadata map.
-     * 
+     *
      * @return the persistenceUnitMetadataMap
      */
-    public Map<String, PersistenceUnitMetadata> getPersistenceUnitMetadataMap()
-    {
+    public Map<String, PersistenceUnitMetadata> getPersistenceUnitMetadataMap() {
         return persistenceUnitMetadataMap;
     }
 
     /**
      * Sets the clazz to pu map.
-     * 
-     * @param map
-     *            the map
+     *
+     * @param map the map
      */
-    public void setClazzToPuMap(Map<String, List<String>> map)
-    {
-        if (clazzToPuMap == null)
-        {
+    public void setClazzToPuMap(Map<String, List<String>> map) {
+        if (clazzToPuMap == null) {
             this.clazzToPuMap = map;
-        }
-        else
-        {
+        } else {
             clazzToPuMap.putAll(map);
         }
     }
 
     /**
      * Gets the mapped persistence unit.
-     * 
-     * @param clazz
-     *            the clazz
-     * 
+     *
+     * @param clazz the clazz
      * @return the mapped persistence unit
      */
-    public List<String> getMappedPersistenceUnit(Class<?> clazz)
-    {
+    public List<String> getMappedPersistenceUnit(Class<?> clazz) {
         return this.clazzToPuMap != null ? this.clazzToPuMap.get(clazz.getName()) : null;
     }
 
     /**
      * returns mapped persistence unit.
-     * 
-     * @param clazzName
-     *            clazz name.
-     * 
+     *
+     * @param clazzName clazz name.
      * @return mapped persistence unit.
      */
-    public String getMappedPersistenceUnit(String clazzName)
-    {
+    public String getMappedPersistenceUnit(String clazzName) {
 
         List<String> pus = clazzToPuMap.get(clazzName);
 
         final int _first = 0;
         String pu = null;
 
-        if (pus != null && !pus.isEmpty())
-        {
-            if (pus.size() == 2)
-            {
+        if (pus != null && !pus.isEmpty()) {
+            if (pus.size() == 2) {
                 onError(clazzName);
             }
             return pus.get(_first);
-        }
-        else
-        {
+        } else {
             Set<String> mappedClasses = this.clazzToPuMap.keySet();
             boolean found = false;
-            for (String clazz : mappedClasses)
-            {
-                if (found && clazz.endsWith("." + clazzName))
-                {
+            for (String clazz : mappedClasses) {
+                if (found && clazz.endsWith("." + clazzName)) {
                     onError(clazzName);
-                }
-                else if (clazz.endsWith("." + clazzName) || clazz.endsWith("$" + clazzName))
-                {
+                } else if (clazz.endsWith("." + clazzName) || clazz.endsWith("$" + clazzName)) {
                     pu = clazzToPuMap.get(clazz).get(_first);
                     found = true;
                 }
@@ -222,28 +188,20 @@ public class ApplicationMetadata
     /**
      * Adds parameterised query with given name into collection. Throws
      * exception if duplicate name is provided.
-     * 
-     * @param queryName
-     *            query name.
-     * @param query
-     *            named/native query.
-     * @param isNativeQuery
-     *            true, if it is a namednativequery.
-     * 
+     *
+     * @param queryName     query name.
+     * @param query         named/native query.
+     * @param isNativeQuery true, if it is a namednativequery.
      */
-    public void addQueryToCollection(String queryName, String query, boolean isNativeQuery, Class clazz)
-    {
-        if (namedNativeQueries == null)
-        {
+    public void addQueryToCollection(String queryName, String query, boolean isNativeQuery, Class clazz) {
+        if (namedNativeQueries == null) {
             namedNativeQueries = new ConcurrentHashMap<String, QueryWrapper>();
         }
-        if (!namedNativeQueries.containsKey(queryName))
-        {
+        if (!namedNativeQueries.containsKey(queryName)) {
             namedNativeQueries.put(queryName, new QueryWrapper(queryName, query, isNativeQuery, clazz));
         }
         // No null check made as it will never hold null value
-        else if (queryName != null && !getQuery(queryName).equals(query))
-        {
+        else if (queryName != null && !getQuery(queryName).equals(query)) {
             logger.error("Duplicate named/native query with name:" + queryName
                     + "found! Already there is a query with same name:" + namedNativeQueries.get(queryName));
             throw new ApplicationLoaderException("Duplicate named/native query with name:" + queryName
@@ -253,51 +211,93 @@ public class ApplicationMetadata
 
     /**
      * Returns query interface.
-     * 
-     * @param name
-     *            query name.
+     *
+     * @param name query name.
      * @return query.
      */
-    public String getQuery(String name)
-    {
+    public String getQuery(String name) {
         QueryWrapper wrapper = namedNativeQueries != null && name != null ? namedNativeQueries.get(name) : null;
         return wrapper != null ? wrapper.getQuery() : null;
     }
 
     /**
      * Returns true, if query is named native or native, else false
-     * 
-     * @param name
-     *            mapped name.
+     *
+     * @param name mapped name.
      * @return boolean value
      */
-    public boolean isNative(String name)
-    {
+    public boolean isNative(String name) {
         QueryWrapper wrapper = namedNativeQueries != null && name != null ? namedNativeQueries.get(name) : null;
         return wrapper != null ? wrapper.isNativeQuery() : false;
     }
 
-    public Class getMappedClass(String name)
-    {
+    public Class getMappedClass(String name) {
         QueryWrapper wrapper = namedNativeQueries != null && name != null ? namedNativeQueries.get(name) : null;
         return wrapper != null ? wrapper.getMappedClazz() : null;
     }
 
     /**
      * Handler error and log statements.
-     * 
-     * @param clazzName
-     *            class name.
+     *
+     * @param clazzName class name.
      */
-    private void onError(String clazzName)
-    {
+    private void onError(String clazzName) {
         logger.error("Duplicate name:" + clazzName + "Please provide entity with complete package name.");
         throw new ApplicationLoaderException("Duplicate name:" + clazzName
                 + "Please provide entity with complete package name");
     }
 
-    private class QueryWrapper
-    {
+    /**
+     * @return the metaModelBuilder
+     */
+    public MetaModelBuilder getMetaModelBuilder(String persistenceUnit) {
+        if (metaModelBuilder.containsKey(persistenceUnit)) {
+            return metaModelBuilder.get(persistenceUnit);
+        } else {
+            MetaModelBuilder builder = new MetaModelBuilder();
+            metaModelBuilder.put(persistenceUnit, builder);
+            return builder;
+        }
+    }
+
+    /**
+     *
+     */
+    void unloadApplicationMatadata(final String pu) {
+        Metamodel metamodel = getMetamodel(pu);
+        if (metamodel != null) {
+            this.metamodelMap.remove(pu);
+            ((MetamodelImpl) metamodel).setEntityMetadataMap(null);
+            ((MetamodelImpl) metamodel).setEntityNameToClassMap(null);
+            ((MetamodelImpl) metamodel).addKeyValues(new HashMap<String, IdDescriptor>());
+        }
+        MetaModelBuilder builder = getMetaModelBuilder(pu);
+        if (builder != null) {
+            this.metaModelBuilder.remove(pu);
+            builder = null;
+        }
+
+        // for (String className : clazzToPuMap.keySet())
+        // {
+        // List<String> pus = clazzToPuMap.get(className);
+        // }
+        // this.clazzToPuMap = null;
+
+        PersistenceUnitMetadata puMetadata = getPersistenceUnitMetadata(pu);
+        if (puMetadata != null) {
+            this.persistenceUnitMetadataMap.remove(pu);
+            puMetadata.setClasses(new ArrayList<String>());
+            puMetadata.setExcludeUnlistedClasses(false);
+            puMetadata.setPackages(new ArrayList<String>());
+            puMetadata.setPersistenceUnitName(null);
+            puMetadata.setProperties(new Properties());
+            puMetadata.setTransactionType(PersistenceUnitTransactionType.RESOURCE_LOCAL);
+            puMetadata.setProvider(null);
+            puMetadata = null;
+        }
+    }
+
+    private class QueryWrapper {
         private String queryName;
 
         private String query;
@@ -311,8 +311,7 @@ public class ApplicationMetadata
          * @param query
          * @param isNativeQuery
          */
-        public QueryWrapper(String queryName, String query, boolean isNativeQuery, Class clazz)
-        {
+        public QueryWrapper(String queryName, String query, boolean isNativeQuery, Class clazz) {
             this.queryName = queryName;
             this.query = query;
             this.isNativeQuery = isNativeQuery;
@@ -322,80 +321,19 @@ public class ApplicationMetadata
         /**
          * @return the query
          */
-        String getQuery()
-        {
+        String getQuery() {
             return query;
         }
 
         /**
          * @return the isNativeQuery
          */
-        boolean isNativeQuery()
-        {
+        boolean isNativeQuery() {
             return isNativeQuery;
         }
 
-        Class getMappedClazz()
-        {
+        Class getMappedClazz() {
             return entityClazz;
-        }
-    }
-
-    /**
-     * @return the metaModelBuilder
-     */
-    public MetaModelBuilder getMetaModelBuilder(String persistenceUnit)
-    {
-        if (metaModelBuilder.containsKey(persistenceUnit))
-        {
-            return metaModelBuilder.get(persistenceUnit);
-        }
-        else
-        {
-            MetaModelBuilder builder = new MetaModelBuilder();
-            metaModelBuilder.put(persistenceUnit, builder);
-            return builder;
-        }
-    }
-
-    /**
-     * 
-     */
-    void unloadApplicationMatadata(final String pu)
-    {
-        Metamodel metamodel = getMetamodel(pu);
-        if (metamodel != null)
-        {
-            this.metamodelMap.remove(pu);
-            ((MetamodelImpl) metamodel).setEntityMetadataMap(null);
-            ((MetamodelImpl) metamodel).setEntityNameToClassMap(null);
-            ((MetamodelImpl) metamodel).addKeyValues(new HashMap<String, IdDescriptor>());
-        }
-        MetaModelBuilder builder = getMetaModelBuilder(pu);
-        if (builder != null)
-        {
-            this.metaModelBuilder.remove(pu);
-            builder = null;
-        }
-
-        // for (String className : clazzToPuMap.keySet())
-        // {
-        // List<String> pus = clazzToPuMap.get(className);
-        // }
-        // this.clazzToPuMap = null;
-
-        PersistenceUnitMetadata puMetadata = getPersistenceUnitMetadata(pu);
-        if (puMetadata != null)
-        {
-            this.persistenceUnitMetadataMap.remove(pu);
-            puMetadata.setClasses(new ArrayList<String>());
-            puMetadata.setExcludeUnlistedClasses(false);
-            puMetadata.setPackages(new ArrayList<String>());
-            puMetadata.setPersistenceUnitName(null);
-            puMetadata.setProperties(new Properties());
-            puMetadata.setTransactionType(PersistenceUnitTransactionType.RESOURCE_LOCAL);
-            puMetadata.setProvider(null);
-            puMetadata = null;
         }
     }
 }

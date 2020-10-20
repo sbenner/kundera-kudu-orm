@@ -15,50 +15,46 @@
  ******************************************************************************/
 package com.impetus.client.kudu;
 
-import java.util.Map;
-
 import com.impetus.kundera.configure.AbstractPropertyReader;
 import com.impetus.kundera.configure.ClientProperties;
 import com.impetus.kundera.configure.ClientProperties.DataStore;
 import com.impetus.kundera.configure.PropertyReader;
 import com.impetus.kundera.metadata.model.PersistenceUnitMetadata;
 
+import java.util.Map;
+
 /**
  * The Class KuduDBPropertyReader.
- * 
+ *
  * @author karthikp.manchala
  */
-public class KuduDBPropertyReader extends AbstractPropertyReader implements PropertyReader
-{
+public class KuduDBPropertyReader extends AbstractPropertyReader implements PropertyReader {
 
-    /** The ksmd. */
+    /**
+     * The ksmd.
+     */
     public static KuduDBSchemaMetadata ksmd;
 
     /**
      * Instantiates a new kudu db property reader.
-     * 
-     * @param externalProperties
-     *            the external properties
-     * @param puMetadata
-     *            the pu metadata
+     *
+     * @param externalProperties the external properties
+     * @param puMetadata         the pu metadata
      */
-    public KuduDBPropertyReader(Map externalProperties, final PersistenceUnitMetadata puMetadata)
-    {
+    public KuduDBPropertyReader(Map externalProperties, final PersistenceUnitMetadata puMetadata) {
         super(externalProperties, puMetadata);
         ksmd = new KuduDBSchemaMetadata();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.configure.AbstractPropertyReader#onXml(com.impetus.
      * kundera.configure.ClientProperties)
      */
-    public void onXml(ClientProperties cp)
-    {
-        if (cp != null)
-        {
+    public void onXml(ClientProperties cp) {
+        if (cp != null) {
             ksmd.setClientProperties(cp);
         }
     }
@@ -66,56 +62,48 @@ public class KuduDBPropertyReader extends AbstractPropertyReader implements Prop
     /**
      * The Class KuduDBSchemaMetadata.
      */
-    public class KuduDBSchemaMetadata
-    {
+    public class KuduDBSchemaMetadata {
 
-        /** The client properties. */
+        /**
+         * The client properties.
+         */
         private ClientProperties clientProperties;
 
         /**
          * Instantiates a new kudu db schema metadata.
          */
-        public KuduDBSchemaMetadata()
-        {
+        public KuduDBSchemaMetadata() {
 
         }
 
         /**
          * Gets the client properties.
-         * 
+         *
          * @return the client properties
          */
-        public ClientProperties getClientProperties()
-        {
+        public ClientProperties getClientProperties() {
             return clientProperties;
         }
 
         /**
          * Sets the client properties.
-         * 
-         * @param clientProperties
-         *            the new client properties
+         *
+         * @param clientProperties the new client properties
          */
-        private void setClientProperties(ClientProperties clientProperties)
-        {
+        private void setClientProperties(ClientProperties clientProperties) {
             this.clientProperties = clientProperties;
         }
 
         /**
          * Gets the data store.
-         * 
-         * @param datastore
-         *            the datastore
+         *
+         * @param datastore the datastore
          * @return the data store
          */
-        public DataStore getDataStore(String datastore)
-        {
-            if (getClientProperties() != null && getClientProperties().getDatastores() != null)
-            {
-                for (DataStore dataStore : getClientProperties().getDatastores())
-                {
-                    if (dataStore.getName() != null && dataStore.getName().trim().equalsIgnoreCase(datastore))
-                    {
+        public DataStore getDataStore(String datastore) {
+            if (getClientProperties() != null && getClientProperties().getDatastores() != null) {
+                for (DataStore dataStore : getClientProperties().getDatastores()) {
+                    if (dataStore.getName() != null && dataStore.getName().trim().equalsIgnoreCase(datastore)) {
                         return dataStore;
                     }
                 }

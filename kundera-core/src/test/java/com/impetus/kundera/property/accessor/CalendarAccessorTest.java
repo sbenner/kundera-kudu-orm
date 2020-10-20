@@ -15,30 +15,25 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
-import java.util.Calendar;
-
+import com.impetus.kundera.property.PropertyAccessor;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.property.PropertyAccessor;
+import java.util.Calendar;
 
 /**
  * @author amresh.singh
- * 
  */
-public class CalendarAccessorTest
-{
+public class CalendarAccessorTest {
     PropertyAccessor<Calendar> accessor;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         accessor = new CalendarAccessor();
 
     }
@@ -47,8 +42,7 @@ public class CalendarAccessorTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         accessor = null;
     }
 
@@ -58,15 +52,14 @@ public class CalendarAccessorTest
      * .
      */
     @Test
-    public void testFromBytes()
-    {
+    public void testFromBytes() {
         Assert.assertNull(accessor.fromBytes(Calendar.class, null));
-        
+
         Calendar v1 = Calendar.getInstance();
         byte[] b = accessor.toBytes(v1);
-        
+
         Calendar v2 = accessor.fromBytes(Calendar.class, b);
-        Assert.assertEquals(v1, v2);        
+        Assert.assertEquals(v1, v2);
     }
 
     /**
@@ -75,12 +68,11 @@ public class CalendarAccessorTest
      * .
      */
     @Test
-    public void testToBytes()
-    {
+    public void testToBytes() {
         Assert.assertNull(accessor.toBytes(null));
         Calendar v1 = Calendar.getInstance();
         byte[] b = accessor.toBytes(v1);
-        
+
         Calendar v2 = accessor.fromBytes(Calendar.class, b);
         Assert.assertEquals(v1, v2);
     }
@@ -91,14 +83,13 @@ public class CalendarAccessorTest
      * .
      */
     @Test
-    public void testToStringObject()
-    {
+    public void testToStringObject() {
         Assert.assertNull(accessor.toString(null));
         Calendar v1 = Calendar.getInstance();
         String s1 = v1.getTime().getTime() + "";
-        
+
         String s2 = accessor.toString(v1);
-        Assert.assertTrue(s1.equals(s2));       
+        Assert.assertTrue(s1.equals(s2));
     }
 
     /**
@@ -107,8 +98,7 @@ public class CalendarAccessorTest
      * .
      */
     @Test
-    public void testFromString()
-    {
+    public void testFromString() {
         Assert.assertNull(accessor.fromString(Calendar.class, null));
 
         Calendar v1 = Calendar.getInstance();
@@ -124,8 +114,7 @@ public class CalendarAccessorTest
      * .
      */
     @Test
-    public void testGetCopy()
-    {
+    public void testGetCopy() {
         Assert.assertNull(accessor.getCopy(null));
 
         Calendar v1 = Calendar.getInstance();
@@ -140,8 +129,7 @@ public class CalendarAccessorTest
      * .
      */
     @Test
-    public void testGetInstance()
-    {
+    public void testGetInstance() {
         Assert.assertNotNull(accessor.getInstance(Calendar.class));
         Assert.assertTrue(accessor.getInstance(Calendar.class) instanceof Calendar);
     }

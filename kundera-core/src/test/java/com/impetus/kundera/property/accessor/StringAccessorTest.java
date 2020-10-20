@@ -15,28 +15,23 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
+import com.impetus.kundera.property.PropertyAccessor;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.property.PropertyAccessor;
-
 /**
  * @author amresh.singh
- *
  */
-public class StringAccessorTest
-{
+public class StringAccessorTest {
     PropertyAccessor<String> accessor;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         accessor = new StringAccessor();
     }
 
@@ -44,8 +39,7 @@ public class StringAccessorTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         accessor = null;
     }
 
@@ -53,15 +47,14 @@ public class StringAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.StringAccessor#fromBytes(java.lang.Class, byte[])}.
      */
     @Test
-    public void testFromBytes()
-    {
+    public void testFromBytes() {
         Assert.assertNull(accessor.fromBytes(String.class, null));
-        
+
         String d1 = new String("AAA");
         byte[] b = accessor.toBytes(d1);
-        
+
         String d2 = accessor.fromBytes(String.class, b);
-        
+
         Assert.assertEquals(d1, d2);
     }
 
@@ -69,16 +62,15 @@ public class StringAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.StringAccessor#toBytes(java.lang.Object)}.
      */
     @Test
-    public void testToBytes()
-    {
+    public void testToBytes() {
         Assert.assertNull(accessor.toBytes(null));
 
         String d1 = new String("AAA");
-        
+
         byte[] b = accessor.toBytes(d1);
-        
+
         String d2 = accessor.fromBytes(String.class, b);
-        
+
         Assert.assertEquals(d1, d2);
     }
 
@@ -86,28 +78,26 @@ public class StringAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.StringAccessor#toString(java.lang.Object)}.
      */
     @Test
-    public void testToStringObject()
-    {
+    public void testToStringObject() {
         Assert.assertNull(accessor.toString(null));
 
         String d1 = new String("AAA");
         String s1 = d1.toString();
-        
+
         String s2 = accessor.toString(d1);
-        
-        Assert.assertTrue(s1.equals(s2));   
+
+        Assert.assertTrue(s1.equals(s2));
     }
 
     /**
      * Test method for {@link com.impetus.kundera.property.accessor.StringAccessor#fromString(java.lang.Class, java.lang.String)}.
      */
     @Test
-    public void testFromString()
-    {
+    public void testFromString() {
         Assert.assertNull(accessor.fromString(String.class, null));
         String d1 = new String("AAA");
         String s = d1.toString();
-        
+
         String d2 = accessor.fromString(String.class, s);
         Assert.assertEquals(d1, d2);
     }
@@ -116,8 +106,7 @@ public class StringAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.StringAccessor#getCopy(java.lang.Object)}.
      */
     @Test
-    public void testGetCopy()
-    {
+    public void testGetCopy() {
         String d1 = new String("AAA");
         String d2 = accessor.getCopy(d1);
         Assert.assertEquals(d1, d2);
@@ -127,10 +116,9 @@ public class StringAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.StringAccessor#getInstance(java.lang.Class)}.
      */
     @Test
-    public void testGetInstance()
-    {
+    public void testGetInstance() {
         Object o = accessor.getInstance(String.class);
-        Assert.assertNotNull(o);  
+        Assert.assertNotNull(o);
     }
 
 }

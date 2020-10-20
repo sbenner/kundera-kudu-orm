@@ -15,24 +15,20 @@
  ******************************************************************************/
 package com.impetus.kundera.lifecycle.states;
 
-import javax.persistence.CascadeType;
-
+import com.impetus.kundera.graph.Node;
+import com.impetus.kundera.graph.StoreBuilder;
+import com.impetus.kundera.persistence.context.PersistenceCache;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.graph.Node;
-import com.impetus.kundera.graph.StoreBuilder;
-import com.impetus.kundera.persistence.context.PersistenceCache;
+import javax.persistence.CascadeType;
 
 /**
  * @author amresh.singh
- * 
  */
-public class DetachedStateTest
-{
+public class DetachedStateTest {
     PersistenceCache pc;
 
     DetachedState state;
@@ -41,8 +37,7 @@ public class DetachedStateTest
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         pc = new PersistenceCache();
         state = new DetachedState();
     }
@@ -51,8 +46,7 @@ public class DetachedStateTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         pc = null;
     }
 
@@ -62,8 +56,7 @@ public class DetachedStateTest
      * .
      */
     @Test
-    public void testInitialize()
-    {
+    public void testInitialize() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.initialize(storeNode);
         Assert.assertNotNull(pc);
@@ -75,16 +68,12 @@ public class DetachedStateTest
      * .
      */
     @Test
-    public void testHandlePersist()
-    {
+    public void testHandlePersist() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
-        try
-        {
+        try {
             state.handlePersist(storeNode);
             Assert.fail("Persist operation in Detached state should have thrown exception");
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Assert.assertEquals(IllegalArgumentException.class, e.getClass());
         }
     }
@@ -95,16 +84,12 @@ public class DetachedStateTest
      * .
      */
     @Test
-    public void testHandleRemove()
-    {
+    public void testHandleRemove() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.REMOVE);
-        try
-        {
+        try {
             state.handleRemove(storeNode);
             Assert.fail("Remove operation in Detached state should have thrown exception");
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Assert.assertEquals(IllegalArgumentException.class, e.getClass());
         }
     }
@@ -115,16 +100,12 @@ public class DetachedStateTest
      * .
      */
     @Test
-    public void testHandleRefresh()
-    {
+    public void testHandleRefresh() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.REFRESH);
-        try
-        {
+        try {
             state.handleRefresh(storeNode);
             Assert.fail("refresh operation in Detached state should have thrown exception");
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Assert.assertEquals(IllegalArgumentException.class, e.getClass());
         }
     }
@@ -135,8 +116,7 @@ public class DetachedStateTest
      * .
      */
     @Test
-    public void testHandleMerge()
-    {
+    public void testHandleMerge() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.MERGE);
         state.handleMerge(storeNode);
 
@@ -157,8 +137,7 @@ public class DetachedStateTest
      * .
      */
     @Test
-    public void testHandleDetach()
-    {
+    public void testHandleDetach() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleDetach(storeNode);
     }
@@ -169,8 +148,7 @@ public class DetachedStateTest
      * .
      */
     @Test
-    public void testHandleClose()
-    {
+    public void testHandleClose() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleClose(storeNode);
     }
@@ -181,8 +159,7 @@ public class DetachedStateTest
      * .
      */
     @Test
-    public void testHandleLock()
-    {
+    public void testHandleLock() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleLock(storeNode);
     }
@@ -193,8 +170,7 @@ public class DetachedStateTest
      * .
      */
     @Test
-    public void testHandleCommit()
-    {
+    public void testHandleCommit() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleCommit(storeNode);
     }
@@ -205,8 +181,7 @@ public class DetachedStateTest
      * .
      */
     @Test
-    public void testHandleRollback()
-    {
+    public void testHandleRollback() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleRollback(storeNode);
     }
@@ -217,8 +192,7 @@ public class DetachedStateTest
      * .
      */
     @Test
-    public void testHandleFind()
-    {
+    public void testHandleFind() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleFind(storeNode);
     }
@@ -229,8 +203,7 @@ public class DetachedStateTest
      * .
      */
     @Test
-    public void testHandleGetReference()
-    {
+    public void testHandleGetReference() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleGetReference(storeNode);
     }
@@ -241,8 +214,7 @@ public class DetachedStateTest
      * .
      */
     @Test
-    public void testHandleContains()
-    {
+    public void testHandleContains() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleContains(storeNode);
     }
@@ -253,8 +225,7 @@ public class DetachedStateTest
      * .
      */
     @Test
-    public void testHandleClear()
-    {
+    public void testHandleClear() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleClear(storeNode);
     }
@@ -265,8 +236,7 @@ public class DetachedStateTest
      * .
      */
     @Test
-    public void testHandleFlush()
-    {
+    public void testHandleFlush() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleFlush(storeNode);
     }

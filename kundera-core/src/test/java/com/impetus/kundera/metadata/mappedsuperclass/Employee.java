@@ -1,44 +1,37 @@
 package com.impetus.kundera.metadata.mappedsuperclass;
 
-import java.math.BigInteger;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import java.math.BigInteger;
 
 @Entity
-public class Employee extends MappedPerson
-{
+public class Employee extends MappedPerson {
 
     @Column
     private BigInteger salary;
-    
+
     @Column
     private Integer departmentId;
 
-    public Employee()
-    {
-        
+    public Employee() {
+
     }
-    
-    public BigInteger getSalary()
-    {
+
+    public BigInteger getSalary() {
         return salary;
     }
 
-    public void setSalary(BigInteger salary)
-    {
+    public void setSalary(BigInteger salary) {
         this.salary = salary;
     }
 
-    public Integer getDepartmentId()
-    {
+    public Integer getDepartmentId() {
         return departmentId;
     }
 
-    public void setDepartmentId(Integer departmentId)
-    {
+    public void setDepartmentId(Integer departmentId) {
         this.departmentId = departmentId;
     }
-    
-    
+
+
 }

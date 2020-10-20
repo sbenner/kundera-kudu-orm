@@ -5,36 +5,30 @@ import javax.persistence.Entity;
 
 
 @Entity
-public class Rectangle extends Polygon
-{
-   
+public class Rectangle extends Polygon {
+
     @Column(name = "length")
     private int length;
 
     @Column(name = "breadth")
     private int breadth;
-    
-     
-    public int getLength()
-    {
+
+
+    public int getLength() {
         return length;
     }
 
-    public void setLength(int length)
-    {
+    public void setLength(int length) {
         this.length = length;
     }
 
-    public int getBreadth()
-    {
+    public int getBreadth() {
         return breadth;
     }
 
-    public void setBreadth(int breadth)
-    {
+    public void setBreadth(int breadth) {
         this.breadth = breadth;
     }
-    
-    
+
 
 }

@@ -15,11 +15,6 @@
  ******************************************************************************/
 package com.impetus.kundera.lifecycle.states;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.PersistenceContextType;
-
 import com.impetus.kundera.client.Client;
 import com.impetus.kundera.client.EnhanceEntity;
 import com.impetus.kundera.graph.Node;
@@ -29,22 +24,22 @@ import com.impetus.kundera.metadata.model.EntityMetadata;
 import com.impetus.kundera.persistence.EntityReader;
 import com.impetus.kundera.property.PropertyAccessorHelper;
 
+import javax.persistence.PersistenceContextType;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author amresh
- * 
  */
-public class ManagedState extends NodeState
-{
+public class ManagedState extends NodeState {
 
     @Override
-    public void initialize(NodeStateContext nodeStateContext)
-    {
+    public void initialize(NodeStateContext nodeStateContext) {
 
     }
 
     @Override
-    public void handlePersist(NodeStateContext nodeStateContext)
-    {
+    public void handlePersist(NodeStateContext nodeStateContext) {
         // Ignored, entity remains in the same state
 
         // Cascade persist operation for related entities for whom cascade=ALL
@@ -56,8 +51,7 @@ public class ManagedState extends NodeState
     }
 
     @Override
-    public void handleRemove(NodeStateContext nodeStateContext)
-    {
+    public void handleRemove(NodeStateContext nodeStateContext) {
         // Managed ---> Removed
         moveNodeToNextState(nodeStateContext, new RemovedState());
 
@@ -70,8 +64,7 @@ public class ManagedState extends NodeState
     }
 
     @Override
-    public void handleRefresh(NodeStateContext nodeStateContext)
-    {
+    public void handleRefresh(NodeStateContext nodeStateContext) {
         // Refresh entity state from the database
         // Fetch Node data from Client
         Client client = nodeStateContext.getClient();
@@ -82,8 +75,7 @@ public class ManagedState extends NodeState
         EntityReader reader = client.getReader();
         EnhanceEntity ee = reader.findById(entityId, entityMetadata, client);
 
-        if (ee != null && ee.getEntity() != null)
-        {
+        if (ee != null && ee.getEntity() != null) {
             Object nodeData = ee.getEntity();
             nodeStateContext.setData(nodeData);
         }
@@ -94,8 +86,7 @@ public class ManagedState extends NodeState
     }
 
     @Override
-    public void handleMerge(NodeStateContext nodeStateContext)
-    {
+    public void handleMerge(NodeStateContext nodeStateContext) {
         // Ignored, entity remains in the same state
 
         // Mark this entity for saving in database depending upon whether it's
@@ -105,21 +96,20 @@ public class ManagedState extends NodeState
 
 //        if (((Node) nodeStateContext).isDirty() || ((Node) nodeStateContext).isInState(DetachedState.class))
 //        {
-            ((Node) nodeStateContext).setUpdate(true);
-            // Add this node into persistence cache
-            nodeStateContext.getPersistenceCache().getMainCache().addNodeToCache((Node) nodeStateContext);
+        ((Node) nodeStateContext).setUpdate(true);
+        // Add this node into persistence cache
+        nodeStateContext.getPersistenceCache().getMainCache().addNodeToCache((Node) nodeStateContext);
 
-            // Cascade merge operation for all related entities for whom
-            // cascade=ALL
-            // or MERGE
+        // Cascade merge operation for all related entities for whom
+        // cascade=ALL
+        // or MERGE
 //            recursivelyPerformOperation(nodeStateContext, OPERATION.MERGE);
 
 //        }
     }
 
     @Override
-    public void handleFind(NodeStateContext nodeStateContext)
-    {
+    public void handleFind(NodeStateContext nodeStateContext) {
         // Fetch Node data from Client
         Client client = nodeStateContext.getClient();
         Class<?> nodeDataClass = nodeStateContext.getDataClass();
@@ -129,38 +119,31 @@ public class ManagedState extends NodeState
         Object nodeData = null; // Node data
 
         EntityReader reader = client.getReader();
-        if (reader == null)
-        {
+        if (reader == null) {
             return;
         }
 
         EnhanceEntity ee = reader.findById(entityId, entityMetadata, client);
         // Recursively retrieve relationship entities (if there are any)
-        if (ee != null && ee.getEntity() != null)
-        {
+        if (ee != null && ee.getEntity() != null) {
             Object entity = ee.getEntity();
 
             if ((entityMetadata.getRelationNames() == null || entityMetadata.getRelationNames().isEmpty())
-                    && !entityMetadata.isRelationViaJoinTable())
-            {
+                    && !entityMetadata.isRelationViaJoinTable()) {
                 // There is no relation (not even via Join Table), Construct
                 // Node out of this enhance entity,
                 nodeData = entity;
-            }
-
-            else
-            {
+            } else {
                 // This entity has associated entities, find them recursively.
                 Map<Object, Object> relationStack = new HashMap<Object, Object>();
-                relationStack.put(nodeDataClass.getCanonicalName()+"#"+PropertyAccessorHelper.getId(entity, entityMetadata), entity);
+                relationStack.put(nodeDataClass.getCanonicalName() + "#" + PropertyAccessorHelper.getId(entity, entityMetadata), entity);
                 nodeData = reader.recursivelyFindEntities(ee.getEntity(), ee.getRelations(), entityMetadata,
-                        nodeStateContext.getPersistenceDelegator(), false,relationStack);
+                        nodeStateContext.getPersistenceDelegator(), false, relationStack);
             }
         }
 
         // Construct Node out of this entity and put into Persistence Cache
-        if (nodeData != null)
-        {
+        if (nodeData != null) {
 
             nodeStateContext.setData(nodeData);
             nodeStateContext.getPersistenceCache().getMainCache().processNodeMapping((Node) nodeStateContext);
@@ -176,20 +159,17 @@ public class ManagedState extends NodeState
     }
 
     @Override
-    public void handleClose(NodeStateContext nodeStateContext)
-    {
+    public void handleClose(NodeStateContext nodeStateContext) {
         handleDetach(nodeStateContext);
     }
 
     @Override
-    public void handleClear(NodeStateContext nodeStateContext)
-    {
+    public void handleClear(NodeStateContext nodeStateContext) {
         handleDetach(nodeStateContext);
     }
 
     @Override
-    public void handleFlush(NodeStateContext nodeStateContext)
-    {
+    public void handleFlush(NodeStateContext nodeStateContext) {
         // Entity state to remain as Managed
 
         // Flush this node to database
@@ -204,13 +184,11 @@ public class ManagedState extends NodeState
     }
 
     @Override
-    public void handleLock(NodeStateContext nodeStateContext)
-    {
+    public void handleLock(NodeStateContext nodeStateContext) {
     }
 
     @Override
-    public void handleDetach(NodeStateContext nodeStateContext)
-    {
+    public void handleDetach(NodeStateContext nodeStateContext) {
         // Managed ---> Detached
         moveNodeToNextState(nodeStateContext, new DetachedState());
 
@@ -220,38 +198,31 @@ public class ManagedState extends NodeState
     }
 
     @Override
-    public void handleCommit(NodeStateContext nodeStateContext)
-    {
+    public void handleCommit(NodeStateContext nodeStateContext) {
         nodeStateContext.setCurrentNodeState(new DetachedState());
     }
 
     @Override
-    public void handleRollback(NodeStateContext nodeStateContext)
-    {
+    public void handleRollback(NodeStateContext nodeStateContext) {
         // If persistence context is EXTENDED, Next state should be Transient
         // If persistence context is TRANSACTIONAL, Next state should be
         // detached
 
-        if (PersistenceContextType.EXTENDED.equals(nodeStateContext.getPersistenceCache().getPersistenceContextType()))
-        {
+        if (PersistenceContextType.EXTENDED.equals(nodeStateContext.getPersistenceCache().getPersistenceContextType())) {
             moveNodeToNextState(nodeStateContext, new TransientState());
 
-        }
-        else if (PersistenceContextType.TRANSACTION.equals(nodeStateContext.getPersistenceCache()
-                .getPersistenceContextType()))
-        {
+        } else if (PersistenceContextType.TRANSACTION.equals(nodeStateContext.getPersistenceCache()
+                .getPersistenceContextType())) {
             moveNodeToNextState(nodeStateContext, new DetachedState());
         }
     }
 
     @Override
-    public void handleGetReference(NodeStateContext nodeStateContext)
-    {
+    public void handleGetReference(NodeStateContext nodeStateContext) {
     }
 
     @Override
-    public void handleContains(NodeStateContext nodeStateContext)
-    {
+    public void handleContains(NodeStateContext nodeStateContext) {
     }
 
 }

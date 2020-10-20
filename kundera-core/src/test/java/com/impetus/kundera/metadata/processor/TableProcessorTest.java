@@ -15,20 +15,6 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.processor;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.impetus.kundera.Constants;
 import com.impetus.kundera.PersistenceProperties;
 import com.impetus.kundera.client.CoreTestClient;
@@ -38,15 +24,24 @@ import com.impetus.kundera.metadata.model.EntityMetadata;
 import com.impetus.kundera.metadata.model.PersistenceUnitMetadata;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Junit Test case for @See TableProcessor.
- * 
+ *
  * @author vivek.mishra
- * 
  */
-public class TableProcessorTest
-{
+public class TableProcessorTest {
 
     private EntityManagerFactory emf;
 
@@ -54,28 +49,23 @@ public class TableProcessorTest
 
     /**
      * Sets the up.
-     * 
-     * @throws Exception
-     *             the exception
+     *
+     * @throws Exception the exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         emf = Persistence.createEntityManagerFactory("kunderatest");
         kunderaMetadata = ((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance();
     }
 
     /**
      * Test process query metadata.
-     * 
-     * @throws InstantiationException
-     *             the instantiation exception
-     * @throws IllegalAccessException
-     *             the illegal access exception
+     *
+     * @throws InstantiationException the instantiation exception
+     * @throws IllegalAccessException the illegal access exception
      */
     @Test
-    public void testProcessQueryMetadata() throws InstantiationException, IllegalAccessException
-    {
+    public void testProcessQueryMetadata() throws InstantiationException, IllegalAccessException {
         final String persistenceUnit = "rdbms";
         final String named_query = "Select t from TestEntity t where t.field = :field";
         final String named_query1 = "Select t1 from TestEntity t1 where t1.field = :field";
@@ -132,15 +122,12 @@ public class TableProcessorTest
 
     /**
      * Test process query metadata.
-     * 
-     * @throws InstantiationException
-     *             the instantiation exception
-     * @throws IllegalAccessException
-     *             the illegal access exception
+     *
+     * @throws InstantiationException the instantiation exception
+     * @throws IllegalAccessException the illegal access exception
      */
     @Test
-    public void testProcessInheritedClass() throws InstantiationException, IllegalAccessException
-    {
+    public void testProcessInheritedClass() throws InstantiationException, IllegalAccessException {
         final String persistenceUnit = "rdbms";
 
         EntityMetadata metadata;
@@ -180,11 +167,9 @@ public class TableProcessorTest
 
     /**
      * Test process query metadata.
-     * 
      */
     @Test
-    public void testInheritedRelations()
-    {
+    public void testInheritedRelations() {
         final String persistenceUnit = "inheritanceTest";
 
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnit);
@@ -234,13 +219,10 @@ public class TableProcessorTest
 
     /**
      * Test constraints on inherited objects
-     * 
      */
     @Test
-    public void testInheritedConstraints()
-    {
-        try
-        {
+    public void testInheritedConstraints() {
+        try {
 
             final String persistenceUnit = "inheritanceTest";
 
@@ -263,9 +245,7 @@ public class TableProcessorTest
 
             em.close();
             emf.close();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
 
             Assert.assertEquals("javax.validation.ValidationException: Name of the object should be defined",
                     e.getMessage());
@@ -275,13 +255,11 @@ public class TableProcessorTest
 
     /**
      * Tear down.
-     * 
-     * @throws Exception
-     *             the exception
+     *
+     * @throws Exception the exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         // Do nothing.
     }
 

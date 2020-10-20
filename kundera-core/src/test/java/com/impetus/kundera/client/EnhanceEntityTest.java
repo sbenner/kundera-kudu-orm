@@ -1,12 +1,12 @@
 /**
  * Copyright 2013 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,26 +15,22 @@
  */
 package com.impetus.kundera.client;
 
-import junit.framework.Assert;
-
-import org.junit.Test;
-
 import com.impetus.kundera.persistence.event.AddressEntity;
+import junit.framework.Assert;
+import org.junit.Test;
 
 /**
  * @author vivek.mishra
  * junit for {@link EnhanceEntity}
  */
-public class EnhanceEntityTest
-{
+public class EnhanceEntityTest {
 
     @Test
-    public void test()
-    {
+    public void test() {
         AddressEntity address = new AddressEntity();
         address.setAddressId("addr1");
         address.setCity("noida");
-        EnhanceEntity enhanceEntity  = new EnhanceEntity(address,"addr1",null);
+        EnhanceEntity enhanceEntity = new EnhanceEntity(address, "addr1", null);
         Assert.assertNotNull(enhanceEntity);
         Assert.assertEquals("addr1", enhanceEntity.getEntityId());
         Assert.assertEquals(address, enhanceEntity.getEntity());

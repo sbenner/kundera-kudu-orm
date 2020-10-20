@@ -1,12 +1,12 @@
 /**
  * Copyright 2013 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,19 +14,6 @@
  * limitations under the License.
  */
 package com.impetus.kundera.persistence;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import com.impetus.kundera.CoreTestUtilities;
 import com.impetus.kundera.client.Client;
@@ -40,15 +27,24 @@ import com.impetus.kundera.metadata.validator.GeneratedIdStrategyTable;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.property.PropertyAccessorHelper;
 import com.thoughtworks.xstream.core.ReferenceByIdMarshaller.IDGenerator;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author vivek.mishra
- * 
+ *
  *         junit for {@link IDGenerator}
- * 
+ *
  */
-public class IdGeneratorTest
-{
+public class IdGeneratorTest {
     private static String persistenceUnit = "GeneratedValue";
 
     private EntityManagerFactory emf;
@@ -58,8 +54,7 @@ public class IdGeneratorTest
     private KunderaMetadata kunderaMetadata;
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         emf = Persistence.createEntityManagerFactory(persistenceUnit);
         kunderaMetadata = ((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance();
         em = emf.createEntityManager();
@@ -67,8 +62,7 @@ public class IdGeneratorTest
 
     @Test
     public void testAutoStrategy() throws NoSuchFieldException, SecurityException, IllegalArgumentException,
-            IllegalAccessException
-    {
+            IllegalAccessException {
         IdGenerator idGenerator = new IdGenerator();
 
         GeneratedIdStrategyAuto autoStrategy = new GeneratedIdStrategyAuto();
@@ -86,8 +80,7 @@ public class IdGeneratorTest
 
     @Test
     public void testSequenceStrategy() throws NoSuchFieldException, SecurityException, IllegalArgumentException,
-            IllegalAccessException
-    {
+            IllegalAccessException {
         IdGenerator idGenerator = new IdGenerator();
 
         GeneratedIdStrategySequence seqStrategy = new GeneratedIdStrategySequence();
@@ -102,23 +95,19 @@ public class IdGeneratorTest
         idGenerator.generateAndSetId(seqStrategy, entityMetadata, CoreTestUtilities.getDelegator(em), kunderaMetadata);
         Assert.assertTrue(seqStrategy.getId() > 0);
 
-        try
-        {
+        try {
             setInvalidClient(CoreTestUtilities.getDelegator(em));
             idGenerator.generateAndSetId(seqStrategy, entityMetadata, CoreTestUtilities.getDelegator(em),
                     kunderaMetadata);
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (IllegalArgumentException iaex)
-        {
+        } catch (IllegalArgumentException iaex) {
             Assert.assertNotNull(iaex);
         }
     }
 
     @Test
     public void testIdentityStrategy() throws NoSuchFieldException, SecurityException, IllegalArgumentException,
-            IllegalAccessException
-    {
+            IllegalAccessException {
         IdGenerator idGenerator = new IdGenerator();
 
         GeneratedIdStrategyIdentity identityStrategy = new GeneratedIdStrategyIdentity();
@@ -131,21 +120,17 @@ public class IdGeneratorTest
 
         // on auto strategy
 
-        try
-        {
+        try {
             idGenerator.generateAndSetId(identityStrategy, entityMetadata, CoreTestUtilities.getDelegator(em),
                     kunderaMetadata);
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertNotNull(usex);
         }
     }
 
     @Test
     public void testTableStrategy() throws NoSuchFieldException, SecurityException, IllegalArgumentException,
-            IllegalAccessException
-    {
+            IllegalAccessException {
         IdGenerator idGenerator = new IdGenerator();
 
         GeneratedIdStrategyTable tableStrategy = new GeneratedIdStrategyTable();
@@ -161,29 +146,24 @@ public class IdGeneratorTest
                 .generateAndSetId(tableStrategy, entityMetadata, CoreTestUtilities.getDelegator(em), kunderaMetadata);
         Assert.assertTrue(tableStrategy.getId() > 0);
 
-        try
-        {
+        try {
             setInvalidClient(CoreTestUtilities.getDelegator(em));
             idGenerator.generateAndSetId(tableStrategy, entityMetadata, CoreTestUtilities.getDelegator(em),
                     kunderaMetadata);
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (IllegalArgumentException iaex)
-        {
+        } catch (IllegalArgumentException iaex) {
             Assert.assertNotNull(iaex);
         }
     }
 
-    private void setInvalidClient(PersistenceDelegator pd) throws NoSuchFieldException, SecurityException
-    {
+    private void setInvalidClient(PersistenceDelegator pd) throws NoSuchFieldException, SecurityException {
         Map<String, Client> clientMap = new HashMap<String, Client>();
         clientMap.put(persistenceUnit, new CoreTestClientNoGenerator(null, persistenceUnit, kunderaMetadata));
         PropertyAccessorHelper.set(pd, pd.getClass().getDeclaredField("clientMap"), clientMap);
     }
 
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
         if (em != null)
             em.close();
 

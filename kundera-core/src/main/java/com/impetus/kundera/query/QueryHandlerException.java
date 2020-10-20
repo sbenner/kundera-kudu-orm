@@ -17,46 +17,43 @@ package com.impetus.kundera.query;
 
 /**
  * The Class QueryHandlerException.
- * 
+ *
  * @author vivek.mishra
- * 
- *         Runtime exception handler for query interpretation
+ * <p>
+ * Runtime exception handler for query interpretation
  */
-public class QueryHandlerException extends RuntimeException
-{
+public class QueryHandlerException extends RuntimeException {
 
-    /** Default Serial Version UID. */
+    /**
+     * Default Serial Version UID.
+     */
     private static final long serialVersionUID = 1L;
 
     /**
-     * 
+     *
      */
-    public QueryHandlerException()
-    {
+    public QueryHandlerException() {
         super();
     }
 
     /**
      * @param paramString
      */
-    public QueryHandlerException(String paramString)
-    {
+    public QueryHandlerException(String paramString) {
         super(paramString);
     }
 
     /**
      * @param paramThrowable
      */
-    public QueryHandlerException(Throwable paramThrowable)
-    {
+    public QueryHandlerException(Throwable paramThrowable) {
         super(paramThrowable);
     }
 
     /**
      * @param paramThrowable
      */
-    public QueryHandlerException(String paramString, Throwable paramThrowable)
-    {
+    public QueryHandlerException(String paramString, Throwable paramThrowable) {
         super(paramString, paramThrowable);
     }
 

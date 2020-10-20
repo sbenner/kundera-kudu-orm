@@ -19,32 +19,27 @@ import com.impetus.kundera.KunderaException;
 
 /**
  * @author amresh
- * 
  */
-public class EventListenerException extends KunderaException
-{
+public class EventListenerException extends KunderaException {
 
     /**
-     * 
+     *
      */
-    public EventListenerException()
-    {
+    public EventListenerException() {
 
     }
 
     /**
      * @param arg0
      */
-    public EventListenerException(String arg0)
-    {
+    public EventListenerException(String arg0) {
         super(arg0);
     }
 
     /**
      * @param arg0
      */
-    public EventListenerException(Throwable arg0)
-    {
+    public EventListenerException(Throwable arg0) {
         super(arg0);
     }
 
@@ -52,8 +47,7 @@ public class EventListenerException extends KunderaException
      * @param arg0
      * @param arg1
      */
-    public EventListenerException(String arg0, Throwable arg1)
-    {
+    public EventListenerException(String arg0, Throwable arg1) {
         super(arg0, arg1);
     }
 

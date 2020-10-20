@@ -15,28 +15,26 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
+import com.impetus.kundera.property.PropertyAccessException;
+import com.impetus.kundera.property.PropertyAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.impetus.kundera.property.PropertyAccessException;
-import com.impetus.kundera.property.PropertyAccessor;
-
 /**
  * The Class FloatAccessor.
- * 
+ *
  * @author Amresh Singh
  */
-public class FloatAccessor implements PropertyAccessor<Float>
-{
+public class FloatAccessor implements PropertyAccessor<Float> {
     private final static Logger log = LoggerFactory.getLogger(FloatAccessor.class);
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.property.PropertyAccessor#fromBytes(byte[])
      */
     @Override
-    public Float fromBytes(Class targetClass, byte[] data)
-    {
+    public Float fromBytes(Class targetClass, byte[] data) {
         if (data == null || data.length != 4)
             return (float) 0x0;
 
@@ -45,91 +43,78 @@ public class FloatAccessor implements PropertyAccessor<Float>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toBytes(java.lang.Object)
      */
     @Override
-    public byte[] toBytes(Object object)
-    {
+    public byte[] toBytes(Object object) {
         return object != null ? fromInt(Float.floatToRawIntBits((Float) object)) : null;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toString(java.lang.Object)
      */
     @Override
-    public String toString(Object object)
-    {
+    public String toString(Object object) {
         return object != null ? object.toString() : null;
     }
 
     /**
      * From int.
-     * 
-     * @param data
-     *            the data
+     *
+     * @param data the data
      * @return the byte[]
      */
-    private byte[] fromInt(int data)
-    {
-        return new byte[] { (byte) ((data >> 24) & 0xff), (byte) ((data >> 16) & 0xff), (byte) ((data >> 8) & 0xff),
-                (byte) ((data >> 0) & 0xff), };
+    private byte[] fromInt(int data) {
+        return new byte[]{(byte) ((data >> 24) & 0xff), (byte) ((data >> 16) & 0xff), (byte) ((data >> 8) & 0xff),
+                (byte) ((data >> 0) & 0xff),};
     }
 
     /**
      * To int.
-     * 
-     * @param data
-     *            the data
+     *
+     * @param data the data
      * @return the int
      */
-    private int toInt(byte[] data)
-    {
+    private int toInt(byte[] data) {
         if (data == null || data.length != 4)
             return 0x0;
 
         return (int) ( // NOTE: type cast not necessary for int
-        (0xff & data[0]) << 24 | (0xff & data[1]) << 16 | (0xff & data[2]) << 8 | (0xff & data[3]) << 0);
+                (0xff & data[0]) << 24 | (0xff & data[1]) << 16 | (0xff & data[2]) << 8 | (0xff & data[3]) << 0);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#fromString(java.lang.String
      * )
      */
     @Override
-    public Float fromString(Class targetClass, String s)
-    {
-        try
-        {
-            if (s == null)
-            {
+    public Float fromString(Class targetClass, String s) {
+        try {
+            if (s == null) {
                 return null;
             }
             Float f = new Float(s);
             return f;
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             log.error("Number format exception, Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
     }
 
     @Override
-    public Float getCopy(Object object)
-    {
+    public Float getCopy(Object object) {
         return object != null ? (Float) object : null;
     }
 
-    public Float getInstance(Class<?> clazz)
-    {
+    public Float getInstance(Class<?> clazz) {
         return Float.MAX_VALUE;
     }
 }

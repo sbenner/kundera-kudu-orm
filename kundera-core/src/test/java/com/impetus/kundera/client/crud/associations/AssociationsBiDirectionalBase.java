@@ -15,44 +15,41 @@
  ******************************************************************************/
 package com.impetus.kundera.client.crud.associations;
 
-import java.util.List;
+import junit.framework.Assert;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-
-import junit.framework.Assert;
+import java.util.List;
 
 /**
  * @author Pragalbh Garg
- * 
  */
-public class AssociationsBiDirectionalBase
-{
+public class AssociationsBiDirectionalBase {
 
+    /**
+     * The emf.
+     */
+    protected static EntityManagerFactory emf;
+    /**
+     * The em.
+     */
+    protected static EntityManager em;
     protected String _PU = "kunderatest";
 
-    /** The emf. */
-    protected static EntityManagerFactory emf;
-
-    /** The em. */
-    protected static EntityManager em;
-
-    protected void setUpInternal() throws Exception
-    {
+    protected void setUpInternal() throws Exception {
         emf = Persistence.createEntityManagerFactory(_PU);
         em = emf.createEntityManager();
     }
 
-    protected void assertBegin()
-    {
+    protected void assertBegin() {
         init();
 
         MobileHandset mobile = em.find(MobileHandset.class, "m1");
         Assert.assertNotNull(mobile);
         Assert.assertEquals("manufacturer1", mobile.getManufacturer().getName());
-        
+
         String qry = "select m from MobileHandset m";
         Query query = em.createQuery(qry);
         List<MobileHandset> result = query.getResultList();
@@ -64,7 +61,6 @@ public class AssociationsBiDirectionalBase
         Assert.assertNotNull(result.get(0).getManufacturer().getHandsets());
         Assert.assertNotNull(result.get(0).getOs().getHandsets());
 
-       
 
         qry = "select m from MobileHandset m where m.id = :id";
         query = em.createQuery(qry);
@@ -104,34 +100,34 @@ public class AssociationsBiDirectionalBase
         Assert.assertEquals(3, result3.get(0).getHandsets().size());
         Assert.assertEquals("manufacturer1", result3.get(0).getName());
     }
-    
-    protected void assertCRUD(){
+
+    protected void assertCRUD() {
         init();
-        
+
         MobileHandset mobile = em.find(MobileHandset.class, "m1");
         Assert.assertNotNull(mobile);
         Assert.assertEquals("manufacturer1", mobile.getManufacturer().getName());
-        
+
         mobile = em.find(MobileHandset.class, "m4");
         Assert.assertNotNull(mobile);
         Assert.assertEquals("manufacturer2", mobile.getManufacturer().getName());
-        
+
         mobile = em.find(MobileHandset.class, "m2");
         Assert.assertNotNull(mobile);
         Assert.assertEquals("os1", mobile.getOs().getName());
-        
+
         mobile = em.find(MobileHandset.class, "m3");
         Assert.assertNotNull(mobile);
         Assert.assertEquals("os2", mobile.getOs().getName());
-        
+
         MobileOperatingSystem os = em.find(MobileOperatingSystem.class, "o1");
         Assert.assertNotNull(os);
         Assert.assertEquals("os1", os.getName());
-        
+
         os = em.find(MobileOperatingSystem.class, "o2");
         Assert.assertNotNull(os);
         Assert.assertEquals("os2", os.getName());
-        
+
         MobileManufacturer manu = em.find(MobileManufacturer.class, "ma1");
         Assert.assertNotNull(manu);
         Assert.assertEquals("manufacturer1", manu.getName());
@@ -141,8 +137,7 @@ public class AssociationsBiDirectionalBase
         Assert.assertEquals("manufacturer2", manu.getName());
     }
 
-    protected void init()
-    {
+    protected void init() {
         MobileManufacturer manu1 = new MobileManufacturer();
         manu1.setId("ma1");
         manu1.setName("manufacturer1");
@@ -192,19 +187,15 @@ public class AssociationsBiDirectionalBase
 
     /**
      * Tear down.
-     * 
-     * @throws Exception
-     *             the exception
+     *
+     * @throws Exception the exception
      */
-    protected void tearDownInternal() throws Exception
-    {
-        if (emf != null)
-        {
+    protected void tearDownInternal() throws Exception {
+        if (emf != null) {
             emf.close();
         }
 
-        if (em != null)
-        {
+        if (em != null) {
             em.close();
         }
 

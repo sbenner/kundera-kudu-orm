@@ -14,30 +14,21 @@
  *  * limitations under the License.
  ******************************************************************************/
 package com.impetus.kundera.persistence.jta;
- 
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.RollbackException;
-import javax.transaction.Status;
-import javax.transaction.SystemException;
-
-import junit.framework.Assert;
-
-import org.junit.Test;
 
 import com.impetus.kundera.persistence.ResourceManager;
+import junit.framework.Assert;
+import org.junit.Test;
+
+import javax.transaction.*;
 
 /**
  * @author vivek.mishra
  * junit for {@link KunderaTransaction}
- *
  */
-public class KunderaTransactionTest
-{
+public class KunderaTransactionTest {
 
     @Test
-    public void test() throws SecurityException, IllegalStateException, RollbackException, HeuristicMixedException, HeuristicRollbackException, SystemException
-    {
+    public void test() throws SecurityException, IllegalStateException, RollbackException, HeuristicMixedException, HeuristicRollbackException, SystemException {
         KunderaTransaction tx = new KunderaTransaction(1000); //create new instance.
         tx.setImplementor(new DummyResourceImplementor()); // add resource implementor
         Assert.assertEquals(Status.STATUS_ACTIVE, tx.getStatus());
@@ -45,46 +36,40 @@ public class KunderaTransactionTest
         Assert.assertEquals(Status.STATUS_COMMITTED, tx.getStatus());
         tx.setRollbackOnly(); // set rollback only
         Assert.assertEquals(Status.STATUS_MARKED_ROLLBACK, tx.getStatus());
-        
+
         tx.commit();
         Assert.assertNotSame(Status.STATUS_COMMITTED, tx.getStatus());
         Assert.assertFalse(tx.delistResource(null, 0));  // no implementation, will always return false.
         Assert.assertFalse(tx.enlistResource(null));     // no implementation, will always return false.
-        Assert.assertEquals(1000,tx.getTransactionTimeout());  // get transaction time out
-        
+        Assert.assertEquals(1000, tx.getTransactionTimeout());  // get transaction time out
+
         tx.rollback();
         Assert.assertEquals(Status.STATUS_ROLLEDBACK, tx.getStatus());
-        
-        try
-        {
+
+        try {
             tx.registerSynchronization(null);
             Assert.fail("Should have gone to catch block!");
-        }catch(UnsupportedOperationException uoex)
-        {
+        } catch (UnsupportedOperationException uoex) {
             Assert.assertNotNull(uoex.getMessage());
         }
-        
-        
-        
+
+
     }
 
-    
-    private class DummyResourceImplementor implements ResourceManager
-    {
+
+    private class DummyResourceImplementor implements ResourceManager {
 
         @Override
-        public void doCommit()
-        {
+        public void doCommit() {
             // Do nothing.
-            
+
         }
 
         @Override
-        public void doRollback()
-        {
+        public void doRollback() {
             // Do nothing.
-            
+
         }
-        
+
     }
 }

@@ -20,54 +20,45 @@ import java.util.Map;
 
 /**
  * Class acting as dummy database for test cases, kind of mocks database
- * @author amresh.singh
  *
+ * @author amresh.singh
  */
-public class DummyDatabase
-{
+public class DummyDatabase {
     public static final DummyDatabase INSTANCE = new DummyDatabase();
-    
-    private Map<String, DummySchema> schemas;   
-    
+
+    private Map<String, DummySchema> schemas;
+
     /**
      * @return the schemas
      */
-    public Map<String, DummySchema> getSchemas()
-    {
+    public Map<String, DummySchema> getSchemas() {
         return schemas;
     }
-    
-    public DummySchema getSchema(String schemaName)
-    {
-        if(schemas == null) return null;
+
+    public DummySchema getSchema(String schemaName) {
+        if (schemas == null) return null;
         return getSchemas().get(schemaName);
     }
 
     /**
      * @param schemas the schemas to set
      */
-    public void addSchema(String schemaName, DummySchema schema)
-    {
-        if(schemas == null)
-        {
+    public void addSchema(String schemaName, DummySchema schema) {
+        if (schemas == null) {
             schemas = new HashMap<String, DummySchema>();
         }
         schemas.put(schemaName, schema);
     }
 
 
-
-    public void dropDatabase()
-    {
-        if(schemas != null)
-        {
-            for(DummySchema schema : schemas.values())
-            {
+    public void dropDatabase() {
+        if (schemas != null) {
+            for (DummySchema schema : schemas.values()) {
                 schema.dropSchema();
             }
             schemas.clear();
         }
-        
+
     }
 }
 

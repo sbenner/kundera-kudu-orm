@@ -15,59 +15,50 @@
  ******************************************************************************/
 package com.impetus.kundera.validation;
 
+import com.impetus.kundera.validation.rules.IRule;
+import com.impetus.kundera.validation.rules.RuleValidationException;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.impetus.kundera.validation.rules.IRule;
-import com.impetus.kundera.validation.rules.RuleValidationException;
-
 /**
  * @author Chhavi Gangwal
- *
  */
-public class OperationValidationFactory extends AbstractValidationFactory implements ValidationFactory
-{
+public class OperationValidationFactory extends AbstractValidationFactory implements ValidationFactory {
     /**
      * List of rules for operation level validations
      */
     static List<IRule> rules = new ArrayList<IRule>();
 
-    static
-    {
-        
-       // rules.add((IRule) new AttributeConstraintRule());
-        
+    static {
+
+        // rules.add((IRule) new AttributeConstraintRule());
+
     }
-    
+
     /**
      * Constructor
      * adds static rule list to Rule factory
      */
-    public OperationValidationFactory()
-    {
+    public OperationValidationFactory() {
         this.ruleFactory.addRule(rules);
     }
-    
-    
+
+
     /* (non-Javadoc)
      * @see com.impetus.kundera.validation.AbstractValidationFactory#validate(java.lang.reflect.Field, java.lang.Object, com.impetus.kundera.validation.rules.IRule[])
      */
     @Override
-    public boolean validate(Field field, Object fieldValue, IRule... rules) throws RuleValidationException
-    {
+    public boolean validate(Field field, Object fieldValue, IRule... rules) throws RuleValidationException {
 
-        if (rules == null)
-        {
+        if (rules == null) {
             return super.validate(field, fieldValue, this.ruleFactory.getJpaRules());
-        }
-        
-        else
-        {
+        } else {
             return super.validate(field, fieldValue, rules);
         }
 
     }
 
-   
+
 }

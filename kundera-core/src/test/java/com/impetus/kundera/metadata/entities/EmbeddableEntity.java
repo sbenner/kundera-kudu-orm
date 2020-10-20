@@ -15,39 +15,35 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
 /**
  * Entity with singular attributes for meta model processing.
- * 
+ *
  * @author vivek.mishra
- * 
  */
 
 @Embeddable
-@IndexCollection(columns = { @Index(name = "field")})
-public class EmbeddableEntity
-{
+@IndexCollection(columns = {@Index(name = "field")})
+public class EmbeddableEntity {
     @Column(name = "field")
     private String embeddedField;
 
     /**
      * @return the field
      */
-    public String getField()
-    {
+    public String getField() {
         return embeddedField;
     }
 
     /**
-     * @param field
-     *            the field to set
+     * @param field the field to set
      */
-    public void setField(String field)
-    {
+    public void setField(String field) {
         this.embeddedField = field;
     }
 

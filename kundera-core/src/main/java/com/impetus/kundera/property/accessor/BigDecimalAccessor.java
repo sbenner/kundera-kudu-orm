@@ -15,30 +15,27 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
+import com.impetus.kundera.property.PropertyAccessor;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-import com.impetus.kundera.property.PropertyAccessor;
-
 /**
  * The Class BigDecimalAccessor.
- * 
+ *
  * @author amresh.singh
  */
-public class BigDecimalAccessor implements PropertyAccessor<BigDecimal>
-{
+public class BigDecimalAccessor implements PropertyAccessor<BigDecimal> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.property.PropertyAccessor#fromBytes(byte[])
      */
     @Override
-    public BigDecimal fromBytes(Class targetClass, byte[] bytes)
-    {
-        if (bytes == null)
-        {
+    public BigDecimal fromBytes(Class targetClass, byte[] bytes) {
+        if (bytes == null) {
             return null;
         }
         int scale = (((bytes[0]) << 24) | ((bytes[1] & 0xff) << 16) | ((bytes[2] & 0xff) << 8) | ((bytes[3] & 0xff)));
@@ -52,15 +49,13 @@ public class BigDecimalAccessor implements PropertyAccessor<BigDecimal>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toBytes(java.lang.Object)
      */
     @Override
-    public byte[] toBytes(Object object)
-    {
-        if (object == null)
-        {
+    public byte[] toBytes(Object object) {
+        if (object == null) {
             return null;
         }
 
@@ -79,15 +74,13 @@ public class BigDecimalAccessor implements PropertyAccessor<BigDecimal>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toString(java.lang.Object)
      */
     @Override
-    public String toString(Object object)
-    {
-        if (object == null)
-        {
+    public String toString(Object object) {
+        if (object == null) {
             return null;
         }
         return object.toString();
@@ -95,27 +88,24 @@ public class BigDecimalAccessor implements PropertyAccessor<BigDecimal>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#fromString(java.lang.String
      * )
      */
     @Override
-    public BigDecimal fromString(Class targetClass, String s)
-    {
+    public BigDecimal fromString(Class targetClass, String s) {
 
         return s != null ? new BigDecimal(s) : null;
     }
 
     @Override
-    public BigDecimal getCopy(Object object)
-    {
+    public BigDecimal getCopy(Object object) {
         BigDecimal b = (BigDecimal) object;
         return object != null ? b : null;
     }
 
-    public BigDecimal getInstance(Class<?> clazz)
-    {
+    public BigDecimal getInstance(Class<?> clazz) {
         return BigDecimal.TEN;
     }
 }

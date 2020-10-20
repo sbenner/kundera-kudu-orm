@@ -15,31 +15,29 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
-import java.sql.Time;
-
+import com.impetus.kundera.property.PropertyAccessException;
+import com.impetus.kundera.property.PropertyAccessor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.impetus.kundera.property.PropertyAccessException;
-import com.impetus.kundera.property.PropertyAccessor;
+import java.sql.Time;
 
 /**
  * The Class SQLTimeAccessor.
- * 
+ *
  * @author amresh.singh
  */
-public class SQLTimeAccessor implements PropertyAccessor<Time>
-{
+public class SQLTimeAccessor implements PropertyAccessor<Time> {
     public static Logger log = LoggerFactory.getLogger(SQLTimeAccessor.class);
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.property.PropertyAccessor#fromBytes(byte[])
      */
     @Override
-    public Time fromBytes(Class targetClass, byte[] b)
-    {
+    public Time fromBytes(Class targetClass, byte[] b) {
         // String s;
         // try
         // {
@@ -55,10 +53,8 @@ public class SQLTimeAccessor implements PropertyAccessor<Time>
         // throw new PropertyAccessException(e);
         // }
         // return fromString(targetClass, s);
-        try
-        {
-            if (b == null)
-            {
+        try {
+            if (b == null) {
                 return null;
             }
 
@@ -66,9 +62,7 @@ public class SQLTimeAccessor implements PropertyAccessor<Time>
             LongAccessor longAccessor = new LongAccessor();
 
             return new Time(longAccessor.fromBytes(targetClass, b));
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("Error occured, Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
@@ -76,13 +70,12 @@ public class SQLTimeAccessor implements PropertyAccessor<Time>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toBytes(java.lang.Object)
      */
     @Override
-    public byte[] toBytes(Object object)
-    {
+    public byte[] toBytes(Object object) {
 
         // if (object == null)
         // {
@@ -91,19 +84,15 @@ public class SQLTimeAccessor implements PropertyAccessor<Time>
         // Time t = (Time) object;
         // return t.toString().getBytes();
 
-        try
-        {
-            if (object == null)
-            {
+        try {
+            if (object == null) {
                 return null;
             }
             LongAccessor longAccessor = new LongAccessor();
             return longAccessor.toBytes(((Time) object).getTime());
             // return DATE_FORMATTER.format(((Date)
             // date)).getBytes(Constants.ENCODING);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("Error occured, Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
@@ -112,17 +101,15 @@ public class SQLTimeAccessor implements PropertyAccessor<Time>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toString(java.lang.Object)
      */
     @Override
-    public String toString(Object object)
-    {
+    public String toString(Object object) {
         Time time = (Time) object;
 
-        if (time == null)
-        {
+        if (time == null) {
             return null;
         }
 
@@ -131,21 +118,18 @@ public class SQLTimeAccessor implements PropertyAccessor<Time>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#fromString(java.lang.String
      * )
      */
     @Override
-    public Time fromString(Class targetClass, String s)
-    {
-        if (s == null)
-        {
+    public Time fromString(Class targetClass, String s) {
+        if (s == null) {
             return null;
         }
 
-        if (StringUtils.isNumeric(s))
-        {
+        if (StringUtils.isNumeric(s)) {
             return new Time(Long.parseLong(s));
         }
         Time t = Time.valueOf(s);
@@ -153,14 +137,12 @@ public class SQLTimeAccessor implements PropertyAccessor<Time>
     }
 
     @Override
-    public Time getCopy(Object object)
-    {
+    public Time getCopy(Object object) {
         Time t = (Time) object;
         return t != null ? new Time(t.getTime()) : null;
     }
 
-    public Time getInstance(Class<?> clazz)
-    {
+    public Time getInstance(Class<?> clazz) {
         return new Time(Integer.MAX_VALUE);
     }
 }

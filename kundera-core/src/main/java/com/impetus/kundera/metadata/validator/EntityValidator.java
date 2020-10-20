@@ -19,25 +19,22 @@ import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 
 /**
  * Interface to validate an entity.
- * 
+ *
  * @author animesh.kumar
  */
-public interface EntityValidator
-{
+public interface EntityValidator {
 
     /**
      * Validate.
-     * 
-     * @param clazz
-     *            the clazz
+     *
+     * @param clazz the clazz
      */
     void validate(Class<?> clazz);
 
     /**
      * Validate entity.
-     * 
-     * @param clazz
-     *            the clazz
+     *
+     * @param clazz        the clazz
      * @param puProperties
      */
     void validateEntity(Class<?> clazz, final KunderaMetadata kunderaMetadata);

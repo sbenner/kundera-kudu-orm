@@ -15,36 +15,28 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.mappedsuperclass;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
+import com.impetus.kundera.loader.MetamodelLoaderException;
 import junit.framework.Assert;
-
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
-import com.impetus.kundera.loader.MetamodelLoaderException;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  * @author vivek.mishra
- * 
- *         MappedSuper class junit.
- * 
+ * <p>
+ * MappedSuper class junit.
  */
-public class InvalidSuperClassTest
-{
+public class InvalidSuperClassTest {
     private String persistenceUnit = "invalidmappedsu";
 
     @Test
-    public void setup()
-    {
-        try
-        {
+    public void setup() {
+        try {
             EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnit);
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (MetamodelLoaderException mlex)
-        {
+        } catch (MetamodelLoaderException mlex) {
             Assert.assertTrue(StringUtils.startsWith(mlex.getMessage(),
                     "Class:class com.impetus.kundera.metadata.mappedsuperclass.InvalidPersonEntityis annotated with @MappedSuperClass and @Entity not allowed"));
         }

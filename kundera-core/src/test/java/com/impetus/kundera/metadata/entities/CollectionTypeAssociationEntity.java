@@ -21,11 +21,9 @@ import javax.persistence.Id;
 
 /**
  * @author vivek.mishra
- * 
  */
 @Entity
-public class CollectionTypeAssociationEntity
-{
+public class CollectionTypeAssociationEntity {
 
     @Id
     private String colKey;
@@ -36,34 +34,28 @@ public class CollectionTypeAssociationEntity
     /**
      * @return the setKey
      */
-    public String getSetKey()
-    {
+    public String getSetKey() {
         return colKey;
     }
 
     /**
-     * @param setKey
-     *            the setKey to set
+     * @param setKey the setKey to set
      */
-    public void setSetKey(String setKey)
-    {
+    public void setSetKey(String setKey) {
         this.colKey = setKey;
     }
 
     /**
      * @return the bytes
      */
-    public byte[] getBytes()
-    {
+    public byte[] getBytes() {
         return bytes;
     }
 
     /**
-     * @param bytes
-     *            the bytes to set
+     * @param bytes the bytes to set
      */
-    public void setBytes(byte[] bytes)
-    {
+    public void setBytes(byte[] bytes) {
         this.bytes = bytes;
     }
 

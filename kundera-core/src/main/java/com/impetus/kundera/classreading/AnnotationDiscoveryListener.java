@@ -17,17 +17,15 @@ package com.impetus.kundera.classreading;
 
 /**
  * The Interface AnnotationDiscoveryListener.
- * 
+ *
  * @author animesh.kumar
  */
-public interface AnnotationDiscoveryListener
-{
+public interface AnnotationDiscoveryListener {
 
     /**
      * Discovered.
-     * 
-     * @param className
-     *            the class name
+     *
+     * @param className the class name
      */
     void discovered(String className);
 }

@@ -21,34 +21,38 @@ import com.impetus.kundera.KunderaException;
 /**
  * Exception class for all type of exceptions thrown by SchemaManager during
  * generating schema.
- * 
+ *
  * @author Kuldeep.Kumar
  */
-public class SchemaGenerationException extends KunderaException
-{
+public class SchemaGenerationException extends KunderaException {
 
-    /** The Constant serialVersionUID. */
+    /**
+     * The Constant serialVersionUID.
+     */
     private static final long serialVersionUID = 3855497974944993364L;
 
-    /** The data store name. */
+    /**
+     * The data store name.
+     */
     private String dataStoreName;
 
-    /** The schema name. */
+    /**
+     * The schema name.
+     */
     private String schemaName;
 
-    /** The table name. */
+    /**
+     * The table name.
+     */
     private String tableName;
 
     /**
      * Instantiates a new schemaGeneration exception.
-     * 
-     * @param dataStore
-     *            the data store
-     * @param schema
-     *            the schema
+     *
+     * @param dataStore the data store
+     * @param schema    the schema
      */
-    public SchemaGenerationException(String arg0, String dataStore, String schema)
-    {
+    public SchemaGenerationException(String arg0, String dataStore, String schema) {
         super(arg0);
         this.dataStoreName = dataStore;
         this.schemaName = schema;
@@ -56,18 +60,13 @@ public class SchemaGenerationException extends KunderaException
 
     /**
      * Instantiates a new schemaGeneration exception.
-     * 
-     * @param arg0
-     *            the arg0
-     * @param dataStore
-     *            the data store
-     * @param schema
-     *            the schema
-     * @param table
-     *            the table
+     *
+     * @param arg0      the arg0
+     * @param dataStore the data store
+     * @param schema    the schema
+     * @param table     the table
      */
-    public SchemaGenerationException(String arg0, String dataStore, String schema, String table)
-    {
+    public SchemaGenerationException(String arg0, String dataStore, String schema, String table) {
         super(arg0);
         this.dataStoreName = dataStore;
         this.schemaName = schema;
@@ -76,41 +75,32 @@ public class SchemaGenerationException extends KunderaException
 
     /**
      * Instantiates a new schemaGeneration exception.
-     * 
-     * @param arg0
-     *            the arg0
+     *
+     * @param arg0 the arg0
      */
-    public SchemaGenerationException(Throwable arg0)
-    {
+    public SchemaGenerationException(Throwable arg0) {
         super(arg0);
     }
 
     /**
      * Instantiates a new schemaGeneration exception.
-     * 
-     * @param arg0
-     *            the arg0
-     * @param dataStore
-     *            the data store
+     *
+     * @param arg0      the arg0
+     * @param dataStore the data store
      */
-    public SchemaGenerationException(Throwable arg0, String dataStore)
-    {
+    public SchemaGenerationException(Throwable arg0, String dataStore) {
         super(arg0);
         this.dataStoreName = dataStore;
     }
 
     /**
      * Instantiates a new schemaGeneration exception.
-     * 
-     * @param arg0
-     *            the arg0
-     * @param dataStore
-     *            the data store
-     * @param schema
-     *            the schema
+     *
+     * @param arg0      the arg0
+     * @param dataStore the data store
+     * @param schema    the schema
      */
-    public SchemaGenerationException(Throwable arg0, String dataStore, String schema)
-    {
+    public SchemaGenerationException(Throwable arg0, String dataStore, String schema) {
         super(arg0);
         this.dataStoreName = dataStore;
         this.schemaName = schema;
@@ -118,29 +108,23 @@ public class SchemaGenerationException extends KunderaException
 
     /**
      * Instantiates a new schemaGeneration exception.
-     * 
-     * @param arg0
-     *            the arg0
-     * @param arg1
-     *            the arg1
-     * @param dataStore
-     *            the data store
+     *
+     * @param arg0      the arg0
+     * @param arg1      the arg1
+     * @param dataStore the data store
      */
-    public SchemaGenerationException(String arg0, Throwable arg1, String dataStore)
-    {
+    public SchemaGenerationException(String arg0, Throwable arg1, String dataStore) {
         super(arg0, arg1);
         this.dataStoreName = dataStore;
     }
 
-    public SchemaGenerationException(String arg0, Throwable arg1, String dataStoreName, String databaseName)
-    {
+    public SchemaGenerationException(String arg0, Throwable arg1, String dataStoreName, String databaseName) {
         super(arg0, arg1);
         this.dataStoreName = dataStoreName;
         this.schemaName = databaseName;
     }
 
-    public SchemaGenerationException(String arg0)
-    {
+    public SchemaGenerationException(String arg0) {
         super(arg0);
     }
 }

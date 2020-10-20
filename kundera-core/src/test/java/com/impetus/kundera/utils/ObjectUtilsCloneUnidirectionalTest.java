@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,48 +15,40 @@
  */
 package com.impetus.kundera.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Persistence;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.kundera.entity.PersonalDetail;
 import com.impetus.kundera.entity.Tweet;
 import com.impetus.kundera.entity.album.AlbumUni_1_M_1_M;
 import com.impetus.kundera.entity.photo.PhotoUni_1_M_1_M;
 import com.impetus.kundera.entity.photographer.PhotographerUni_1_M_1_M;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.Persistence;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Test case for {@link ObjectUtils} for cloning for unidirectional object
- * 
+ *
  * @author amresh.singh
  */
-public class ObjectUtilsCloneUnidirectionalTest
-{
-    private final String _persistenceUnit = "kunderatest";
-
-    private String _keyspace = "KunderaTest";
-
+public class ObjectUtilsCloneUnidirectionalTest {
     /** The log. */
     private static Logger log = LoggerFactory.getLogger(ObjectUtils.class);
-
+    private final String _persistenceUnit = "kunderatest";
+    private String _keyspace = "KunderaTest";
     private EntityManagerFactoryImpl emf;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         emf = getEntityManagerFactory(null);
     }
 
@@ -64,13 +56,11 @@ public class ObjectUtilsCloneUnidirectionalTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
     }
 
     @Test
-    public void testPhotographer()
-    {
+    public void testPhotographer() {
         // Construct photographer object
         PhotographerUni_1_M_1_M a1 = constructPhotographer(1);
 
@@ -95,12 +85,10 @@ public class ObjectUtilsCloneUnidirectionalTest
     }
 
     // @Test
-    public void testBulkCopyUsingKunderaCloner()
-    {
+    public void testBulkCopyUsingKunderaCloner() {
         int n = 100000;
         long t1 = System.currentTimeMillis();
-        for (int i = 0; i < n; i++)
-        {
+        for (int i = 0; i < n; i++) {
             PhotographerUni_1_M_1_M a1 = constructPhotographer(i + 1);
             PhotographerUni_1_M_1_M a2 = (PhotographerUni_1_M_1_M) ObjectUtils.deepCopy(a1, emf.getKunderaMetadataInstance());
         }
@@ -111,8 +99,7 @@ public class ObjectUtilsCloneUnidirectionalTest
     /**
      * @return
      */
-    private PhotographerUni_1_M_1_M constructPhotographer(int photographerId)
-    {
+    private PhotographerUni_1_M_1_M constructPhotographer(int photographerId) {
         PhotographerUni_1_M_1_M a1 = new PhotographerUni_1_M_1_M();
         a1.setPhotographerId(photographerId);
         a1.setPhotographerName("Amresh");
@@ -151,8 +138,7 @@ public class ObjectUtilsCloneUnidirectionalTest
         return a1;
     }
 
-    private void modifyPhotographer(PhotographerUni_1_M_1_M p)
-    {
+    private void modifyPhotographer(PhotographerUni_1_M_1_M p) {
         p.setPhotographerId(2);
         p.setPhotographerName("Vivek");
 
@@ -193,8 +179,7 @@ public class ObjectUtilsCloneUnidirectionalTest
         p.setAlbums(albums);
     }
 
-    private void assertOriginalObjectValues(PhotographerUni_1_M_1_M p)
-    {
+    private void assertOriginalObjectValues(PhotographerUni_1_M_1_M p) {
         Assert.assertTrue(p.getPhotographerId() == 1);
         Assert.assertTrue(p.getPhotographerName().equals("Amresh"));
 
@@ -224,24 +209,21 @@ public class ObjectUtilsCloneUnidirectionalTest
         Assert.assertNotNull(p.getTags());
         Assert.assertFalse(p.getTags().isEmpty());
         Assert.assertEquals(3, p.getTags().size());
-        for (String tag : p.getTags())
-        {
+        for (String tag : p.getTags()) {
             Assert.assertTrue(tag.equals("nosql") || tag.equals("kundera") || tag.equals("mongo"));
         }
 
         Assert.assertNotNull(p.getLikedBy());
         Assert.assertFalse(p.getLikedBy().isEmpty());
         Assert.assertEquals(2, p.getLikedBy().size());
-        for (int likedUserId : p.getLikedBy())
-        {
+        for (int likedUserId : p.getLikedBy()) {
             Assert.assertTrue(likedUserId == 111 || likedUserId == 222);
         }
 
         Assert.assertNotNull(p.getComments());
         Assert.assertFalse(p.getComments().isEmpty());
         Assert.assertEquals(3, p.getComments().size());
-        for (int commentedBy : p.getComments().keySet())
-        {
+        for (int commentedBy : p.getComments().keySet()) {
             String commentText = p.getComments().get(commentedBy);
             Assert.assertTrue(commentedBy == 111 || commentedBy == 222 || commentedBy == 333);
             Assert.assertTrue(commentText.equals("What a post!")
@@ -249,14 +231,12 @@ public class ObjectUtilsCloneUnidirectionalTest
                     || commentText.equals("My hobby is to spam blogs"));
         }
 
-        for (AlbumUni_1_M_1_M album : p.getAlbums())
-        {
+        for (AlbumUni_1_M_1_M album : p.getAlbums()) {
             Assert.assertFalse(album.getAlbumId().startsWith("X"));
             Assert.assertFalse(album.getAlbumName().startsWith("X"));
             Assert.assertFalse(album.getAlbumDescription().startsWith("X"));
 
-            for (PhotoUni_1_M_1_M photo : album.getPhotos())
-            {
+            for (PhotoUni_1_M_1_M photo : album.getPhotos()) {
                 Assert.assertFalse(photo.getPhotoId().startsWith("X"));
                 Assert.assertFalse(photo.getPhotoCaption().startsWith("X"));
                 Assert.assertFalse(photo.getPhotoDescription().startsWith("X"));
@@ -266,8 +246,7 @@ public class ObjectUtilsCloneUnidirectionalTest
 
     }
 
-    private void assertObjectReferenceInequality(PhotographerUni_1_M_1_M p1, PhotographerUni_1_M_1_M p2)
-    {
+    private void assertObjectReferenceInequality(PhotographerUni_1_M_1_M p1, PhotographerUni_1_M_1_M p2) {
 
         Assert.assertFalse(p1 == p2);
         Assert.assertFalse(p1.getPhotographerName() == p2.getPhotographerName());
@@ -279,8 +258,7 @@ public class ObjectUtilsCloneUnidirectionalTest
                 .getRelationshipStatus());
         Assert.assertFalse(p1.getTweets() == p2.getTweets());
 
-        for (int i = 0; i < p1.getTweets().size(); i++)
-        {
+        for (int i = 0; i < p1.getTweets().size(); i++) {
             Tweet p1Tweet = p1.getTweets().get(i);
             Tweet p2Tweet = p2.getTweets().get(i);
             Assert.assertFalse(p1Tweet == p2Tweet);
@@ -290,8 +268,7 @@ public class ObjectUtilsCloneUnidirectionalTest
         }
 
         Assert.assertFalse(p1.getAlbums() == p2.getAlbums());
-        for (int i = 0; i < p1.getAlbums().size(); i++)
-        {
+        for (int i = 0; i < p1.getAlbums().size(); i++) {
             AlbumUni_1_M_1_M p1Album = p1.getAlbums().get(i);
             AlbumUni_1_M_1_M p2Album = p2.getAlbums().get(i);
             Assert.assertFalse(p1Album == p2Album);
@@ -301,8 +278,7 @@ public class ObjectUtilsCloneUnidirectionalTest
 
             Assert.assertFalse(p1.getAlbums().get(i).getPhotos() == p2.getAlbums().get(i).getPhotos());
 
-            for (int j = 0; j < p1.getAlbums().get(i).getPhotos().size(); j++)
-            {
+            for (int j = 0; j < p1.getAlbums().get(i).getPhotos().size(); j++) {
                 PhotoUni_1_M_1_M photo1 = p1.getAlbums().get(i).getPhotos().get(j);
                 PhotoUni_1_M_1_M photo2 = p2.getAlbums().get(i).getPhotos().get(j);
 
@@ -316,14 +292,13 @@ public class ObjectUtilsCloneUnidirectionalTest
 
     /**
      * Gets the entity manager factory.
-     * 
+     *
      * @param useLucene
      * @param property
-     * 
+     *
      * @return the entity manager factory
      */
-    private EntityManagerFactoryImpl getEntityManagerFactory(String property)
-    {
+    private EntityManagerFactoryImpl getEntityManagerFactory(String property) {
         return (EntityManagerFactoryImpl) Persistence.createEntityManagerFactory(_persistenceUnit);
     }
 

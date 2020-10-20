@@ -15,30 +15,25 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
-import java.sql.Time;
-
+import com.impetus.kundera.property.PropertyAccessor;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.property.PropertyAccessor;
+import java.sql.Time;
 
 /**
  * @author amresh.singh
- * 
  */
-public class SQLTimeAccessorTest
-{
+public class SQLTimeAccessorTest {
     PropertyAccessor<Time> accessor;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         accessor = new SQLTimeAccessor();
     }
 
@@ -46,8 +41,7 @@ public class SQLTimeAccessorTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         accessor = null;
     }
 
@@ -57,8 +51,7 @@ public class SQLTimeAccessorTest
      * .
      */
     @Test
-    public void testFromBytes()
-    {
+    public void testFromBytes() {
         Assert.assertNull(accessor.fromBytes(Time.class, null));
 
         long l = System.currentTimeMillis();
@@ -76,8 +69,7 @@ public class SQLTimeAccessorTest
      * .
      */
     @Test
-    public void testToBytes()
-    {
+    public void testToBytes() {
         Assert.assertNull(accessor.toBytes(null));
 
         long l = System.currentTimeMillis();
@@ -95,8 +87,7 @@ public class SQLTimeAccessorTest
      * .
      */
     @Test
-    public void testToStringObject()
-    {
+    public void testToStringObject() {
         Assert.assertNull(accessor.toString(null));
 
         long l = System.currentTimeMillis();
@@ -111,8 +102,7 @@ public class SQLTimeAccessorTest
      * .
      */
     @Test
-    public void testFromString()
-    {
+    public void testFromString() {
         Assert.assertNull(accessor.fromString(Time.class, null));
 
         long l = System.currentTimeMillis();
@@ -127,8 +117,7 @@ public class SQLTimeAccessorTest
      * .
      */
     @Test
-    public void testGetCopy()
-    {
+    public void testGetCopy() {
         long l = System.currentTimeMillis();
         Time d = new Time(l);
 
@@ -143,8 +132,7 @@ public class SQLTimeAccessorTest
      * .
      */
     @Test
-    public void testGetInstance()
-    {
+    public void testGetInstance() {
         Object o = accessor.getInstance(Time.class);
         Assert.assertNotNull(o);
 

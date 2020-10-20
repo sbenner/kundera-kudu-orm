@@ -1,55 +1,42 @@
 package com.impetus.kundera.metadata.processor;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-
+import javax.persistence.*;
 
 
 @Entity
-public class Geometry
-{
+public class Geometry {
     @Id
     private String geoId;
-    
+
     @Column(name = "name")
     private String name;
-    
-    @OneToOne(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
-  //  @JoinColumn(name = "shape_id")
+
+    @OneToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    //  @JoinColumn(name = "shape_id")
     private Shape shape;
 
-   
-    public String getGeoId()
-    {
+
+    public String getGeoId() {
         return geoId;
     }
 
-    public void setGeoId(String geoId)
-    {
+    public void setGeoId(String geoId) {
         this.geoId = geoId;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
-    
-    public Shape getShape()
-    {
+
+    public Shape getShape() {
         return shape;
     }
 
-    public void setShape(Shape shape)
-    {
+    public void setShape(Shape shape) {
         this.shape = shape;
     }
 

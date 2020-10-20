@@ -15,38 +15,35 @@
  ******************************************************************************/
 package com.impetus.kundera.loader;
 
-import java.util.Map;
-
 import com.impetus.kundera.client.Client;
 import com.impetus.kundera.configure.schema.api.SchemaManager;
 
+import java.util.Map;
+
 /**
  * Interface for client factory.
- * 
+ *
  * @author vivek.mishra
- * 
  */
-public interface ClientFactory
-{
+public interface ClientFactory {
 
     /**
      * Load.
-     * 
-     * @param persistenceUnit
-     *            the persistence units
+     *
+     * @param persistenceUnit the persistence units
      */
     void load(String persistenceUnit, Map<String, Object> puProperties);
 
     /**
      * Instantiate and returns client instance
-     * 
+     *
      * @return client instance.
      */
     Client getClientInstance();
 
     /**
      * return the instance of schema manager
-     * 
+     *
      * @return schemaManager interface.
      */
     SchemaManager getSchemaManager(Map<String, Object> puProperties);

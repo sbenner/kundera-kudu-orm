@@ -19,12 +19,10 @@ import com.impetus.kundera.graph.Node;
 
 /**
  * Logs CRUD events,
- * 
+ *
  * @author vivek.mishra
- * 
  */
-public class EventLog
-{
+public class EventLog {
 
     private EventType eventType;
 
@@ -32,52 +30,45 @@ public class EventLog
 
     private Node node;
 
-    EventLog(EventType eventType, Node transactional)
-    {
+    EventLog(EventType eventType, Node transactional) {
         this.node = transactional;
         this.eventType = eventType;
         this.timeinMillies = System.currentTimeMillis();
     }
 
-    Node getSavePointData()
-    {
+    Node getSavePointData() {
         return node.getOriginalNode();
     }
 
     /**
      * @return the entityId
      */
-    Object getEntityId()
-    {
+    Object getEntityId() {
         return node.getNodeId();
     }
 
     /**
      * @return the eventType
      */
-    EventType getEventType()
-    {
+    EventType getEventType() {
         return eventType;
     }
 
     /**
      * @return the timeinMillies
      */
-    long getTimeinMillies()
-    {
+    long getTimeinMillies() {
         return timeinMillies;
     }
 
     /**
      * @return the node
      */
-    Node getNode()
-    {
+    Node getNode() {
         return node;
     }
 
-    public enum EventType
-    {
+    public enum EventType {
         INSERT, UPDATE, DELETE;
     }
 }

@@ -15,62 +15,56 @@
  ******************************************************************************/
 package com.impetus.kundera.validation;
 
-import java.lang.reflect.Field;
-
 import com.impetus.kundera.validation.rules.EntityRule;
 import com.impetus.kundera.validation.rules.FieldRule;
 import com.impetus.kundera.validation.rules.IRule;
 import com.impetus.kundera.validation.rules.RuleValidationException;
 
+import java.lang.reflect.Field;
+
 /**
  * @author Chhavi Gangwal
- *
  */
-public abstract class AbstractValidationFactory
-{
-            
+public abstract class AbstractValidationFactory {
+
     /**
-     * rule factory object 
+     * rule factory object
      */
     protected com.impetus.kundera.validation.ValidationFactory.RuleFactory ruleFactory = new com.impetus.kundera.validation.ValidationFactory.RuleFactory();
-    
-    
+
+
     /**
      * @param clazz
      * @param rules
      * @return
      * @throws RuleValidationException
      */
-    public boolean validate(Class clazz, IRule... rules) throws RuleValidationException
-    {
-        
-        for (IRule rule : rules)
-        {
-            ((EntityRule)rule).validate(clazz);
+    public boolean validate(Class clazz, IRule... rules) throws RuleValidationException {
+
+        for (IRule rule : rules) {
+            ((EntityRule) rule).validate(clazz);
         }
         return true;
-       
-        
+
+
     }
 
-    
+
     /**
      * @param field
      * @param rules
      * @return
      * @throws RuleValidationException
      */
-    public boolean validate(Field field, IRule... rules) throws RuleValidationException
-    {
-       
-        for (IRule rule : rules)
-        {
-            ((FieldRule)rule).validate(field);
+    public boolean validate(Field field, IRule... rules) throws RuleValidationException {
+
+        for (IRule rule : rules) {
+            ((FieldRule) rule).validate(field);
         }
         return true;
     }
-    
-   
+
+
     /**
      * @param field
      * @param fieldValue
@@ -78,25 +72,22 @@ public abstract class AbstractValidationFactory
      * @return
      * @throws RuleValidationException
      */
-    public boolean validate(Field field, Object fieldValue, IRule... rules) throws RuleValidationException
-    {
-       
-        for (IRule rule : rules)
-        {
-            ((FieldRule)rule).validate(field, fieldValue);
+    public boolean validate(Field field, Object fieldValue, IRule... rules) throws RuleValidationException {
+
+        for (IRule rule : rules) {
+            ((FieldRule) rule).validate(field, fieldValue);
         }
         return true;
     }
-    
+
 
     /**
      * @param clazz
      * @return
      * @throws RuleValidationException
      */
-    public boolean validate(Class clazz) throws RuleValidationException 
-    {
+    public boolean validate(Class clazz) throws RuleValidationException {
         throw new UnsupportedOperationException("Bootstrap level validations are not supported at operation level!");
     }
-    
+
 }

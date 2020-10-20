@@ -15,29 +15,24 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
+import com.impetus.kundera.property.PropertyAccessor;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.property.PropertyAccessor;
-
 /**
  * @author amresh.singh
- *
  */
-public class ObjectAccessorTest
-{
-    
+public class ObjectAccessorTest {
+
     private PropertyAccessor<Object> accessor;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         accessor = new ObjectAccessor();
     }
 
@@ -45,8 +40,7 @@ public class ObjectAccessorTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         accessor = null;
     }
 
@@ -54,14 +48,13 @@ public class ObjectAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.ObjectAccessor#fromBytes(java.lang.Class, byte[])}.
      */
     @Test
-    public void testFromBytes()
-    {
+    public void testFromBytes() {
         Assert.assertNull(accessor.fromBytes(PersonalDetail.class, null));
         PersonalDetail pd = new PersonalDetail("Amresh", "password", "single");
         byte[] b = accessor.toBytes(pd);
-        
+
         Object o = accessor.fromBytes(PersonalDetail.class, b);
-        
+
         Assert.assertNotNull(o);
         Assert.assertTrue(o instanceof PersonalDetail);
         Assert.assertTrue(o.equals(pd));
@@ -71,8 +64,7 @@ public class ObjectAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.ObjectAccessor#toBytes(java.lang.Object)}.
      */
     @Test
-    public void testToBytes()
-    {
+    public void testToBytes() {
         Assert.assertNull(accessor.toBytes(null));
         PersonalDetail pd = new PersonalDetail("Amresh", "password", "single");
         byte[] b = accessor.toBytes(pd);
@@ -86,9 +78,8 @@ public class ObjectAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.ObjectAccessor#toString(java.lang.Object)}.
      */
     @Test
-    public void testToStringObject()
-    {
-        PersonalDetail pd = new PersonalDetail("Amresh", "password", "single");  
+    public void testToStringObject() {
+        PersonalDetail pd = new PersonalDetail("Amresh", "password", "single");
         String s = accessor.toString(pd);
         Assert.assertNotNull(s);
 
@@ -98,35 +89,33 @@ public class ObjectAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.ObjectAccessor#fromString(java.lang.Class, java.lang.String)}.
      */
     @Test
-    public void testFromString()
-    {
+    public void testFromString() {
         Assert.assertNull(accessor.fromString(String.class, null));
-        
+
         Object o = accessor.fromString(String.class, "Hello");
         Assert.assertNotNull(o);
         Assert.assertTrue(o instanceof String);
-        Assert.assertEquals("Hello", (String)o);
+        Assert.assertEquals("Hello", (String) o);
     }
 
     /**
      * Test method for {@link com.impetus.kundera.property.accessor.ObjectAccessor#getCopy(java.lang.Object)}.
      */
     @Test
-    public void testGetCopy()
-    {
+    public void testGetCopy() {
         Assert.assertNull(accessor.getCopy(null));
-        
-        PersonalDetail pd = new PersonalDetail("Amresh", "password", "single");       
-        
+
+        PersonalDetail pd = new PersonalDetail("Amresh", "password", "single");
+
         Object pdCopy = accessor.getCopy(pd);
         Assert.assertNotNull(pdCopy);
         Assert.assertTrue(pdCopy instanceof PersonalDetail);
         Assert.assertTrue(pd == pdCopy);
-        Assert.assertTrue(pd.getPersonalDetailId() == ((PersonalDetail)pdCopy).getPersonalDetailId());
-        Assert.assertTrue(pd.getName() == ((PersonalDetail)pdCopy).getName());
-        Assert.assertTrue(pd.getPassword() == ((PersonalDetail)pdCopy).getPassword());
-        Assert.assertTrue(pd.getRelationshipStatus() == ((PersonalDetail)pdCopy).getRelationshipStatus());
-        
+        Assert.assertTrue(pd.getPersonalDetailId() == ((PersonalDetail) pdCopy).getPersonalDetailId());
+        Assert.assertTrue(pd.getName() == ((PersonalDetail) pdCopy).getName());
+        Assert.assertTrue(pd.getPassword() == ((PersonalDetail) pdCopy).getPassword());
+        Assert.assertTrue(pd.getRelationshipStatus() == ((PersonalDetail) pdCopy).getRelationshipStatus());
+
         byte[] b = "Hello".getBytes();
         Object bCopy = accessor.getCopy(b);
         Assert.assertNotNull(bCopy);
@@ -137,11 +126,10 @@ public class ObjectAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.ObjectAccessor#getInstance(java.lang.Class)}.
      */
     @Test
-    public void testGetInstance()
-    {
+    public void testGetInstance() {
         Object o = accessor.getInstance(PersonalDetail.class);
         Assert.assertNotNull(o);
-        
+
     }
 
 }

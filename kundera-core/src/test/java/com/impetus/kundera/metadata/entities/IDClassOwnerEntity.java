@@ -15,21 +15,15 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author vivek.mishra
- * 
  */
 @IdClass(value = IDClassEntity.class)
 @Entity
 @Table(name = "table", schema = "testSchema@keyspace")
-public class IDClassOwnerEntity
-{
+public class IDClassOwnerEntity {
 
     @Id
     private String id;
@@ -40,34 +34,28 @@ public class IDClassOwnerEntity
     /**
      * @return the id
      */
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 
     /**
-     * @param id
-     *            the id to set
+     * @param id the id to set
      */
-    public void setId(String id)
-    {
+    public void setId(String id) {
         this.id = id;
     }
 
     /**
      * @return the logColumn
      */
-    public long getLogColumn()
-    {
+    public long getLogColumn() {
         return logColumn;
     }
 
     /**
-     * @param logColumn
-     *            the logColumn to set
+     * @param logColumn the logColumn to set
      */
-    public void setLogColumn(long logColumn)
-    {
+    public void setLogColumn(long logColumn) {
         this.logColumn = logColumn;
     }
 

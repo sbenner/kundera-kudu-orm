@@ -19,29 +19,25 @@ import com.impetus.kundera.KunderaException;
 
 /**
  * @author amresh
- * 
  */
-public class InvalidEntityDefinitionException extends KunderaException
-{
+public class InvalidEntityDefinitionException extends KunderaException {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 944429642343486327L;
 
     /**
-     * 
+     *
      */
-    public InvalidEntityDefinitionException()
-    {
+    public InvalidEntityDefinitionException() {
 
     }
 
     /**
      * @param paramString
      */
-    public InvalidEntityDefinitionException(String paramString)
-    {
+    public InvalidEntityDefinitionException(String paramString) {
         super(paramString);
     }
 

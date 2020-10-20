@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,31 +15,27 @@
  */
 package com.impetus.kundera.property.accessor;
 
+import com.impetus.kundera.gis.geometry.Point;
+import com.impetus.kundera.property.PropertyAccessor;
+import com.vividsolutions.jts.io.WKTWriter;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.gis.geometry.Point;
-import com.impetus.kundera.property.PropertyAccessor;
-import com.vividsolutions.jts.io.WKTWriter;
-
 /**
  * Test case for {@link PropertyAccessor}
- * 
+ *
  * @author amresh.singh
  */
-public class PointAccessorTest
-{
+public class PointAccessorTest {
     PointAccessor pa;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         pa = new PointAccessor();
     }
 
@@ -47,8 +43,7 @@ public class PointAccessorTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         pa = null;
     }
 
@@ -58,8 +53,7 @@ public class PointAccessorTest
      * .
      */
     @Test
-    public void testFromBytes()
-    {
+    public void testFromBytes() {
         Point point = new Point(4.5, 6.3);
         byte[] input = pa.toBytes(point);
 
@@ -73,8 +67,7 @@ public class PointAccessorTest
      * .
      */
     @Test
-    public void testToBytes()
-    {
+    public void testToBytes() {
         Point point = new Point(4.5, 6.3);
         byte[] input = pa.toBytes(point);
 
@@ -88,8 +81,7 @@ public class PointAccessorTest
      * .
      */
     @Test
-    public void testToStringObject()
-    {
+    public void testToStringObject() {
         Point point = new Point(4.5, 6.3);
         String pointStr = pa.toString(point);
 
@@ -105,8 +97,7 @@ public class PointAccessorTest
      * .
      */
     @Test
-    public void testFromString()
-    {
+    public void testFromString() {
         Point point = new Point(4.5, 6.3);
         WKTWriter writer = new WKTWriter();
         String wktStr = writer.write(point);
@@ -124,8 +115,7 @@ public class PointAccessorTest
      * .
      */
     @Test
-    public void testGetCopy()
-    {
+    public void testGetCopy() {
         Point point = new Point(4.5, 6.3);
         Point point2 = pa.getCopy(point);
         Assert.assertFalse(point == point2);
@@ -138,8 +128,7 @@ public class PointAccessorTest
      * .
      */
     @Test
-    public void testGetInstance()
-    {
+    public void testGetInstance() {
         Point point = (Point) pa.getInstance(Point.class);
         Assert.assertNotNull(point);
         Assert.assertEquals(0.0, point.getX());

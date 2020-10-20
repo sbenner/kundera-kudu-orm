@@ -15,19 +15,6 @@
  ******************************************************************************/
 package com.impetus.kundera.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.Persistence;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.kundera.entity.PersonalDetail;
 import com.impetus.kundera.entity.Tweet;
 import com.impetus.kundera.entity.album.AlbumBi_1_M_1_M;
@@ -37,15 +24,26 @@ import com.impetus.kundera.entity.photo.PhotoBi_1_M_M_M;
 import com.impetus.kundera.entity.photographer.PhotographerBi_1_M_1_M;
 import com.impetus.kundera.entity.photographer.PhotographerBi_1_M_M_M;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.Persistence;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Test case for {@link ObjectUtils} for cloning for bidirectional object
- * 
+ *
  * @author amresh.singh
  */
-public class ObjectUtilsCloneBidirectionalM2MTest
-{
-    /** The log. */
+public class ObjectUtilsCloneBidirectionalM2MTest {
+    /**
+     * The log.
+     */
     private static Logger log = LoggerFactory.getLogger(ObjectUtilsCloneBidirectionalM2MTest.class);
 
     private String _persistenceUnit = "kunderatest";
@@ -56,8 +54,7 @@ public class ObjectUtilsCloneBidirectionalM2MTest
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         emf = getEntityManagerFactory();
     }
 
@@ -65,13 +62,11 @@ public class ObjectUtilsCloneBidirectionalM2MTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
     }
 
     @Test
-    public void testPhotographer()
-    {
+    public void testPhotographer() {
         // Construct photographer object
         PhotographerBi_1_M_M_M a1 = new PhotographerBi_1_M_M_M();
         a1.setPhotographerId(1);
@@ -136,8 +131,7 @@ public class ObjectUtilsCloneBidirectionalM2MTest
 
     }
 
-    private void modifyPhotographer(PhotographerBi_1_M_1_M p)
-    {
+    private void modifyPhotographer(PhotographerBi_1_M_1_M p) {
         p.setPhotographerId(2);
         p.setPhotographerName("Vivek");
 
@@ -185,8 +179,7 @@ public class ObjectUtilsCloneBidirectionalM2MTest
         p.setAlbums(albums);
     }
 
-    private void assertOriginalObjectValues(PhotographerBi_1_M_1_M p)
-    {
+    private void assertOriginalObjectValues(PhotographerBi_1_M_1_M p) {
         Assert.assertTrue(p.getPhotographerId() == 1);
         Assert.assertTrue(p.getPhotographerName().equals("Amresh"));
 
@@ -213,14 +206,12 @@ public class ObjectUtilsCloneBidirectionalM2MTest
         Assert.assertTrue(t3.getBody().equals("My Third Tweet"));
         Assert.assertTrue(t3.getDevice().equals("iPad"));
 
-        for (AlbumBi_1_M_1_M album : p.getAlbums())
-        {
+        for (AlbumBi_1_M_1_M album : p.getAlbums()) {
             Assert.assertFalse(album.getAlbumId().startsWith("X"));
             Assert.assertFalse(album.getAlbumName().startsWith("X"));
             Assert.assertFalse(album.getAlbumDescription().startsWith("X"));
 
-            for (PhotoBi_1_M_1_M photo : album.getPhotos())
-            {
+            for (PhotoBi_1_M_1_M photo : album.getPhotos()) {
                 Assert.assertFalse(photo.getPhotoId().startsWith("X"));
                 Assert.assertFalse(photo.getPhotoCaption().startsWith("X"));
                 Assert.assertFalse(photo.getPhotoDescription().startsWith("X"));
@@ -230,8 +221,7 @@ public class ObjectUtilsCloneBidirectionalM2MTest
 
     }
 
-    private void assertObjectReferenceInequality(PhotographerBi_1_M_M_M p1, PhotographerBi_1_M_M_M p2)
-    {
+    private void assertObjectReferenceInequality(PhotographerBi_1_M_M_M p1, PhotographerBi_1_M_M_M p2) {
 
         Assert.assertFalse(p1 == p2);
         // Assert.assertFalse(p1.getPersonalDetail() == p2.getPersonalDetail());
@@ -243,14 +233,12 @@ public class ObjectUtilsCloneBidirectionalM2MTest
          */
 
         Assert.assertFalse(p1.getAlbums() == p2.getAlbums());
-        for (int i = 0; i < p1.getAlbums().size(); i++)
-        {
+        for (int i = 0; i < p1.getAlbums().size(); i++) {
             Assert.assertFalse(p1.getAlbums().get(i) == p2.getAlbums().get(i));
             Assert.assertFalse(p1.getAlbums().get(i).getPhotos() == p2.getAlbums().get(i).getPhotos());
             Assert.assertFalse(p1.getAlbums().get(i).getPhotographer() == p2.getAlbums().get(i).getPhotographer());
 
-            for (int j = 0; j < p1.getAlbums().get(i).getPhotos().size(); j++)
-            {
+            for (int j = 0; j < p1.getAlbums().get(i).getPhotos().size(); j++) {
                 PhotoBi_1_M_M_M photo1 = p1.getAlbums().get(i).getPhotos().get(j);
                 PhotoBi_1_M_M_M photo2 = p2.getAlbums().get(i).getPhotos().get(j);
 
@@ -262,14 +250,12 @@ public class ObjectUtilsCloneBidirectionalM2MTest
 
     /**
      * Gets the entity manager factory.
-     * 
+     *
      * @param useLucene
      * @param property
-     * 
      * @return the entity manager factory
      */
-    private EntityManagerFactoryImpl getEntityManagerFactory()
-    {
+    private EntityManagerFactoryImpl getEntityManagerFactory() {
         return (EntityManagerFactoryImpl) Persistence.createEntityManagerFactory(_persistenceUnit);
     }
 }

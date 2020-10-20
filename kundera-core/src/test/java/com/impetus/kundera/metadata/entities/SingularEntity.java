@@ -15,25 +15,18 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Entity with singular attributes for meta model processing.
- * 
+ *
  * @author vivek.mishra
- * 
  */
 
 @Entity
 @Table(name = "table", schema = "testSchema@keyspace")
-@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
-public class SingularEntity
-{
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public class SingularEntity {
 
     @Id
     private Integer key;
@@ -47,51 +40,42 @@ public class SingularEntity
     /**
      * @return the key
      */
-    public Integer getKey()
-    {
+    public Integer getKey() {
         return key;
     }
 
     /**
-     * @param key
-     *            the key to set
+     * @param key the key to set
      */
-    public void setKey(Integer key)
-    {
+    public void setKey(Integer key) {
         this.key = key;
     }
 
     /**
      * @return the field
      */
-    public String getField()
-    {
+    public String getField() {
         return field;
     }
 
     /**
-     * @param field
-     *            the field to set
+     * @param field the field to set
      */
-    public void setField(String field)
-    {
+    public void setField(String field) {
         this.field = field;
     }
 
     /**
      * @return the name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param name the name to set
      */
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 

@@ -20,20 +20,16 @@ import com.impetus.kundera.client.Client;
 /**
  * {@link AutoGenerator} interface , all client should implement this interface
  * in order to support auto generation strategy.
- * 
+ *
  * @author Kuldeep.Mishra
- * 
  */
-public interface AutoGenerator extends Generator
-{
+public interface AutoGenerator extends Generator {
 
     /**
      * Generate.
-     * 
-     * @param client
-     *            the client
-     * @param dataType
-     *            the data type
+     *
+     * @param client   the client
+     * @param dataType the data type
      * @return the object
      */
     public Object generate(Client<?> client, String dataType);

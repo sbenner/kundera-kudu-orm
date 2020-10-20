@@ -15,57 +15,56 @@
  ******************************************************************************/
 package com.impetus.kundera.query;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Parameter;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceException;
-
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.impetus.kundera.metadata.KunderaMetadataManager;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.query.KunderaQuery.FilterClause;
 import com.impetus.kundera.query.KunderaQuery.UpdateClause;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * The Class KunderaQueryTest.
- * 
+ *
  * @author vivek.mishra Junit for Kundera query test.
  */
-public class KunderaQueryTest
-{
+public class KunderaQueryTest {
 
-    /** The Constant PU. */
+    /**
+     * The Constant PU.
+     */
     private static final String PU = "patest";
 
-    /** The emf. */
+    /**
+     * The emf.
+     */
     private EntityManagerFactory emf;
 
-    /** The em. */
+    /**
+     * The em.
+     */
     private EntityManager em;
 
-    /** The kundera metadata. */
+    /**
+     * The kundera metadata.
+     */
     private KunderaMetadata kunderaMetadata;
 
     /**
      * Sets the up.
-     * 
-     * @throws Exception
-     *             the exception
+     *
+     * @throws Exception the exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
 
         emf = Persistence.createEntityManagerFactory(PU);
         kunderaMetadata = ((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance();
@@ -74,13 +73,11 @@ public class KunderaQueryTest
 
     /**
      * Tear down.
-     * 
-     * @throws Exception
-     *             the exception
+     *
+     * @throws Exception the exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         em.close();
         emf.close();
     }
@@ -89,8 +86,7 @@ public class KunderaQueryTest
      * Test.
      */
     @Test
-    public void test()
-    {
+    public void test() {
         String query = "Select p from Person p";
         KunderaQuery kunderaQuery = new KunderaQuery(query, kunderaMetadata);
         KunderaQueryParser queryParser = new KunderaQueryParser(kunderaQuery);
@@ -127,38 +123,31 @@ public class KunderaQueryTest
         Assert.assertEquals(PU, kunderaQuery.getPersistenceUnit());
         Assert.assertNull(kunderaQuery.getOrdering());
 
-        try
-        {
+        try {
             query = "Select p from p";
             kunderaQuery = new KunderaQuery(query, kunderaMetadata);
             queryParser = new KunderaQueryParser(kunderaQuery);
             queryParser.parse();
             kunderaQuery.postParsingInit();
             Assert.fail();
-        }
-        catch (JPQLParseException e)
-        {
+        } catch (JPQLParseException e) {
             Assert.assertEquals(
                     "Bad query format: p. Identification variable is mandatory in FROM clause for SELECT queries. For details, see: http://openjpa.apache.org/builds/1.0.4/apache-openjpa-1.0.4/docs/manual/jpa_langref.html#jpa_langref_bnf",
                     e.getMessage());
         }
-        try
-        {
+        try {
             query = "Select p form Person p";
             kunderaQuery = new KunderaQuery(query, kunderaMetadata);
             queryParser = new KunderaQueryParser(kunderaQuery);
             queryParser.parse();
             kunderaQuery.postParsingInit();
             Assert.fail();
-        }
-        catch (JPQLParseException e)
-        {
+        } catch (JPQLParseException e) {
             Assert.assertEquals(
                     "Bad query format FROM clause is mandatory for SELECT queries. For details, see: http://openjpa.apache.org/builds/1.0.4/apache-openjpa-1.0.4/docs/manual/jpa_langref.html#jpa_langref_bnf",
                     e.getMessage());
         }
-        try
-        {
+        try {
             query = "Selct p from Person p";
             kunderaQuery = new KunderaQuery(query, kunderaMetadata);
             queryParser = new KunderaQueryParser(kunderaQuery);
@@ -176,79 +165,62 @@ public class KunderaQueryTest
             Assert.assertNotNull(kunderaQuery.getResult());
             Assert.assertEquals(PU, kunderaQuery.getPersistenceUnit());
             Assert.assertNull(kunderaQuery.getOrdering());
-        }
-        catch (JPQLParseException e)
-        {
+        } catch (JPQLParseException e) {
             // Assert.fail();
             Assert.assertEquals(
                     "Bad query format FROM clause is mandatory for SELECT queries. For details, see: http://openjpa.apache.org/builds/1.0.4/apache-openjpa-1.0.4/docs/manual/jpa_langref.html#jpa_langref_bnf",
                     e.getMessage());
         }
-        try
-        {
+        try {
             query = "Select p from Person p where";
             kunderaQuery = new KunderaQuery(query, kunderaMetadata);
             queryParser = new KunderaQueryParser(kunderaQuery);
             queryParser.parse();
             kunderaQuery.postParsingInit();
             Assert.fail();
-        }
-        catch (JPQLParseException e)
-        {
+        } catch (JPQLParseException e) {
             Assert.assertEquals(
                     "keyword without value[WHERE]. For details, see: http://openjpa.apache.org/builds/1.0.4/apache-openjpa-1.0.4/docs/manual/jpa_langref.html#jpa_langref_bnf",
                     e.getMessage());
         }
-        try
-        {
+        try {
             query = "Select p from Person p where p";
             kunderaQuery = new KunderaQuery(query, kunderaMetadata);
             queryParser = new KunderaQueryParser(kunderaQuery);
             queryParser.parse();
             kunderaQuery.postParsingInit();
             // Assert.fail();
-        }
-        catch (PersistenceException e)
-        {
+        } catch (PersistenceException e) {
             Assert.assertEquals("bad jpa query: p", e.getMessage());
         }
 
-        try
-        {
+        try {
             query = "Select p from invalidPerson p";
             kunderaQuery = new KunderaQuery(query, kunderaMetadata);
             queryParser = new KunderaQueryParser(kunderaQuery);
             queryParser.parse();
             kunderaQuery.postParsingInit();
-        }
-        catch (QueryHandlerException qhex)
-        {
+        } catch (QueryHandlerException qhex) {
             Assert.assertEquals("No entity found by the name: invalidPerson", qhex.getMessage());
         }
 
-        try
-        {
+        try {
             query = "Select p.ABC from Person p";
             kunderaQuery = new KunderaQuery(query, kunderaMetadata);
             queryParser = new KunderaQueryParser(kunderaQuery);
             queryParser.parse();
             kunderaQuery.postParsingInit();
-        }
-        catch (JPQLParseException e)
-        {
+        } catch (JPQLParseException e) {
             Assert.assertEquals("invalid column nameABC", e.getMessage());
         }
 
-        try
-        {
+        try {
             query = "Select p from Person p order by p.personName ASCENDING";
             kunderaQuery = new KunderaQuery(query, kunderaMetadata);
             queryParser = new KunderaQueryParser(kunderaQuery);
             queryParser.parse();
             kunderaQuery.postParsingInit();
-        }
-        catch (JPQLParseException e)
-        {
+        } catch (JPQLParseException e) {
             Assert.assertTrue(e.getMessage().startsWith("Invalid sort order provided:ASCENDING"));
         }
 
@@ -258,8 +230,7 @@ public class KunderaQueryTest
      * Test on index parameter.
      */
     @Test
-    public void testOnIndexParameter()
-    {
+    public void testOnIndexParameter() {
         String query = "Select p from Person p where p.personName = ?1 and p.age= ?2";
         KunderaQuery kunderaQuery = new KunderaQuery(query, kunderaMetadata);
         KunderaQueryParser queryParser = new KunderaQueryParser(kunderaQuery);
@@ -281,38 +252,30 @@ public class KunderaQueryTest
         Assert.assertEquals(ageList, value);
         Assert.assertEquals(2, kunderaQuery.getParameters().size());
 
-        try
-        {
+        try {
             kunderaQuery.getClauseValue("invalidparam");
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (IllegalArgumentException iaex)
-        {
+        } catch (IllegalArgumentException iaex) {
             Assert.assertEquals("parameter is not a parameter of the query", iaex.getMessage());
         }
 
         Assert.assertNotNull(kunderaQuery.getFilterClauseQueue());
 
-        for (Object clause : kunderaQuery.getFilterClauseQueue())
-        {
+        for (Object clause : kunderaQuery.getFilterClauseQueue()) {
             Assert.assertNotNull(clause);
             Assert.assertNotNull(clause.toString());
-            if (clause.getClass().isAssignableFrom(FilterClause.class))
-            {
+            if (clause.getClass().isAssignableFrom(FilterClause.class)) {
                 Assert.assertNotNull(((FilterClause) clause).getProperty());
                 Assert.assertNotNull(((FilterClause) clause).getValue().get(0));
                 Assert.assertNotNull(((FilterClause) clause).getCondition());
-            }
-            else
-            {
+            } else {
                 Assert.assertEquals("AND", clause.toString().trim());
             }
         }
 
         Iterator<Parameter<?>> parameters = kunderaQuery.getParameters().iterator();
 
-        while (parameters.hasNext())
-        {
+        while (parameters.hasNext()) {
             Assert.assertTrue(kunderaQuery.isBound(parameters.next()));
         }
 
@@ -342,8 +305,7 @@ public class KunderaQueryTest
      * Test on name parameter.
      */
     @Test
-    public void testOnNameParameter()
-    {
+    public void testOnNameParameter() {
         String query = "Select p from Person p where p.personName = :name and p.age= :age";
         KunderaQuery kunderaQuery = new KunderaQuery(query, kunderaMetadata);
         KunderaQueryParser queryParser = new KunderaQueryParser(kunderaQuery);
@@ -356,8 +318,7 @@ public class KunderaQueryTest
 
         Iterator<Parameter<?>> parameters = kunderaQuery.getParameters().iterator();
 
-        while (parameters.hasNext())
-        {
+        while (parameters.hasNext()) {
             Assert.assertTrue(kunderaQuery.isBound(parameters.next()));
         }
 
@@ -380,8 +341,7 @@ public class KunderaQueryTest
      * Test invalid index parameter.
      */
     @Test
-    public void testInvalidIndexParameter()
-    {
+    public void testInvalidIndexParameter() {
         String query = "Select p from Person p where p.personName = ?1 and p.age= ?2";
         KunderaQuery kunderaQuery = new KunderaQuery(query, kunderaMetadata);
         KunderaQueryParser queryParser = new KunderaQueryParser(kunderaQuery);
@@ -390,13 +350,10 @@ public class KunderaQueryTest
         kunderaQuery.setParameter(1, "pname");
         kunderaQuery.setParameter(2, 32);
 
-        try
-        {
+        try {
             kunderaQuery.getClauseValue("?3");
             Assert.fail("Should be catch block");
-        }
-        catch (IllegalArgumentException iaex)
-        {
+        } catch (IllegalArgumentException iaex) {
             Assert.assertEquals("parameter is not a parameter of the query", iaex.getMessage());
         }
     }
@@ -405,8 +362,7 @@ public class KunderaQueryTest
      * Test invalid name parameter.
      */
     @Test
-    public void testInvalidNameParameter()
-    {
+    public void testInvalidNameParameter() {
         String query = "Select p from Person p where p.personName = :name and p.age= :age";
         KunderaQuery kunderaQuery = new KunderaQuery(query, kunderaMetadata);
         KunderaQueryParser queryParser = new KunderaQueryParser(kunderaQuery);
@@ -415,13 +371,10 @@ public class KunderaQueryTest
         kunderaQuery.setParameter("name", "pname");
         kunderaQuery.setParameter("age", 32);
 
-        try
-        {
+        try {
             kunderaQuery.getClauseValue(":naame");
             Assert.fail("Should be catch block");
-        }
-        catch (IllegalArgumentException iaex)
-        {
+        } catch (IllegalArgumentException iaex) {
             Assert.assertEquals("parameter is not a parameter of the query", iaex.getMessage());
         }
     }
@@ -430,8 +383,7 @@ public class KunderaQueryTest
      * Test update clause.
      */
     @Test
-    public void testUpdateClause()
-    {
+    public void testUpdateClause() {
         String query = "Update Person p set p.age= ?1, p.personId = ?5 where p.personName = ?2 and p.age = ?3";
         KunderaQuery kunderaQuery = new KunderaQuery(query, kunderaMetadata);
         KunderaQueryParser queryParser = new KunderaQueryParser(kunderaQuery);
@@ -447,8 +399,7 @@ public class KunderaQueryTest
 
         Assert.assertNotNull(kunderaQuery.getUpdateClauseQueue());
 
-        for (UpdateClause clause : kunderaQuery.getUpdateClauseQueue())
-        {
+        for (UpdateClause clause : kunderaQuery.getUpdateClauseQueue()) {
             Assert.assertNotNull(clause);
             Assert.assertNotNull(clause.getProperty());
             Assert.assertNotNull(clause.getValue());
@@ -456,8 +407,7 @@ public class KunderaQueryTest
             Assert.assertNotNull(clause.toString());
         }
 
-        while (parameters.hasNext())
-        {
+        while (parameters.hasNext()) {
             Parameter parameter = parameters.next();
             Assert.assertTrue(kunderaQuery.isBound(parameter));
             Assert.assertNull(parameter.getName());
@@ -465,24 +415,18 @@ public class KunderaQueryTest
             Assert.assertNotNull(parameter.toString());
         }
 
-        try
-        {
+        try {
             kunderaQuery.getClauseValue(":naame");
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (IllegalArgumentException iaex)
-        {
+        } catch (IllegalArgumentException iaex) {
             Assert.assertNotNull(kunderaQuery.toString());
             Assert.assertEquals("parameter is not a parameter of the query", iaex.getMessage());
         }
 
-        try
-        {
+        try {
             kunderaQuery.getClauseValue(new JPAParameter());
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (IllegalArgumentException iaex)
-        {
+        } catch (IllegalArgumentException iaex) {
             Assert.assertNotNull(kunderaQuery.toString());
             Assert.assertEquals("parameter is not a parameter of the query", iaex.getMessage());
         }
@@ -493,8 +437,7 @@ public class KunderaQueryTest
      * Test with in clause.
      */
     @Test
-    public void testWithInClause()
-    {
+    public void testWithInClause() {
         final String query = "Select p from Person p where p.personName <> :name and p.age in('kk', 'dk', 'sk') ";
         KunderaQuery kunderaQuery = new KunderaQuery(query, kunderaMetadata);
         KunderaQueryParser queryParser = new KunderaQueryParser(kunderaQuery);
@@ -506,8 +449,7 @@ public class KunderaQueryTest
      * Test in not in not equals.
      */
     @Test
-    public void testInNotInNotEquals()
-    {
+    public void testInNotInNotEquals() {
         String query = "Select p from Person p where p.personName <> :name and p.age IN :ageList"
                 + " and p.salary NOT IN :salaryList and (p.personId = :personId)";
         KunderaQuery kunderaQuery = new KunderaQuery(query, kunderaMetadata);
@@ -515,15 +457,13 @@ public class KunderaQueryTest
         queryParser.parse();
         kunderaQuery.postParsingInit();
         kunderaQuery.setParameter("name", "pname");
-        kunderaQuery.setParameter("ageList", new ArrayList<Integer>()
-        {
+        kunderaQuery.setParameter("ageList", new ArrayList<Integer>() {
             {
                 add(20);
                 add(21);
             }
         });
-        kunderaQuery.setParameter("salaryList", new ArrayList<Double>()
-        {
+        kunderaQuery.setParameter("salaryList", new ArrayList<Double>() {
             {
                 add(2000D);
                 add(3000D);
@@ -539,8 +479,7 @@ public class KunderaQueryTest
      * Test with sub query in mid.
      */
     @Test
-    public void testWithSubQueryInMid()
-    {
+    public void testWithSubQueryInMid() {
         String query = "Select p from Person p where p.personName <> :name and p.age IN :ageList"
                 + " and (p.personId = :personId) and p.salary NOT IN :salaryList";
         KunderaQuery kunderaQuery = new KunderaQuery(query, kunderaMetadata);
@@ -548,15 +487,13 @@ public class KunderaQueryTest
         queryParser.parse();
         kunderaQuery.postParsingInit();
         kunderaQuery.setParameter("name", "pname");
-        kunderaQuery.setParameter("ageList", new ArrayList<Integer>()
-        {
+        kunderaQuery.setParameter("ageList", new ArrayList<Integer>() {
             {
                 add(20);
                 add(21);
             }
         });
-        kunderaQuery.setParameter("salaryList", new ArrayList<Double>()
-        {
+        kunderaQuery.setParameter("salaryList", new ArrayList<Double>() {
             {
                 add(2000D);
                 add(3000D);
@@ -572,16 +509,14 @@ public class KunderaQueryTest
      * Test with sub query in mid without set param.
      */
     @Test
-    public void testWithSubQueryInMidWithoutSetParam()
-    {
+    public void testWithSubQueryInMidWithoutSetParam() {
         String query = "Select p from Person p where p.personName <> pname and p.age IN (20,21,32)"
                 + " and (p.personId = :personId) and p.salary NOT IN :salaryList";
         KunderaQuery kunderaQuery = new KunderaQuery(query, kunderaMetadata);
         KunderaQueryParser queryParser = new KunderaQueryParser(kunderaQuery);
         queryParser.parse();
         kunderaQuery.postParsingInit();
-        kunderaQuery.setParameter("salaryList", new ArrayList<Double>()
-        {
+        kunderaQuery.setParameter("salaryList", new ArrayList<Double>() {
             {
                 add(2000D);
                 add(3000D);
@@ -597,8 +532,7 @@ public class KunderaQueryTest
         queryParser = new KunderaQueryParser(kunderaQuery);
         queryParser.parse();
         kunderaQuery.postParsingInit();
-        kunderaQuery.setParameter("salaryList", new ArrayList<Double>()
-        {
+        kunderaQuery.setParameter("salaryList", new ArrayList<Double>() {
             {
                 add(2000D);
                 add(3000D);
@@ -613,8 +547,7 @@ public class KunderaQueryTest
      * Test order by.
      */
     @Test
-    public void testOrderBy()
-    {
+    public void testOrderBy() {
         // with uppercase sort order
         String query = "Select p from Person p order by p.age ASC";
         KunderaQuery kunderaQuery = new KunderaQuery(query, kunderaMetadata);
@@ -661,13 +594,12 @@ public class KunderaQueryTest
     }
 
     @Test
-    public void testComplexQuery()
-    {
+    public void testComplexQuery() {
         String query =
-              "SELECT p FROM Person p " +
-                    "WHERE (p.age > :maxAge OR p.age < :minAge) " +
-                    "AND UPPER(p.personName) LIKE '%TEST%' " +
-                    "ORDER BY p.personId ASC";
+                "SELECT p FROM Person p " +
+                        "WHERE (p.age > :maxAge OR p.age < :minAge) " +
+                        "AND UPPER(p.personName) LIKE '%TEST%' " +
+                        "ORDER BY p.personId ASC";
 
         KunderaQuery kunderaQuery = new KunderaQuery(query, kunderaMetadata);
         KunderaQueryParser queryParser = new KunderaQueryParser(kunderaQuery);
@@ -677,7 +609,7 @@ public class KunderaQueryTest
         Assert.assertEquals(Person.class, kunderaQuery.getEntityClass());
         Assert.assertNotNull(kunderaQuery.getEntityMetadata());
         Assert.assertTrue(KunderaMetadataManager.getEntityMetadata(kunderaMetadata, Person.class).equals(
-              kunderaQuery.getEntityMetadata()));
+                kunderaQuery.getEntityMetadata()));
         Assert.assertNotNull(kunderaQuery.getFilter());
         Assert.assertFalse(kunderaQuery.getFilterClauseQueue().isEmpty());
         Assert.assertNotNull(kunderaQuery.getFrom());
@@ -708,34 +640,28 @@ public class KunderaQueryTest
 
     /**
      * Assert mix sub query.
-     * 
-     * @param kunderaQuery
-     *            the kundera query
-     * @param paramSize
-     *            the param size
+     *
+     * @param kunderaQuery the kundera query
+     * @param paramSize    the param size
      */
-    private void assertMixSubQuery(KunderaQuery kunderaQuery, int paramSize)
-    {
+    private void assertMixSubQuery(KunderaQuery kunderaQuery, int paramSize) {
         Assert.assertEquals(paramSize, kunderaQuery.getParameters().size());
 
         Iterator<Parameter<?>> parameters = kunderaQuery.getParameters().iterator();
 
-        while (parameters.hasNext())
-        {
+        while (parameters.hasNext()) {
             Assert.assertTrue(kunderaQuery.isBound(parameters.next()));
         }
 
         List<String> nameList = new ArrayList<String>();
         nameList.add("pname");
-        List<Integer> ageList = new ArrayList<Integer>()
-        {
+        List<Integer> ageList = new ArrayList<Integer>() {
             {
                 add(20);
                 add(21);
             }
         };
-        List<Double> salaryList = new ArrayList<Double>()
-        {
+        List<Double> salaryList = new ArrayList<Double>() {
             {
                 add(2000D);
                 add(3000D);
@@ -755,32 +681,27 @@ public class KunderaQueryTest
 
     /**
      * Assert sub query.
-     * 
-     * @param kunderaQuery
-     *            the kundera query
+     *
+     * @param kunderaQuery the kundera query
      */
-    private void assertSubQuery(KunderaQuery kunderaQuery)
-    {
+    private void assertSubQuery(KunderaQuery kunderaQuery) {
         Assert.assertEquals(4, kunderaQuery.getParameters().size());
 
         Iterator<Parameter<?>> parameters = kunderaQuery.getParameters().iterator();
 
-        while (parameters.hasNext())
-        {
+        while (parameters.hasNext()) {
             Assert.assertTrue(kunderaQuery.isBound(parameters.next()));
         }
 
         List<String> nameList = new ArrayList<String>();
         nameList.add("pname");
-        List<Integer> ageList = new ArrayList<Integer>()
-        {
+        List<Integer> ageList = new ArrayList<Integer>() {
             {
                 add(20);
                 add(21);
             }
         };
-        List<Double> salaryList = new ArrayList<Double>()
-        {
+        List<Double> salaryList = new ArrayList<Double>() {
             {
                 add(2000D);
                 add(3000D);
@@ -807,39 +728,35 @@ public class KunderaQueryTest
     /**
      * The Class JPAParameter.
      */
-    private class JPAParameter implements Parameter<String>
-    {
+    private class JPAParameter implements Parameter<String> {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see javax.persistence.Parameter#getName()
          */
         @Override
-        public String getName()
-        {
+        public String getName() {
             return "jpa";
         }
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see javax.persistence.Parameter#getPosition()
          */
         @Override
-        public Integer getPosition()
-        {
+        public Integer getPosition() {
             return 0;
         }
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see javax.persistence.Parameter#getParameterType()
          */
         @Override
-        public Class<String> getParameterType()
-        {
+        public Class<String> getParameterType() {
             return String.class;
         }
 

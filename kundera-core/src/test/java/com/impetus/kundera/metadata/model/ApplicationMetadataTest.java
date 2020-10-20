@@ -15,25 +15,21 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.model;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
+import com.impetus.kundera.metadata.KunderaMetadataManager;
+import com.impetus.kundera.metadata.entities.Article;
+import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.metadata.KunderaMetadataManager;
-import com.impetus.kundera.metadata.entities.Article;
-import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  * @author amresh.singh
- * 
  */
-public class ApplicationMetadataTest
-{
+public class ApplicationMetadataTest {
 
     private String persistenceUnit = "patest";
 
@@ -43,8 +39,7 @@ public class ApplicationMetadataTest
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         emf = Persistence.createEntityManagerFactory(persistenceUnit);
     }
 
@@ -52,8 +47,7 @@ public class ApplicationMetadataTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         ((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance().getApplicationMetadata()
                 .unloadApplicationMatadata(persistenceUnit);
 
@@ -65,8 +59,7 @@ public class ApplicationMetadataTest
      * .
      */
     @Test
-    public void testAddEntityMetadata()
-    {
+    public void testAddEntityMetadata() {
         ((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance().getApplicationMetadata()
                 .addEntityMetadata(persistenceUnit, Article.class, new EntityMetadata(Article.class));
         Assert.assertNotNull(KunderaMetadataManager.getEntityMetadata(

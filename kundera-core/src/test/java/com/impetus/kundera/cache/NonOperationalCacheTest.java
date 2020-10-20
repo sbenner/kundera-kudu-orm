@@ -15,32 +15,27 @@
  ******************************************************************************/
 package com.impetus.kundera.cache;
 
-import junit.framework.Assert;
-
-import org.junit.Test;
-
 import com.impetus.kundera.query.Person;
 import com.impetus.kundera.query.Person.Day;
+import junit.framework.Assert;
+import org.junit.Test;
 
 /**
  * @author vivek.mishra
  * junit for {@link NonOperationalCache}.
  * Current implementation doesn't do anything. So junit needs to modified later.
- *
  */
-public class NonOperationalCacheTest
-{
+public class NonOperationalCacheTest {
 
     @Test
-    public void test()
-    {
+    public void test() {
         NonOperationalCache noOpCache = new NonOperationalCache();
         Person person = new Person();
         person.setAge(32);
         person.setDay(Day.SATURDAY);
         person.setPersonId("p1");
         person.setPersonName("Milan Kundera");
-        
+
         noOpCache.put("p1", person);
 
         // Non operational cache doesn't do anything. So such assertions won't work! 

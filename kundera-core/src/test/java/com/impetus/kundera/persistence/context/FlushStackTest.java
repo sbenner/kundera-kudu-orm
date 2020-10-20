@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,22 +15,20 @@
  */
 package com.impetus.kundera.persistence.context;
 
-import java.util.Deque;
-
+import com.impetus.kundera.graph.Node;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.graph.Node;
+import java.util.Deque;
 
 /**
  * Test case for {@link FlushStack}
- * 
+ *
  * @author amresh.singh
  */
-public class FlushStackTest
-{
+public class FlushStackTest {
 
     Deque<Node> fs;
 
@@ -40,8 +38,7 @@ public class FlushStackTest
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         flushManager = new FlushManager();
 
         fs = flushManager.getFlushStack();
@@ -51,13 +48,11 @@ public class FlushStackTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
     }
 
     @Test
-    public void testFlushStackPush()
-    {
+    public void testFlushStackPush() {
         PersistenceCache pc = new PersistenceCache();
         fs.push(new Node("A", new Object().getClass(), null, pc, "A", null));
         fs.push(new Node("B", new Object().getClass(), null, pc, "B", null));

@@ -1,11 +1,10 @@
 package com.impetus.kundera.metadata.entities;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 /*******************************************************************************
  * * Copyright 2012 Impetus Infotech.
@@ -25,12 +24,10 @@ import javax.persistence.Table;
 
 /**
  * @author vivek.mishra
- * 
  */
 @Entity
 @Table(name = "table", schema = "testSchema@keyspace")
-public class SubClassA extends MappedSuperClass
-{
+public class SubClassA extends MappedSuperClass {
 
     @Id
     private String subClassAStr;
@@ -44,51 +41,42 @@ public class SubClassA extends MappedSuperClass
     /**
      * @return the subClassAStr
      */
-    public String getSubClassAStr()
-    {
+    public String getSubClassAStr() {
         return subClassAStr;
     }
 
     /**
-     * @param subClassAStr
-     *            the subClassAStr to set
+     * @param subClassAStr the subClassAStr to set
      */
-    public void setSubClassAStr(String subClassAStr)
-    {
+    public void setSubClassAStr(String subClassAStr) {
         this.subClassAStr = subClassAStr;
     }
 
     /**
      * @return the subClassADt
      */
-    public Date getSubClassADt()
-    {
+    public Date getSubClassADt() {
         return subClassADt;
     }
 
     /**
-     * @param subClassADt
-     *            the subClassADt to set
+     * @param subClassADt the subClassADt to set
      */
-    public void setSubClassADt(Date subClassADt)
-    {
+    public void setSubClassADt(Date subClassADt) {
         this.subClassADt = subClassADt;
     }
 
     /**
      * @return the subClassALng
      */
-    public long getSubClassALng()
-    {
+    public long getSubClassALng() {
         return subClassALng;
     }
 
     /**
-     * @param subClassALng
-     *            the subClassALng to set
+     * @param subClassALng the subClassALng to set
      */
-    public void setSubClassALng(long subClassALng)
-    {
+    public void setSubClassALng(long subClassALng) {
         this.subClassALng = subClassALng;
     }
 

@@ -16,16 +16,13 @@
 package com.impetus.kundera.validation.rules;
 
 
-
 /**
  * @author Chhavi Gangwal
- *
  */
-public interface EntityRule  extends IRule
-{
-  /**
- * @param clazz
- * @throws RuleValidationException
- */
-void validate(Class<?> clazz) throws RuleValidationException;
+public interface EntityRule extends IRule {
+    /**
+     * @param clazz
+     * @throws RuleValidationException
+     */
+    void validate(Class<?> clazz) throws RuleValidationException;
 }

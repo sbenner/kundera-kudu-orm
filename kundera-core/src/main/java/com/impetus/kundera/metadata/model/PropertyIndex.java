@@ -19,21 +19,26 @@ import java.lang.reflect.Field;
 
 /**
  * Contains Index information of a field.
- * 
+ *
  * @author animesh.kumar
  */
-public final class PropertyIndex
-{
+public final class PropertyIndex {
 
-    /** The name. */
+    /**
+     * The name.
+     */
     private String name;
 
-    /** The property. */
+    /**
+     * The property.
+     */
     private Field property;
 
     private String indexType;
 
-    /** The boost. */
+    /**
+     * The boost.
+     */
     private float boost = 1.0f;
 
     private Integer max;
@@ -42,14 +47,11 @@ public final class PropertyIndex
 
     /**
      * Instantiates a new property index.
-     * 
-     * @param property
-     *            the property
-     * @param name
-     *            the name
+     *
+     * @param property the property
+     * @param name     the name
      */
-    public PropertyIndex(Field property, String name, String indexType)
-    {
+    public PropertyIndex(Field property, String name, String indexType) {
         this.property = property;
         this.name = name;
         this.indexType = indexType;
@@ -57,84 +59,72 @@ public final class PropertyIndex
 
     /**
      * Gets the name.
-     * 
+     *
      * @return the name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     /**
      * Gets the property.
-     * 
+     *
      * @return the property
      */
-    public Field getProperty()
-    {
+    public Field getProperty() {
         return property;
     }
 
     /**
      * Gets the boost.
-     * 
+     *
      * @return the boost
      */
-    public float getBoost()
-    {
+    public float getBoost() {
         return boost;
     }
 
     /**
      * Sets the boost.
-     * 
-     * @param boost
-     *            the new boost
+     *
+     * @param boost the new boost
      */
-    public void setBoost(float boost)
-    {
+    public void setBoost(float boost) {
         this.boost = boost;
     }
 
     /**
      * @return the indexType
      */
-    public String getIndexType()
-    {
+    public String getIndexType() {
         return indexType;
     }
 
     /**
      * @return the max
      */
-    public Integer getMax()
-    {
+    public Integer getMax() {
         return max;
     }
 
     /**
-     * @param max
-     *            the max to set
+     * @param max the max to set
      */
-    public void setMax(Integer max)
-    {
+    public void setMax(Integer max) {
         this.max = max;
     }
 
     /**
      * @return the min
      */
-    public Integer getMin()
-    {
+    public Integer getMin() {
         return min;
     }
 
     /**
-     * @param min
-     *            the min to set
+     * @param min the min to set
      */
-    public void setMin(Integer min)
-    {
+    public void setMin(Integer min) {
         this.min = min;
     }
 

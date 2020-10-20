@@ -51,72 +51,67 @@ import java.util.ListIterator;
 
 /**
  * The Class KuduDBQuery.
- * 
+ *
  * @author karthikp.manchala
  */
-public class KuduDBQuery extends QueryImpl implements Query
-{
+public class KuduDBQuery extends QueryImpl implements Query {
 
-    /** The Constant DOT_REGEX. */
+    /**
+     * The Constant DOT_REGEX.
+     */
     private static final String DOT_REGEX = "[.]";
 
-    /** The Constant PARAMETERIZED_PREFIX. */
+    /**
+     * The Constant PARAMETERIZED_PREFIX.
+     */
     private static final String PARAMETERIZED_PREFIX = ":";
 
-    /** The Constant POSITIONAL_PREFIX. */
+    /**
+     * The Constant POSITIONAL_PREFIX.
+     */
     private static final String POSITIONAL_PREFIX = "?";
 
-    /** The logger. */
-    private static Logger logger = LoggerFactory.getLogger(KuduDBQuery.class);
+    /**
+     * The logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(KuduDBQuery.class);
 
     /**
      * Instantiates a new kudu db query.
-     * 
-     * @param kunderaQuery
-     *            the kundera query
-     * @param persistenceDelegator
-     *            the persistence delegator
-     * @param kunderaMetadata
-     *            the kundera metadata
+     *
+     * @param kunderaQuery         the kundera query
+     * @param persistenceDelegator the persistence delegator
+     * @param kunderaMetadata      the kundera metadata
      */
     public KuduDBQuery(KunderaQuery kunderaQuery, PersistenceDelegator persistenceDelegator,
-            KunderaMetadata kunderaMetadata)
-    {
+                       KunderaMetadata kunderaMetadata) {
         super(kunderaQuery, persistenceDelegator, kunderaMetadata);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.query.QueryImpl#populateEntities(com.impetus.kundera.
      * metadata.model.EntityMetadata, com.impetus.kundera.client.Client)
      */
     @Override
-    protected List populateEntities(EntityMetadata m, Client client)
-    {
+    protected List populateEntities(EntityMetadata m, Client client) {
         List results = new ArrayList();
 
 
-        if (!MetadataUtils.useSecondryIndex(((ClientBase) client).getClientMetadata()))
-        {
+        if (!MetadataUtils.useSecondryIndex(((ClientBase) client).getClientMetadata())) {
             results.addAll(populateUsingLucene(m, client, null, getKunderaQuery().getResult()));
-        }
-
-        else
-        {
+        } else {
             MetamodelImpl metaModel = (MetamodelImpl) kunderaMetadata.getApplicationMetadata().getMetamodel(
                     m.getPersistenceUnit());
             EntityType entityType = metaModel.entity(m.getEntityClazz());
 
             KuduClient kuduClient = ((KuduDBClient) client).getKuduClient();
             KuduTable table;
-            try
-            {
+            try {
                 table = kuduClient.openTable(m.getTableName());
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 logger.error("Cannot open table : " + m.getTableName(), e);
                 throw new KunderaException("Cannot open table : " + m.getTableName(), e);
             }
@@ -124,13 +119,11 @@ public class KuduDBQuery extends QueryImpl implements Query
             KuduScannerBuilder scannerBuilder = kuduClient.newScannerBuilder(table);
             JPQLExpression jpqlExp = kunderaQuery.getJpqlExpression();
             List<String> selectColumns = KunderaQueryUtils.getSelectColumns(jpqlExp);
-            if (!selectColumns.isEmpty())
-            {
+            if (!selectColumns.isEmpty()) {
                 // select by specific columns, set projection
                 scannerBuilder.setProjectedColumnNames(selectColumns);
             }
-            if (KunderaQueryUtils.hasWhereClause(jpqlExp))
-            {
+            if (KunderaQueryUtils.hasWhereClause(jpqlExp)) {
                 // add predicate filters
                 WhereClause whereClause = KunderaQueryUtils.getWhereClause(jpqlExp);
                 Expression whereExp = whereClause.getConditionalExpression();
@@ -141,21 +134,16 @@ public class KuduDBQuery extends QueryImpl implements Query
             KuduScanner scanner = scannerBuilder.build();
 
             Object entity;
-            while (scanner.hasMoreRows())
-            {
+            while (scanner.hasMoreRows()) {
                 RowResultIterator rowResultIter;
-                try
-                {
+                try {
                     rowResultIter = scanner.nextRows();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     logger.error("Cannot get results from table : " + m.getTableName(), e);
                     throw new KunderaException("Cannot get results from table : " + m.getTableName(), e);
                 }
 
-                while (rowResultIter.hasNext())
-                {
+                while (rowResultIter.hasNext()) {
                     RowResult result = rowResultIter.next();
                     entity = KunderaCoreUtils.createNewInstance(m.getEntityClazz());
                     // populate RowResult to entity object and return
@@ -170,47 +158,34 @@ public class KuduDBQuery extends QueryImpl implements Query
 
     /**
      * Parses the and build filters.
-     * 
-     * @param entityType
-     *            the entity type
-     * @param scannerBuilder
-     *            the scanner builder
-     * @param whereExp
-     *            the where exp
+     *
+     * @param entityType     the entity type
+     * @param scannerBuilder the scanner builder
+     * @param whereExp       the where exp
      */
     private void parseAndBuildFilters(EntityType entityType,
-                                      KuduScannerBuilder scannerBuilder, Expression whereExp)
-    {
-        if (whereExp instanceof ComparisonExpression)
-        {
+                                      KuduScannerBuilder scannerBuilder, Expression whereExp) {
+        if (whereExp instanceof ComparisonExpression) {
             String left = ((ComparisonExpression) whereExp).getLeftExpression().toActualText();
 
             String right = ((ComparisonExpression) whereExp).getRightExpression().toActualText();
-            if (right.startsWith(POSITIONAL_PREFIX) || right.startsWith(PARAMETERIZED_PREFIX))
-            {
+            if (right.startsWith(POSITIONAL_PREFIX) || right.startsWith(PARAMETERIZED_PREFIX)) {
                 right = kunderaQuery.getParametersMap().get(right) + "";
             }
             Attribute attribute = entityType.getAttribute(left.split(DOT_REGEX)[1]);
             addColumnRangePredicateToBuilder((Field) attribute.getJavaMember(), scannerBuilder,
                     ((AbstractAttribute) attribute).getJPAColumnName(), right,
                     ((ComparisonExpression) whereExp).getActualIdentifier());
-        }
-        else if (whereExp instanceof AndExpression)
-        {
+        } else if (whereExp instanceof AndExpression) {
             parseAndBuildFilters(entityType, scannerBuilder, ((AndExpression) whereExp).getLeftExpression());
             parseAndBuildFilters(entityType, scannerBuilder, ((AndExpression) whereExp).getRightExpression());
-        }
-        else if (whereExp instanceof InExpression)
-        {
+        } else if (whereExp instanceof InExpression) {
 
             ListIterator<Expression> inIter = ((InExpression) whereExp).getInItems().children().iterator();
             Attribute attribute = entityType.getAttribute(((InExpression) whereExp).getExpression().toActualText()
                     .split(DOT_REGEX)[1]);
             addInPredicateToBuilder(scannerBuilder, inIter, attribute);
-        }
-
-        else
-        {
+        } else {
             logger.error("Operation not supported");
             throw new KunderaException("Operation not supported");
         }
@@ -218,23 +193,18 @@ public class KuduDBQuery extends QueryImpl implements Query
 
     /**
      * Adds the in predicate to builder.
-     * 
-     * @param scannerBuilder
-     *            the scanner builder
-     * @param inIter
-     *            the in iter
-     * @param attribute
-     *            the attribute
+     *
+     * @param scannerBuilder the scanner builder
+     * @param inIter         the in iter
+     * @param attribute      the attribute
      */
     private void addInPredicateToBuilder(KuduScannerBuilder scannerBuilder, ListIterator<Expression> inIter,
-            Attribute attribute)
-    {
+                                         Attribute attribute) {
         List<Object> finalVals = new ArrayList<>();
         Type type = KuduDBValidationClassMapper.getValidTypeForClass(((Field) attribute.getJavaMember()).getType());
         ColumnSchema column = new ColumnSchema.ColumnSchemaBuilder(((AbstractAttribute) attribute).getJPAColumnName(),
                 type).build();
-        while (inIter.hasNext())
-        {
+        while (inIter.hasNext()) {
             String val = inIter.next().toActualText();
             finalVals.add(KuduDBDataHandler.parse(type, val));
         }
@@ -243,21 +213,15 @@ public class KuduDBQuery extends QueryImpl implements Query
 
     /**
      * Adds the column range predicate to builder.
-     * 
-     * @param field
-     *            the entity type
-     * @param scannerBuilder
-     *            the scanner builder
-     * @param columnName
-     *            the column name
-     * @param value
-     *            the value
-     * @param identifier
-     *            the identifier
+     *
+     * @param field          the entity type
+     * @param scannerBuilder the scanner builder
+     * @param columnName     the column name
+     * @param value          the value
+     * @param identifier     the identifier
      */
     private void addColumnRangePredicateToBuilder(Field field, KuduScannerBuilder scannerBuilder, String columnName,
-            String value, String identifier)
-    {
+                                                  String value, String identifier) {
         Type type = KuduDBValidationClassMapper.getValidTypeForClass(field.getType());
         ColumnSchema column = new ColumnSchema.ColumnSchemaBuilder(columnName, type).build();
 
@@ -265,28 +229,27 @@ public class KuduDBQuery extends QueryImpl implements Query
 
         Object valueObject = KuduDBDataHandler.parse(type, value);
 
-        switch (identifier)
-        {
-        case ">=":
-            predicate = KuduDBDataHandler.getPredicate(column, KuduPredicate.ComparisonOp.GREATER_EQUAL, type,
-                    valueObject);
-            break;
-        case ">":
-            predicate = KuduDBDataHandler.getPredicate(column, KuduPredicate.ComparisonOp.GREATER, type, valueObject);
-            break;
-        case "<":
-            predicate = KuduDBDataHandler.getPredicate(column, KuduPredicate.ComparisonOp.LESS, type, valueObject);
-            break;
-        case "<=":
-            predicate = KuduDBDataHandler
-                    .getPredicate(column, KuduPredicate.ComparisonOp.LESS_EQUAL, type, valueObject);
-            break;
-        case "=":
-            predicate = KuduDBDataHandler.getPredicate(column, KuduPredicate.ComparisonOp.EQUAL, type, valueObject);
-            break;
-        default:
-            logger.error("Operation not supported");
-            throw new KunderaException("Operation not supported");
+        switch (identifier) {
+            case ">=":
+                predicate = KuduDBDataHandler.getPredicate(column, KuduPredicate.ComparisonOp.GREATER_EQUAL, type,
+                        valueObject);
+                break;
+            case ">":
+                predicate = KuduDBDataHandler.getPredicate(column, KuduPredicate.ComparisonOp.GREATER, type, valueObject);
+                break;
+            case "<":
+                predicate = KuduDBDataHandler.getPredicate(column, KuduPredicate.ComparisonOp.LESS, type, valueObject);
+                break;
+            case "<=":
+                predicate = KuduDBDataHandler
+                        .getPredicate(column, KuduPredicate.ComparisonOp.LESS_EQUAL, type, valueObject);
+                break;
+            case "=":
+                predicate = KuduDBDataHandler.getPredicate(column, KuduPredicate.ComparisonOp.EQUAL, type, valueObject);
+                break;
+            default:
+                logger.error("Operation not supported");
+                throw new KunderaException("Operation not supported");
         }
 
         scannerBuilder.addPredicate(predicate);
@@ -294,76 +257,70 @@ public class KuduDBQuery extends QueryImpl implements Query
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.query.QueryImpl#findUsingLucene(com.impetus.kundera.
      * metadata.model.EntityMetadata, com.impetus.kundera.client.Client)
      */
     @Override
-    protected List findUsingLucene(EntityMetadata m, Client client)
-    {
+    protected List findUsingLucene(EntityMetadata m, Client client) {
         // TODO Auto-generated method stub
         return null;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.query.QueryImpl#recursivelyPopulateEntities(com.
      * impetus.kundera.metadata.model.EntityMetadata ,
      * com.impetus.kundera.client.Client)
      */
     @Override
-    protected List recursivelyPopulateEntities(EntityMetadata m, Client client)
-    {
+    protected List recursivelyPopulateEntities(EntityMetadata m, Client client) {
         // TODO Auto-generated method stub
         return null;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.query.QueryImpl#getReader()
      */
     @Override
-    protected EntityReader getReader()
-    {
+    protected EntityReader getReader() {
         // TODO Auto-generated method stub
         return null;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.query.QueryImpl#onExecuteUpdate()
      */
     @Override
-    protected int onExecuteUpdate()
-    {
+    protected int onExecuteUpdate() {
         // TODO Auto-generated method stub
         return 0;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.query.QueryImpl#close()
      */
     @Override
-    public void close()
-    {
+    public void close() {
         // TODO Auto-generated method stub
 
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.query.QueryImpl#iterate()
      */
     @Override
-    public Iterator iterate()
-    {
+    public Iterator iterate() {
         // TODO Auto-generated method stub
         return null;
     }

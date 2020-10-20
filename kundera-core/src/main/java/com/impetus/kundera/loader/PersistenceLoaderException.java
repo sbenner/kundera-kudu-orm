@@ -19,28 +19,24 @@ import com.impetus.kundera.KunderaException;
 
 /**
  * @author amresh.singh
- * 
  */
-public class PersistenceLoaderException extends KunderaException
-{
+public class PersistenceLoaderException extends KunderaException {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -8108190222765147635L;
 
     /**
-     * 
+     *
      */
-    public PersistenceLoaderException()
-    {
+    public PersistenceLoaderException() {
     }
 
     /**
      * @param arg0
      */
-    public PersistenceLoaderException(String arg0)
-    {
+    public PersistenceLoaderException(String arg0) {
         super(arg0);
 
     }
@@ -48,8 +44,7 @@ public class PersistenceLoaderException extends KunderaException
     /**
      * @param arg0
      */
-    public PersistenceLoaderException(Throwable arg0)
-    {
+    public PersistenceLoaderException(Throwable arg0) {
         super(arg0);
 
     }
@@ -58,8 +53,7 @@ public class PersistenceLoaderException extends KunderaException
      * @param arg0
      * @param arg1
      */
-    public PersistenceLoaderException(String arg0, Throwable arg1)
-    {
+    public PersistenceLoaderException(String arg0, Throwable arg1) {
         super(arg0, arg1);
 
     }

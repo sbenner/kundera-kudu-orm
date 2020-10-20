@@ -17,11 +17,9 @@ package com.impetus.kundera.generator;
 
 /**
  * Generator Interface implemented by all generator.
- * 
+ *
  * @author Kuldeep.Mishra
- * 
  */
-public interface Generator
-{
+public interface Generator {
 
 }

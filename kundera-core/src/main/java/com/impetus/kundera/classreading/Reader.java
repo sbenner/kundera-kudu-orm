@@ -15,58 +15,50 @@
  ******************************************************************************/
 package com.impetus.kundera.classreading;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import com.impetus.kundera.loader.PersistenceXMLLoader.AllowedProtocol;
+import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.annotation.Annotation;
+
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javassist.bytecode.AnnotationsAttribute;
-import javassist.bytecode.ClassFile;
-import javassist.bytecode.annotation.Annotation;
-
-import com.impetus.kundera.loader.PersistenceXMLLoader.AllowedProtocol;
-
 /**
  * Base class-reader.
- * 
+ *
  * @author animesh.kumar
  */
-public abstract class Reader
-{
+public abstract class Reader {
 
-    /** The valid annotations. */
+    /**
+     * The valid annotations.
+     */
     private List<String> validAnnotations = new ArrayList<String>();
 
-    /** The annotation discovery listeners. */
+    /**
+     * The annotation discovery listeners.
+     */
     private List<AnnotationDiscoveryListener> annotationDiscoveryListeners = new ArrayList<AnnotationDiscoveryListener>();
 
     /**
      * Instantiates a new reader.
      */
-    public Reader()
-    {
+    public Reader() {
     }
 
     /**
      * Scan class.
-     * 
-     * @param bits
-     *            the bits
-     * 
-     * @throws IOException
-     *             Signals that an I/O exception has occurred.
+     *
+     * @param bits the bits
+     * @throws IOException Signals that an I/O exception has occurred.
      */
-    public void scanClass(InputStream bits) throws IOException
-    {
+    public void scanClass(InputStream bits) throws IOException {
         DataInputStream dstream = new DataInputStream(new BufferedInputStream(bits));
         ClassFile cf = null;
-        try
-        {
+        try {
             cf = new ClassFile(dstream);
 
             String className = cf.getName();
@@ -77,149 +69,113 @@ public abstract class Reader
                     (AnnotationsAttribute) cf.getAttribute(AnnotationsAttribute.invisibleTag));
 
             // iterate through all valid annotations
-            for (String validAnn : getValidAnnotations())
-            {
+            for (String validAnn : getValidAnnotations()) {
                 // check if the current class has one?
-                if (annotations.contains(validAnn))
-                {
+                if (annotations.contains(validAnn)) {
                     // fire all listeners
-                    for (AnnotationDiscoveryListener listener : getAnnotationDiscoveryListeners())
-                    {
+                    for (AnnotationDiscoveryListener listener : getAnnotationDiscoveryListeners()) {
                         listener.discovered(className);
                     }
                 }
             }
 
-        }
-        finally
-        {
+        } finally {
             dstream.close();
             bits.close();
         }
     }
 
     // helper method to accumulate annotations.
+
     /**
      * Accumulate annotations.
-     * 
-     * @param annotations
-     *            the annotations
-     * @param annatt
-     *            the annatt
+     *
+     * @param annotations the annotations
+     * @param annatt      the annatt
      */
-    public void accumulateAnnotations(List<String> annotations, AnnotationsAttribute annatt)
-    {
-        if (null == annatt)
-        {
+    public void accumulateAnnotations(List<String> annotations, AnnotationsAttribute annatt) {
+        if (null == annatt) {
             return;
         }
-        for (Annotation ann : annatt.getAnnotations())
-        {
+        for (Annotation ann : annatt.getAnnotations()) {
             annotations.add(ann.getTypeName());
         }
     }
 
     /**
      * Gets the resource iterator.
-     * 
-     * @param url
-     *            the url
-     * @param filter
-     *            the filter
-     * 
+     *
+     * @param url    the url
+     * @param filter the filter
      * @return the resource iterator
-     * 
-     * @throws IOException
-     *             Signals that an I/O exception has occurred.
+     * @throws IOException Signals that an I/O exception has occurred.
      */
-    public ResourceIterator getResourceIterator(URL url, Filter filter)
-    {
+    public ResourceIterator getResourceIterator(URL url, Filter filter) {
         String urlString = url.toString();
-        try
-        {
-            if (urlString.endsWith("!/"))
-            {
+        try {
+            if (urlString.endsWith("!/")) {
                 urlString = urlString.substring(4);
                 urlString = urlString.substring(0, urlString.length() - 2);
                 url = new URL(urlString);
             }
 
-            if (urlString.endsWith(".class"))
-            {
+            if (urlString.endsWith(".class")) {
                 File f = new File(url.getPath());
                 return new ClassFileIterator(f);
-            }
-            else if (!urlString.endsWith("/"))
-            {
+            } else if (!urlString.endsWith("/")) {
                 return new JarFileIterator(url.openStream(), filter);
-            }
-            else
-            {
-                if (!url.getProtocol().equals("file"))
-                {
+            } else {
+                if (!url.getProtocol().equals("file")) {
                     throw new ResourceReadingException("Unable to understand protocol: " + url.getProtocol());
                 }
 
                 File f = new File(url.getPath());
-                if (f.isDirectory() || url.getProtocol().toUpperCase().equals(AllowedProtocol.VFS.name()))
-                {
+                if (f.isDirectory() || url.getProtocol().toUpperCase().equals(AllowedProtocol.VFS.name())) {
                     return new ClassFileIterator(f, filter);
-                }
-                else
-                {
+                } else {
                     return new JarFileIterator(url.openStream(), filter);
                 }
             }
-        }
-        catch (MalformedURLException e)
-        {
+        } catch (MalformedURLException e) {
             throw new ResourceReadingException(e);
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new ResourceReadingException(e);
         }
     }
 
     /**
      * Gets the valid annotations.
-     * 
+     *
      * @return the valid annotations
      */
-    public List<String> getValidAnnotations()
-    {
+    public List<String> getValidAnnotations() {
         return validAnnotations;
     }
 
     /**
      * Adds the valid annotations.
-     * 
-     * @param annotation
-     *            the annotation
+     *
+     * @param annotation the annotation
      */
-    public void addValidAnnotations(String annotation)
-    {
+    public void addValidAnnotations(String annotation) {
         this.validAnnotations.add(annotation);
     }
 
     /**
      * Gets the annotation discovery listeners.
-     * 
+     *
      * @return the annotation discovery listeners
      */
-    public List<AnnotationDiscoveryListener> getAnnotationDiscoveryListeners()
-    {
+    public List<AnnotationDiscoveryListener> getAnnotationDiscoveryListeners() {
         return annotationDiscoveryListeners;
     }
 
     /**
      * Adds the annotation discovery listeners.
-     * 
-     * @param annotationDiscoveryListener
-     *            the annotation discovery listener
+     *
+     * @param annotationDiscoveryListener the annotation discovery listener
      */
-    public void addAnnotationDiscoveryListeners(AnnotationDiscoveryListener annotationDiscoveryListener)
-    {
+    public void addAnnotationDiscoveryListeners(AnnotationDiscoveryListener annotationDiscoveryListener) {
         this.annotationDiscoveryListeners.add(annotationDiscoveryListener);
     }
 
@@ -230,14 +186,14 @@ public abstract class Reader
 
     /**
      * Gets the filter.
-     * 
+     *
      * @return the filter
      */
     public abstract Filter getFilter();
 
     /**
      * Find resources.
-     * 
+     *
      * @return the uR l[]
      */
     public abstract URL[] findResources();
@@ -245,7 +201,7 @@ public abstract class Reader
 
     /**
      * Find resources.
-     * 
+     *
      * @return the uR l[]
      */
     public abstract InputStream[] findResourcesAsStream();
@@ -253,7 +209,7 @@ public abstract class Reader
 
     /**
      * Find resources by classpath.
-     * 
+     *
      * @return the uR l[]
      */
     public abstract URL[] findResourcesByClasspath();

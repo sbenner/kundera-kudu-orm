@@ -19,19 +19,15 @@ import com.impetus.kundera.validation.rules.RuleValidationException;
 
 /**
  * @author Chhavi Gangwal
- *
  */
-public class ListenerValidationFactory extends AbstractValidationFactory implements ValidationFactory
-{
-        /* (non-Javadoc)
-         * @see com.impetus.kundera.validation.AbstractValidationFactory#validate(java.lang.Class)
-         */
-        @Override
-        public boolean validate(Class clazz) throws RuleValidationException
-        {
-            throw new UnsupportedOperationException("Listener level validations are not supported!");
-        }
+public class ListenerValidationFactory extends AbstractValidationFactory implements ValidationFactory {
+    /* (non-Javadoc)
+     * @see com.impetus.kundera.validation.AbstractValidationFactory#validate(java.lang.Class)
+     */
+    @Override
+    public boolean validate(Class clazz) throws RuleValidationException {
+        throw new UnsupportedOperationException("Listener level validations are not supported!");
+    }
 
-   
 
 }

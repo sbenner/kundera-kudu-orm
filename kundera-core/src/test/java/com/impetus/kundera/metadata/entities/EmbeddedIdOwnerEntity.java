@@ -22,12 +22,10 @@ import javax.persistence.Table;
 
 /**
  * @author vivek.mishra
- * 
  */
 @Entity
 @Table(name = "table", schema = "testSchema@keyspace")
-public class EmbeddedIdOwnerEntity
-{
+public class EmbeddedIdOwnerEntity {
 
     @EmbeddedId
     private EmbeddableEntity id;
@@ -38,34 +36,28 @@ public class EmbeddedIdOwnerEntity
     /**
      * @return the logColumn
      */
-    public long getLogColumn()
-    {
+    public long getLogColumn() {
         return logColumn;
     }
 
     /**
-     * @param logColumn
-     *            the logColumn to set
+     * @param logColumn the logColumn to set
      */
-    public void setLogColumn(long logColumn)
-    {
+    public void setLogColumn(long logColumn) {
         this.logColumn = logColumn;
     }
 
     /**
      * @return the id
      */
-    public EmbeddableEntity getId()
-    {
+    public EmbeddableEntity getId() {
         return id;
     }
 
     /**
-     * @param id
-     *            the id to set
+     * @param id the id to set
      */
-    public void setId(EmbeddableEntity id)
-    {
+    public void setId(EmbeddableEntity id) {
         this.id = id;
     }
 

@@ -27,11 +27,9 @@ import javax.persistence.TableGenerator;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-public class GeneratedValueProcessor
-{
+public class GeneratedValueProcessor {
     public void process(Class<?> clazz, Field idField, EntityMetadata m,
-                        Map<String, IdDescriptor> entityNameToKeyDescriptorMap)
-    {
+                        Map<String, IdDescriptor> entityNameToKeyDescriptorMap) {
         IdDescriptor keyValue = new IdDescriptor();
 
         GeneratedValue value = idField.getAnnotation(GeneratedValue.class);
@@ -84,9 +82,7 @@ public class GeneratedValueProcessor
                 tableGenerator = clazz.getAnnotation(TableGenerator.class);
             }
             tgd = new TableGeneratorDescriptor(tableGenerator, m.getSchema(), m.getTableName());
-        }
-        else
-        {
+        } else {
             tgd = new TableGeneratorDescriptor(m.getSchema(), m.getTableName());
         }
         return tgd;

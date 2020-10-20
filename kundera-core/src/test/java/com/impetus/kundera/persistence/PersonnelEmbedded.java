@@ -15,21 +15,14 @@
  ******************************************************************************/
 package com.impetus.kundera.persistence;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
- * 
  * @author Kuldeep Mishra
- *
  */
 @Table(name = "PERSONNEL")
 @Entity
-public class PersonnelEmbedded
-{
+public class PersonnelEmbedded {
     @Id
     @Column
     private int id;
@@ -43,43 +36,35 @@ public class PersonnelEmbedded
     @Embedded
     private PersonalDetailEmbedded personalDetail;
 
-    public int getId()
-    {
+    public int getId() {
         return id;
     }
 
-    public void setId(int id)
-    {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public int getAge()
-    {
+    public int getAge() {
         return age;
     }
 
-    public void setAge(int age)
-    {
+    public void setAge(int age) {
         this.age = age;
     }
 
-    public PersonalDetailEmbedded getPersonalDetail()
-    {
+    public PersonalDetailEmbedded getPersonalDetail() {
         return personalDetail;
     }
 
-    public void setPersonalDetail(PersonalDetailEmbedded personalDetail)
-    {
+    public void setPersonalDetail(PersonalDetailEmbedded personalDetail) {
         this.personalDetail = personalDetail;
     }
 }

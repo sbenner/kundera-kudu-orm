@@ -15,21 +15,15 @@
  ******************************************************************************/
 package com.impetus.kundera.polyglot.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
 
+import javax.persistence.*;
+
 @Entity
 @Table(name = "ADDRESS", schema = "KunderaTests@patest")
-@IndexCollection(columns = { @Index(name = "street") })
-public class AddressB11PK
-{
+@IndexCollection(columns = {@Index(name = "street")})
+public class AddressB11PK {
     @Id
     @Column(name = "PERSON_ID")
     private String personId;
@@ -43,43 +37,35 @@ public class AddressB11PK
     @OneToOne(mappedBy = "address", fetch = FetchType.LAZY)
     private PersonB11PK person;
 
-    public String getPersonId()
-    {
+    public String getPersonId() {
         return personId;
     }
 
-    public void setPersonId(String personId)
-    {
+    public void setPersonId(String personId) {
         this.personId = personId;
     }
 
-    public String getAddressId()
-    {
+    public String getAddressId() {
         return addressId;
     }
 
-    public void setAddressId(String addressId)
-    {
+    public void setAddressId(String addressId) {
         this.addressId = addressId;
     }
 
-    public String getStreet()
-    {
+    public String getStreet() {
         return street;
     }
 
-    public void setStreet(String street)
-    {
+    public void setStreet(String street) {
         this.street = street;
     }
 
-    public PersonB11PK getPerson()
-    {
+    public PersonB11PK getPerson() {
         return person;
     }
 
-    public void setPerson(PersonB11PK person)
-    {
+    public void setPerson(PersonB11PK person) {
         this.person = person;
     }
 

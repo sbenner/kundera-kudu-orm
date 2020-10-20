@@ -1,12 +1,12 @@
 /**
  * Copyright 2013 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,14 +14,6 @@
  * limitations under the License.
  */
 package com.impetus.kundera.graph;
-
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.persistence.GeneratedValue;
 
 import com.impetus.kundera.graph.NodeLink.LinkProperty;
 import com.impetus.kundera.lifecycle.states.NodeState;
@@ -39,31 +31,35 @@ import com.impetus.kundera.proxy.ProxyHelper;
 import com.impetus.kundera.validation.rules.NullOrInvalidEntityRule;
 import com.impetus.kundera.validation.rules.PrimaryKeyNullCheck;
 
+import javax.persistence.GeneratedValue;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * @author vivek.mishra
- * 
+ *
  *         Responsible for:
- * 
+ *
  *         1. Do pre-checks a) validation entity b) set id c) check for shared
  *         via primary key { on parse relation } d) dirty check { on associated
  *         and self entity }
- * 
+ *
  *         2. Parse through relations and relational objects.
- * 
+ *
  *         3. Recursively process transitive relations
  */
-public final class GraphGenerator
-{
-
-    private GraphBuilder builder = new GraphBuilder();
+public final class GraphGenerator {
 
     Set<Node> traversedNodes = new HashSet<Node>();
-
+    private GraphBuilder builder = new GraphBuilder();
     private PersistenceValidator validator = new PersistenceValidator();
 
     /**
      * Generate entity graph and returns after assigning headnode. n
-     * 
+     *
      * @param entity
      *            entity.
      * @param delegator
@@ -72,8 +68,7 @@ public final class GraphGenerator
      *            persistence cache
      * @return object graph.
      */
-    public <E> ObjectGraph generateGraph(E entity, PersistenceDelegator delegator)
-    {
+    public <E> ObjectGraph generateGraph(E entity, PersistenceDelegator delegator) {
         this.builder.assign(this);
         Node node = generate(entity, delegator, delegator.getPersistenceCache(), null);
         this.builder.assignHeadNode(node);
@@ -86,7 +81,7 @@ public final class GraphGenerator
 
     /**
      * Generate entity graph and returns after assigning headnode. n
-     * 
+     *
      * @param entity
      *            entity.
      * @param delegator
@@ -95,8 +90,7 @@ public final class GraphGenerator
      *            persistence cache
      * @return object graph.
      */
-    public <E> ObjectGraph generateGraph(E entity, PersistenceDelegator delegator, NodeState state)
-    {
+    public <E> ObjectGraph generateGraph(E entity, PersistenceDelegator delegator, NodeState state) {
 
         this.builder.assign(this);
         Node node = generate(entity, delegator, delegator.getPersistenceCache(), state);
@@ -107,7 +101,7 @@ public final class GraphGenerator
     /**
      * Generate graph for head node. <li>traverse through it's relational
      * entities recursively
-     * 
+     *
      * @param entity
      *            entity object
      * @param delegator
@@ -116,14 +110,12 @@ public final class GraphGenerator
      *            persistence cache
      * @return head node
      */
-    <E> Node generate(E entity, PersistenceDelegator delegator, PersistenceCache pc, NodeState state)
-    {
+    <E> Node generate(E entity, PersistenceDelegator delegator, PersistenceCache pc, NodeState state) {
 
         EntityMetadata entityMetadata = KunderaMetadataManager.getEntityMetadata(delegator.getKunderaMetadata(),
                 entity.getClass());
 
-        if (!new NullOrInvalidEntityRule<E>(entityMetadata).validate(entity))
-        {
+        if (!new NullOrInvalidEntityRule<E>(entityMetadata).validate(entity)) {
             Object entityId = onPreChecks(entity, delegator);
 
             // TODO::check for composite key.
@@ -138,24 +130,19 @@ public final class GraphGenerator
     }
 
     private <E> Node traverseNode(E entity, PersistenceDelegator delegator, PersistenceCache pc, Object entityId,
-            Node node)
-    {
-        if (node != null && !traversedNodes.contains(node))
-        {
+                                  Node node) {
+        if (node != null && !traversedNodes.contains(node)) {
             EntityMetadata entityMetadata = KunderaMetadataManager.getEntityMetadata(delegator.getKunderaMetadata(),
                     entity.getClass());
 
             // parse relations
 
-            for (Relation relation : entityMetadata.getRelations())
-            {
-                if (relation != null)
-                {
+            for (Relation relation : entityMetadata.getRelations()) {
+                if (relation != null) {
                     Object childObject = PropertyAccessorHelper.getObject(entity, relation.getProperty());
 
                     // if child object is valid and not a proxy
-                    if (childObject != null && !ProxyHelper.isProxyOrCollection(childObject))
-                    {
+                    if (childObject != null && !ProxyHelper.isProxyOrCollection(childObject)) {
                         // check for join by primary key, collection and map
                         EntityMetadata childMetadata = KunderaMetadataManager.getEntityMetadata(
                                 delegator.getKunderaMetadata(),
@@ -178,7 +165,7 @@ public final class GraphGenerator
 
     /**
      * Check and set if relation is set via primary key.
-     * 
+     *
      * @param relation
      *            relation
      * @param childObject
@@ -189,10 +176,8 @@ public final class GraphGenerator
      *            entity id
      * @return target entity.
      */
-    private Object onIfSharedByPK(Relation relation, Object childObject, EntityMetadata childMetadata, Object entityId)
-    {
-        if (relation.isJoinedByPrimaryKey())
-        {
+    private Object onIfSharedByPK(Relation relation, Object childObject, EntityMetadata childMetadata, Object entityId) {
+        if (relation.isJoinedByPrimaryKey()) {
             PropertyAccessorHelper.setId(childObject, childMetadata, entityId);
         }
 
@@ -204,16 +189,15 @@ public final class GraphGenerator
      * entity is valid.</li> <li>generated and set id in case
      * {@link GeneratedValue} is present and not set.</li> <li>Check if primary
      * key is not null.</li>
-     * 
-     * 
+     *
+     *
      * @param entity
      *            entity
      * @param client
      *            client
      * @return entity id
      */
-    private <E> Object onPreChecks(E entity, PersistenceDelegator delegator)
-    {
+    private <E> Object onPreChecks(E entity, PersistenceDelegator delegator) {
         // pre validation.
         // check if entity is Null or with Invalid meta data!
         Object id = null;
@@ -224,8 +208,7 @@ public final class GraphGenerator
 
         // set id, in case of auto generation and still not set.
 
-        if (ObjectGraphUtils.onAutoGenerateId((Field) entityMetadata.getIdAttribute().getJavaMember(), id))
-        {
+        if (ObjectGraphUtils.onAutoGenerateId((Field) entityMetadata.getIdAttribute().getJavaMember(), id)) {
             id = new IdGenerator().generateAndSetId(entity, entityMetadata, delegator, delegator.getKunderaMetadata());
         }
 
@@ -241,7 +224,7 @@ public final class GraphGenerator
 
     /**
      * On building child node
-     * 
+     *
      * @param childObject
      *            child object
      * @param childMetadata
@@ -256,18 +239,16 @@ public final class GraphGenerator
      *            entity relation
      */
     void onBuildChildNode(Object childObject, EntityMetadata childMetadata, PersistenceDelegator delegator,
-            PersistenceCache pc, Node node, Relation relation)
-    {
+                          PersistenceCache pc, Node node, Relation relation) {
         Node childNode = generate(childObject, delegator, pc, null);
-        if (childNode != null)
-        {
+        if (childNode != null) {
             assignNodeLinkProperty(node, relation, childNode);
         }
     }
 
     /**
      * On assigning node link properties
-     * 
+     *
      * @param node
      *            node
      * @param relation
@@ -275,8 +256,7 @@ public final class GraphGenerator
      * @param childNode
      *            child node
      */
-    private void assignNodeLinkProperty(Node node, Relation relation, Node childNode)
-    {
+    private void assignNodeLinkProperty(Node node, Relation relation, Node childNode) {
         // Construct Node Link for this relationship
         NodeLink nodeLink = new NodeLink(node.getNodeId(), childNode.getNodeId());
         setLink(node, relation, childNode, nodeLink);
@@ -284,7 +264,7 @@ public final class GraphGenerator
 
     /**
      * Set link property
-     * 
+     *
      * @param node
      *            node
      * @param relation
@@ -294,8 +274,7 @@ public final class GraphGenerator
      * @param nodeLink
      *            node link(bridge)
      */
-    void setLink(Node node, Relation relation, Node childNode, NodeLink nodeLink)
-    {
+    void setLink(Node node, Relation relation, Node childNode, NodeLink nodeLink) {
         nodeLink.setMultiplicity(relation.getType());
 
         EntityMetadata metadata = KunderaMetadataManager.getEntityMetadata(node.getPersistenceDelegator()
@@ -311,15 +290,14 @@ public final class GraphGenerator
     }
 
     /**
-     * 
+     *
      * @param metadata
      *            Entity metadata of the parent node
      * @param relation
      * @return
      */
     private Map<LinkProperty, Object> getLinkProperties(EntityMetadata metadata, Relation relation,
-            final KunderaMetadata kunderaMetadata)
-    {
+                                                        final KunderaMetadata kunderaMetadata) {
         Map<LinkProperty, Object> linkProperties = new HashMap<NodeLink.LinkProperty, Object>();
 
         linkProperties.put(LinkProperty.LINK_NAME, MetadataUtils.getMappedName(metadata, relation, kunderaMetadata));
@@ -329,8 +307,7 @@ public final class GraphGenerator
         linkProperties.put(LinkProperty.PROPERTY, relation.getProperty());
         linkProperties.put(LinkProperty.CASCADE, relation.getCascades());
 
-        if (relation.isRelatedViaJoinTable())
-        {
+        if (relation.isRelatedViaJoinTable()) {
             linkProperties.put(LinkProperty.JOIN_TABLE_METADATA, relation.getJoinTableMetadata());
         }
         return linkProperties;

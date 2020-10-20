@@ -15,23 +15,16 @@
  ******************************************************************************/
 package com.impetus.kundera.polyglot.entities;
 
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
 
+import javax.persistence.*;
+import java.util.Set;
+
 @Entity
 @Table(name = "ADDRESS", schema = "KunderaTests@patest")
-@IndexCollection(columns = { @Index(name = "street") })
-public class AddressBMM
-{
+@IndexCollection(columns = {@Index(name = "street")})
+public class AddressBMM {
     @Id
     @Column(name = "ADDRESS_ID")
     private String addressId;
@@ -42,33 +35,27 @@ public class AddressBMM
     @ManyToMany(mappedBy = "addresses", fetch = FetchType.LAZY)
     private Set<PersonBMM> people;
 
-    public String getAddressId()
-    {
+    public String getAddressId() {
         return addressId;
     }
 
-    public void setAddressId(String addressId)
-    {
+    public void setAddressId(String addressId) {
         this.addressId = addressId;
     }
 
-    public String getStreet()
-    {
+    public String getStreet() {
         return street;
     }
 
-    public void setStreet(String street)
-    {
+    public void setStreet(String street) {
         this.street = street;
     }
 
-    public Set<PersonBMM> getPeople()
-    {
+    public Set<PersonBMM> getPeople() {
         return people;
     }
 
-    public void setPeople(Set<PersonBMM> people)
-    {
+    public void setPeople(Set<PersonBMM> people) {
         this.people = people;
     }
 

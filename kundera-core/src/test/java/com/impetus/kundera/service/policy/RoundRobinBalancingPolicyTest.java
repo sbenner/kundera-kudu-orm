@@ -15,38 +15,33 @@
  ******************************************************************************/
 package com.impetus.kundera.service.policy;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * To test round robin algo.
- * 
+ *
  * @author Kuldeep.Mishra
- * 
  */
-public class RoundRobinBalancingPolicyTest
-{
+public class RoundRobinBalancingPolicyTest {
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
     }
 
     /**
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
     }
 
     /**
@@ -55,8 +50,7 @@ public class RoundRobinBalancingPolicyTest
      * .
      */
     @Test
-    public void testGetPool()
-    {
+    public void testGetPool() {
         Map<String, Object> map = new LinkedHashMap<String, Object>();
         Object o1 = new Object();
         Object o2 = new Object();
@@ -67,20 +61,14 @@ public class RoundRobinBalancingPolicyTest
 
         RoundRobinBalancingPolicy balancingPolicy = new RoundRobinBalancingPolicy();
 
-        for (int i = 0; i < 1300; i++)
-        {
+        for (int i = 0; i < 1300; i++) {
             Object o = balancingPolicy.getPool(map.values());
             Assert.assertNotNull(o);
-            if (i % 3 == 0)
-            {
+            if (i % 3 == 0) {
                 Assert.assertEquals(o1, o);
-            }
-            else if (i % 3 == 1)
-            {
+            } else if (i % 3 == 1) {
                 Assert.assertEquals(o2, o);
-            }
-            else if (i % 3 == 2)
-            {
+            } else if (i % 3 == 2) {
                 Assert.assertEquals(o3, o);
             }
         }

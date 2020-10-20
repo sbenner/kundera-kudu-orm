@@ -20,39 +20,32 @@ import com.impetus.kundera.lifecycle.NodeStateContext;
 
 /**
  * @author amresh
- * 
  */
-public class DetachedState extends NodeState
-{
+public class DetachedState extends NodeState {
 
     @Override
-    public void initialize(NodeStateContext nodeStateContext)
-    {
+    public void initialize(NodeStateContext nodeStateContext) {
     }
 
     @Override
-    public void handlePersist(NodeStateContext nodeStateContext)
-    {
+    public void handlePersist(NodeStateContext nodeStateContext) {
         throw new IllegalArgumentException("Persist operation not allowed in Detached state");
     }
 
     @Override
-    public void handleRemove(NodeStateContext nodeStateContext)
-    {
+    public void handleRemove(NodeStateContext nodeStateContext) {
         throw new IllegalArgumentException(
                 "Remove operation not allowed in Detached state."
                         + " Possible reason: You may have closed entity manager before calling remove. A solution is to call merge before remove.");
     }
 
     @Override
-    public void handleRefresh(NodeStateContext nodeStateContext)
-    {
+    public void handleRefresh(NodeStateContext nodeStateContext) {
         throw new IllegalArgumentException("Refresh operation not allowed in Detached state");
     }
 
     @Override
-    public void handleMerge(NodeStateContext nodeStateContext)
-    {
+    public void handleMerge(NodeStateContext nodeStateContext) {
         // Detached ---> Managed
         moveNodeToNextState(nodeStateContext, new ManagedState());
 
@@ -68,57 +61,47 @@ public class DetachedState extends NodeState
     }
 
     @Override
-    public void handleFind(NodeStateContext nodeStateContext)
-    {
+    public void handleFind(NodeStateContext nodeStateContext) {
     }
 
     @Override
-    public void handleClose(NodeStateContext nodeStateContext)
-    {
+    public void handleClose(NodeStateContext nodeStateContext) {
         // Nothing to do, already in Detached State
     }
 
     @Override
-    public void handleClear(NodeStateContext nodeStateContext)
-    {
+    public void handleClear(NodeStateContext nodeStateContext) {
         // Nothing to do, already in Detached State
     }
 
     @Override
-    public void handleFlush(NodeStateContext nodeStateContext)
-    {
+    public void handleFlush(NodeStateContext nodeStateContext) {
         // Nothing to do, Entities are flushed from Managed/ Removed state only
     }
 
     @Override
-    public void handleLock(NodeStateContext nodeStateContext)
-    {
+    public void handleLock(NodeStateContext nodeStateContext) {
     }
 
     @Override
-    public void handleDetach(NodeStateContext nodeStateContext)
-    {
+    public void handleDetach(NodeStateContext nodeStateContext) {
         // Nothing to do, already in Detached State
     }
 
     @Override
-    public void handleCommit(NodeStateContext nodeStateContext)
-    {
+    public void handleCommit(NodeStateContext nodeStateContext) {
     }
 
     @Override
-    public void handleRollback(NodeStateContext nodeStateContext)
-    {
+    public void handleRollback(NodeStateContext nodeStateContext) {
     }
 
     @Override
-    public void handleGetReference(NodeStateContext nodeStateContext)
-    {
+    public void handleGetReference(NodeStateContext nodeStateContext) {
     }
 
     @Override
-    public void handleContains(NodeStateContext nodeStateContext)
-    {
+    public void handleContains(NodeStateContext nodeStateContext) {
     }
 
 }

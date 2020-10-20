@@ -22,14 +22,13 @@ import javax.persistence.Table;
 
 /**
  * Entity class for photo
- * 
+ *
  * @author amresh.singh
  */
 
 @Entity
 @Table(name = "PHOTO", schema = "KunderaTest@kunderatest")
-public class PhotoUni_1_1_1_M
-{
+public class PhotoUni_1_1_1_M {
     @Id
     @Column(name = "PHOTO_ID")
     private String photoId;
@@ -40,13 +39,11 @@ public class PhotoUni_1_1_1_M
     @Column(name = "PHOTO_DESC")
     private String photoDescription;
 
-    public PhotoUni_1_1_1_M()
-    {
+    public PhotoUni_1_1_1_M() {
 
     }
 
-    public PhotoUni_1_1_1_M(String photoId, String caption, String description)
-    {
+    public PhotoUni_1_1_1_M(String photoId, String caption, String description) {
         this.photoId = photoId;
         this.photoCaption = caption;
         this.photoDescription = description;
@@ -55,51 +52,42 @@ public class PhotoUni_1_1_1_M
     /**
      * @return the photoId
      */
-    public String getPhotoId()
-    {
+    public String getPhotoId() {
         return photoId;
     }
 
     /**
-     * @param photoId
-     *            the photoId to set
+     * @param photoId the photoId to set
      */
-    public void setPhotoId(String photoId)
-    {
+    public void setPhotoId(String photoId) {
         this.photoId = photoId;
     }
 
     /**
      * @return the photoCaption
      */
-    public String getPhotoCaption()
-    {
+    public String getPhotoCaption() {
         return photoCaption;
     }
 
     /**
-     * @param photoCaption
-     *            the photoCaption to set
+     * @param photoCaption the photoCaption to set
      */
-    public void setPhotoCaption(String photoCaption)
-    {
+    public void setPhotoCaption(String photoCaption) {
         this.photoCaption = photoCaption;
     }
 
     /**
      * @return the photoDescription
      */
-    public String getPhotoDescription()
-    {
+    public String getPhotoDescription() {
         return photoDescription;
     }
 
     /**
-     * @param photoDescription
-     *            the photoDescription to set
+     * @param photoDescription the photoDescription to set
      */
-    public void setPhotoDescription(String photoDescription)
-    {
+    public void setPhotoDescription(String photoDescription) {
         this.photoDescription = photoDescription;
     }
 

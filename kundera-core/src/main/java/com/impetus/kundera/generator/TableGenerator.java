@@ -21,12 +21,10 @@ import com.impetus.kundera.metadata.model.TableGeneratorDescriptor;
 /**
  * {@link TableGenerator} interface , all client should implement this interface
  * in order to support table generation strategy.
- * 
+ *
  * @author Kuldeep.Mishra
- * 
  */
-public interface TableGenerator extends Generator
-{
+public interface TableGenerator extends Generator {
 
     /**
      * Generate.

@@ -15,32 +15,29 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
-import java.sql.Timestamp;
-
+import com.impetus.kundera.property.PropertyAccessException;
+import com.impetus.kundera.property.PropertyAccessor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.impetus.kundera.property.PropertyAccessException;
-import com.impetus.kundera.property.PropertyAccessor;
+import java.sql.Timestamp;
 
 /**
  * The Class SQLTimestampAccessor.
- * 
+ *
  * @author amresh.singh
  */
-public class SQLTimestampAccessor implements PropertyAccessor<Timestamp>
-{
+public class SQLTimestampAccessor implements PropertyAccessor<Timestamp> {
     public static Logger log = LoggerFactory.getLogger(SQLTimestampAccessor.class);
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.property.PropertyAccessor#fromBytes(byte[])
      */
     @Override
-    public Timestamp fromBytes(Class targetClass, byte[] b)
-    {
+    public Timestamp fromBytes(Class targetClass, byte[] b) {
 
         // String s;
         // try
@@ -56,10 +53,8 @@ public class SQLTimestampAccessor implements PropertyAccessor<Timestamp>
         // throw new PropertyAccessException(e);
         // }
         // return fromString(targetClass, s);
-        try
-        {
-            if (b == null)
-            {
+        try {
+            if (b == null) {
                 return null;
             }
 
@@ -67,9 +62,7 @@ public class SQLTimestampAccessor implements PropertyAccessor<Timestamp>
             LongAccessor longAccessor = new LongAccessor();
 
             return new Timestamp(longAccessor.fromBytes(targetClass, b));
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("Error occured, Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
@@ -77,32 +70,27 @@ public class SQLTimestampAccessor implements PropertyAccessor<Timestamp>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toBytes(java.lang.Object)
      */
     @Override
-    public byte[] toBytes(Object object)
-    {
+    public byte[] toBytes(Object object) {
         // if(object == null)
         // {
         // return null;
         // }
         // Timestamp t = (Timestamp) object;
         // return t.toString().getBytes();
-        try
-        {
-            if (object == null)
-            {
+        try {
+            if (object == null) {
                 return null;
             }
             LongAccessor longAccessor = new LongAccessor();
             return longAccessor.toBytes(((Timestamp) object).getTime());
             // return DATE_FORMATTER.format(((Date)
             // date)).getBytes(Constants.ENCODING);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("Error occured, Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
@@ -110,17 +98,15 @@ public class SQLTimestampAccessor implements PropertyAccessor<Timestamp>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toString(java.lang.Object)
      */
     @Override
-    public String toString(Object object)
-    {
+    public String toString(Object object) {
         Timestamp timeStamp = (Timestamp) object;
 
-        if (timeStamp == null)
-        {
+        if (timeStamp == null) {
             return null;
         }
 
@@ -129,20 +115,17 @@ public class SQLTimestampAccessor implements PropertyAccessor<Timestamp>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#fromString(java.lang.String
      * )
      */
     @Override
-    public Timestamp fromString(Class targetClass, String s)
-    {
-        if (s == null)
-        {
+    public Timestamp fromString(Class targetClass, String s) {
+        if (s == null) {
             return null;
         }
-        if (StringUtils.isNumeric(s))
-        {
+        if (StringUtils.isNumeric(s)) {
             return new Timestamp(Long.parseLong(s));
         }
         Timestamp t = Timestamp.valueOf(s);
@@ -150,14 +133,12 @@ public class SQLTimestampAccessor implements PropertyAccessor<Timestamp>
     }
 
     @Override
-    public Timestamp getCopy(Object object)
-    {
+    public Timestamp getCopy(Object object) {
         Timestamp ts = (Timestamp) object;
         return ts != null ? new Timestamp(ts.getTime()) : null;
     }
 
-    public Timestamp getInstance(Class<?> clazz)
-    {
+    public Timestamp getInstance(Class<?> clazz) {
         return new Timestamp(Integer.MAX_VALUE);
     }
 }

@@ -15,24 +15,24 @@
  ******************************************************************************/
 package com.impetus.client.kudu;
 
+import org.apache.kudu.Type;
+
 import java.util.Calendar;
 import java.util.HashMap;
 
-import org.apache.kudu.Type;
-
 /**
  * The Class KuduDBValidationClassMapper.
- * 
+ *
  * @author karthikp.manchala
  */
-public class KuduDBValidationClassMapper
-{
+public class KuduDBValidationClassMapper {
 
-    /** The Constant validationClassMapper. */
+    /**
+     * The Constant validationClassMapper.
+     */
     private final static HashMap<Class<?>, Type> validationClassMapper = new HashMap<Class<?>, Type>();
 
-    static
-    {
+    static {
         validationClassMapper.put(java.lang.String.class, Type.STRING);
         validationClassMapper.put(Character.class, Type.STRING);
         validationClassMapper.put(char.class, Type.STRING);
@@ -71,13 +71,11 @@ public class KuduDBValidationClassMapper
 
     /**
      * Gets the valid type for class.
-     * 
-     * @param clazz
-     *            the clazz
+     *
+     * @param clazz the clazz
      * @return the valid type for class
      */
-    public static Type getValidTypeForClass(Class clazz)
-    {
+    public static Type getValidTypeForClass(Class clazz) {
         return validationClassMapper.get(clazz);
     }
 }

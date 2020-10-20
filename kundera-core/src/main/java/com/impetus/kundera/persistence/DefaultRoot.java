@@ -15,76 +15,66 @@
  ******************************************************************************/
 package com.impetus.kundera.persistence;
 
-import java.util.Set;
-
 import javax.persistence.criteria.Fetch;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.PluralAttribute;
 import javax.persistence.metamodel.SingularAttribute;
+import java.util.Set;
 
 /**
  * Default implementation for {@link Root}
+ *
  * @author vivek.mishra
- * 
  */
-public class DefaultRoot<X> extends DefaultFrom<X, X> implements Root<X>
-{
+public class DefaultRoot<X> extends DefaultFrom<X, X> implements Root<X> {
 
 
-    DefaultRoot(EntityType<X> entityType)
-    {
+    DefaultRoot(EntityType<X> entityType) {
         this.entityType = entityType;
         this.managedType = entityType;
     }
 
 
     @Override
-    public Set<Fetch<X, ?>> getFetches()
-    {
+    public Set<Fetch<X, ?>> getFetches() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public <Y> Fetch<X, Y> fetch(SingularAttribute<? super X, Y> paramSingularAttribute)
-    {
+    public <Y> Fetch<X, Y> fetch(SingularAttribute<? super X, Y> paramSingularAttribute) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public <Y> Fetch<X, Y> fetch(SingularAttribute<? super X, Y> paramSingularAttribute, JoinType paramJoinType)
-    {
+    public <Y> Fetch<X, Y> fetch(SingularAttribute<? super X, Y> paramSingularAttribute, JoinType paramJoinType) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public <Y> Fetch<X, Y> fetch(PluralAttribute<? super X, ?, Y> paramPluralAttribute)
-    {
+    public <Y> Fetch<X, Y> fetch(PluralAttribute<? super X, ?, Y> paramPluralAttribute) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public <Y> Fetch<X, Y> fetch(PluralAttribute<? super X, ?, Y> paramPluralAttribute, JoinType paramJoinType)
-    {
+    public <Y> Fetch<X, Y> fetch(PluralAttribute<? super X, ?, Y> paramPluralAttribute, JoinType paramJoinType) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public <X, Y> Fetch<X, Y> fetch(String paramString)
-    {
+    public <X, Y> Fetch<X, Y> fetch(String paramString) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public <X, Y> Fetch<X, Y> fetch(String paramString, JoinType paramJoinType)
-    {
+    public <X, Y> Fetch<X, Y> fetch(String paramString, JoinType paramJoinType) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -93,8 +83,7 @@ public class DefaultRoot<X> extends DefaultFrom<X, X> implements Root<X>
      * @see com.impetus.kundera.persistence.DefaultPath#getModel()
      */
     @Override
-    public EntityType<X> getModel()
-    {
+    public EntityType<X> getModel() {
         return this.entityType;
     }
 }

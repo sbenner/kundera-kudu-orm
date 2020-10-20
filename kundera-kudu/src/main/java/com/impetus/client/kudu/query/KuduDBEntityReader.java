@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.impetus.client.kudu.query;
 
-import java.util.List;
-
 import com.impetus.kundera.client.Client;
 import com.impetus.kundera.client.EnhanceEntity;
 import com.impetus.kundera.metadata.model.EntityMetadata;
@@ -24,50 +22,47 @@ import com.impetus.kundera.persistence.AbstractEntityReader;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.persistence.EntityReader;
 
+import java.util.List;
+
 /**
  * The Class KuduDBEntityReader.
- * 
+ *
  * @author karthikp.manchala
  */
-public class KuduDBEntityReader extends AbstractEntityReader implements EntityReader
-{
+public class KuduDBEntityReader extends AbstractEntityReader implements EntityReader {
 
     /**
      * Instantiates a new kudu db entity reader.
-     * 
-     * @param kunderaMetadata
-     *            the kundera metadata
+     *
+     * @param kunderaMetadata the kundera metadata
      */
-    public KuduDBEntityReader(KunderaMetadata kunderaMetadata)
-    {
+    public KuduDBEntityReader(KunderaMetadata kunderaMetadata) {
         super(kunderaMetadata);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.persistence.AbstractEntityReader#findById(java.lang.
      * Object, com.impetus.kundera.metadata.model.EntityMetadata,
      * com.impetus.kundera.client.Client)
      */
     @Override
-    public EnhanceEntity findById(Object primaryKey, EntityMetadata m, Client client)
-    {
+    public EnhanceEntity findById(Object primaryKey, EntityMetadata m, Client client) {
         return super.findById(primaryKey, m, client);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.persistence.EntityReader#populateRelation(com.impetus
      * .kundera.metadata.model.EntityMetadata,
      * com.impetus.kundera.client.Client, int)
      */
     @Override
-    public List<EnhanceEntity> populateRelation(EntityMetadata m, Client client, int maxResults)
-    {
+    public List<EnhanceEntity> populateRelation(EntityMetadata m, Client client, int maxResults) {
         // TODO Auto-generated method stub
         return null;
     }

@@ -10,30 +10,25 @@ import javax.persistence.GenerationType;
 import javax.persistence.Persistence;
 import javax.persistence.metamodel.Metamodel;
 
-public class ProcessAnnotationsTest
-{
+public class ProcessAnnotationsTest {
 
     EntityManagerFactory emf;
 
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception
-    {
+    public static void setUpBeforeClass() throws Exception {
     }
 
     @AfterClass
-    public static void tearDownAfterClass() throws Exception
-    {
+    public static void tearDownAfterClass() throws Exception {
     }
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         emf = Persistence.createEntityManagerFactory("GeneratedValue,kunderatest");
     }
 
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         emf.close();
     }
 

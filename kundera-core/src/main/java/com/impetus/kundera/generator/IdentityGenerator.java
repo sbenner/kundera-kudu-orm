@@ -21,12 +21,10 @@ import com.impetus.kundera.metadata.model.SequenceGeneratorDescriptor;
 /**
  * {@link IdentityGenerator} interface , all client should implement this
  * interface in order to support identity generation strategy.
- * 
+ *
  * @author Kuldeep.Mishra
- * 
  */
-public interface IdentityGenerator extends Generator
-{
+public interface IdentityGenerator extends Generator {
 
     /**
      * Generate.

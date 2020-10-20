@@ -17,32 +17,29 @@ package com.impetus.kundera.classreading;
 
 /**
  * Basic implementation to skip well-known packages and allow only *.class files
- * 
+ *
  * @author animesh.kumar
  */
-public class FilterImpl implements Filter
-{
+public class FilterImpl implements Filter {
 
-    /** The ignored packages. */
-    private transient String[] ignoredPackages = { "javax", "java", "sun", "com.sun", "javassist" };
+    /**
+     * The ignored packages.
+     */
+    private transient String[] ignoredPackages = {"javax", "java", "sun", "com.sun", "javassist"};
 
     /* @see com.impetus.kundera.classreading.Filter#accepts(java.lang.String) */
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.classreading.Filter#accepts(java.lang.String)
      */
     @Override
-    public final boolean accepts(String filename)
-    {
-        if (filename.endsWith(".class"))
-        {
-            if (filename.startsWith("/"))
-            {
+    public final boolean accepts(String filename) {
+        if (filename.endsWith(".class")) {
+            if (filename.startsWith("/")) {
                 filename = filename.substring(1);
             }
-            if (!ignoreScan(filename.replace('/', '.')))
-            {
+            if (!ignoreScan(filename.replace('/', '.'))) {
                 return true;
             }
         }
@@ -51,18 +48,13 @@ public class FilterImpl implements Filter
 
     /**
      * Ignore scan.
-     * 
-     * @param intf
-     *            the intf
-     * 
+     *
+     * @param intf the intf
      * @return true, if successful
      */
-    private boolean ignoreScan(String intf)
-    {
-        for (String ignored : ignoredPackages)
-        {
-            if (intf.startsWith(ignored + "."))
-            {
+    private boolean ignoreScan(String intf) {
+        for (String ignored : ignoredPackages) {
+            if (intf.startsWith(ignored + ".")) {
                 return true;
             }
         }

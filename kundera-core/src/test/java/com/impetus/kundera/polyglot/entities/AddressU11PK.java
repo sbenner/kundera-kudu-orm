@@ -15,19 +15,18 @@
  ******************************************************************************/
 package com.impetus.kundera.polyglot.entities;
 
+import com.impetus.kundera.index.Index;
+import com.impetus.kundera.index.IndexCollection;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.impetus.kundera.index.Index;
-import com.impetus.kundera.index.IndexCollection;
-
 @Entity
 @Table(name = "ADDRESS", schema = "KunderaTests@patest")
-@IndexCollection(columns = { @Index(name = "street") })
-public class AddressU11PK
-{
+@IndexCollection(columns = {@Index(name = "street")})
+public class AddressU11PK {
     @Id
     @Column(name = "PERSON_ID")
     private String personId;
@@ -38,33 +37,27 @@ public class AddressU11PK
     @Column(name = "STREET")
     private String street;
 
-    public String getPersonId()
-    {
+    public String getPersonId() {
         return personId;
     }
 
-    public void setPersonId(String personId)
-    {
+    public void setPersonId(String personId) {
         this.personId = personId;
     }
 
-    public String getAddressId()
-    {
+    public String getAddressId() {
         return addressId;
     }
 
-    public void setAddressId(String addressId)
-    {
+    public void setAddressId(String addressId) {
         this.addressId = addressId;
     }
 
-    public String getStreet()
-    {
+    public String getStreet() {
         return street;
     }
 
-    public void setStreet(String street)
-    {
+    public void setStreet(String street) {
         this.street = street;
     }
 

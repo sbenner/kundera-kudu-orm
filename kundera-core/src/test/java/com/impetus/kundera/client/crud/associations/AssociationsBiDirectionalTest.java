@@ -21,34 +21,28 @@ import org.junit.Test;
 
 /**
  * @author Pragalbh Garg
- *
  */
-public class AssociationsBiDirectionalTest extends AssociationsBiDirectionalBase
-{
+public class AssociationsBiDirectionalTest extends AssociationsBiDirectionalBase {
 
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         super.setUpInternal();
     }
 
     @Test
-    public void test()
-    {
+    public void test() {
         assertCRUD();
 
     }
 
     /**
      * Tear down.
-     * 
-     * @throws Exception
-     *             the exception
+     *
+     * @throws Exception the exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         tearDownInternal();
     }
 

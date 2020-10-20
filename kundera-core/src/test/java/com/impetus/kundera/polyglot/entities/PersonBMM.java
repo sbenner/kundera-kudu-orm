@@ -15,26 +15,16 @@
  ******************************************************************************/
 package com.impetus.kundera.polyglot.entities;
 
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
 
+import javax.persistence.*;
+import java.util.Set;
+
 @Entity
 @Table(name = "PERSON", schema = "KunderaTests@patest")
-@IndexCollection(columns = { @Index(name = "personName") })
-public class PersonBMM
-{
+@IndexCollection(columns = {@Index(name = "personName")})
+public class PersonBMM {
     @Id
     @Column(name = "PERSON_ID")
     private String personId;
@@ -43,36 +33,30 @@ public class PersonBMM
     private String personName;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "PERSONNEL_ADDRESS", schema = "KunderaTests", joinColumns = { @JoinColumn(name = "PERSON_ID") }, inverseJoinColumns = { @JoinColumn(name = "ADDRESS_ID") })
+    @JoinTable(name = "PERSONNEL_ADDRESS", schema = "KunderaTests", joinColumns = {@JoinColumn(name = "PERSON_ID")}, inverseJoinColumns = {@JoinColumn(name = "ADDRESS_ID")})
     private Set<AddressBMM> addresses;
 
-    public String getPersonId()
-    {
+    public String getPersonId() {
         return personId;
     }
 
-    public String getPersonName()
-    {
-        return personName;
-    }
-
-    public void setPersonName(String personName)
-    {
-        this.personName = personName;
-    }
-
-    public void setPersonId(String personId)
-    {
+    public void setPersonId(String personId) {
         this.personId = personId;
     }
 
-    public Set<AddressBMM> getAddresses()
-    {
+    public String getPersonName() {
+        return personName;
+    }
+
+    public void setPersonName(String personName) {
+        this.personName = personName;
+    }
+
+    public Set<AddressBMM> getAddresses() {
         return addresses;
     }
 
-    public void setAddresses(Set<AddressBMM> addresses)
-    {
+    public void setAddresses(Set<AddressBMM> addresses) {
         this.addresses = addresses;
     }
 

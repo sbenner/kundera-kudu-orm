@@ -19,36 +19,31 @@ import com.impetus.kundera.KunderaException;
 
 /**
  * @author amresh
- * 
  */
-public class KunderaTransactionException extends KunderaException
-{
+public class KunderaTransactionException extends KunderaException {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -7672192031279208722L;
 
     /**
-     * 
+     *
      */
-    public KunderaTransactionException()
-    {
+    public KunderaTransactionException() {
     }
 
     /**
      * @param arg0
      */
-    public KunderaTransactionException(String arg0)
-    {
+    public KunderaTransactionException(String arg0) {
         super(arg0);
     }
 
     /**
      * @param arg0
      */
-    public KunderaTransactionException(Throwable arg0)
-    {
+    public KunderaTransactionException(Throwable arg0) {
         super(arg0);
     }
 
@@ -56,8 +51,7 @@ public class KunderaTransactionException extends KunderaException
      * @param arg0
      * @param arg1
      */
-    public KunderaTransactionException(String arg0, Throwable arg1)
-    {
+    public KunderaTransactionException(String arg0, Throwable arg1) {
         super(arg0, arg1);
     }
 

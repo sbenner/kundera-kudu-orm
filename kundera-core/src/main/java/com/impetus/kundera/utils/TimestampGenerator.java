@@ -16,12 +16,9 @@
 package com.impetus.kundera.utils;
 
 /**
- * 
  * @author Kuldeep.Mishra
- * 
  */
-public interface TimestampGenerator
-{
+public interface TimestampGenerator {
 
     public long getTimestamp();
 }
