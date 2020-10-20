@@ -300,7 +300,7 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
                             if (c != null && c.isAnnotationPresent(Entity.class))
                                 out.add(c);
                         }else {
-                            if(je.getName().endsWith(".jar")) {
+                            if(je!=null&&je.getName().endsWith(".jar")) {
                                 byte[] b = extractContentFromJar(origJar,
                                         je.getName());
                                 JarInputStream is = new JarInputStream(new ByteArrayInputStream(b));
