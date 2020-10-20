@@ -94,19 +94,19 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
      */
 
 
-    public static List<JarEntry> listJarContent (String jar) throws Exception {
+    public static List<JarEntry> listJarContent(String jar) throws Exception {
 
         URL url = new URL(jar);
-        JarURLConnection  conn = (JarURLConnection)url.openConnection();
+        JarURLConnection conn = (JarURLConnection) url.openConnection();
         JarFile jarfile = conn.getJarFile();
 
         Enumeration<JarEntry> content = jarfile.entries();
         List<JarEntry> contents =
                 new ArrayList<>();
         while (content.hasMoreElements()) {
-            JarEntry je= content.nextElement();
-            if(je.getName().endsWith(".jar")||
-                    je.getName().endsWith(".class")){
+            JarEntry je = content.nextElement();
+            if (je.getName().endsWith(".jar") ||
+                    je.getName().endsWith(".class")) {
                 contents.add(je);
             }
         }
@@ -115,25 +115,24 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
     }
 
 
-    public static byte[] extractContentFromJar(String origFile,String file) throws Exception {
+    public static byte[] extractContentFromJar(String origFile, String file) throws Exception {
         InputStream in = null;
         OutputStream out = null;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            URL url = new URL(origFile+file);
-            JarURLConnection  conn = (JarURLConnection)url.openConnection();
+            URL url = new URL(origFile + file);
+            JarURLConnection conn = (JarURLConnection) url.openConnection();
             JarFile jarfile = conn.getJarFile();
             JarEntry jarEntry = conn.getJarEntry();
             in = new BufferedInputStream(jarfile.getInputStream(jarEntry));
             out = new BufferedOutputStream(baos);
             byte[] buffer = new byte[2048];
-            for (;;)  {
+            for (; ; ) {
                 int nBytes = in.read(buffer);
                 if (nBytes <= 0) break;
                 out.write(buffer, 0, nBytes);
             }
-        }
-        finally {
+        } finally {
             if (in != null) {
                 in.close();
             }
@@ -265,7 +264,6 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
     }
 
 
-
     public synchronized Iterable<Class> scanForClasses(String packageName) throws Exception {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
 
@@ -273,11 +271,10 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         Set<Class> out = new HashSet<>();
 
 
-
         while (classLoader != null) {
             // System.out.println("ClassLoader: " + myCL);
             classList.addAll(listVector(classLoader).stream().filter(
-                    o->o.isAnnotationPresent(Entity.class)
+                    o -> o.isAnnotationPresent(Entity.class)
             ).collect(Collectors.toList()));
 
             classLoader = classLoader.getParent();
@@ -290,28 +287,28 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         ///scan for other loaders
         URL u = Thread.currentThread().getContextClassLoader()
                 .getResource("/");
-        if(u!=null){
+        if (u != null) {
             String origJar = u.toString().split("!")[0];
             try {
                 List<JarEntry> entryList = listJarContent(origJar);
-                if(entryList.size()>0){
-                    for(JarEntry je: entryList){
-                        byte[] b =   extractContentFromJar(origJar,
+                if (entryList.size() > 0) {
+                    for (JarEntry je : entryList) {
+                        byte[] b = extractContentFromJar(origJar,
                                 je.getName());
                         JarInputStream is = new JarInputStream(new ByteArrayInputStream(b));
 
-                        while(is.getNextJarEntry()!=null){
+                        while (is.getNextJarEntry() != null) {
                             JarEntry internalJarEntry = is.getNextJarEntry();
-                            if( internalJarEntry!=null && internalJarEntry.getName().endsWith(".class")) {
-                                Class c = pickClassFromJarEntry( internalJarEntry, packageName);
+                            if (internalJarEntry != null && internalJarEntry.getName().endsWith(".class")) {
+                                Class c = pickClassFromJarEntry(internalJarEntry, packageName);
                                 if (c != null && c.isAnnotationPresent(Entity.class))
                                     out.add(c);
                             }
                         }
                     }
-                    }
+                }
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -371,7 +368,6 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
             }
         return classes;
     }
-
 
 
 //    private List<Class> findClasses(File directory, String packageName) throws Exception {
@@ -828,3 +824,4 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         }
         return clientFactoryName;
     }
+}
