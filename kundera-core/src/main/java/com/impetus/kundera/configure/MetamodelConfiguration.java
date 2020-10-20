@@ -1,18 +1,3 @@
-/*******************************************************************************
- * * Copyright 2012 Impetus Infotech.
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  * you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  *      http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
- ******************************************************************************/
 package com.impetus.kundera.configure;
 
 import com.impetus.kundera.PersistenceProperties;
@@ -105,9 +90,60 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
     /**
      * list classes
      *
-     * @param CL the ClassLoader unit
+     * @param jar the ClassLoader unit
      */
 
+
+    public static List<JarEntry> listJarContent (String jar) throws Exception {
+
+        URL url = new URL(jar);
+        JarURLConnection  conn = (JarURLConnection)url.openConnection();
+        JarFile jarfile = conn.getJarFile();
+
+        Enumeration<JarEntry> content = jarfile.entries();
+        List<JarEntry> contents =
+                new ArrayList<>();
+        while (content.hasMoreElements()) {
+            JarEntry je= content.nextElement();
+            if(je.getName().endsWith(".jar")||
+                    je.getName().endsWith(".class")){
+                contents.add(je);
+            }
+        }
+        return contents;
+
+    }
+
+
+    public static byte[] extractContentFromJar(String origFile,String file) throws Exception {
+        InputStream in = null;
+        OutputStream out = null;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            URL url = new URL(origFile+file);
+            JarURLConnection  conn = (JarURLConnection)url.openConnection();
+            JarFile jarfile = conn.getJarFile();
+            JarEntry jarEntry = conn.getJarEntry();
+            in = new BufferedInputStream(jarfile.getInputStream(jarEntry));
+            out = new BufferedOutputStream(baos);
+            byte[] buffer = new byte[2048];
+            for (;;)  {
+                int nBytes = in.read(buffer);
+                if (nBytes <= 0) break;
+                out.write(buffer, 0, nBytes);
+            }
+        }
+        finally {
+            if (in != null) {
+                in.close();
+            }
+            if (out != null) {
+                out.flush();
+                out.close();
+            }
+        }
+        return baos.toByteArray();
+    }
 
     private synchronized List<Class> listVector(ClassLoader CL)
             throws NoSuchFieldException, SecurityException,
@@ -122,43 +158,44 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         return Collections.list(((Vector) ClassLoader_classes_field.get(CL)).elements());
     }
 
-
-    /**
-     * scan jar for classes
-     *
-     * @param packageName package name to scan for classes in
-     */
-    public Iterable<Class> scanForClasses(String packageName) throws Exception {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        String path = packageName.replace('.', '/');
-        Enumeration<URL> resources = classLoader.getResources(path);
-        List<File> dirs = new ArrayList<File>();
-        List<Class> classes = new ArrayList<Class>();
-        while (resources.hasMoreElements()) {
-            URL resource = resources.nextElement();
-            URI uri = new URI(resource.toString());
-            try {
-                if(uri.getScheme().equalsIgnoreCase("jar")){
-                    List<JarEntry> l = ((JarURLConnection) resource.openConnection()).getJarFile().stream().collect(Collectors.toList());
-                    l.stream().map(
-                            o -> this.pickClassFromJarEntry(o, packageName)
-
-                    ).filter(Objects::nonNull).forEach(classes::add);
-
-                } else if (uri.getPath() != null && !uri.getScheme().equalsIgnoreCase("jar")) {
-                    dirs.add(new File(uri.getPath()));
-                }
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-            }
-        }
-
-        for (File directory : dirs) {
-            classes.addAll(findClasses(directory, packageName));
-        }
-
-        return classes;
-    }
+//
+//    /**
+//     * scan jar for classes
+//     *
+//     * @param packageName package name to scan for classes in
+//     */
+////    public Iterable<Class> scanForClasses(String packageName) throws Exception {
+////        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+////        String path = packageName.replace('.', '/');
+////        Enumeration<URL> resources = classLoader.getResources(path);
+////        List<File> dirs = new ArrayList<File>();
+////        List<Class> classes = new ArrayList<Class>();
+////        while (resources.hasMoreElements()) {
+////            URL resource = resources.nextElement();
+////            URI uri = new URI(resource.toString());
+////            try {
+////                if(uri.getScheme().equalsIgnoreCase("jar")){
+////                    List<JarEntry> l = ((JarURLConnection) resource.openConnection())
+////                            .getJarFile().stream().collect(Collectors.toList());
+////                    l.stream().map(
+////                            o -> this.pickClassFromJarEntry(o, packageName)
+////
+////                    ).filter(Objects::nonNull).forEach(classes::add);
+////
+////                } else if (uri.getPath() != null && !uri.getScheme().equalsIgnoreCase("jar")) {
+////                    dirs.add(new File(uri.getPath()));
+////                }
+////            } catch (Exception e) {
+////                log.error(e.getMessage(), e);
+////            }
+////        }
+////
+////        for (File directory : dirs) {
+////            classes.addAll(findClasses(directory, packageName));
+////        }
+////
+////        return classes;
+////    }
 
     private synchronized Iterator list(ClassLoader CL)
             throws NoSuchFieldException, SecurityException,
@@ -202,10 +239,12 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
     }
 
 
-    private Class pickClassFromJarEntry(JarEntry je, String packageName) {
-        if (je.isDirectory() || !je.getName().endsWith(".class")) {
+    private static Class pickClassFromJarEntry(JarEntry je, String packageName) {
+        if (je.isDirectory() || !je.getName().endsWith(".class")
+        ) {
             return null;
         }
+        Class c = null;
         try {
             String className = je.getName().substring(0, je.getName().length() - 6);
             className = className.replace('/', '.');
@@ -216,19 +255,70 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
                             className;
 
             if (className.startsWith(packageName)) {
-                Class c = Class.forName(className);
-                if (c.isAnnotationPresent(Entity.class)) {
-                    log.info("Loaded " + className);
-                    return c;
-                }
-
+                c = Class.forName(className);
+                log.info("Loaded " + className);
             }
         } catch (NoClassDefFoundError | ClassNotFoundException e) {
             log.error(e.getMessage(), e);
         }
-        return null;
+        return c;
     }
 
+
+
+    public synchronized Iterable<Class> scanForClasses(String packageName) throws Exception {
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+
+        List<Class> classList = new ArrayList<>();
+        Set<Class> out = new HashSet<>();
+
+
+
+        while (classLoader != null) {
+            // System.out.println("ClassLoader: " + myCL);
+            classList.addAll(listVector(classLoader).stream().filter(
+                    o->o.isAnnotationPresent(Entity.class)
+            ).collect(Collectors.toList()));
+
+            classLoader = classLoader.getParent();
+        }
+        for (Class c : classList) {
+            if (c.getName().toLowerCase().startsWith(packageName))
+                out.add(c);
+        }
+
+        ///scan for other loaders
+        URL u = Thread.currentThread().getContextClassLoader()
+                .getResource("/");
+        if(u!=null){
+            String origJar = u.toString().split("!")[0];
+            try {
+                List<JarEntry> entryList = listJarContent(origJar);
+                if(entryList.size()>0){
+                    for(JarEntry je: entryList){
+                        byte[] b =   extractContentFromJar(origJar,
+                                je.getName());
+                        JarInputStream is = new JarInputStream(new ByteArrayInputStream(b));
+
+                        while(is.getNextJarEntry()!=null){
+                            JarEntry internalJarEntry = is.getNextJarEntry();
+                            if( internalJarEntry!=null && internalJarEntry.getName().endsWith(".class")) {
+                                Class c = pickClassFromJarEntry( internalJarEntry, packageName);
+                                if (c != null && c.isAnnotationPresent(Entity.class))
+                                    out.add(c);
+                            }
+                        }
+                    }
+                    }
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
+        return out;
+
+    }
 
     private List<Class> findClasses(File directory, String packageName) throws Exception {
         List<Class> classes = new ArrayList<Class>();
@@ -239,16 +329,28 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
             try {
                 while (e.hasMoreElements()) {
                     JarEntry je = (JarEntry) e.nextElement();
-
+                    if (je.isDirectory() || !je.getName().endsWith(".class")) {
+                        continue;
+                    }
                     // -6 because of .class
-                    Class c = pickClassFromJarEntry(je, packageName);
-                    if (c != null && c.isAnnotationPresent(Entity.class))
-                        classes.add(c);
+                    String className = je.getName().substring(0, je.getName().length() - 6);
+                    className = className.replace('/', '.');
+                    log.info(className);
+                    className =
+                            className.contains("-INF") ?
+                                    className.substring(
+                                            className.lastIndexOf("-INF") + 13) :
+                                    className;
+                    log.info(className);
+                    Class c = Class.forName(className);
+
+                    if (c.isAnnotationPresent(Entity.class))
+                        classes.add(Class.forName(className));
 
 
                 }
             } catch (Exception ex) {
-                log.error(ex.getMessage(), ex);
+                ex.printStackTrace();
             }
 
             return classes;
@@ -269,6 +371,48 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
             }
         return classes;
     }
+
+
+
+//    private List<Class> findClasses(File directory, String packageName) throws Exception {
+//        List<Class> classes = new ArrayList<Class>();
+//
+//        if (directory.isFile()) {
+//            JarFile jarFile = new JarFile(directory.getAbsolutePath());
+//            Enumeration e = jarFile.entries();
+//            try {
+//                while (e.hasMoreElements()) {
+//                    JarEntry je = (JarEntry) e.nextElement();
+//
+//                    // -6 because of .class
+//                    Class c = pickClassFromJarEntry(je, packageName);
+//                    if (c != null && c.isAnnotationPresent(Entity.class))
+//                        classes.add(c);
+//
+//
+//                }
+//            } catch (Exception ex) {
+//                log.error(ex.getMessage(), ex);
+//            }
+//
+//            return classes;
+//        }
+//
+//        if (!directory.exists()) {
+//            return classes;
+//        }
+//
+//        File[] files = directory.listFiles();
+//        if (files != null && files.length > 0)
+//            for (File file : files) {
+//                if (file.isDirectory()) {
+//                    classes.addAll(findClasses(file, packageName + "." + file.getName()));
+//                } else if (file.getName().endsWith(".class")) {
+//                    classes.add(Class.forName(packageName + '.' + file.getName().substring(0, file.getName().length() - 6)));
+//                }
+//            }
+//        return classes;
+//    }
 
     private void loadEntityMetadata(String persistenceUnit) {
         if (persistenceUnit == null) {
@@ -684,35 +828,3 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         }
         return clientFactoryName;
     }
- 
-/*
-    private void processGeneratedValueAnnotation(Class<?> clazz, String persistenceUnit, EntityMetadata m,
-            Map<String, IdDescriptor> entityNameToKeyDescriptorMap)
-    {
-        GeneratedValueProcessor processor = new GeneratedValueProcessor();
-        String pu = m.getPersistenceUnit() getPersistenceUnitOfEntity(clazz) ;
-        
-        Map<String, Object> externalProperties = KunderaCoreUtils.getExternalProperties(persistenceUnit,
-                externalPropertyMap, persistenceUnits);
-
-        String clientFactoryName  = externalProperties != null ? (String) externalProperties
-                .get(PersistenceProperties.KUNDERA_CLIENT_FACTORY) : null;
-
-        if (clientFactoryName == null)
-        {
-            clientFactoryName = KunderaMetadataManager.getPersistenceUnitMetadata(kunderaMetadata,
-                    m.getPersistenceUnit()).getClient();
-        }
-        
-        if (pu != null && pu.equals(persistenceUnit)
-                || clientFactoryName.equalsIgnoreCase("com.impetus.client.rdbms.RDBMSClientFactory"))
-        {
-            Field f = (Field) m.getIdAttribute().getJavaMember();
-
-            if (f.isAnnotationPresent(GeneratedValue.class))
-            {
-                processor.process(clazz, f, m, entityNameToKeyDescriptorMap);
-            }
-        }
-    }*/
-}

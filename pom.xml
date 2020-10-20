@@ -4,7 +4,7 @@
 
 	<groupId>com.impetus</groupId>
 	<artifactId>kundera-orm</artifactId>
-	<version>3.16-SNAPSHOT</version>
+	<version>3.19-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 
