@@ -65,7 +65,7 @@ public class PersistenceCache {
     }
 
     private void initialize(com.impetus.kundera.cache.Cache l2Cache, PersistenceCache pc, int cacheCapacity) {
-        //mainCache = new MainCache(l2Cache,this,cacheCapacity);
+       // this.mainCache = new MainCache(l2Cache,this,cacheCapacity);
         //embeddedCache = new EmbeddedCache(l2Cache);
 //        elementCollectionCache = new ElementCollectionCache(l2Cache);
 //        transactionalCache = new TransactionalCache(l2Cache);

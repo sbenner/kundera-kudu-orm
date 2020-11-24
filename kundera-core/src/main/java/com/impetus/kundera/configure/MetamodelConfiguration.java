@@ -255,7 +255,6 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
 
             if (className.startsWith(packageName)) {
                 c = Class.forName(className);
-                log.info("Loaded " + className);
             }
         } catch (NoClassDefFoundError | ClassNotFoundException e) {
             log.error(e.getMessage(), e);
@@ -273,16 +272,20 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
 
         while (classLoader != null) {
             // System.out.println("ClassLoader: " + myCL);
-            classList.addAll(listVector(classLoader).stream().filter(
-                    o -> o.isAnnotationPresent(Entity.class)
-            ).collect(Collectors.toList()));
-
+            try {
+                out.addAll(listVector(classLoader).stream().filter(
+                        o -> o.isAnnotationPresent(Entity.class)&&
+                                o.getName().toLowerCase().startsWith(packageName)
+                ).collect(Collectors.toList()));
+            }catch (Exception e){
+                //e.printStackTrace();
+            }
             classLoader = classLoader.getParent();
         }
-        for (Class c : classList) {
-            if (c.getName().toLowerCase().startsWith(packageName))
-                out.add(c);
-        }
+//        for (Class c : classList) {
+//            if (c.getName().toLowerCase().startsWith(packageName))
+//                out.add(c);
+//        }
 
         ///scan for other loaders
         URL u = Thread.currentThread().getContextClassLoader()
@@ -297,19 +300,25 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
 
                         if (je != null && je.getName().endsWith(".class")) {
                             Class c = pickClassFromJarEntry(je, packageName);
-                            if (c != null && c.isAnnotationPresent(Entity.class))
+                            if (c != null && c.isAnnotationPresent(Entity.class)) {
+                                log.info("Loaded " + c.getName());
                                 out.add(c);
+                            }
                         }else {
                             if(je!=null&&je.getName().endsWith(".jar")) {
+                                //log.info("JAR: "+je.getName());
                                 byte[] b = extractContentFromJar(origJar,
                                         je.getName());
                                 JarInputStream is = new JarInputStream(new ByteArrayInputStream(b));
-                                while (is.getNextJarEntry() != null) {
-                                    JarEntry internalJarEntry = is.getNextJarEntry();
+                                JarEntry internalJarEntry = is.getNextJarEntry();
+                                while (internalJarEntry != null) {
+                                    internalJarEntry = is.getNextJarEntry();
                                     if (internalJarEntry != null && internalJarEntry.getName().endsWith(".class")) {
                                         Class c = pickClassFromJarEntry(internalJarEntry, packageName);
-                                        if (c != null && c.isAnnotationPresent(Entity.class))
+                                        if (c != null && c.isAnnotationPresent(Entity.class)) {
+                                            log.info("Loaded " + c.getName());
                                             out.add(c);
+                                        }
                                     }
                                 }
                             }

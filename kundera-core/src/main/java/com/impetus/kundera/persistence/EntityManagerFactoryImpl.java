@@ -91,7 +91,7 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
     public EntityManagerFactoryImpl(PersistenceUnitInfo puInfo, Map<String, Object> properties)
     {
         // Load Core
-        logger.info("Loading Core");
+        logger.info(Thread.currentThread().getName()+"Loading Core cons 1");
         new CoreLoader().load(kunderaMetadata);
 
         this.configurePersistenceUnit(puInfo, properties);
@@ -111,7 +111,7 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
     public EntityManagerFactoryImpl(String persistenceUnit, Map<String, Object> properties)
     {
         // Load Core
-        logger.info("Loading Core");
+        logger.info(Thread.currentThread().getName()+ " Loading Core cons 2");
         new CoreLoader().load(kunderaMetadata);
 
         this.configurePersistenceUnit(persistenceUnit, properties);
