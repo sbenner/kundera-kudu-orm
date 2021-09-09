@@ -16,15 +16,10 @@
 
 package com.impetus.kundera.configure;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
 
+import javax.persistence.*;
 
 
 /**
@@ -32,108 +27,103 @@ import com.impetus.kundera.index.IndexCollection;
  */
 @Entity
 @Table(name = "CoreEntitySuper", schema = "KunderaCoreExmples@cassandra")
-@IndexCollection(columns = { @Index(name = "personName"),  @Index(name = "age")})
-public class CoreEntitySuper
-{
+@IndexCollection(columns = {@Index(name = "personName"), @Index(name = "age")})
+public class CoreEntitySuper {
 
-    /** The person id. */
+    /**
+     * The person id.
+     */
     @Id
     @Column(name = "PERSON_ID")
     private String personId;
 
-    /** The person name. */
+    /**
+     * The person name.
+     */
     @Column(name = "PERSON_NAME")
     private String personName;
 
-    /** The age. */
+    /**
+     * The age.
+     */
     @Column(name = "AGE")
     private short age;
 
-    /** The personal data. */
+    /**
+     * The personal data.
+     */
     @Embedded
     private PersonalData personalData;
 
     /**
      * Gets the person id.
-     * 
+     *
      * @return the person id
      */
-    public String getPersonId()
-    {
+    public String getPersonId() {
         return personId;
     }
 
     /**
+     * Sets the person id.
+     *
+     * @param personId the new person id
+     */
+    public void setPersonId(String personId) {
+        this.personId = personId;
+    }
+
+    /**
      * Gets the person name.
-     * 
+     *
      * @return the person name
      */
-    public String getPersonName()
-    {
+    public String getPersonName() {
         return personName;
     }
 
     /**
      * Sets the person name.
-     * 
-     * @param personName
-     *            the new person name
+     *
+     * @param personName the new person name
      */
-    public void setPersonName(String personName)
-    {
+    public void setPersonName(String personName) {
         this.personName = personName;
     }
 
     /**
-     * Sets the person id.
-     * 
-     * @param personId
-     *            the new person id
-     */
-    public void setPersonId(String personId)
-    {
-        this.personId = personId;
-    }
-
-    /**
      * Gets the age.
-     * 
+     *
      * @return the age
      */
-    public short getAge()
-    {
+    public short getAge() {
         return age;
     }
 
     /**
      * Sets the age.
-     * 
-     * @param age
-     *            the age to set
+     *
+     * @param age the age to set
      */
-    public void setAge(short age)
-    {
+    public void setAge(short age) {
         this.age = age;
     }
 
     /**
      * Gets the personal data.
-     * 
+     *
      * @return the personalData
      */
-    public PersonalData getPersonalData()
-    {
+    public PersonalData getPersonalData() {
         return personalData;
     }
 
     /**
      * Sets the personal data.
-     * 
-     * @param personalData
-     *            the personalData to set
+     *
+     * @param personalData the personalData to set
      */
-    public void setPersonalData(PersonalData personalData)
-    {
+    public void setPersonalData(PersonalData personalData) {
         this.personalData = personalData;
     }
 

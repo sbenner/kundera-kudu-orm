@@ -15,18 +15,17 @@
  ******************************************************************************/
 package com.impetus.kundera.proxy.collection;
 
-import java.util.Map;
-
 import com.impetus.kundera.metadata.model.Relation;
 import com.impetus.kundera.persistence.PersistenceDelegator;
 
+import java.util.Map;
+
 /**
  * Top level interface for all proxy collections (including maps)
- * 
+ *
  * @author amresh.singh
  */
-public interface ProxyCollection
-{
+public interface ProxyCollection {
 
     /**
      * Returns owning entity that holds this proxy collection

@@ -15,20 +15,6 @@
  ******************************************************************************/
 package com.impetus.kundera.lifecycle.states;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
-import javax.persistence.CascadeType;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.PersistenceContextType;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.impetus.kundera.graph.BillingCounter;
 import com.impetus.kundera.graph.Node;
 import com.impetus.kundera.graph.StoreBuilder;
@@ -36,12 +22,22 @@ import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.persistence.PersistenceDelegator;
 import com.impetus.kundera.persistence.context.PersistenceCache;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.persistence.CascadeType;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceContextType;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author amresh.singh
  */
-public class ManagedStateTest
-{
+public class ManagedStateTest {
     private PersistenceCache pc;
 
     private ManagedState state;
@@ -50,8 +46,7 @@ public class ManagedStateTest
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         pc = new PersistenceCache();
         state = new ManagedState();
     }
@@ -60,8 +55,7 @@ public class ManagedStateTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         pc = null;
     }
 
@@ -71,8 +65,7 @@ public class ManagedStateTest
      * .
      */
     @Test
-    public void testInitialize()
-    {
+    public void testInitialize() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.initialize(storeNode);
         Assert.assertNotNull(pc);
@@ -84,15 +77,13 @@ public class ManagedStateTest
      * .
      */
     @Test
-    public void testHandlePersist()
-    {
+    public void testHandlePersist() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handlePersist(storeNode);
 
         Assert.assertEquals(ManagedState.class, storeNode.getCurrentNodeState().getClass());
 
-        for (Node childNode : storeNode.getChildren().values())
-        {
+        for (Node childNode : storeNode.getChildren().values()) {
             Assert.assertEquals(BillingCounter.class, childNode.getDataClass());
             Assert.assertEquals(ManagedState.class, childNode.getCurrentNodeState().getClass());
         }
@@ -104,8 +95,7 @@ public class ManagedStateTest
      * .
      */
     @Test
-    public void testHandleRemove()
-    {
+    public void testHandleRemove() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.REMOVE);
         state.handleRemove(storeNode);
 
@@ -127,16 +117,12 @@ public class ManagedStateTest
      * .
      */
     @Test
-    public void testHandleRefresh()
-    {
-        try
-        {
+    public void testHandleRefresh() {
+        try {
             Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.REFRESH);
             state.handleRefresh(storeNode);
             Assert.fail("Exception should be thrown because client is not available");
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Assert.assertNotNull(e);
         }
     }
@@ -145,7 +131,7 @@ public class ManagedStateTest
      * Test method for
      * {@link com.impetus.kundera.lifecycle.states.ManagedState#handleMerge(com.impetus.kundera.lifecycle.NodeStateContext)}
      * .
-     * 
+     *
      * @throws InvocationTargetException
      * @throws IllegalAccessException
      * @throws InstantiationException
@@ -155,8 +141,7 @@ public class ManagedStateTest
      */
     @Test
     public void testHandleMerge() throws IllegalArgumentException, InstantiationException, IllegalAccessException,
-            InvocationTargetException, SecurityException, NoSuchMethodException
-    {
+            InvocationTargetException, SecurityException, NoSuchMethodException {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.MERGE);
 
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("kunderatest");
@@ -167,7 +152,7 @@ public class ManagedStateTest
                 ((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance(), new PersistenceCache());
 
         storeNode.setPersistenceDelegator(pd);
-        
+
         state.handleMerge(storeNode);
 
         Assert.assertEquals(ManagedState.class, storeNode.getCurrentNodeState().getClass());
@@ -191,15 +176,13 @@ public class ManagedStateTest
      * .
      */
     @Test
-    public void testHandleDetach()
-    {
+    public void testHandleDetach() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.DETACH);
         state.handleDetach(storeNode);
 
         Assert.assertEquals(DetachedState.class, storeNode.getCurrentNodeState().getClass());
 
-        for (Node childNode : storeNode.getChildren().values())
-        {
+        for (Node childNode : storeNode.getChildren().values()) {
             Assert.assertEquals(BillingCounter.class, childNode.getDataClass());
             Assert.assertEquals(DetachedState.class, childNode.getCurrentNodeState().getClass());
         }
@@ -211,15 +194,13 @@ public class ManagedStateTest
      * .
      */
     @Test
-    public void testHandleClear()
-    {
+    public void testHandleClear() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.DETACH);
         state.handleClear(storeNode);
 
         Assert.assertEquals(DetachedState.class, storeNode.getCurrentNodeState().getClass());
 
-        for (Node childNode : storeNode.getChildren().values())
-        {
+        for (Node childNode : storeNode.getChildren().values()) {
             Assert.assertEquals(BillingCounter.class, childNode.getDataClass());
             Assert.assertEquals(DetachedState.class, childNode.getCurrentNodeState().getClass());
         }
@@ -231,15 +212,13 @@ public class ManagedStateTest
      * .
      */
     @Test
-    public void testHandleClose()
-    {
+    public void testHandleClose() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.DETACH);
         state.handleClose(storeNode);
 
         Assert.assertEquals(DetachedState.class, storeNode.getCurrentNodeState().getClass());
 
-        for (Node childNode : storeNode.getChildren().values())
-        {
+        for (Node childNode : storeNode.getChildren().values()) {
             Assert.assertEquals(BillingCounter.class, childNode.getDataClass());
             Assert.assertEquals(DetachedState.class, childNode.getCurrentNodeState().getClass());
         }
@@ -251,8 +230,7 @@ public class ManagedStateTest
      * .
      */
     @Test
-    public void testHandleLock()
-    {
+    public void testHandleLock() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleLock(storeNode);
         Assert.assertTrue(storeNode.getCurrentNodeState().getClass().equals(ManagedState.class));
@@ -264,15 +242,13 @@ public class ManagedStateTest
      * .
      */
     @Test
-    public void testHandleCommit()
-    {
+    public void testHandleCommit() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleCommit(storeNode);
 
         Assert.assertEquals(DetachedState.class, storeNode.getCurrentNodeState().getClass());
 
-        for (Node childNode : storeNode.getChildren().values())
-        {
+        for (Node childNode : storeNode.getChildren().values()) {
             Assert.assertEquals(BillingCounter.class, childNode.getDataClass());
             Assert.assertEquals(ManagedState.class, childNode.getCurrentNodeState().getClass());
         }
@@ -284,8 +260,7 @@ public class ManagedStateTest
      * .
      */
     // @Test
-    public void testHandleRollback()
-    {
+    public void testHandleRollback() {
         // Extended
         pc.setPersistenceContextType(PersistenceContextType.EXTENDED);
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
@@ -293,8 +268,7 @@ public class ManagedStateTest
 
         Assert.assertEquals(TransientState.class, storeNode.getCurrentNodeState().getClass());
 
-        for (Node childNode : storeNode.getChildren().values())
-        {
+        for (Node childNode : storeNode.getChildren().values()) {
             Assert.assertEquals(BillingCounter.class, childNode.getDataClass());
             Assert.assertEquals(ManagedState.class, childNode.getCurrentNodeState().getClass());
         }
@@ -306,8 +280,7 @@ public class ManagedStateTest
 
         Assert.assertEquals(DetachedState.class, storeNode.getCurrentNodeState().getClass());
 
-        for (Node childNode : storeNode.getChildren().values())
-        {
+        for (Node childNode : storeNode.getChildren().values()) {
             Assert.assertEquals(BillingCounter.class, childNode.getDataClass());
             Assert.assertEquals(ManagedState.class, childNode.getCurrentNodeState().getClass());
         }
@@ -319,16 +292,12 @@ public class ManagedStateTest
      * .
      */
     @Test
-    public void testHandleFind()
-    {
-        try
-        {
+    public void testHandleFind() {
+        try {
             Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.REFRESH);
             state.handleFind(storeNode);
             Assert.fail("Exception should be thrown because client is not available");
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Assert.assertNotNull(e);
         }
     }
@@ -339,8 +308,7 @@ public class ManagedStateTest
      * .
      */
     @Test
-    public void testHandleGetReference()
-    {
+    public void testHandleGetReference() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleGetReference(storeNode);
         Assert.assertTrue(storeNode.getCurrentNodeState().getClass().equals(ManagedState.class));
@@ -352,8 +320,7 @@ public class ManagedStateTest
      * .
      */
     @Test
-    public void testHandleContains()
-    {
+    public void testHandleContains() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleContains(storeNode);
         Assert.assertTrue(storeNode.getCurrentNodeState().getClass().equals(ManagedState.class));
@@ -365,16 +332,12 @@ public class ManagedStateTest
      * .
      */
     @Test
-    public void testHandleFlush()
-    {
-        try
-        {
+    public void testHandleFlush() {
+        try {
             Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.REFRESH);
             state.handleFlush(storeNode);
             Assert.fail("Exception should be thrown because client is not available");
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Assert.assertNotNull(e);
         }
     }

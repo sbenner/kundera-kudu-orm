@@ -16,84 +16,70 @@
 
 package com.impetus.kundera.metadata.model.attributes;
 
-import java.lang.reflect.Field;
-import java.util.Collection;
-
 import javax.persistence.metamodel.CollectionAttribute;
 import javax.persistence.metamodel.ManagedType;
 import javax.persistence.metamodel.Type;
+import java.lang.reflect.Field;
+import java.util.Collection;
 
 /**
  * Implementation class for <code> {@link CollectionAttribute} </code>
  * interface. Offers metadata information implementation for collection
  * attribute as per jpa.
- * 
+ *
+ * @param <X> Managed type
+ * @param <E> collection's attribute type
  * @author vivek.mishra
- * 
- * @param <X>
- *            Managed type
- * @param <E>
- *            collection's attribute type
  */
 public class DefaultCollectionAttribute<X, E> extends AbstractPluralAttribute<X, E, Collection<E>> implements
-        CollectionAttribute<X, E>
-{
+        CollectionAttribute<X, E> {
 
     /**
      * /** Constructor using fields.
-     * 
-     * @param attribType
-     *            attribute type
-     * @param attribName
-     *            attribute name
-     * @param persistenceAttribType
-     *            persistent attribute type.
-     * @param managedType
-     *            managed type
-     * @param member
-     *            attribute's java member.
+     *
+     * @param attribType            attribute type
+     * @param attribName            attribute name
+     * @param persistenceAttribType persistent attribute type.
+     * @param managedType           managed type
+     * @param member                attribute's java member.
      */
     public DefaultCollectionAttribute(Type<E> attribType, String attribName,
-            javax.persistence.metamodel.Attribute.PersistentAttributeType persistenceAttribType,
-            ManagedType<X> managedType, Field member, Class<Collection<E>> clazz)
-    {
+                                      javax.persistence.metamodel.Attribute.PersistentAttributeType persistenceAttribType,
+                                      ManagedType<X> managedType, Field member, Class<Collection<E>> clazz) {
         super(attribType, attribName, persistenceAttribType, managedType, member, clazz);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.metadata.model.attributes.AbstractPluralAttribute
      * #getCollectionType()
      */
     @Override
-    public javax.persistence.metamodel.PluralAttribute.CollectionType getCollectionType()
-    {
+    public javax.persistence.metamodel.PluralAttribute.CollectionType getCollectionType() {
         return CollectionType.COLLECTION;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.metadata.model.attributes.AbstractPluralAttribute
      * #getElementType()
      */
     @Override
-    public Type<E> getElementType()
-    {
+    public Type<E> getElementType() {
         return attribType;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.metamodel.Attribute#getJavaType()
      */
     @Override
-    public Class<Collection<E>> getJavaType()
-    {
+    public Class<Collection<E>> getJavaType() {
         return super.getBoundJavaType();
     }
 

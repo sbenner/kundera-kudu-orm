@@ -16,23 +16,21 @@
 
 package com.impetus.kundera;
 
-import java.lang.reflect.Field;
+import com.impetus.kundera.persistence.PersistenceDelegator;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Parameter;
-
-import com.impetus.kundera.persistence.PersistenceDelegator;
+import java.lang.reflect.Field;
 
 /**
  * @author vivek.mishra
  * Test utility to serve generic utility method required by various kundera-core junits.
  */
-public final class CoreTestUtilities
-{
+public final class CoreTestUtilities {
 
     /**
      * Returns persistence delegator instance for provided entity manager instance.
-     * 
+     *
      * @param em
      * @return
      * @throws NoSuchFieldException
@@ -41,11 +39,9 @@ public final class CoreTestUtilities
      * @throws IllegalAccessException
      */
     public final static PersistenceDelegator getDelegator(EntityManager em) throws NoSuchFieldException,
-            SecurityException, IllegalArgumentException, IllegalAccessException
-    {
+            SecurityException, IllegalArgumentException, IllegalAccessException {
         Field pdField = em.getClass().getDeclaredField("persistenceDelegator");
-        if (!pdField.isAccessible())
-        {
+        if (!pdField.isAccessible()) {
             pdField.setAccessible(true);
         }
 
@@ -54,64 +50,54 @@ public final class CoreTestUtilities
 
     }
 
-    public static Parameter getParameter()
-    {
+    public static Parameter getParameter() {
         return new CoreTestUtilities.JPAParameter();
     }
-    
-    public static Parameter getParameter(final String name, Object value)
-    {
-        return new CoreTestUtilities.JPAParameter(name,value);
+
+    public static Parameter getParameter(final String name, Object value) {
+        return new CoreTestUtilities.JPAParameter(name, value);
     }
 
-    public static Parameter getParameter(final int position, Object value)
-    {
-        return new CoreTestUtilities.JPAParameter(position,value);
+    public static Parameter getParameter(final int position, Object value) {
+        return new CoreTestUtilities.JPAParameter(position, value);
     }
 
-    private static class JPAParameter implements Parameter<String>
-    {
+    private static class JPAParameter implements Parameter<String> {
         private String name = "jpa";
-        
+
         private int position;
-        
+
         private Object value;
 
-        private JPAParameter()
-        {
+        private JPAParameter() {
         }
-        
-        private JPAParameter(final String paramName, Object value)
-        {
+
+        private JPAParameter(final String paramName, Object value) {
             this.name = paramName;
             this.value = value;
         }
-        
-        private JPAParameter(final int position, Object value)
-        {
+
+        private JPAParameter(final int position, Object value) {
             this.position = position;
             this.value = value;
         }
-        
+
         @Override
-        public String getName()
-        {
+        public String getName() {
             return this.name;
         }
 
         @Override
-        public Integer getPosition()
-        {
+        public Integer getPosition() {
             return this.position;
         }
 
-        
+
         @Override
-        public Class<String> getParameterType()
-        {
+        public Class<String> getParameterType() {
             return String.class;
         }
-        
+
     }
 
 }

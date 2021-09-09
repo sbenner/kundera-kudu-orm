@@ -15,34 +15,30 @@
  ******************************************************************************/
 package com.impetus.kundera.classreading;
 
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 /**
  * @author amresh.singh
- *
  */
-public class ClasspathReaderTest
-{
+public class ClasspathReaderTest {
     ClasspathReader reader;
     Filter filter;
-    
+
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
-        
+    public void setUp() throws Exception {
+
         filter = new FilterImpl();
     }
 
@@ -50,8 +46,7 @@ public class ClasspathReaderTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         reader = null;
         filter = null;
     }
@@ -60,60 +55,56 @@ public class ClasspathReaderTest
      * Test method for {@link com.impetus.kundera.classreading.ClasspathReader#findResources()}.
      */
     @Test
-    public void testFindResources()
-    {
+    public void testFindResources() {
         reader = new ClasspathReader();
         URL[] urls = reader.findResources();
         Assert.assertNull(urls);
-        
+
         List<String> classesToScan = new ArrayList<String>();
         classesToScan.add("com.impetus.kundera.PersonnelDTO");
         classesToScan.add("com.impetus.kundera.query.Person");
         reader = new ClasspathReader(classesToScan);
         urls = reader.findResources();
         Assert.assertNotNull(urls);
-        Assert.assertTrue(urls.length > 0);    
+        Assert.assertTrue(urls.length > 0);
     }
 
     /**
      * Test method for {@link com.impetus.kundera.classreading.ClasspathReader#findResourcesAsStream()}.
      */
     @Test
-    public void testFindResourcesAsStream()
-    {
+    public void testFindResourcesAsStream() {
         //When classes to scan is null
         reader = new ClasspathReader();
         InputStream[] streams = reader.findResourcesAsStream();
         Assert.assertNull(streams);
-        
+
         List<String> classesToScan = new ArrayList<String>();
         classesToScan.add("com.impetus.kundera.PersonnelDTO");
         classesToScan.add("com.impetus.kundera.query.Person");
         reader = new ClasspathReader(classesToScan);
         streams = reader.findResourcesAsStream();
-       reader.read();
+        reader.read();
         Assert.assertNotNull(streams);
-        Assert.assertTrue(streams.length > 0); 
+        Assert.assertTrue(streams.length > 0);
     }
 
     /**
      * Test method for {@link com.impetus.kundera.classreading.ClasspathReader#findResourcesByClasspath()}.
      */
     @Test
-    public void testFindResourcesByClasspath()
-    {
+    public void testFindResourcesByClasspath() {
         reader = new ClasspathReader();
         URL[] urls = reader.findResourcesByClasspath();
         Assert.assertNotNull(urls);
-        Assert.assertTrue(urls.length > 0);     
+        Assert.assertTrue(urls.length > 0);
     }
 
     /**
      * Test method for {@link com.impetus.kundera.classreading.ClasspathReader#setFilter(com.impetus.kundera.classreading.Filter)}.
      */
     @Test
-    public void testSetFilter()
-    {
+    public void testSetFilter() {
         reader = new ClasspathReader();
         reader.setFilter(filter);
         Assert.assertNotNull(reader.getFilter());

@@ -24,25 +24,21 @@ import javax.persistence.Table;
  */
 @Entity
 @Table
-public class EntityWithOutId
-{
+public class EntityWithOutId {
 
     private String name;
 
-    public EntityWithOutId()
-    {
-        
+    public EntityWithOutId() {
+
     }
-    
-    public String getName()
-    {
+
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
-    
-    
+
+
 }

@@ -15,39 +15,34 @@
  ******************************************************************************/
 package com.impetus.kundera.persistence;
 
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-
 /**
  * Implementation class for AND {@link Predicate}
- * @author vivek.mishra
  *
+ * @author vivek.mishra
  */
-public class ConjuctionPredicate extends AbstractPredicate 
-{
+public class ConjuctionPredicate extends AbstractPredicate {
 
     private List<Expression<Boolean>> expressions = new ArrayList<Expression<Boolean>>();
-    
-    ConjuctionPredicate()
-    {
-        
+
+    ConjuctionPredicate() {
+
     }
-    
-    ConjuctionPredicate(Expression<Boolean>...paramArrayOfExpression)
-    {
+
+    ConjuctionPredicate(Expression<Boolean>... paramArrayOfExpression) {
         this.expressions = Arrays.asList(paramArrayOfExpression);
     }
-    
+
     /* (non-Javadoc)
      * @see javax.persistence.criteria.Predicate#getOperator()
      */
     @Override
-    public BooleanOperator getOperator()
-    {
+    public BooleanOperator getOperator() {
         return BooleanOperator.AND;
     }
 
@@ -55,8 +50,7 @@ public class ConjuctionPredicate extends AbstractPredicate
      * @see javax.persistence.criteria.Predicate#getExpressions()
      */
     @Override
-    public List<Expression<Boolean>> getExpressions()
-    {
+    public List<Expression<Boolean>> getExpressions() {
         return this.expressions;
     }
 

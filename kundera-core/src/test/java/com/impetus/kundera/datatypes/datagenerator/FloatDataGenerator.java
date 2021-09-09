@@ -1,34 +1,29 @@
 package com.impetus.kundera.datatypes.datagenerator;
 
-public class FloatDataGenerator implements DataGenerator<Float>
-{
+public class FloatDataGenerator implements DataGenerator<Float> {
 
     private static final Float FLOAT = new Float("121.11");
 
     @Override
-    public Float randomValue()
-    {
+    public Float randomValue() {
 
         return FLOAT;
     }
 
     @Override
-    public Float maxValue()
-    {
+    public Float maxValue() {
 
         return Float.MAX_VALUE;
     }
 
     @Override
-    public Float minValue()
-    {
+    public Float minValue() {
 
         return Float.MIN_VALUE;
     }
 
     @Override
-    public Float partialValue()
-    {
+    public Float partialValue() {
 
         return Float.NaN;
     }

@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,17 +14,6 @@
  * limitations under the License.
  */
 package com.impetus.kundera.graph;
-
-import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.MapKeyJoinColumn;
-
-import org.apache.commons.lang.StringUtils;
 
 import com.impetus.kundera.graph.NodeLink.LinkProperty;
 import com.impetus.kundera.lifecycle.states.NodeState;
@@ -42,14 +31,22 @@ import com.impetus.kundera.proxy.KunderaProxy;
 import com.impetus.kundera.proxy.ProxyHelper;
 import com.impetus.kundera.proxy.collection.ProxyCollection;
 import com.impetus.kundera.utils.DeepEquals;
+import org.apache.commons.lang.StringUtils;
+
+import javax.persistence.GeneratedValue;
+import javax.persistence.MapKeyJoinColumn;
+import java.lang.reflect.Field;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Responsible for generating {@link ObjectGraph} of nodes from a given entity
- * 
+ *
  * @author amresh.singh
  */
-public class ObjectGraphBuilder
-{
+public class ObjectGraphBuilder {
     private PersistenceCache persistenceCache;
 
     private PersistenceDelegator pd;
@@ -58,16 +55,14 @@ public class ObjectGraphBuilder
 
     private PersistenceValidator validator;
 
-    public ObjectGraphBuilder(PersistenceCache pcCache, PersistenceDelegator pd)
-    {
+    public ObjectGraphBuilder(PersistenceCache pcCache, PersistenceDelegator pd) {
         this.persistenceCache = pcCache;
         this.pd = pd;
         this.idGenerator = new IdGenerator();
         this.validator = new PersistenceValidator();
     }
 
-    public ObjectGraph getObjectGraph(Object entity, NodeState initialNodeState)
-    {
+    public ObjectGraph getObjectGraph(Object entity, NodeState initialNodeState) {
         // Initialize object graph
         ObjectGraph objectGraph = new ObjectGraph();
 
@@ -75,8 +70,7 @@ public class ObjectGraphBuilder
         Node headNode = getNode(entity, objectGraph, initialNodeState);
 
         // Set head node into object graph
-        if (headNode != null)
-        {
+        if (headNode != null) {
             objectGraph.setHeadNode(headNode);
         }
         return objectGraph;
@@ -86,38 +80,32 @@ public class ObjectGraphBuilder
      * Constructs and returns {@link Node} representation for a given entity
      * object. Output is fully constructed graph with relationships embedded.
      * Each node is put into <code>graph</code> once it is constructed.
-     * 
+     *
      * @param entity
      * @return
      */
-    private Node getNode(Object entity, ObjectGraph graph, NodeState initialNodeState)
-    {
-        if (entity == null)
-        {
+    private Node getNode(Object entity, ObjectGraph graph, NodeState initialNodeState) {
+        if (entity == null) {
             return null;
         }
         EntityMetadata entityMetadata = KunderaMetadataManager.getEntityMetadata(pd.getKunderaMetadata(),
                 entity.getClass());
 
         // entity metadata could be null.
-        if (entityMetadata == null)
-        {
+        if (entityMetadata == null) {
             throw new IllegalArgumentException(
                     "Entity object is invalid, operation failed. Please check previous log message for details");
         }
 
         Object id = PropertyAccessorHelper.getId(entity, entityMetadata);
         // Generate and set Id if @GeneratedValue present.
-        if (((Field) entityMetadata.getIdAttribute().getJavaMember()).isAnnotationPresent(GeneratedValue.class))
-        {
-            if (!isIdSet(id))
-            {
+        if (((Field) entityMetadata.getIdAttribute().getJavaMember()).isAnnotationPresent(GeneratedValue.class)) {
+            if (!isIdSet(id)) {
                 id = idGenerator.generateAndSetId(entity, entityMetadata, pd, pd.getKunderaMetadata());
             }
         }
 
-        if (!validator.isValidEntityObject(entity, entityMetadata))
-        {
+        if (!validator.isValidEntityObject(entity, entityMetadata)) {
             throw new IllegalArgumentException(
                     "Entity object is invalid, operation failed. Please check previous log message for details");
         }
@@ -129,10 +117,8 @@ public class ObjectGraphBuilder
 
         // If this node is already there in graph (may happen for bidirectional
         // relationship, do nothing and return null)
-        if (node != null)
-        {
-            if (node.isGraphCompleted())
-            {
+        if (node != null) {
+            if (node.isGraphCompleted()) {
                 return node;
             }
             return null;
@@ -144,24 +130,18 @@ public class ObjectGraphBuilder
 
         // Make a deep copy of entity data
 
-        if (nodeInPersistenceCache == null)
-        {
+        if (nodeInPersistenceCache == null) {
             node = new Node(nodeId, entity, initialNodeState, persistenceCache, id, pd);
-        }
-        else
-        {
+        } else {
             node = nodeInPersistenceCache;
             node.setPersistenceCache(persistenceCache);
 
             // Determine whether this node is dirty based on comparison between
             // Node data and entity data
             // If dirty, set the entity data into node and mark it as dirty
-            if (!DeepEquals.deepEquals(node.getData(), entity))
-            {
+            if (!DeepEquals.deepEquals(node.getData(), entity)) {
                 node.setDirty(true);
-            }
-            else if (node.isProcessed())
-            {
+            } else if (node.isProcessed()) {
                 node.setDirty(false);
             }
 
@@ -175,57 +155,44 @@ public class ObjectGraphBuilder
         graph.addNode(nodeId, node);
 
         // Iterate over relations and construct children nodes
-        for (Relation relation : entityMetadata.getRelations())
-        {
-            if (relation != null)
-            {
+        for (Relation relation : entityMetadata.getRelations()) {
+            if (relation != null) {
                 // Child Object set in this entity
                 Object childObject = PropertyAccessorHelper.getObject(entity, relation.getProperty());
 
-                if (childObject != null && !ProxyHelper.isProxy(childObject))
-                {
+                if (childObject != null && !ProxyHelper.isProxy(childObject)) {
                     EntityMetadata metadata = KunderaMetadataManager.getEntityMetadata(pd.getKunderaMetadata(),
                             PropertyAccessorHelper.getGenericClass(relation.getProperty()));
 
-                    if (metadata != null && relation.isJoinedByPrimaryKey())
-                    {
+                    if (metadata != null && relation.isJoinedByPrimaryKey()) {
                         PropertyAccessorHelper.setId(childObject, metadata,
                                 PropertyAccessorHelper.getId(entity, entityMetadata));
                     }
                     // This child object could be either an entity(1-1 or M-1)
                     // or a
                     // collection/ Map of entities(1-M or M-M)
-                    if (Collection.class.isAssignableFrom(childObject.getClass()))
-                    {
+                    if (Collection.class.isAssignableFrom(childObject.getClass())) {
                         // For each entity in the collection, construct a child
                         // node and add to graph
                         Collection childrenObjects = (Collection) childObject;
 
                         if (childrenObjects != null && !ProxyHelper.isProxyCollection(childrenObjects))
 
-                            for (Object childObj : childrenObjects)
-                            {
-                                if (childObj != null)
-                                {
+                            for (Object childObj : childrenObjects) {
+                                if (childObj != null) {
                                     addChildNodesToGraph(graph, node, relation, childObj,
                                             metadata != null ? getChildNodeState(metadata, childObj) : initialNodeState);
                                 }
                             }
-                    }
-                    else if (Map.class.isAssignableFrom(childObject.getClass()))
-                    {
+                    } else if (Map.class.isAssignableFrom(childObject.getClass())) {
                         Map childrenObjects = (Map) childObject;
-                        if (childrenObjects != null && !ProxyHelper.isProxyCollection(childrenObjects))
-                        {
-                            for (Map.Entry entry : (Set<Map.Entry>) childrenObjects.entrySet())
-                            {
+                        if (childrenObjects != null && !ProxyHelper.isProxyCollection(childrenObjects)) {
+                            for (Map.Entry entry : (Set<Map.Entry>) childrenObjects.entrySet()) {
                                 addChildNodesToGraph(graph, node, relation, entry,
                                         metadata != null ? getChildNodeState(metadata, entry) : initialNodeState);
                             }
                         }
-                    }
-                    else
-                    {
+                    } else {
                         // Construct child node and add to graph
                         addChildNodesToGraph(graph, node, relation, childObject,
                                 metadata != null ? getChildNodeState(metadata, childObject) : initialNodeState);
@@ -239,8 +206,7 @@ public class ObjectGraphBuilder
         return node;
     }
 
-    private NodeState getChildNodeState(EntityMetadata metadata, Object childObj)
-    {
+    private NodeState getChildNodeState(EntityMetadata metadata, Object childObj) {
         Object childId = PropertyAccessorHelper.getId(childObj, metadata);
         String childNodeId = ObjectGraphUtils.getNodeId(childId, childObj.getClass());
 
@@ -256,26 +222,19 @@ public class ObjectGraphBuilder
      * @param childObject
      */
     private void addChildNodesToGraph(ObjectGraph graph, Node node, Relation relation, Object childObject,
-            NodeState initialNodeState)
-    {
-        if (childObject instanceof KunderaProxy || childObject instanceof ProxyCollection)
-        {
+                                      NodeState initialNodeState) {
+        if (childObject instanceof KunderaProxy || childObject instanceof ProxyCollection) {
             return;
-        }
-
-        else if (childObject instanceof Map.Entry)
-        {
+        } else if (childObject instanceof Map.Entry) {
             Map.Entry entry = (Map.Entry) childObject;
             Object relObject = entry.getKey();
             Object entityObject = entry.getValue();
 
             Node childNode = getNode(entityObject, graph, initialNodeState);
 
-            if (childNode != null)
-            {
+            if (childNode != null) {
                 if (!StringUtils.isEmpty(relation.getMappedBy())
-                        && relation.getProperty().getAnnotation(MapKeyJoinColumn.class) == null)
-                {
+                        && relation.getProperty().getAnnotation(MapKeyJoinColumn.class) == null) {
                     return;
                 }
 
@@ -294,14 +253,11 @@ public class ObjectGraphBuilder
                 // Add child node to this node
                 node.addChildNode(nodeLink, childNode);
             }
-        }
-        else
-        {
+        } else {
             // Construct child node for this child object via recursive call
             Node childNode = getNode(childObject, graph, initialNodeState);
 
-            if (childNode != null)
-            {
+            if (childNode != null) {
                 // Construct Node Link for this relationship
                 NodeLink nodeLink = new NodeLink(node.getNodeId(), childNode.getNodeId());
                 nodeLink.setMultiplicity(relation.getType());
@@ -320,14 +276,13 @@ public class ObjectGraphBuilder
     }
 
     /**
-     * 
+     *
      * @param metadata
      *            Entity metadata of the parent node
      * @param relation
      * @return
      */
-    private Map<LinkProperty, Object> getLinkProperties(EntityMetadata metadata, Relation relation)
-    {
+    private Map<LinkProperty, Object> getLinkProperties(EntityMetadata metadata, Relation relation) {
         Map<LinkProperty, Object> linkProperties = new HashMap<NodeLink.LinkProperty, Object>();
 
         linkProperties.put(LinkProperty.LINK_NAME,
@@ -338,8 +293,7 @@ public class ObjectGraphBuilder
         linkProperties.put(LinkProperty.PROPERTY, relation.getProperty());
         linkProperties.put(LinkProperty.CASCADE, relation.getCascades());
 
-        if (relation.isRelatedViaJoinTable())
-        {
+        if (relation.isRelatedViaJoinTable()) {
             linkProperties.put(LinkProperty.JOIN_TABLE_METADATA, relation.getJoinTableMetadata());
         }
 
@@ -347,18 +301,13 @@ public class ObjectGraphBuilder
         return linkProperties;
     }
 
-    private boolean isIdSet(Object id)
-    {
-        if (id == null)
-        {
+    private boolean isIdSet(Object id) {
+        if (id == null) {
             return false;
-        }
-        else if (id.getClass().isPrimitive() || id instanceof Number)
-        {
+        } else if (id.getClass().isPrimitive() || id instanceof Number) {
             // Check for default value of integer/short/long/byte,float/double
             // and char.
-            if (id.toString().equals("0") || id.toString().equals("0.0") || id.toString().equals(""))
-            {
+            if (id.toString().equals("0") || id.toString().equals("0.0") || id.toString().equals("")) {
                 return false;
             }
         }

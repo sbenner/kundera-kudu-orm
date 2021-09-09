@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,45 +15,33 @@
  */
 package com.impetus.kundera.graph;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.impetus.kundera.metadata.model.Relation;
 import org.apache.commons.lang.builder.EqualsBuilder;
 
-import com.impetus.kundera.metadata.model.Relation;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Holds link meta data for a unidirectional directed link from source node to
  * target node.
- * 
+ *
  * @author amresh.singh
  */
-public class NodeLink
-{
-    // All possible node link properties
-    public enum LinkProperty
-    {
-        LINK_NAME, LINK_VALUE, IS_SHARED_BY_PRIMARY_KEY, IS_BIDIRECTIONAL, IS_RELATED_VIA_JOIN_TABLE, PROPERTY, BIDIRECTIONAL_PROPERTY, CASCADE, JOIN_TABLE_METADATA
-        // Add more if required
-    };
-
+public class NodeLink {
     private String sourceNodeId;
 
+    ;
     private String targetNodeId;
-
     // Multiplicity of relationship
     private Relation.ForeignKey multiplicity;
-
     // Contains all properties for this link
     private Map<LinkProperty, Object> linkProperties;
 
-    public NodeLink()
-    {
+    public NodeLink() {
 
     }
 
-    public NodeLink(String sourceNodeId, String targetNodeId)
-    {
+    public NodeLink(String sourceNodeId, String targetNodeId) {
         this.sourceNodeId = sourceNodeId;
         this.targetNodeId = targetNodeId;
     }
@@ -61,8 +49,7 @@ public class NodeLink
     /**
      * @return the sourceNodeId
      */
-    public String getSourceNodeId()
-    {
+    public String getSourceNodeId() {
         return sourceNodeId;
     }
 
@@ -70,16 +57,14 @@ public class NodeLink
      * @param sourceNodeId
      *            the sourceNodeId to set
      */
-    public void setSourceNodeId(String sourceNodeId)
-    {
+    public void setSourceNodeId(String sourceNodeId) {
         this.sourceNodeId = sourceNodeId;
     }
 
     /**
      * @return the targetNodeId
      */
-    public String getTargetNodeId()
-    {
+    public String getTargetNodeId() {
         return targetNodeId;
     }
 
@@ -87,16 +72,14 @@ public class NodeLink
      * @param targetNodeId
      *            the targetNodeId to set
      */
-    public void setTargetNodeId(String targetNodeId)
-    {
+    public void setTargetNodeId(String targetNodeId) {
         this.targetNodeId = targetNodeId;
     }
 
     /**
      * @return the multiplicity
      */
-    public Relation.ForeignKey getMultiplicity()
-    {
+    public Relation.ForeignKey getMultiplicity() {
         return multiplicity;
     }
 
@@ -104,16 +87,14 @@ public class NodeLink
      * @param multiplicity
      *            the multiplicity to set
      */
-    public void setMultiplicity(Relation.ForeignKey multiplicity)
-    {
+    public void setMultiplicity(Relation.ForeignKey multiplicity) {
         this.multiplicity = multiplicity;
     }
 
     /**
      * @return the linkProperties
      */
-    public Map<LinkProperty, Object> getLinkProperties()
-    {
+    public Map<LinkProperty, Object> getLinkProperties() {
         return linkProperties;
     }
 
@@ -121,28 +102,23 @@ public class NodeLink
      * @param linkProperties
      *            the linkProperties to set
      */
-    public void setLinkProperties(Map<LinkProperty, Object> linkProperties)
-    {
+    public void setLinkProperties(Map<LinkProperty, Object> linkProperties) {
         this.linkProperties = linkProperties;
     }
 
     /**
      * @return the linkProperties
      */
-    public Object getLinkProperty(LinkProperty name)
-    {
-        if (linkProperties == null || linkProperties.isEmpty())
-        {
+    public Object getLinkProperty(LinkProperty name) {
+        if (linkProperties == null || linkProperties.isEmpty()) {
             throw new IllegalStateException("Link properties not initialized");
         }
 
         return linkProperties.get(name);
     }
 
-    public void addLinkProperty(LinkProperty name, Object propertyValue)
-    {
-        if (linkProperties == null)
-        {
+    public void addLinkProperty(LinkProperty name, Object propertyValue) {
+        if (linkProperties == null) {
             linkProperties = new HashMap<NodeLink.LinkProperty, Object>();
         }
 
@@ -150,8 +126,7 @@ public class NodeLink
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int n = getSourceNodeId().hashCode() * getTargetNodeId().hashCode();
         return n;
 
@@ -160,15 +135,12 @@ public class NodeLink
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj)
-        {
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
         }
 
-        if (!(obj instanceof NodeLink))
-        {
+        if (!(obj instanceof NodeLink)) {
             return false;
         }
 
@@ -181,9 +153,14 @@ public class NodeLink
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return sourceNodeId + "---(" + multiplicity + ")--->" + targetNodeId;
+    }
+
+    // All possible node link properties
+    public enum LinkProperty {
+        LINK_NAME, LINK_VALUE, IS_SHARED_BY_PRIMARY_KEY, IS_BIDIRECTIONAL, IS_RELATED_VIA_JOIN_TABLE, PROPERTY, BIDIRECTIONAL_PROPERTY, CASCADE, JOIN_TABLE_METADATA
+        // Add more if required
     }
 
 }

@@ -15,14 +15,6 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.processor.relation;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-
-import org.apache.commons.lang.StringUtils;
-
 import com.impetus.kundera.loader.MetamodelLoaderException;
 import com.impetus.kundera.metadata.model.EntityMetadata;
 import com.impetus.kundera.metadata.model.Relation;
@@ -31,83 +23,72 @@ import com.impetus.kundera.metadata.processor.AbstractEntityFieldProcessor;
 import com.impetus.kundera.metadata.validator.EntityValidatorImpl;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.property.PropertyAccessorHelper;
+import org.apache.commons.lang.StringUtils;
+
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import java.lang.reflect.Field;
+import java.util.Arrays;
 
 /**
  * The Class OneToManyRelationMetadataProcessor.
- * 
+ *
  * @author Amresh Singh
  */
 public class OneToManyRelationMetadataProcessor extends AbstractEntityFieldProcessor implements
-        RelationMetadataProcessor
-{
+        RelationMetadataProcessor {
 
     /**
      * Instantiates a new one to many relation metadata processor.
      */
-    public OneToManyRelationMetadataProcessor(KunderaMetadata kunderaMetadata)
-    {
+    public OneToManyRelationMetadataProcessor(KunderaMetadata kunderaMetadata) {
         super(kunderaMetadata);
         validator = new EntityValidatorImpl();
     }
 
     @Override
-    public void process(Class<?> clazz, EntityMetadata metadata)
-    {
+    public void process(Class<?> clazz, EntityMetadata metadata) {
         throw new MetamodelLoaderException("Method call not applicable for Relation processors");
     }
 
     @Override
-    public void addRelationIntoMetadata(Field relationField, EntityMetadata metadata)
-    {
-        
+    public void addRelationIntoMetadata(Field relationField, EntityMetadata metadata) {
+
         OneToMany ann = relationField.getAnnotation(OneToMany.class);
         Class<?> targetEntity = PropertyAccessorHelper.getGenericClass(relationField);
 
         // now, check annotations
-        if (null != ann.targetEntity() && !ann.targetEntity().getSimpleName().equals("void"))
-        {
+        if (null != ann.targetEntity() && !ann.targetEntity().getSimpleName().equals("void")) {
             targetEntity = ann.targetEntity();
         }
 
- 
 
         Relation relation = new Relation(relationField, targetEntity, relationField.getType(), ann.fetch(),
                 Arrays.asList(ann.cascade()), Boolean.TRUE, ann.mappedBy(), Relation.ForeignKey.ONE_TO_MANY);
 
         boolean isJoinedByFK = relationField.isAnnotationPresent(JoinColumn.class);
-     
 
-        if (isJoinedByFK)
-        {
+
+        if (isJoinedByFK) {
             JoinColumn joinColumnAnn = relationField.getAnnotation(JoinColumn.class);
             relation.setJoinColumnName(StringUtils.isBlank(joinColumnAnn.name()) ? relationField.getName() : joinColumnAnn.name());
-        }
-
-        else
-        {        
+        } else {
             String joinColumnName = ((AbstractAttribute) metadata.getIdAttribute()).getJPAColumnName();
-            if (relation.getMappedBy() != null)
-            {
-                try
-                {
+            if (relation.getMappedBy() != null) {
+                try {
                     Field mappedField = metadata.getEntityClazz().getDeclaredField(relation.getMappedBy());
-                    if (mappedField != null && mappedField.isAnnotationPresent(JoinColumn.class))
-                    {
+                    if (mappedField != null && mappedField.isAnnotationPresent(JoinColumn.class)) {
                         joinColumnName = mappedField.getAnnotation(JoinColumn.class).name();
                     }
-                }
-                catch (NoSuchFieldException e)
-                {
+                } catch (NoSuchFieldException e) {
                     // do nothing, it means not a case of self association
-                }
-                catch (SecurityException e)
-                {
+                } catch (SecurityException e) {
                     // do nothing, it means not a case of self association
                 }
             }
             relation.setJoinColumnName(joinColumnName);
         }
-        
+
         relation.setBiDirectionalField(metadata.getEntityClazz());
         metadata.addRelation(relationField.getName(), relation);
         metadata.setParent(true);

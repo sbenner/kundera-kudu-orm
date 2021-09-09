@@ -19,27 +19,23 @@ import com.impetus.kundera.KunderaException;
 
 /**
  * Exception class for all exception scenarios involving resource reading.
- * 
+ *
  * @author amresh.singh
- * 
  */
-public class ResourceReadingException extends KunderaException
-{
+public class ResourceReadingException extends KunderaException {
 
     private static final long serialVersionUID = 2586557929464852258L;
 
     /**
-     * 
+     *
      */
-    public ResourceReadingException()
-    {
+    public ResourceReadingException() {
     }
 
     /**
      * @param arg0
      */
-    public ResourceReadingException(String arg0)
-    {
+    public ResourceReadingException(String arg0) {
         super(arg0);
 
     }
@@ -47,8 +43,7 @@ public class ResourceReadingException extends KunderaException
     /**
      * @param arg0
      */
-    public ResourceReadingException(Throwable arg0)
-    {
+    public ResourceReadingException(Throwable arg0) {
         super(arg0);
 
     }
@@ -57,8 +52,7 @@ public class ResourceReadingException extends KunderaException
      * @param arg0
      * @param arg1
      */
-    public ResourceReadingException(String arg0, Throwable arg1)
-    {
+    public ResourceReadingException(String arg0, Throwable arg1) {
         super(arg0, arg1);
 
     }

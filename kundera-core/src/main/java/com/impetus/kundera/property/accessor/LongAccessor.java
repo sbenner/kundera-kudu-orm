@@ -15,36 +15,31 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
-import java.nio.ByteBuffer;
-
+import com.impetus.kundera.property.PropertyAccessException;
+import com.impetus.kundera.property.PropertyAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.impetus.kundera.property.PropertyAccessException;
-import com.impetus.kundera.property.PropertyAccessor;
+import java.nio.ByteBuffer;
 
 /**
  * The Class LongAccessor.
- * 
+ *
  * @author animesh.kumar
  */
-public class LongAccessor implements PropertyAccessor<Long>
-{
+public class LongAccessor implements PropertyAccessor<Long> {
 
     private final static Logger log = LoggerFactory.getLogger(LongAccessor.class);
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.property.PropertyAccessor#fromBytes(byte[])
      */
     @Override
-    public final Long fromBytes(Class targetClass, byte[] bytes)
-    {
-        if (bytes == null || bytes.length != 8)
-        {
-            if (log.isWarnEnabled())
-            {
+    public final Long fromBytes(Class targetClass, byte[] bytes) {
+        if (bytes == null || bytes.length != 8) {
+            if (log.isWarnEnabled()) {
                 log.warn("Bytes length not equal to 8");
             }
             return null;
@@ -54,22 +49,19 @@ public class LongAccessor implements PropertyAccessor<Long>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toBytes(java.lang.Object)
      */
     @Override
-    public final byte[] toBytes(Object object)
-    {
-        if (object != null)
-        {
+    public final byte[] toBytes(Object object) {
+        if (object != null) {
             Long l = (Long) object;
             ByteBuffer buffer = ByteBuffer.allocate(8);
             buffer.putLong(l);
             return buffer.array();
         }
-        if (log.isWarnEnabled())
-        {
+        if (log.isWarnEnabled()) {
             log.warn("Object is null.");
         }
         return null;
@@ -77,54 +69,45 @@ public class LongAccessor implements PropertyAccessor<Long>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toString(java.lang.Object)
      */
     @Override
-    public final String toString(Object object)
-    {
+    public final String toString(Object object) {
         return object != null ? object.toString() : null;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#fromString(java.lang.String
      * )
      */
     @Override
-    public Long fromString(Class targetClass, String s)
-    {
-        try
-        {
-            if (s == null)
-            {
-                if (log.isWarnEnabled())
-                {
+    public Long fromString(Class targetClass, String s) {
+        try {
+            if (s == null) {
+                if (log.isWarnEnabled()) {
                     log.warn("String s is null.");
                 }
                 return null;
             }
             Long l = new Long(s);
             return l;
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             log.error("Number format exception, Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
     }
 
     @Override
-    public Long getCopy(Object object)
-    {
+    public Long getCopy(Object object) {
         return object != null ? (Long) object : null;
     }
 
-    public Long getInstance(Class<?> clazz)
-    {
+    public Long getInstance(Class<?> clazz) {
         return Long.MAX_VALUE;
     }
 }

@@ -15,22 +15,15 @@
  ******************************************************************************/
 package com.impetus.kundera.polyglot.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
 
+import javax.persistence.*;
+
 @Entity
 @Table(name = "ADDRESS", schema = "KunderaTests@patest")
-@IndexCollection(columns = { @Index(name = "street") })
-public class AddressB1M
-{
+@IndexCollection(columns = {@Index(name = "street")})
+public class AddressB1M {
     @Id
     @Column(name = "ADDRESS_ID")
     private String addressId;
@@ -42,33 +35,27 @@ public class AddressB1M
     @JoinColumn(name = "PERSON_ID")
     private PersonB1M person;
 
-    public String getAddressId()
-    {
+    public String getAddressId() {
         return addressId;
     }
 
-    public void setAddressId(String addressId)
-    {
+    public void setAddressId(String addressId) {
         this.addressId = addressId;
     }
 
-    public String getStreet()
-    {
+    public String getStreet() {
         return street;
     }
 
-    public void setStreet(String street)
-    {
+    public void setStreet(String street) {
         this.street = street;
     }
 
-    public PersonB1M getPerson()
-    {
+    public PersonB1M getPerson() {
         return person;
     }
 
-    public void setPerson(PersonB1M person)
-    {
+    public void setPerson(PersonB1M person) {
         this.person = person;
     }
 

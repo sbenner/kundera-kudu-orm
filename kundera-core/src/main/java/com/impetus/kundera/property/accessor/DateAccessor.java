@@ -15,6 +15,13 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
+import com.impetus.kundera.Constants;
+import com.impetus.kundera.property.PropertyAccessException;
+import com.impetus.kundera.property.PropertyAccessor;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,34 +30,28 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.impetus.kundera.Constants;
-import com.impetus.kundera.property.PropertyAccessException;
-import com.impetus.kundera.property.PropertyAccessor;
-
 /**
  * The Class DateAccessor.
- * 
+ *
  * @author animesh.kumar
  */
-public class DateAccessor implements PropertyAccessor<Date>
-{
+public class DateAccessor implements PropertyAccessor<Date> {
 
-    /** The log. */
-    private static Logger log = LoggerFactory.getLogger(DateAccessor.class);
-
-    /** The Constant DATE_FORMATTER. */
+    /**
+     * The Constant DATE_FORMATTER.
+     */
     private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("dd MMM yyyy HH:mm:ss:S Z",
             Locale.ENGLISH);
-
-    /** The patterns. */
+    /**
+     * The log.
+     */
+    private static Logger log = LoggerFactory.getLogger(DateAccessor.class);
+    /**
+     * The patterns.
+     */
     private static List<String> patterns = new ArrayList<String>(15);
 
-    static
-    {
+    static {
         patterns.add("E MMM dd HH:mm:ss z yyyy");
         patterns.add("dd MMM yyyy HH:mm:ss:SSS");
         patterns.add("dd MMM yyyy H:mm:ss:SSS");
@@ -92,144 +93,27 @@ public class DateAccessor implements PropertyAccessor<Date>
         patterns.add("dd-MMM-yyyy");
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see com.impetus.kundera.property.PropertyAccessor#fromBytes(byte[])
-     */
-    @Override
-    public/* final */Date fromBytes(Class targetClass, byte[] bytes)
-    {
-        try
-        {
-            if (bytes == null)
-            {
-                return null;
-            }
-
-            try
-            {
-                // In case date.getTime() is stored in DB.
-                LongAccessor longAccessor = new LongAccessor();
-
-                return new Date(longAccessor.fromBytes(targetClass, bytes));
-            }
-            catch (NumberFormatException nfex)
-            {
-                return getDateByPattern(new String(bytes, Constants.ENCODING));
-
-            }
-        }
-        catch (Exception e)
-        {
-            log.error("Caused by {}.", e);
-            throw new PropertyAccessException(e);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.impetus.kundera.property.PropertyAccessor#toBytes(java.lang.Object)
-     */
-    @Override
-    public/* final */byte[] toBytes(Object date)
-    {
-        try
-        {
-            if (date == null)
-            {
-                return null;
-            }
-            LongAccessor longAccessor = new LongAccessor();
-            return longAccessor.toBytes(((Date) date).getTime());
-            // return DATE_FORMATTER.format(((Date)
-            // date)).getBytes(Constants.ENCODING);
-        }
-        catch (Exception e)
-        {
-            log.error("Caused by {}.", e);
-            throw new PropertyAccessException(e);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.impetus.kundera.property.PropertyAccessor#toString(java.lang.Object)
-     */
-    @Override
-    public/* final */String toString(Object object)
-    {
-        Date date = (Date) object;
-
-        if (date == null)
-        {
-            return null;
-        }
-
-        return String.valueOf(date.getTime());
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * com.impetus.kundera.property.PropertyAccessor#fromString(java.lang.String
-     * )
-     */
-    @Override
-    public Date fromString(Class targetClass, String s)
-    {
-        try
-        {
-            if (s == null)
-            {
-                return null;
-            }
-            Date d = getDateByPattern(s);
-            return d;
-        }
-        catch (NumberFormatException e)
-        {
-            log.error("Number format exception, Caused by {}.", e);
-            throw new PropertyAccessException(e);
-        }
-    }
-
     /**
      * Get Date from given below formats.
-     * 
-     * @param date
-     *            Date pattern
+     *
+     * @param date Date pattern
      * @return date instance
-     * @throws PropertyAccessException
-     *             throws only if invalid format is supplied.
+     * @throws PropertyAccessException throws only if invalid format is supplied.
      */
-    public static Date getDateByPattern(String date)
-    {
-        if (StringUtils.isNumeric(date))
-        {
+    public static Date getDateByPattern(String date) {
+        if (StringUtils.isNumeric(date)) {
             return new Date(Long.parseLong(date));
         }
 
-        for (String p : patterns)
-        {
-            try
-            {
+        for (String p : patterns) {
+            try {
                 DateFormat formatter = new SimpleDateFormat(p);
                 Date dt = formatter.parse(date);
                 return dt;
-            }
-            catch (IllegalArgumentException iae)
-            {
+            } catch (IllegalArgumentException iae) {
                 // Do nothing.
                 // move to next pattern.
-            }
-            catch (ParseException e)
-            {
+            } catch (ParseException e) {
                 // Do nothing.
                 // move to next pattern.
             }
@@ -239,30 +123,112 @@ public class DateAccessor implements PropertyAccessor<Date>
         throw new PropertyAccessException("Required Date format is not supported!" + date);
     }
 
+    /**
+     * Just to verify with supported types of date pattern. Get Date from given
+     * below formats
+     *
+     * @param date Date pattern
+     * @return date instance
+     * @throws PropertyAccessException throws only if invalid format is supplied.
+     */
+    public static String getFormattedObect(String date) {
+        return date != null ? getDateByPattern(date).toString() : null;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.impetus.kundera.property.PropertyAccessor#fromBytes(byte[])
+     */
     @Override
-    public Date getCopy(Object object)
-    {
+    public/* final */Date fromBytes(Class targetClass, byte[] bytes) {
+        try {
+            if (bytes == null) {
+                return null;
+            }
+
+            try {
+                // In case date.getTime() is stored in DB.
+                LongAccessor longAccessor = new LongAccessor();
+
+                return new Date(longAccessor.fromBytes(targetClass, bytes));
+            } catch (NumberFormatException nfex) {
+                return getDateByPattern(new String(bytes, Constants.ENCODING));
+
+            }
+        } catch (Exception e) {
+            log.error("Caused by {}.", e);
+            throw new PropertyAccessException(e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.impetus.kundera.property.PropertyAccessor#toBytes(java.lang.Object)
+     */
+    @Override
+    public/* final */byte[] toBytes(Object date) {
+        try {
+            if (date == null) {
+                return null;
+            }
+            LongAccessor longAccessor = new LongAccessor();
+            return longAccessor.toBytes(((Date) date).getTime());
+            // return DATE_FORMATTER.format(((Date)
+            // date)).getBytes(Constants.ENCODING);
+        } catch (Exception e) {
+            log.error("Caused by {}.", e);
+            throw new PropertyAccessException(e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.impetus.kundera.property.PropertyAccessor#toString(java.lang.Object)
+     */
+    @Override
+    public/* final */String toString(Object object) {
+        Date date = (Date) object;
+
+        if (date == null) {
+            return null;
+        }
+
+        return String.valueOf(date.getTime());
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * com.impetus.kundera.property.PropertyAccessor#fromString(java.lang.String
+     * )
+     */
+    @Override
+    public Date fromString(Class targetClass, String s) {
+        try {
+            if (s == null) {
+                return null;
+            }
+            Date d = getDateByPattern(s);
+            return d;
+        } catch (NumberFormatException e) {
+            log.error("Number format exception, Caused by {}.", e);
+            throw new PropertyAccessException(e);
+        }
+    }
+
+    @Override
+    public Date getCopy(Object object) {
         Date d = (Date) object;
         return d != null ? new Date(d.getTime()) : null;
     }
 
-    /**
-     * Just to verify with supported types of date pattern. Get Date from given
-     * below formats
-     * 
-     * @param date
-     *            Date pattern
-     * @return date instance
-     * @throws PropertyAccessException
-     *             throws only if invalid format is supplied.
-     */
-    public static String getFormattedObect(String date)
-    {
-        return date != null ? getDateByPattern(date).toString() : null;
-    }
-
-    public Date getInstance(Class<?> clazz)
-    {
+    public Date getInstance(Class<?> clazz) {
         return new Date();
     }
 

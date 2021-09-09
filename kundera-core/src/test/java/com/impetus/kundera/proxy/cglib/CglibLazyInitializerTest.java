@@ -15,17 +15,6 @@
  ******************************************************************************/
 package com.impetus.kundera.proxy.cglib;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.impetus.kundera.CoreTestUtilities;
 import com.impetus.kundera.entity.PersonnelDTO;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
@@ -35,31 +24,37 @@ import com.impetus.kundera.proxy.KunderaProxy;
 import com.impetus.kundera.proxy.LazyInitializationException;
 import com.impetus.kundera.proxy.LazyInitializer;
 import com.impetus.kundera.proxy.LazyInitializerFactory;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  * @author amresh.singh
  */
-public class CglibLazyInitializerTest
-{
+public class CglibLazyInitializerTest {
 
     private static EntityManagerFactory emf;
 
     private static EntityManager em;
-    
+
     private static KunderaMetadata kunderaMetadata;
 
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception
-    {
-        
+    public static void setUpBeforeClass() throws Exception {
+
         emf = Persistence.createEntityManagerFactory("kunderatest");
         kunderaMetadata = ((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance();
         em = emf.createEntityManager();
     }
 
     @AfterClass
-    public static void tearDownAfterClass() throws Exception
-    {
+    public static void tearDownAfterClass() throws Exception {
         em.close();
         emf.close();
     }
@@ -68,8 +63,7 @@ public class CglibLazyInitializerTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
 
     }
 
@@ -79,19 +73,16 @@ public class CglibLazyInitializerTest
      * .
      */
     @Test
-    public void testWithNullPD()
-    {
+    public void testWithNullPD() {
 
         LazyInitializerFactory factory = kunderaMetadata.getCoreMetadata().getLazyInitializerFactory();
         KunderaProxy proxy = factory.getProxy("personnel", PersonnelDTO.class, null, null, "1", null);
         LazyInitializer li = proxy.getKunderaLazyInitializer();
         Assert.assertEquals(CglibLazyInitializer.class, li.getClass());
-        
-        try
-        {
+
+        try {
             li.initialize();
-        }catch(LazyInitializationException liex)
-        {
+        } catch (LazyInitializationException liex) {
 //            Assert.assertEquals("could not initialize proxy " + PersonnelDTO.class.getName() + "_"
 //                        + "1" + " - no EntityManager", liex.getMessage());
         }
@@ -99,46 +90,44 @@ public class CglibLazyInitializerTest
     }
 
     @Test
-    public void testWithPDInstance() throws NoSuchMethodException, Throwable
-    {
+    public void testWithPDInstance() throws NoSuchMethodException, Throwable {
         PersistenceDelegator delegator = CoreTestUtilities.getDelegator(em);
         PersonnelDTO dto = new PersonnelDTO("1", "vivek", "mishra");
         em.persist(dto);
         LazyInitializerFactory factory = kunderaMetadata.getCoreMetadata().getLazyInitializerFactory();
         KunderaProxy proxy = factory.getProxy("personnel#1", PersonnelDTO.class, null, null, "1", delegator);
         LazyInitializer li = proxy.getKunderaLazyInitializer();
-        ((CglibLazyInitializer)li).setPersistenceDelegator(delegator);
+        ((CglibLazyInitializer) li).setPersistenceDelegator(delegator);
         li.setImplementation(proxy);
-        
+
         li.initialize();
-        Assert.assertNotNull(((CglibLazyInitializer)li).getTarget());
-        Assert.assertNotNull(((CglibLazyInitializer)li).getEntityName());
-        Assert.assertEquals("personnel#1",((CglibLazyInitializer)li).getEntityName());
+        Assert.assertNotNull(((CglibLazyInitializer) li).getTarget());
+        Assert.assertNotNull(((CglibLazyInitializer) li).getEntityName());
+        Assert.assertEquals("personnel#1", ((CglibLazyInitializer) li).getEntityName());
         Assert.assertNotNull(li.getPersistenceDelegator());
-        Assert.assertSame(delegator,li.getPersistenceDelegator());
-        
+        Assert.assertSame(delegator, li.getPersistenceDelegator());
+
         Assert.assertFalse(li.isUninitialized());
-        
-        Assert.assertSame(PersonnelDTO.class,li.getPersistentClass());
-        Assert.assertEquals("1",li.getIdentifier());
-        
+
+        Assert.assertSame(PersonnelDTO.class, li.getPersistentClass());
+        Assert.assertEquals("1", li.getIdentifier());
+
         li.setIdentifier("12");
         Assert.assertEquals("12", li.getIdentifier());
         Assert.assertNotNull(li.getImplementation());
-        
+
 //        Object firstName = ((CglibLazyInitializer)li).invoke(proxy, dto.getClass().getDeclaredMethod("getFirstName", null),new String[]{});
 //        Assert.assertEquals("vivek", firstName);
-        
-        ((CglibLazyInitializer)li).unsetPersistenceDelegator();
-        ((CglibLazyInitializer)li).setUnwrap(true);
-        Assert.assertTrue(((CglibLazyInitializer)li).isUnwrap());
+
+        ((CglibLazyInitializer) li).unsetPersistenceDelegator();
+        ((CglibLazyInitializer) li).setUnwrap(true);
+        Assert.assertTrue(((CglibLazyInitializer) li).isUnwrap());
 
 
     }
-    
+
     @Test
-    public void testWithClosedPDInstance() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException
-    {
+    public void testWithClosedPDInstance() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         PersistenceDelegator delegator = CoreTestUtilities.getDelegator(em);
         PersonnelDTO dto = new PersonnelDTO("1", "vivek", "mishra");
         em.persist(dto);
@@ -147,18 +136,16 @@ public class CglibLazyInitializerTest
         LazyInitializerFactory factory = kunderaMetadata.getCoreMetadata().getLazyInitializerFactory();
         KunderaProxy proxy = factory.getProxy("personnel", PersonnelDTO.class, null, null, "1", delegator);
         LazyInitializer li = proxy.getKunderaLazyInitializer();
-        
-        try
-        {
+
+        try {
             li.initialize();
             Assert.fail("Should have gone to catch block!");
-        } catch(LazyInitializationException liex)
-        {
+        } catch (LazyInitializationException liex) {
             Assert.assertEquals("could not initialize proxy " + PersonnelDTO.class.getName() + "_"
-                    + "1" + " - the owning Session was closed",liex.getMessage());
+                    + "1" + " - the owning Session was closed", liex.getMessage());
         }
-        
+
         em = emf.createEntityManager();
     }
-        
+
 }

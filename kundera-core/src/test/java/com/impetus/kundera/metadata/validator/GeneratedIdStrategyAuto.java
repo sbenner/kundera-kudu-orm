@@ -1,18 +1,11 @@
 package com.impetus.kundera.metadata.validator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.TableGenerator;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "GeneratedIdStrategyAuto", schema = "KunderaTest@GeneratedValue")
 @TableGenerator(name = "id_gen")
-public class GeneratedIdStrategyAuto
-{
+public class GeneratedIdStrategyAuto {
     @Id
     @GeneratedValue(generator = "id_gen", strategy = GenerationType.AUTO)
     private int id;
@@ -23,34 +16,28 @@ public class GeneratedIdStrategyAuto
     /**
      * @return the id
      */
-    public int getId()
-    {
+    public int getId() {
         return id;
     }
 
     /**
-     * @param id
-     *            the id to set
+     * @param id the id to set
      */
-    public void setId(int id)
-    {
+    public void setId(int id) {
         this.id = id;
     }
 
     /**
      * @return the name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param name the name to set
      */
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 

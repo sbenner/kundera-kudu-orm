@@ -15,24 +15,25 @@
  ******************************************************************************/
 package com.impetus.kundera.validation.rules;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Modifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.MappedSuperclass;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 
 public class EntityAnnotationRule extends AbstractEntityRule implements EntityRule {
 
-    /** The Constant log. */
+    /**
+     * The Constant log.
+     */
     private static final Logger log = LoggerFactory.getLogger(EntityAnnotationRule.class);
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.validation.rules.AbstractEntityRule#validate(java .lang.Class)
      */
     @Override
@@ -53,7 +54,7 @@ public class EntityAnnotationRule extends AbstractEntityRule implements EntityRu
             Constructor[] constructors = clazz.getDeclaredConstructors();
             for (Constructor constructor : constructors) {
                 if ((Modifier.isPublic(constructor.getModifiers()) || Modifier.isProtected(constructor.getModifiers()))
-                    && constructor.getParameterTypes().length == 0) {
+                        && constructor.getParameterTypes().length == 0) {
                     flag = true;
                     break;
                 }
@@ -63,19 +64,19 @@ public class EntityAnnotationRule extends AbstractEntityRule implements EntityRu
             }
         } catch (Exception e) {
             throw new RuleValidationException(clazz.getName()
-                + " must have a default public or protected no-argument constructor.");
+                    + " must have a default public or protected no-argument constructor.");
         }
     }
 
     /**
      * checks for a valid entity definition
-     * 
+     *
      * @param clazz
      * @return
      */
     private boolean checkValidClass(Class<?> clazz) {
         return clazz.isAnnotationPresent(Entity.class) || clazz.isAnnotationPresent(MappedSuperclass.class)
-            || clazz.isAnnotationPresent(Embeddable.class);
+                || clazz.isAnnotationPresent(Embeddable.class);
 
     }
 

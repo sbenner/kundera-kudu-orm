@@ -20,38 +20,38 @@ import java.util.Map;
 
 /**
  * The Class EnhanceEntity.
- * 
+ *
  * @author vivek.mishra
  */
-public class EnhanceEntity
-{
+public class EnhanceEntity {
 
-    /** The entity. */
+    /**
+     * The entity.
+     */
     private Object entity;
 
-    /** The entity id. */
+    /**
+     * The entity id.
+     */
     private Object entityId;
 
-    /** The relations. */
+    /**
+     * The relations.
+     */
     private Map<String, Object> relations;
 
-    public EnhanceEntity()
-    {
+    public EnhanceEntity() {
 
     }
 
     /**
      * Instantiates a new enhance entity.
-     * 
-     * @param entity
-     *            the entity
-     * @param entityId
-     *            the entity id
-     * @param relations
-     *            the relations
+     *
+     * @param entity    the entity
+     * @param entityId  the entity id
+     * @param relations the relations
      */
-    public EnhanceEntity(Object entity, Object entityId, Map<String, Object> relations)
-    {
+    public EnhanceEntity(Object entity, Object entityId, Map<String, Object> relations) {
         super();
         this.entity = entity;
         this.entityId = entityId;
@@ -60,31 +60,28 @@ public class EnhanceEntity
 
     /**
      * Gets the entity.
-     * 
+     *
      * @return the entity
      */
-    public Object getEntity()
-    {
+    public Object getEntity() {
         return entity;
     }
 
     /**
      * Gets the entity id.
-     * 
+     *
      * @return the entityId
      */
-    public Object getEntityId()
-    {
+    public Object getEntityId() {
         return entityId;
     }
 
     /**
      * Gets the relations.
-     * 
+     *
      * @return the relations
      */
-    public Map<String, Object> getRelations()
-    {
+    public Map<String, Object> getRelations() {
         return relations != null ? Collections.unmodifiableMap(relations) : null;
     }
 

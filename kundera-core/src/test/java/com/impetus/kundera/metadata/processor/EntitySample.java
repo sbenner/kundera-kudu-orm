@@ -15,20 +15,12 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.processor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Test Entity
- * 
+ *
  * @author vivek.mishra
- * 
  */
 
 @Entity
@@ -36,13 +28,12 @@ import javax.persistence.Table;
 @NamedQuery(name = "test.named.query", query = "Select t from TestEntity t where t.field = :field")
 @NamedQueries({
         @NamedQuery(name = "test.named.queries1", query = "Select t1 from TestEntity t1 where t1.field = :field"),
-        @NamedQuery(name = "test.named.queries2", query = "Select t2 from TestEntity t2 where t2.field = :field") })
+        @NamedQuery(name = "test.named.queries2", query = "Select t2 from TestEntity t2 where t2.field = :field")})
 @NamedNativeQuery(name = "test.native.query", query = "Select native from TestEntity native where native.field = :field")
 @NamedNativeQueries({
         @NamedNativeQuery(name = "test.native.query1", query = "Select native1 from TestEntity native1 where native1.field = :field"),
-        @NamedNativeQuery(name = "test.native.query2", query = "Select native2 from TestEntity native2 where native2.field = :field") })
-public class EntitySample
-{
+        @NamedNativeQuery(name = "test.native.query2", query = "Select native2 from TestEntity native2 where native2.field = :field")})
+public class EntitySample {
 
     @Id
     private Integer key;
@@ -53,34 +44,28 @@ public class EntitySample
     /**
      * @return the key
      */
-    public Integer getKey()
-    {
+    public Integer getKey() {
         return key;
     }
 
     /**
-     * @param key
-     *            the key to set
+     * @param key the key to set
      */
-    public void setKey(Integer key)
-    {
+    public void setKey(Integer key) {
         this.key = key;
     }
 
     /**
      * @return the field
      */
-    public String getField()
-    {
+    public String getField() {
         return field;
     }
 
     /**
-     * @param field
-     *            the field to set
+     * @param field the field to set
      */
-    public void setField(String field)
-    {
+    public void setField(String field) {
         this.field = field;
     }
 

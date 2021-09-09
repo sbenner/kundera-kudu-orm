@@ -30,12 +30,6 @@
  */
 package com.impetus.kundera.proxy.cglib;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.Entity;
-
 import com.impetus.kundera.metadata.model.EntityMetadata;
 import com.impetus.kundera.metadata.model.Relation;
 import com.impetus.kundera.persistence.PersistenceDelegator;
@@ -43,38 +37,38 @@ import com.impetus.kundera.property.PropertyAccessorHelper;
 import com.impetus.kundera.proxy.KunderaProxy;
 import com.impetus.kundera.proxy.LazyInitializerFactory;
 
+import javax.persistence.Entity;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Implementation of LazyInitializerFactory using cglib library.
- * 
+ *
  * @author animesh.kumar
  */
-public class CglibLazyInitializerFactory implements LazyInitializerFactory
-{
+public class CglibLazyInitializerFactory implements LazyInitializerFactory {
 
     Map<String, KunderaProxy> proxies = new HashMap<String, KunderaProxy>();
 
     @Override
     public KunderaProxy getProxy(String entityName, Class<?> persistentClass, Method getIdentifierMethod,
-            Method setIdentifierMethod, Object id, PersistenceDelegator pd)
-    {
+                                 Method setIdentifierMethod, Object id, PersistenceDelegator pd) {
         KunderaProxy kunderaProxy = (KunderaProxy) CglibLazyInitializer.getProxy(entityName, persistentClass,
-                new Class[] { KunderaProxy.class }, getIdentifierMethod, setIdentifierMethod, id, pd);
+                new Class[]{KunderaProxy.class}, getIdentifierMethod, setIdentifierMethod, id, pd);
         proxies.put(entityName, kunderaProxy);
 
         return kunderaProxy;
     }
 
     @Override
-    public KunderaProxy getProxy(String entityName)
-    {
+    public KunderaProxy getProxy(String entityName) {
         return proxies.get(entityName);
     }
 
     @Override
-    public void clearProxies()
-    {
-        for (KunderaProxy proxy : proxies.values())
-        {
+    public void clearProxies() {
+        for (KunderaProxy proxy : proxies.values()) {
             proxy.getKunderaLazyInitializer().setOwner(null);
             proxy.getKunderaLazyInitializer().setInitialized(false);
         }
@@ -82,23 +76,17 @@ public class CglibLazyInitializerFactory implements LazyInitializerFactory
     }
 
     @Override
-    public <E> void setProxyOwners(EntityMetadata entityMetadata, E e)
-    {
-        if (e != null && e.getClass().getAnnotation(Entity.class) != null && entityMetadata != null)
-        {
-            for (Relation r : entityMetadata.getRelations())
-            {
-                if (r != null)
-                {
+    public <E> void setProxyOwners(EntityMetadata entityMetadata, E e) {
+        if (e != null && e.getClass().getAnnotation(Entity.class) != null && entityMetadata != null) {
+            for (Relation r : entityMetadata.getRelations()) {
+                if (r != null) {
                     Object entityId = PropertyAccessorHelper.getId(e, entityMetadata);
-                    if (r.isUnary())
-                    {
+                    if (r.isUnary()) {
                         String entityName = entityMetadata.getEntityClazz().getName() + "_" + entityId + "#"
                                 + r.getProperty().getName();
 
                         KunderaProxy kunderaProxy = getProxy(entityName);
-                        if (kunderaProxy != null)
-                        {
+                        if (kunderaProxy != null) {
                             kunderaProxy.getKunderaLazyInitializer().setOwner(e);
                         }
                     }

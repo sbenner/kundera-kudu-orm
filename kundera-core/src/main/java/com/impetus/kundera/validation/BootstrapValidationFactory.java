@@ -15,50 +15,45 @@
  ******************************************************************************/
 package com.impetus.kundera.validation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.impetus.kundera.validation.rules.EntityAnnotationRule;
 import com.impetus.kundera.validation.rules.EntityFieldAnnotationRule;
 import com.impetus.kundera.validation.rules.IRule;
 import com.impetus.kundera.validation.rules.RuleValidationException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * @author Chhavi Gangwal
- *
  */
-public class BootstrapValidationFactory extends AbstractValidationFactory implements ValidationFactory
-{
+public class BootstrapValidationFactory extends AbstractValidationFactory implements ValidationFactory {
 
     /**
      * List of rules for BootStrap level validations
      */
     static List<IRule> rules = new ArrayList<IRule>();
-    
-    static
-    {
-       rules.add(new EntityAnnotationRule());
-       rules.add(new EntityFieldAnnotationRule());
+
+    static {
+        rules.add(new EntityAnnotationRule());
+        rules.add(new EntityFieldAnnotationRule());
     }
-    
+
     /**
      * Constructor
      * adds static rule list to Rule factory
      */
-    BootstrapValidationFactory()
-    {
+    BootstrapValidationFactory() {
         this.ruleFactory.addRule(rules);
     }
-    
-    
+
+
     /* (non-Javadoc)
      * @see com.impetus.kundera.validation.AbstractValidationFactory#validate(java.lang.Class)
      */
     @Override
-    public boolean validate(Class clazz) throws RuleValidationException 
-    {
+    public boolean validate(Class clazz) throws RuleValidationException {
         return validate(clazz, this.ruleFactory.getJpaRules());
     }
-        
+
 }

@@ -26,82 +26,78 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "CoreEntitySimple", schema = "KunderaCoreExmples@cassandra")
-public class CoreEntitySimple
-{
+public class CoreEntitySimple {
 
-    /** The person id. */
+    /**
+     * The person id.
+     */
     @Id
     @Column(name = "PERSON_ID")
     private String personId;
 
-    /** The person name. */
+    /**
+     * The person name.
+     */
     @Column(name = "PERSON_NAME")
     private String personName;
 
-    /** The age. */
+    /**
+     * The age.
+     */
     @Column(name = "AGE")
     private short age;
 
     /**
      * Gets the person id.
-     * 
+     *
      * @return the person id
      */
-    public String getPersonId()
-    {
+    public String getPersonId() {
         return personId;
     }
 
     /**
+     * Sets the person id.
+     *
+     * @param personId the new person id
+     */
+    public void setPersonId(String personId) {
+        this.personId = personId;
+    }
+
+    /**
      * Gets the person name.
-     * 
+     *
      * @return the person name
      */
-    public String getPersonName()
-    {
+    public String getPersonName() {
         return personName;
     }
 
     /**
      * Sets the person name.
-     * 
-     * @param personName
-     *            the new person name
+     *
+     * @param personName the new person name
      */
-    public void setPersonName(String personName)
-    {
+    public void setPersonName(String personName) {
         this.personName = personName;
     }
 
     /**
-     * Sets the person id.
-     * 
-     * @param personId
-     *            the new person id
-     */
-    public void setPersonId(String personId)
-    {
-        this.personId = personId;
-    }
-
-    /**
      * Gets the age.
-     * 
+     *
      * @return the age
      */
-    public short getAge()
-    {
+    public short getAge() {
         return age;
     }
 
     /**
      * Sets the age.
-     * 
-     * @param age
-     *            the age to set
+     *
+     * @param age the age to set
      */
-    public void setAge(short age)
-    {
+    public void setAge(short age) {
         this.age = age;
     }
 

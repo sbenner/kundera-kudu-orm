@@ -15,37 +15,33 @@
  ******************************************************************************/
 package com.impetus.kundera.classreading;
 
-import junit.framework.Assert;
-
-import org.junit.Test;
-
 import com.impetus.kundera.db.SearchResult;
 import com.impetus.kundera.query.Person;
+import junit.framework.Assert;
+import org.junit.Test;
 
 /**
  * @author vivek.mishra
- * 
+ * <p>
  * Search result test junit test. Such POJO junits are just for code coverage.
  */
-public class SearchResultTest
-{
+public class SearchResultTest {
 
     @Test
-    public void test()
-    {
+    public void test() {
         Person p = new Person();
         SearchResult result = new SearchResult();
-        
+
         result.setPrimaryKey(p.getPersonId());
         result.setEmbeddedColumnName("none");
         result.addEmbeddedColumnValue("embeddedcolumn1");
         result.addEmbeddedColumnValue("embeddedcolumn2");
-        
+
         Assert.assertNull(result.getPrimaryKey());
         Assert.assertNotNull(result.getEmbeddedColumnName());
         Assert.assertNotNull(result.getEmbeddedColumnValues());
-        Assert.assertEquals(2,result.getEmbeddedColumnValues().size());
-        
+        Assert.assertEquals(2, result.getEmbeddedColumnValues().size());
+
     }
 
 }

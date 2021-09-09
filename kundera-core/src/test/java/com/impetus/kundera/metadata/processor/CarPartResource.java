@@ -20,31 +20,24 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
 
-
-
 /**
  * @author impadmin
- * 
  */
 @Entity
-public class CarPartResource extends AbstractResource
-{
+public class CarPartResource extends AbstractResource {
     @Column
     private String col;
-    
+
     @Embedded
     private CarTyre tyre;
 
-    public String getCol()
-    {
+    public String getCol() {
         return col;
     }
 
-    public void setCol(String col)
-    {
+    public void setCol(String col) {
         this.col = col;
     }
-    
-  
+
 
 }

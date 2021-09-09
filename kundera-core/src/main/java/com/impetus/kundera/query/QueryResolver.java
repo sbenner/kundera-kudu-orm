@@ -15,55 +15,47 @@
  ******************************************************************************/
 package com.impetus.kundera.query;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-
-import javax.persistence.Query;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.kundera.Constants;
 import com.impetus.kundera.metadata.KunderaMetadataManager;
 import com.impetus.kundera.metadata.model.ApplicationMetadata;
 import com.impetus.kundera.metadata.model.EntityMetadata;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.persistence.PersistenceDelegator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.Query;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * The Class QueryResolver.
- * 
+ *
  * @author amresh.singh
- * 
  */
-public class QueryResolver
-{
+public class QueryResolver {
 
-    /** The log. */
+    /**
+     * The log.
+     */
     private static Logger log = LoggerFactory.getLogger(QueryResolver.class);
 
     /**
      * Gets the query implementation.
-     * 
-     * @param jpaQuery
-     *            the jpa query
-     * @param persistenceDelegator
-     *            the persistence delegator
-     * @param persistenceUnits
-     *            the persistence units
+     *
+     * @param jpaQuery             the jpa query
+     * @param persistenceDelegator the persistence delegator
+     * @param persistenceUnits     the persistence units
      * @return the query implementation
      */
     public Query getQueryImplementation(String jpaQuery, PersistenceDelegator persistenceDelegator, Class mappedClass,
-            boolean isNative, final KunderaMetadata kunderaMetadata)
-    {
-        if (jpaQuery == null)
-        {
+                                        boolean isNative, final KunderaMetadata kunderaMetadata) {
+        if (jpaQuery == null) {
             throw new QueryHandlerException("Query String should not be null ");
         }
 
-        if (jpaQuery.trim().endsWith(Constants.SEMI_COLON))
-        {
+        if (jpaQuery.trim().endsWith(Constants.SEMI_COLON)) {
             throw new QueryHandlerException("unexpected char: ';' in query [ " + jpaQuery + " ]");
         }
 
@@ -76,8 +68,7 @@ public class QueryResolver
         EntityMetadata m = null;
 
         // In case of named native query
-        if (!isNative)
-        {
+        if (!isNative) {
             kunderaQuery = new KunderaQuery(mappedQuery != null ? mappedQuery : jpaQuery, kunderaMetadata);
             KunderaQueryParser parser = new KunderaQueryParser(kunderaQuery);
 
@@ -85,12 +76,9 @@ public class QueryResolver
 
             kunderaQuery.postParsingInit();
             m = kunderaQuery.getEntityMetadata();
-        }
-        else
-        {
+        } else {
             // Means if it is a namedNativeQuery.
-            if (appMetadata.isNative(jpaQuery))
-            {
+            if (appMetadata.isNative(jpaQuery)) {
                 mappedClass = appMetadata.getMappedClass(jpaQuery);
             }
 
@@ -101,18 +89,14 @@ public class QueryResolver
             m = KunderaMetadataManager.getEntityMetadata(kunderaMetadata, mappedClass);
 
             Field entityClazzField = null;
-            try
-            {
+            try {
                 entityClazzField = kunderaQuery.getClass().getDeclaredField("entityClass");
-                if (entityClazzField != null && !entityClazzField.isAccessible())
-                {
+                if (entityClazzField != null && !entityClazzField.isAccessible()) {
                     entityClazzField.setAccessible(true);
                 }
 
                 entityClazzField.set(kunderaQuery, mappedClass);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 log.error(e.getMessage());
                 throw new QueryHandlerException(e);
             }
@@ -120,12 +104,9 @@ public class QueryResolver
 
         Query query = null;
 
-        try
-        {
+        try {
             query = getQuery(jpaQuery, persistenceDelegator, m, kunderaQuery, kunderaMetadata);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error(e.getMessage());
             throw new QueryHandlerException(e);
         }
@@ -134,34 +115,23 @@ public class QueryResolver
 
     /**
      * Gets the query instance.
-     * 
-     * @param jpaQuery
-     *            the jpa query
-     * @param persistenceDelegator
-     *            the persistence delegator
-     * @param persistenceUnits
-     *            the persistence units
+     *
+     * @param jpaQuery             the jpa query
+     * @param persistenceDelegator the persistence delegator
+     * @param persistenceUnits     the persistence units
      * @return the query
-     * @throws ClassNotFoundException
-     *             the class not found exception
-     * @throws SecurityException
-     *             the security exception
-     * @throws NoSuchMethodException
-     *             the no such method exception
-     * @throws IllegalArgumentException
-     *             the illegal argument exception
-     * @throws InstantiationException
-     *             the instantiation exception
-     * @throws IllegalAccessException
-     *             the illegal access exception
-     * @throws InvocationTargetException
-     *             the invocation target exception
+     * @throws ClassNotFoundException    the class not found exception
+     * @throws SecurityException         the security exception
+     * @throws NoSuchMethodException     the no such method exception
+     * @throws IllegalArgumentException  the illegal argument exception
+     * @throws InstantiationException    the instantiation exception
+     * @throws IllegalAccessException    the illegal access exception
+     * @throws InvocationTargetException the invocation target exception
      */
     private Query getQuery(String jpaQuery, PersistenceDelegator persistenceDelegator, EntityMetadata m,
-            KunderaQuery kunderaQuery, final KunderaMetadata kunderaMetadata) throws ClassNotFoundException,
+                           KunderaQuery kunderaQuery, final KunderaMetadata kunderaMetadata) throws ClassNotFoundException,
             SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException,
-            IllegalAccessException, InvocationTargetException
-    {
+            IllegalAccessException, InvocationTargetException {
         Query query;
 
         Class clazz = persistenceDelegator.getClient(m).getQueryImplementor();
@@ -175,7 +145,6 @@ public class QueryResolver
     }
 
     /**
-     * 
      * @param jpaQuery
      * @param queryClazz
      * @param persistenceDelegator
@@ -183,42 +152,33 @@ public class QueryResolver
      * @return
      */
     public Query getQueryImplementation(String jpaQuery, Class queryClazz,
-            final PersistenceDelegator persistenceDelegator, EntityMetadata metadata, String persistenceUnit)
-    {
+                                        final PersistenceDelegator persistenceDelegator, EntityMetadata metadata, String persistenceUnit) {
         KunderaQuery kunderaQuery = new KunderaQuery(jpaQuery, persistenceDelegator.getKunderaMetadata());
         kunderaQuery.isNativeQuery = true;
         kunderaQuery.setPersistenceUnit(persistenceUnit);
 
-        try
-        {
-            if (metadata != null)
-            {
+        try {
+            if (metadata != null) {
                 Field entityClazzField = kunderaQuery.getClass().getDeclaredField("entityClass");
-                if (entityClazzField != null && !entityClazzField.isAccessible())
-                {
+                if (entityClazzField != null && !entityClazzField.isAccessible()) {
                     entityClazzField.setAccessible(true);
                 }
 
                 entityClazzField.set(kunderaQuery, metadata.getEntityClazz());
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error(e.getMessage());
             throw new QueryHandlerException(e);
         }
 
         Query query = null;
 
-        try
-        {
+        try {
             Constructor constructor = queryClazz.getConstructor(KunderaQuery.class, PersistenceDelegator.class,
                     KunderaMetadata.class);
             query = (Query) constructor.newInstance(kunderaQuery, persistenceDelegator,
                     persistenceDelegator.getKunderaMetadata());
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error(e.getMessage());
             throw new QueryHandlerException(e);
         }

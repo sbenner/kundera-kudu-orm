@@ -15,20 +15,14 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.entities.bi;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author vivek.mishra
- * 
  */
 @Entity
 @Table(name = "asso_table", schema = "testSchema@keyspace")
-public class AssociationBiEntity
-{
+public class AssociationBiEntity {
 
     @Id
     @Column(name = "Association_ID")
@@ -46,85 +40,70 @@ public class AssociationBiEntity
     /**
      * @return the rowKey
      */
-    public String getRowKey()
-    {
+    public String getRowKey() {
         return assoRowKey;
     }
 
     /**
-     * @param rowKey
-     *            the rowKey to set
+     * @param rowKey the rowKey to set
      */
-    public void setRowKey(String rowKey)
-    {
+    public void setRowKey(String rowKey) {
         this.assoRowKey = rowKey;
     }
 
     /**
      * @return the address
      */
-    public String getAddress()
-    {
+    public String getAddress() {
         return address;
     }
 
     /**
-     * @param address
-     *            the address to set
+     * @param address the address to set
      */
-    public void setAddress(String address)
-    {
+    public void setAddress(String address) {
         this.address = address;
     }
 
     /**
      * @return the age
      */
-    public int getAge()
-    {
+    public int getAge() {
         return age;
     }
 
     /**
-     * @param age
-     *            the age to set
+     * @param age the age to set
      */
-    public void setAge(int age)
-    {
+    public void setAge(int age) {
         this.age = age;
     }
 
     /**
      * @return the assoRowKey
      */
-    public String getAssoRowKey()
-    {
+    public String getAssoRowKey() {
         return assoRowKey;
     }
 
     /**
-     * @param assoRowKey
-     *            the assoRowKey to set
+     * @param assoRowKey the assoRowKey to set
      */
-    public void setAssoRowKey(String assoRowKey)
-    {
+    public void setAssoRowKey(String assoRowKey) {
         this.assoRowKey = assoRowKey;
     }
 
     /**
      * @return the owner
      */
-    public OToOOwnerBiEntity getOwner()
-    {
+    public OToOOwnerBiEntity getOwner() {
         return owner;
     }
 
     /**
-     * @param owner
-     *            the owner to set
+     * @param owner the owner to set
      */
-    public void setOwner(OToOOwnerBiEntity owner)
-    {
+    public void setOwner(OToOOwnerBiEntity owner) {
         this.owner = owner;
     }
 

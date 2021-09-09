@@ -15,11 +15,6 @@
  ******************************************************************************/
 package com.impetus.kundera.client;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.impetus.kundera.db.RelationHolder;
 import com.impetus.kundera.graph.Node;
 import com.impetus.kundera.graph.NodeLink;
@@ -35,77 +30,72 @@ import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.property.PropertyAccessorHelper;
 import com.impetus.kundera.utils.KunderaCoreUtils;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Base class for all Client implementations providing common utility methods to
  * them all.
- * 
+ *
  * @author amresh
- * 
  */
-public abstract class ClientBase
-{
-
-    /** The index manager. */
-    protected IndexManager indexManager;
-    
- 
-    /**
-     * @return the autoGenerator
-     */
-    public String getAutoGenerator()
-    {
-       return this.getClientMetadata() != null ? this.getClientMetadata().getAutoGenImplementor() : null;
-    }
-
-    /** persistence unit */
-    protected String persistenceUnit;
-
-    protected boolean isUpdate;
-
-    protected ClientMetadata clientMetadata;
+public abstract class ClientBase {
 
     protected final KunderaMetadata kunderaMetadata;
-
     protected final boolean showQuery;
-
+    /**
+     * The index manager.
+     */
+    protected IndexManager indexManager;
+    /**
+     * persistence unit
+     */
+    protected String persistenceUnit;
+    protected boolean isUpdate;
+    protected ClientMetadata clientMetadata;
     protected Map<String, Object> externalProperties;
 
     protected ClientBase(final KunderaMetadata kunderaMetadata, final Map<String, Object> properties,
-            final String persistenceUnit)
-    {
+                         final String persistenceUnit) {
         this.kunderaMetadata = kunderaMetadata;
         this.externalProperties = properties;
         this.persistenceUnit = persistenceUnit;
         this.showQuery = KunderaCoreUtils.isShowQueryEnabled(properties, persistenceUnit, kunderaMetadata);
     }
 
+    /**
+     * @return the autoGenerator
+     */
+    public String getAutoGenerator() {
+        return this.getClientMetadata() != null ? this.getClientMetadata().getAutoGenImplementor() : null;
+    }
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.client.Client#getIndexManager()
      */
-    public final IndexManager getIndexManager()
-    {
+    public final IndexManager getIndexManager() {
         return indexManager;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.client.Client#getPersistenceUnit()
      */
-    public String getPersistenceUnit()
-    {
+    public String getPersistenceUnit() {
         return persistenceUnit;
     }
 
     /**
      * Method to handle
-     * 
+     *
      * @param node
      */
-    public void persist(Node node)
-    {
+    public void persist(Node node) {
         Object entity = node.getData();
         Object id = node.getEntityId();
         EntityMetadata metadata = KunderaMetadataManager.getEntityMetadata(kunderaMetadata, node.getDataClass());
@@ -117,15 +107,14 @@ public abstract class ClientBase
         indexNode(node, metadata);
     }
 
-    public void remove(Object entity, Object pKey){
+    public void remove(Object entity, Object pKey) {
         delete(entity, pKey);
         EntityMetadata metadata = KunderaMetadataManager.getEntityMetadata(kunderaMetadata, entity.getClass());
-        unIndexNode(metadata, entity,pKey);
+        unIndexNode(metadata, entity, pKey);
     }
-    protected void unIndexNode(EntityMetadata metadata, Object entity, Object pKey)
-    {
-        if(indexManager!=null)
-        {
+
+    protected void unIndexNode(EntityMetadata metadata, Object entity, Object pKey) {
+        if (indexManager != null) {
             indexManager.remove(metadata, entity, pKey);
         }
     }
@@ -134,18 +123,15 @@ public abstract class ClientBase
      * @param node
      * @return
      */
-    protected List<RelationHolder> getRelationHolders(Node node)
-    {
+    protected List<RelationHolder> getRelationHolders(Node node) {
         List<RelationHolder> relationsHolder = new ArrayList<RelationHolder>();
 
         // Add column value for all parent nodes linked to this node
         Map<NodeLink, Node> parents = node.getParents();
         Map<NodeLink, Node> children = node.getChildren();
 
-        if (parents != null && !parents.isEmpty())
-        {
-            for (NodeLink parentNodeLink : parents.keySet())
-            {
+        if (parents != null && !parents.isEmpty()) {
+            for (NodeLink parentNodeLink : parents.keySet()) {
                 String linkName = (String) parentNodeLink.getLinkProperty(LinkProperty.LINK_NAME);
                 Object linkValue = parentNodeLink.getLinkProperty(LinkProperty.LINK_VALUE) != null ? parentNodeLink
                         .getLinkProperty(LinkProperty.LINK_VALUE) : parents.get(parentNodeLink).getEntityId();
@@ -154,8 +140,7 @@ public abstract class ClientBase
                 Relation.ForeignKey multiplicity = parentNodeLink.getMultiplicity();
 
                 if (linkName != null && linkValue != null && !isSharedByPrimaryKey
-                        && multiplicity.equals(ForeignKey.ONE_TO_MANY))
-                {
+                        && multiplicity.equals(ForeignKey.ONE_TO_MANY)) {
                     RelationHolder relationHolder = new RelationHolder(linkName, linkValue);
                     relationsHolder.add(relationHolder);
                 }
@@ -163,10 +148,8 @@ public abstract class ClientBase
         }
 
         // Add column value for all child nodes linked to this node
-        if (children != null && !children.isEmpty())
-        {
-            for (NodeLink childNodeLink : children.keySet())
-            {
+        if (children != null && !children.isEmpty()) {
+            for (NodeLink childNodeLink : children.keySet()) {
                 String linkName = (String) childNodeLink.getLinkProperty(LinkProperty.LINK_NAME);
                 Object linkValue = childNodeLink.getLinkProperty(LinkProperty.LINK_VALUE) != null ? childNodeLink
                         .getLinkProperty(LinkProperty.LINK_VALUE) : children.get(childNodeLink).getEntityId();
@@ -174,17 +157,13 @@ public abstract class ClientBase
                         .getLinkProperty(LinkProperty.IS_SHARED_BY_PRIMARY_KEY);
                 Relation.ForeignKey multiplicity = childNodeLink.getMultiplicity();
 
-                if (linkName != null && linkValue != null && !isSharedByPrimaryKey)
-                {
-                    if (multiplicity.equals(ForeignKey.ONE_TO_ONE) || multiplicity.equals(ForeignKey.MANY_TO_ONE))
-                    {
+                if (linkName != null && linkValue != null && !isSharedByPrimaryKey) {
+                    if (multiplicity.equals(ForeignKey.ONE_TO_ONE) || multiplicity.equals(ForeignKey.MANY_TO_ONE)) {
                         RelationHolder relationHolder = new RelationHolder(linkName, linkValue);
                         relationsHolder.add(relationHolder);
-                    }
-                    else if (multiplicity.equals(ForeignKey.MANY_TO_MANY)
+                    } else if (multiplicity.equals(ForeignKey.MANY_TO_MANY)
                             && ((Field) childNodeLink.getLinkProperty(LinkProperty.PROPERTY)).getType()
-                                    .isAssignableFrom(Map.class))
-                    {
+                            .isAssignableFrom(Map.class)) {
                         Object relationTo = ((Node) children.get(childNodeLink)).getData();
                         RelationHolder relationHolder = new RelationHolder(linkName, relationTo, linkValue);
                         relationsHolder.add(relationHolder);
@@ -199,40 +178,27 @@ public abstract class ClientBase
      * @param node
      * @param entityMetadata
      */
-    protected void indexNode(Node node, EntityMetadata entityMetadata)
-    {
-        if (indexManager != null)
-        {
-            if (!MetadataUtils.useSecondryIndex(getClientMetadata()))
-            {
+    protected void indexNode(Node node, EntityMetadata entityMetadata) {
+        if (indexManager != null) {
+            if (!MetadataUtils.useSecondryIndex(getClientMetadata())) {
                 Map<NodeLink, Node> parents = node.getParents();
-                if (parents != null)
-                {
-                    for (NodeLink parentNodeLink : parents.keySet())
-                    {
+                if (parents != null) {
+                    for (NodeLink parentNodeLink : parents.keySet()) {
                         indexManager.update(entityMetadata, node.getData(), parentNodeLink
                                 .getLinkProperty(LinkProperty.LINK_VALUE), parents.get(parentNodeLink).getDataClass());
                     }
-                }
-                else if (node.getChildren() != null)
-                {
+                } else if (node.getChildren() != null) {
                     Map<NodeLink, Node> children = node.getChildren();
-                    for (NodeLink childNodeLink : children.keySet())
-                    {
-                        if (childNodeLink.getMultiplicity().equals(ForeignKey.MANY_TO_ONE))
-                        {
-                            indexManager.update(entityMetadata, node.getData(), children.get(childNodeLink).getEntityId(),children.get(childNodeLink)
+                    for (NodeLink childNodeLink : children.keySet()) {
+                        if (childNodeLink.getMultiplicity().equals(ForeignKey.MANY_TO_ONE)) {
+                            indexManager.update(entityMetadata, node.getData(), children.get(childNodeLink).getEntityId(), children.get(childNodeLink)
                                     .getDataClass());
-                        }
-                        else
-                        {
+                        } else {
                             indexManager
                                     .update(entityMetadata, node.getData(), node.getEntityId(), node.getDataClass());
                         }
                     }
-                }
-                else
-                {
+                } else {
                     indexManager.update(entityMetadata, node.getData(), node.getEntityId(), node.getDataClass());
                 }
             }
@@ -242,41 +208,33 @@ public abstract class ClientBase
     /**
      * Method to be implemented by inherited classes. On receiving persist event
      * specific client need to implement this method.
-     * 
-     * @param entityMetadata
-     *            entity metadata.
-     * @param entity
-     *            entity object.
-     * @param id
-     *            entity id.
-     * @param rlHolders
-     *            relation holders. This field is only required in case Entity
-     *            is holding up any associations with other entities.
+     *
+     * @param entityMetadata entity metadata.
+     * @param entity         entity object.
+     * @param id             entity id.
+     * @param rlHolders      relation holders. This field is only required in case Entity
+     *                       is holding up any associations with other entities.
      */
     protected abstract void onPersist(EntityMetadata entityMetadata, Object entity, Object id,
-            List<RelationHolder> rlHolders);
+                                      List<RelationHolder> rlHolders);
+
     protected abstract void delete(Object entity, Object pKey);
 
-    public ClientMetadata getClientMetadata()
-    {
+    public ClientMetadata getClientMetadata() {
         return this.clientMetadata;
     }
 
-    public boolean useSecondryIndex()
-    {
+    public boolean useSecondryIndex() {
         return clientMetadata != null ? clientMetadata.isUseSecondryIndex() : false;
     }
-    
+
     /**
      * Method to execute mongo jscripts.
-     * 
-     * @param script
-     *            jscript in string format
-     * 
+     *
+     * @param script jscript in string format
      * @return result object.
      */
-    public Object executeScript(String script)
-    {
+    public Object executeScript(String script) {
         throw new UnsupportedOperationException("Execute script is not supported by this client");
     }
 

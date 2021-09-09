@@ -15,33 +15,28 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
+import com.impetus.kundera.property.PropertyAccessException;
+import com.impetus.kundera.property.PropertyAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.impetus.kundera.property.PropertyAccessException;
-import com.impetus.kundera.property.PropertyAccessor;
-
 /**
  * The Class ShortAccessor.
- * 
+ *
  * @author Amresh Singh
  */
-public class ShortAccessor implements PropertyAccessor<Short>
-{
+public class ShortAccessor implements PropertyAccessor<Short> {
     public static Logger log = LoggerFactory.getLogger(ShortAccessor.class);
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.property.PropertyAccessor#fromBytes(byte[])
      */
     @Override
-    public Short fromBytes(Class targetClass, byte[] data)
-    {
-        if (data == null || data.length != 2)
-        {
-            if (log.isWarnEnabled())
-            {
+    public Short fromBytes(Class targetClass, byte[] data) {
+        if (data == null || data.length != 2) {
+            if (log.isWarnEnabled()) {
                 log.warn("Bytes length not equal to 2");
             }
             return 0x0;
@@ -52,77 +47,64 @@ public class ShortAccessor implements PropertyAccessor<Short>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toBytes(java.lang.Object)
      */
     @Override
-    public byte[] toBytes(Object object)
-    {
+    public byte[] toBytes(Object object) {
         Short s = null;
-        if (object != null)
-        {
+        if (object != null) {
 
-            if (object.getClass().isAssignableFrom(String.class))
-            {
+            if (object.getClass().isAssignableFrom(String.class)) {
                 s = Short.valueOf(object.toString());
-            }
-            else
-            {
+            } else {
                 s = (Short) object;
             }
-            return new byte[] { (byte) ((s >> 8) & 0xff), (byte) ((s >> 0) & 0xff), };
+            return new byte[]{(byte) ((s >> 8) & 0xff), (byte) ((s >> 0) & 0xff),};
         }
         return null;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toString(java.lang.Object)
      */
     @Override
-    public String toString(Object object)
-    {
+    public String toString(Object object) {
         return object != null ? object.toString() : null;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#fromString(java.lang.String
      * )
      */
     @Override
-    public Short fromString(Class targetClass, String s)
-    {
-        try
-        {
+    public Short fromString(Class targetClass, String s) {
+        try {
 
-            if (s == null)
-            {
+            if (s == null) {
                 return null;
             }
             Short sh = new Short(s);
             return sh;
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             log.error("Number format exception, Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
     }
 
     @Override
-    public Short getCopy(Object object)
-    {
+    public Short getCopy(Object object) {
         return object != null ? (Short) object : null;
     }
 
-    public Short getInstance(Class<?> clazz)
-    {
+    public Short getInstance(Class<?> clazz) {
         return Short.MAX_VALUE;
     }
 }

@@ -20,20 +20,16 @@ import com.impetus.kundera.service.policy.LoadBalancingPolicy;
 /**
  * Host interface all module will implement it in order to provide
  * {@link LoadBalancingPolicy }.
- * 
+ *
  * @author Kuldeep.Mishra
- * 
  */
-public interface Host
-{
+public interface Host {
     /**
-     * 
      * @return host.
      */
     String getHost();
 
     /**
-     * 
      * @return port.
      */
     int getPort();
@@ -59,7 +55,6 @@ public interface Host
     int getMinIdle();
 
     /**
-     * 
      * @return true/false.
      */
     public boolean isRetryHost();

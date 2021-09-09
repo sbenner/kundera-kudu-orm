@@ -2,8 +2,7 @@ package com.impetus.kundera.datatypes.datagenerator;
 
 import java.util.Date;
 
-public class DateDataGenerator implements DataGenerator<Date>
-{
+public class DateDataGenerator implements DataGenerator<Date> {
 
     private static final LongDataGenerator LONG_DATA_GENERATOR = new LongDataGenerator();
 
@@ -14,26 +13,22 @@ public class DateDataGenerator implements DataGenerator<Date>
     private static final Date DATE = new Date(LONG_DATA_GENERATOR.randomValue());
 
     @Override
-    public Date randomValue()
-    {
+    public Date randomValue() {
         return DATE;
     }
 
     @Override
-    public Date maxValue()
-    {
+    public Date maxValue() {
         return MAX_DATE;
     }
 
     @Override
-    public Date minValue()
-    {
+    public Date minValue() {
         return MIN_DATE;
     }
 
     @Override
-    public Date partialValue()
-    {
+    public Date partialValue() {
 
         return null;
     }

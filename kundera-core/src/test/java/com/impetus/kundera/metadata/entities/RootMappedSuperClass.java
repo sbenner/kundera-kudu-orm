@@ -4,11 +4,9 @@ import javax.persistence.Column;
 
 /**
  * @author vivek.mishra
- * 
  */
 
-public class RootMappedSuperClass
-{
+public class RootMappedSuperClass {
 
     @Column
     private String rootStr;
@@ -19,34 +17,28 @@ public class RootMappedSuperClass
     /**
      * @return the rootStr
      */
-    public String getRootStr()
-    {
+    public String getRootStr() {
         return rootStr;
     }
 
     /**
-     * @param rootStr
-     *            the rootStr to set
+     * @param rootStr the rootStr to set
      */
-    public void setRootStr(String rootStr)
-    {
+    public void setRootStr(String rootStr) {
         this.rootStr = rootStr;
     }
 
     /**
      * @return the rootLong
      */
-    public Long getRootLong()
-    {
+    public Long getRootLong() {
         return rootLong;
     }
 
     /**
-     * @param rootLong
-     *            the rootLong to set
+     * @param rootLong the rootLong to set
      */
-    public void setRootLong(Long rootLong)
-    {
+    public void setRootLong(Long rootLong) {
         this.rootLong = rootLong;
     }
 

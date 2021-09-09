@@ -15,26 +15,16 @@
  ******************************************************************************/
 package com.impetus.kundera.polyglot.entities;
 
-import java.util.Map;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
 
+import javax.persistence.*;
+import java.util.Map;
+
 @Entity
 @Table(name = "PERSON", schema = "KunderaTests@patest")
-@IndexCollection(columns = { @Index(name = "personName") })
-public class PersonUMMByMap
-{
+@IndexCollection(columns = {@Index(name = "personName")})
+public class PersonUMMByMap {
     @Id
     @Column(name = "PERSON_ID")
     private String personId;
@@ -43,36 +33,30 @@ public class PersonUMMByMap
     private String personName;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "PERSONNEL_ADDRESS", schema = "KunderaTests", joinColumns = { @JoinColumn(name = "PERSON_ID") }, inverseJoinColumns = { @JoinColumn(name = "ADDRESS_ID") })
-    private Map<String,AddressUMM> addresses;
+    @JoinTable(name = "PERSONNEL_ADDRESS", schema = "KunderaTests", joinColumns = {@JoinColumn(name = "PERSON_ID")}, inverseJoinColumns = {@JoinColumn(name = "ADDRESS_ID")})
+    private Map<String, AddressUMM> addresses;
 
-    public String getPersonId()
-    {
+    public String getPersonId() {
         return personId;
     }
 
-    public String getPersonName()
-    {
-        return personName;
-    }
-
-    public void setPersonName(String personName)
-    {
-        this.personName = personName;
-    }
-
-    public void setPersonId(String personId)
-    {
+    public void setPersonId(String personId) {
         this.personId = personId;
     }
 
-    public Map<String, AddressUMM> getAddresses()
-    {
+    public String getPersonName() {
+        return personName;
+    }
+
+    public void setPersonName(String personName) {
+        this.personName = personName;
+    }
+
+    public Map<String, AddressUMM> getAddresses() {
         return addresses;
     }
 
-    public void setAddresses(Map<String, AddressUMM> addresses)
-    {
+    public void setAddresses(Map<String, AddressUMM> addresses) {
         this.addresses = addresses;
     }
 

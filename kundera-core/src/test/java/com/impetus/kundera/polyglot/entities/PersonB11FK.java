@@ -15,23 +15,15 @@
  ******************************************************************************/
 package com.impetus.kundera.polyglot.entities;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
 
+import javax.persistence.*;
+
 @Entity
 @Table(name = "PERSON", schema = "KunderaTests@patest")
-@IndexCollection(columns = { @Index(name = "personName") })
-public class PersonB11FK
-{
+@IndexCollection(columns = {@Index(name = "personName")})
+public class PersonB11FK {
     @Id
     @Column(name = "PERSON_ID")
     private String personId;
@@ -43,33 +35,27 @@ public class PersonB11FK
     @JoinColumn(name = "ADDRESS_ID")
     private AddressB11FK address;
 
-    public String getPersonId()
-    {
+    public String getPersonId() {
         return personId;
     }
 
-    public String getPersonName()
-    {
-        return personName;
-    }
-
-    public void setPersonName(String personName)
-    {
-        this.personName = personName;
-    }
-
-    public void setPersonId(String personId)
-    {
+    public void setPersonId(String personId) {
         this.personId = personId;
     }
 
-    public AddressB11FK getAddress()
-    {
+    public String getPersonName() {
+        return personName;
+    }
+
+    public void setPersonName(String personName) {
+        this.personName = personName;
+    }
+
+    public AddressB11FK getAddress() {
         return address;
     }
 
-    public void setAddress(AddressB11FK address)
-    {
+    public void setAddress(AddressB11FK address) {
         this.address = address;
     }
 

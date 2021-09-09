@@ -15,47 +15,33 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.model.attributes;
 
+import com.impetus.kundera.gis.geometry.Point;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.impetus.kundera.gis.geometry.Point;
-
 /**
  * Attribute type.
- * 
- * @author Kuldeep.Mishra
  *
+ * @author Kuldeep.Mishra
  */
-public enum AttributeType
-{
+public enum AttributeType {
     ENUM, LIST, SET, MAP, POINT, PRIMITIVE;
 
-    public static AttributeType getType(Class javaType)
-    {
+    public static AttributeType getType(Class javaType) {
         AttributeType type = null;
-        if (javaType.isAssignableFrom(List.class))
-        {
+        if (javaType.isAssignableFrom(List.class)) {
             type = LIST;
-        }
-        else if (javaType.isAssignableFrom(Map.class))
-        {
+        } else if (javaType.isAssignableFrom(Map.class)) {
             type = MAP;
-        }
-        else if (javaType.isAssignableFrom(Set.class))
-        {
+        } else if (javaType.isAssignableFrom(Set.class)) {
             type = SET;
-        }
-        else if (javaType.isEnum())
-        {
+        } else if (javaType.isEnum()) {
             type = ENUM;
-        }
-        else if (javaType.isAssignableFrom(Point.class))
-        {
+        } else if (javaType.isAssignableFrom(Point.class)) {
             type = POINT;
-        }
-        else
-        {
+        } else {
             type = PRIMITIVE;
         }
         return type;

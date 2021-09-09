@@ -1,12 +1,12 @@
 /**
  * Copyright 2013 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,15 +15,6 @@
  */
 package com.impetus.kundera.metadata;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.metamodel.Metamodel;
-
-import junit.framework.Assert;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import com.impetus.kundera.KunderaException;
 import com.impetus.kundera.metadata.entities.SingularEntityEmbeddable;
 import com.impetus.kundera.metadata.model.EntityMetadata;
@@ -31,13 +22,19 @@ import com.impetus.kundera.metadata.model.PersistenceUnitMetadata;
 import com.impetus.kundera.metadata.validator.GeneratedIdStrategyIdentity;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
+import junit.framework.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.metamodel.Metamodel;
 
 /**
  * @author vivek.mishra junit for {@link KunderaMetadataManager}.
- * 
+ *
  */
-public class KunderaMetadataManagerTest
-{
+public class KunderaMetadataManagerTest {
 
     private String persistenceUnit = "patest";
 
@@ -46,15 +43,13 @@ public class KunderaMetadataManagerTest
     private KunderaMetadata kunderaMetadata;
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         emf = Persistence.createEntityManagerFactory(persistenceUnit);
         kunderaMetadata = ((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance();
     }
 
     @Test
-    public void test()
-    {
+    public void test() {
         EntityMetadata entityMetadata = KunderaMetadataManager.getEntityMetadata(kunderaMetadata,
                 SingularEntityEmbeddable.class);
         Assert.assertNotNull(entityMetadata);
@@ -62,13 +57,10 @@ public class KunderaMetadataManagerTest
                 SingularEntityEmbeddable.class);
         Assert.assertNotNull(entityMetadata);
 
-        try
-        {
+        try {
             entityMetadata = KunderaMetadataManager.getEntityMetadata(kunderaMetadata, null);
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (KunderaException kex)
-        {
+        } catch (KunderaException kex) {
             Assert.assertNotNull(kex.getMessage());
         }
 

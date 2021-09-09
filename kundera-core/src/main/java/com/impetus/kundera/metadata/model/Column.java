@@ -19,11 +19,10 @@ import java.lang.reflect.Field;
 
 /**
  * Holds metadata for entity column.
- * 
+ *
  * @author animesh.kumar
  */
-public final class Column
-{
+public final class Column {
 
     private int order = 0;
     /**
@@ -31,30 +30,30 @@ public final class Column
      */
     private String name;
 
-    private boolean nullable=true;
+    private boolean nullable = true;
 
-    /** column field. */
+    /**
+     * column field.
+     */
     private Field field;
 
-    /** whether indexable. */
+    /**
+     * whether indexable.
+     */
     private boolean isIndexable; // default is NOT indexable
 
     /**
      * Instantiates a new column.
-     * 
-     * @param name
-     *            the name
-     * @param field
-     *            the field
+     *
+     * @param name  the name
+     * @param field the field
      */
-    public Column(String name, Field field)
-    {
+    public Column(String name, Field field) {
         this.name = name;
         this.field = field;
     }
 
-    public Column(String name, Field field, boolean isIndexable)
-    {
+    public Column(String name, Field field, boolean isIndexable) {
         this.name = name;
         this.field = field;
         this.isIndexable = isIndexable;
@@ -62,39 +61,35 @@ public final class Column
 
     /**
      * Gets the name.
-     * 
+     *
      * @return the name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     /**
      * Gets the field.
-     * 
+     *
      * @return the field
      */
-    public Field getField()
-    {
+    public Field getField() {
         return field;
     }
 
     /**
      * Checks if is indexable.
-     * 
+     *
      * @return the isIndexable
      */
-    public boolean isIndexable()
-    {
+    public boolean isIndexable() {
         return isIndexable;
     }
 
     /**
      * Sets the indexable.
-     * 
-     * @param isIndexable
-     *            the isIndexable to set
+     *
+     * @param isIndexable the isIndexable to set
      */
     public void setIndexable(boolean isIndexable) {
         this.isIndexable = isIndexable;

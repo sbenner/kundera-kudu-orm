@@ -19,71 +19,65 @@ import javax.persistence.criteria.Expression;
 
 /**
  * The Class AggregateExpression.
- * 
+ *
  * @author: karthikp.manchala
  */
-public class AggregateExpression extends AbstractExpression<Long>
-{
+public class AggregateExpression extends AbstractExpression<Long> {
 
-    /** The expression. */
+    /**
+     * The expression.
+     */
     private Expression<?> expression;
 
-    /** The aggregation. */
+    /**
+     * The aggregation.
+     */
     private String aggregation;
 
     /**
      * Instantiates a new aggregate expression.
-     * 
-     * @param expression
-     *            the expression
-     * @param aggregation
-     *            the aggregation
+     *
+     * @param expression  the expression
+     * @param aggregation the aggregation
      */
-    public AggregateExpression(Expression<?> expression, String aggregation)
-    {
+    public AggregateExpression(Expression<?> expression, String aggregation) {
         this.expression = expression;
         this.aggregation = aggregation;
     }
 
     /**
      * Gets the expression.
-     * 
+     *
      * @return the expression
      */
-    public Expression<?> getExpression()
-    {
+    public Expression<?> getExpression() {
         return expression;
     }
 
     /**
      * Sets the expression.
-     * 
-     * @param expression
-     *            the new expression
+     *
+     * @param expression the new expression
      */
-    public void setExpression(Expression<?> expression)
-    {
+    public void setExpression(Expression<?> expression) {
         this.expression = expression;
     }
 
     /**
      * Gets the aggregation.
-     * 
+     *
      * @return the aggregation
      */
-    public String getAggregation()
-    {
+    public String getAggregation() {
         return aggregation;
     }
 
     /**
      * Sets the aggregation.
-     * 
-     * @param aggregation
-     *            the new aggregation
+     *
+     * @param aggregation the new aggregation
      */
-    public void setAggregation(String aggregation)
-    {
+    public void setAggregation(String aggregation) {
         this.aggregation = aggregation;
     }
 

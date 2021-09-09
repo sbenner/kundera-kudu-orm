@@ -1,32 +1,27 @@
 package com.impetus.kundera.datatypes.datagenerator;
 
-public class BooleanDataGenerator implements DataGenerator<Boolean>
-{
+public class BooleanDataGenerator implements DataGenerator<Boolean> {
 
     @Override
-    public Boolean randomValue()
-    {
+    public Boolean randomValue() {
 
         return true;
     }
 
     @Override
-    public Boolean maxValue()
-    {
+    public Boolean maxValue() {
 
         return true;
     }
 
     @Override
-    public Boolean minValue()
-    {
+    public Boolean minValue() {
 
         return false;
     }
 
     @Override
-    public Boolean partialValue()
-    {
+    public Boolean partialValue() {
 
         return null;
     }

@@ -19,66 +19,52 @@ import java.lang.reflect.Field;
 
 /**
  * Interface to access {@link Field} property of a java class.
- * 
- * @param <T>
- *            the generic type
+ *
+ * @param <T> the generic type
  * @author animesh.kumar
  */
-public interface PropertyAccessor<T>
-{
+public interface PropertyAccessor<T> {
 
     /**
      * From bytes.
-     * 
-     * @param b
-     *            the b
-     * 
+     *
+     * @param b the b
      * @return the T
-     * 
-     * @throws PropertyAccessException
-     *             the property access exception
+     * @throws PropertyAccessException the property access exception
      */
     T fromBytes(Class targetClass, byte[] b);
 
     /**
      * To bytes.
-     * 
-     * @param object
-     *            the object
-     * 
+     *
+     * @param object the object
      * @return the byte[]
-     * 
-     * @throws PropertyAccessException
-     *             the property access exception
+     * @throws PropertyAccessException the property access exception
      */
     byte[] toBytes(Object object);
 
     /**
      * Converts Object to String. Normally, this will be object.toString() But
      * in some cases, this might be different.
-     * 
-     * @param object
-     *            the object
-     * 
+     *
+     * @param object the object
      * @return the string
      */
     String toString(Object object);
 
     /**
      * Converts string representation to the data object whose type is T.
-     * 
-     * @param s
-     *            the s
+     *
+     * @param s the s
      * @return the t
-     * @throws PropertyAccessException
-     *             When string can't be converted to specified type, usually as
-     *             a result of NumberFormatException
+     * @throws PropertyAccessException When string can't be converted to specified type, usually as
+     *                                 a result of NumberFormatException
      */
     T fromString(Class targetClass, String s);
 
     /**
      * Gets copy of object
-     * 
+     *
      * @param object
      * @return
      */
@@ -86,7 +72,6 @@ public interface PropertyAccessor<T>
 
     /**
      * @param clazz
-     * 
      */
     Object getInstance(Class<?> clazz);
 

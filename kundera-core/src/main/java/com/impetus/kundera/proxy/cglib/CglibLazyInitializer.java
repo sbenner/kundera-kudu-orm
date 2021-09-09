@@ -15,20 +15,6 @@
  ******************************************************************************/
 package com.impetus.kundera.proxy.cglib;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-import javax.persistence.PersistenceException;
-
-import net.sf.cglib.proxy.Callback;
-import net.sf.cglib.proxy.CallbackFilter;
-import net.sf.cglib.proxy.Enhancer;
-import net.sf.cglib.proxy.InvocationHandler;
-import net.sf.cglib.proxy.NoOp;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.kundera.metadata.KunderaMetadataManager;
 import com.impetus.kundera.metadata.model.EntityMetadata;
 import com.impetus.kundera.metadata.model.Relation;
@@ -37,94 +23,125 @@ import com.impetus.kundera.property.PropertyAccessorHelper;
 import com.impetus.kundera.proxy.KunderaProxy;
 import com.impetus.kundera.proxy.LazyInitializationException;
 import com.impetus.kundera.proxy.LazyInitializer;
+import net.sf.cglib.proxy.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.PersistenceException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * A <tt>LazyInitializer</tt> implemented using the CGLIB bytecode generation
  * library.
  */
-public final class CglibLazyInitializer implements LazyInitializer, InvocationHandler
-{
+public final class CglibLazyInitializer implements LazyInitializer, InvocationHandler {
 
-    /** The Constant log. */
+    /**
+     * The Constant log.
+     */
     private static final Logger log = LoggerFactory.getLogger(CglibLazyInitializer.class);
-
-    /** The entity name. */
-    private String entityName;
-
-    /** The id. */
-    private Object id;
-
-    /** The target. */
-    private Object owner;
-
-    /** The target. */
-    private Object target;
-
-    /** The initialized. */
-    private boolean initialized;
-
-    /** The unwrap. */
-    private boolean unwrap;
-
-    /** The persistent class. */
-    protected Class<?> persistentClass;
-
-    /** The get identifier method. */
-    protected Method getIdentifierMethod;
-
-    /** The set identifier method. */
-    protected Method setIdentifierMethod;
-
-    /** The interfaces. */
-    private Class<?>[] interfaces;
-
-    /** The constructed. */
-    private boolean constructed = false;
-
-    /** The persistenceDelegator. */
-    private transient PersistenceDelegator persistenceDelegator;
-
-    /** The Constant FINALIZE_FILTER. */
-    private static final CallbackFilter FINALIZE_FILTER = new CallbackFilter()
-    {
-        public int accept(Method method)
-        {
-            if (method.getParameterTypes().length == 0 && method.getName().equals("finalize"))
-            {
+    /**
+     * The Constant FINALIZE_FILTER.
+     */
+    private static final CallbackFilter FINALIZE_FILTER = new CallbackFilter() {
+        public int accept(Method method) {
+            if (method.getParameterTypes().length == 0 && method.getName().equals("finalize")) {
                 return 1;
-            }
-            else
-            {
+            } else {
                 return 0;
             }
         }
     };
+    /**
+     * The persistent class.
+     */
+    protected Class<?> persistentClass;
+    /**
+     * The get identifier method.
+     */
+    protected Method getIdentifierMethod;
+    /**
+     * The set identifier method.
+     */
+    protected Method setIdentifierMethod;
+    /**
+     * The entity name.
+     */
+    private String entityName;
+    /**
+     * The id.
+     */
+    private Object id;
+    /**
+     * The target.
+     */
+    private Object owner;
+    /**
+     * The target.
+     */
+    private Object target;
+    /**
+     * The initialized.
+     */
+    private boolean initialized;
+    /**
+     * The unwrap.
+     */
+    private boolean unwrap;
+    /**
+     * The interfaces.
+     */
+    private Class<?>[] interfaces;
+    /**
+     * The constructed.
+     */
+    private boolean constructed = false;
+    /**
+     * The persistenceDelegator.
+     */
+    private transient PersistenceDelegator persistenceDelegator;
+
+    /**
+     * Instantiates a new cglib lazy initializer.
+     *
+     * @param entityName           the entity name
+     * @param persistentClass      the persistent class
+     * @param interfaces           the interfaces
+     * @param id                   the id
+     * @param getIdentifierMethod  the get identifier method
+     * @param setIdentifierMethod  the set identifier method
+     * @param persistenceDelegator the persistence delegator
+     */
+    private CglibLazyInitializer(final String entityName, final Class<?> persistentClass, final Class<?>[] interfaces,
+                                 final Object id, final Method getIdentifierMethod, final Method setIdentifierMethod,
+                                 final PersistenceDelegator pd) {
+
+        this.entityName = entityName;
+        this.id = id;
+        this.persistenceDelegator = pd;
+        this.persistentClass = persistentClass;
+        this.getIdentifierMethod = getIdentifierMethod;
+        this.setIdentifierMethod = setIdentifierMethod;
+        this.interfaces = interfaces;
+    }
 
     /**
      * Gets the proxy.
-     * 
-     * @param entityName
-     *            the entity name
-     * @param persistentClass
-     *            the persistent class
-     * @param interfaces
-     *            the interfaces
-     * @param getIdentifierMethod
-     *            the get identifier method
-     * @param setIdentifierMethod
-     *            the set identifier method
-     * @param id
-     *            the id
-     * @param persistenceDelegator
-     *            the persistence delegator
+     *
+     * @param entityName           the entity name
+     * @param persistentClass      the persistent class
+     * @param interfaces           the interfaces
+     * @param getIdentifierMethod  the get identifier method
+     * @param setIdentifierMethod  the set identifier method
+     * @param id                   the id
+     * @param persistenceDelegator the persistence delegator
      * @return the proxy
-     * @throws PersistenceException
-     *             the persistence exception
+     * @throws PersistenceException the persistence exception
      */
     public static KunderaProxy getProxy(final String entityName, final Class<?> persistentClass,
-            final Class<?>[] interfaces, final Method getIdentifierMethod, final Method setIdentifierMethod,
-            final Object id, final PersistenceDelegator pd) throws PersistenceException
-    {
+                                        final Class<?>[] interfaces, final Method getIdentifierMethod, final Method setIdentifierMethod,
+                                        final Object id, final PersistenceDelegator pd) throws PersistenceException {
 
         final CglibLazyInitializer instance = new CglibLazyInitializer(entityName, persistentClass, interfaces, id,
                 getIdentifierMethod, setIdentifierMethod, pd);
@@ -141,35 +158,23 @@ public final class CglibLazyInitializer implements LazyInitializer, InvocationHa
 
     /**
      * Gets the proxy instance.
-     * 
-     * @param factory
-     *            the factory
-     * @param instance
-     *            the instance
+     *
+     * @param factory  the factory
+     * @param instance the instance
      * @return the proxy instance
-     * @throws InstantiationException
-     *             the instantiation exception
-     * @throws IllegalAccessException
-     *             the illegal access exception
+     * @throws InstantiationException the instantiation exception
+     * @throws IllegalAccessException the illegal access exception
      */
-    private static KunderaProxy getProxyInstance(Class factory, CglibLazyInitializer instance)
-    {
+    private static KunderaProxy getProxyInstance(Class factory, CglibLazyInitializer instance) {
         KunderaProxy proxy;
-        try
-        {
-            Enhancer.registerCallbacks(factory, new Callback[] { instance, null });
+        try {
+            Enhancer.registerCallbacks(factory, new Callback[]{instance, null});
             proxy = (KunderaProxy) factory.newInstance();
-        }
-        catch (IllegalAccessException e)
-        {
+        } catch (IllegalAccessException e) {
             throw new LazyInitializationException(e);
-        }
-        catch (InstantiationException e)
-        {
+        } catch (InstantiationException e) {
             throw new LazyInitializationException(e);
-        }
-        finally
-        {
+        } finally {
             Enhancer.registerCallbacks(factory, null);
         }
         return proxy;
@@ -177,83 +182,40 @@ public final class CglibLazyInitializer implements LazyInitializer, InvocationHa
 
     /**
      * Gets the proxy factory.
-     * 
-     * @param persistentClass
-     *            the persistent class
-     * @param interfaces
-     *            the interfaces
+     *
+     * @param persistentClass the persistent class
+     * @param interfaces      the interfaces
      * @return the proxy factory
-     * @throws PersistenceException
-     *             the persistence exception
+     * @throws PersistenceException the persistence exception
      */
-    public static Class getProxyFactory(Class persistentClass, Class[] interfaces) throws PersistenceException
-    {
+    public static Class getProxyFactory(Class persistentClass, Class[] interfaces) throws PersistenceException {
         Enhancer e = new Enhancer();
         e.setSuperclass(interfaces.length == 1 ? persistentClass : null);
         e.setInterfaces(interfaces);
-        e.setCallbackTypes(new Class[] { InvocationHandler.class, NoOp.class, });
+        e.setCallbackTypes(new Class[]{InvocationHandler.class, NoOp.class,});
         e.setCallbackFilter(FINALIZE_FILTER);
         e.setUseFactory(false);
         e.setInterceptDuringConstruction(false);
         return e.createClass();
     }
 
-    /**
-     * Instantiates a new cglib lazy initializer.
-     * 
-     * @param entityName
-     *            the entity name
-     * @param persistentClass
-     *            the persistent class
-     * @param interfaces
-     *            the interfaces
-     * @param id
-     *            the id
-     * @param getIdentifierMethod
-     *            the get identifier method
-     * @param setIdentifierMethod
-     *            the set identifier method
-     * @param persistenceDelegator
-     *            the persistence delegator
-     */
-    private CglibLazyInitializer(final String entityName, final Class<?> persistentClass, final Class<?>[] interfaces,
-            final Object id, final Method getIdentifierMethod, final Method setIdentifierMethod,
-            final PersistenceDelegator pd)
-    {
-
-        this.entityName = entityName;
-        this.id = id;
-        this.persistenceDelegator = pd;
-        this.persistentClass = persistentClass;
-        this.getIdentifierMethod = getIdentifierMethod;
-        this.setIdentifierMethod = setIdentifierMethod;
-        this.interfaces = interfaces;
-    }
-
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see net.sf.cglib.proxy.InvocationHandler#invoke(java.lang.Object,
      * java.lang.reflect.Method, java.lang.Object[])
      */
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
-    {
-        if (constructed)
-        {
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if (constructed) {
 
             String methodName = method.getName();
             int params = args.length;
 
-            if (params == 0)
-            {
-                if (isUninitialized() && method.equals(getIdentifierMethod))
-                {
+            if (params == 0) {
+                if (isUninitialized() && method.equals(getIdentifierMethod)) {
                     return getIdentifier();
-                }
-
-                else if ("getKunderaLazyInitializer".equals(methodName))
-                {
+                } else if ("getKunderaLazyInitializer".equals(methodName)) {
                     return this;
                 }
             }
@@ -263,50 +225,37 @@ public final class CglibLazyInitializer implements LazyInitializer, InvocationHa
             String[] strArr = entityName.split("#");
             String fieldName = strArr[1];
 
-            if (owner != null)
-            {
+            if (owner != null) {
                 EntityMetadata m = KunderaMetadataManager.getEntityMetadata(persistenceDelegator.getKunderaMetadata(),
                         owner.getClass());
                 Relation r = m.getRelation(fieldName);
-                if (r != null)
-                {
+                if (r != null) {
                     PropertyAccessorHelper.set(owner, r.getProperty(), target);
                 }
-                if (r.getBiDirectionalField() != null && method.getReturnType().equals(m.getEntityClazz()))
-                {
+                if (r.getBiDirectionalField() != null && method.getReturnType().equals(m.getEntityClazz())) {
                     PropertyAccessorHelper.set(target, r.getBiDirectionalField(), owner);
                 }
 
             }
 
-            try
-            {
+            try {
                 final Object returnValue;
-                if (method.isAccessible())
-                {
-                    if (!method.getDeclaringClass().isInstance(target))
-                    {
+                if (method.isAccessible()) {
+                    if (!method.getDeclaringClass().isInstance(target)) {
                         throw new ClassCastException(target.getClass().getName());
                     }
                     returnValue = method.invoke(target, args);
-                }
-                else
-                {
-                    if (!method.isAccessible())
-                    {
+                } else {
+                    if (!method.isAccessible()) {
                         method.setAccessible(true);
                     }
                     returnValue = method.invoke(target, args);
                 }
                 return ((returnValue == target) ? proxy : returnValue);
-            }
-            catch (InvocationTargetException ite)
-            {
+            } catch (InvocationTargetException ite) {
                 throw new LazyInitializationException(ite);
             }
-        }
-        else
-        {
+        } else {
             // while constructor is running
             throw new LazyInitializationException("unexpected case hit, method=" + method.getName());
         }
@@ -316,21 +265,19 @@ public final class CglibLazyInitializer implements LazyInitializer, InvocationHa
     /* @see com.impetus.kundera.proxy.LazyInitializer#getPersistentClass() */
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.proxy.LazyInitializer#getPersistentClass()
      */
-    public final Class<?> getPersistentClass()
-    {
+    public final Class<?> getPersistentClass() {
         return persistentClass;
     }
 
     /**
      * Gets the entity name.
-     * 
+     *
      * @return the entity name {@inheritDoc}
      */
-    public final String getEntityName()
-    {
+    public final String getEntityName() {
         return entityName;
     }
 
@@ -338,62 +285,48 @@ public final class CglibLazyInitializer implements LazyInitializer, InvocationHa
      * @return the id
      */
     @Override
-    public Object getIdentifier()
-    {
+    public Object getIdentifier() {
         return id;
     }
 
     /**
-     * @param id
-     *            the id to set
+     * @param id the id to set
      */
     @Override
-    public void setIdentifier(Object id)
-    {
+    public void setIdentifier(Object id) {
         this.id = id;
     }
 
     /**
      * Checks if is uninitialized.
-     * 
+     *
      * @return true, if is uninitialized {@inheritDoc}
      */
-    public final boolean isUninitialized()
-    {
+    public final boolean isUninitialized() {
         return !initialized;
     }
 
     /**
-     * @param initialized
-     *            the initialized to set
+     * @param initialized the initialized to set
      */
-    public void setInitialized(boolean initialized)
-    {
+    public void setInitialized(boolean initialized) {
         this.initialized = initialized;
     }
 
     /**
      * Initialize.
-     * 
-     * @throws PersistenceException
-     *             the persistence exception {@inheritDoc}
+     *
+     * @throws PersistenceException the persistence exception {@inheritDoc}
      */
-    public final void initialize() throws PersistenceException
-    {
-        if (!initialized)
-        {
-            if (persistenceDelegator == null)
-            {
+    public final void initialize() throws PersistenceException {
+        if (!initialized) {
+            if (persistenceDelegator == null) {
                 throw new LazyInitializationException("could not initialize proxy " + persistentClass.getName() + "_"
                         + id + " - no EntityManager");
-            }
-            else if (!persistenceDelegator.isOpen())
-            {
+            } else if (!persistenceDelegator.isOpen()) {
                 throw new LazyInitializationException("could not initialize proxy " + persistentClass.getName() + "_"
                         + id + " - the owning Session was closed");
-            }
-            else
-            {
+            } else {
                 if (log.isDebugEnabled())
                     log.debug("Proxy >> Initialization >> " + persistentClass.getName() + "_" + id);
 
@@ -408,14 +341,19 @@ public final class CglibLazyInitializer implements LazyInitializer, InvocationHa
 
     /**
      * Return the underlying persistent object, initializing if necessary.
-     * 
+     *
      * @return the implementation
      */
     @Override
-    public final Object getImplementation()
-    {
+    public final Object getImplementation() {
         initialize();
         return target;
+    }
+
+    @Override
+    public void setImplementation(Object paramObject) {
+        this.target = paramObject;
+        this.initialized = true;
     }
 
     /**
@@ -423,76 +361,59 @@ public final class CglibLazyInitializer implements LazyInitializer, InvocationHa
      * <p/>
      * Same as {@link #getImplementation()} except that this method will not
      * force initialization.
-     * 
+     *
      * @return Value for property 'target'.
      */
-    protected final Object getTarget()
-    {
+    protected final Object getTarget() {
         return target;
     }
 
     /**
      * Checks if is unwrap.
-     * 
+     *
      * @return true, if is unwrap {@inheritDoc}
      */
-    public boolean isUnwrap()
-    {
+    public boolean isUnwrap() {
         return unwrap;
     }
 
     /**
      * Sets the unwrap.
-     * 
-     * @param unwrap
-     *            the new unwrap {@inheritDoc}
+     *
+     * @param unwrap the new unwrap {@inheritDoc}
      */
-    public void setUnwrap(boolean unwrap)
-    {
+    public void setUnwrap(boolean unwrap) {
         this.unwrap = unwrap;
-    }
-
-    @Override
-    public void setImplementation(Object paramObject)
-    {
-        this.target = paramObject;
-        this.initialized = true;
     }
 
     /**
      * @return the persistenceDelegator
      */
-    public PersistenceDelegator getPersistenceDelegator()
-    {
+    public PersistenceDelegator getPersistenceDelegator() {
         return persistenceDelegator;
     }
 
     /**
-     * @param persistenceDelegator
-     *            the persistenceDelegator to set
+     * @param persistenceDelegator the persistenceDelegator to set
      */
-    public void setPersistenceDelegator(PersistenceDelegator persistenceDelegator)
-    {
+    public void setPersistenceDelegator(PersistenceDelegator persistenceDelegator) {
         this.persistenceDelegator = persistenceDelegator;
     }
 
     @Override
-    public void unsetPersistenceDelegator()
-    {
+    public void unsetPersistenceDelegator() {
         this.persistenceDelegator = null;
     }
 
     @Override
-    public void setOwner(Object owner) throws PersistenceException
-    {
-        if (owner != null && !owner.getClass().equals(persistentClass))
-            this.owner = owner;
+    public Object getOwner() throws PersistenceException {
+        return owner;
     }
 
     @Override
-    public Object getOwner() throws PersistenceException
-    {
-        return owner;
+    public void setOwner(Object owner) throws PersistenceException {
+        if (owner != null && !owner.getClass().equals(persistentClass))
+            this.owner = owner;
     }
 
 }

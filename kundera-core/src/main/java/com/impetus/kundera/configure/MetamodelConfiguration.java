@@ -30,7 +30,6 @@ import javax.persistence.metamodel.Metamodel;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.net.JarURLConnection;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
@@ -66,27 +65,6 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         this.factory = generator.getFactory(ValidationFactoryType.BOOT_STRAP_VALIDATION);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.impetus.kundera.configure.Configuration#configure()
-     */
-    @Override
-    public void configure() {
-        log.debug("Loading Entity Metadata...");
-        ApplicationMetadata appMetadata = kunderaMetadata.getApplicationMetadata();
-
-        for (String persistenceUnit : persistenceUnits) {
-            if (appMetadata.getMetamodelMap().get(persistenceUnit.trim()) != null) {
-                if (log.isDebugEnabled()) {
-                    log.debug("Metadata already exists for the Persistence Unit " + persistenceUnit + ". Nothing to do");
-                }
-            } else {
-                loadEntityMetadata(persistenceUnit);
-            }
-        }
-    }
-
     /**
      * list classes
      *
@@ -113,7 +91,6 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         return contents;
 
     }
-
 
     public static byte[] extractContentFromJar(String origFile, String file) throws Exception {
         InputStream in = null;
@@ -144,17 +121,49 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         return baos.toByteArray();
     }
 
-    private synchronized List<Class> listVector(ClassLoader CL)
-            throws NoSuchFieldException, SecurityException,
-            IllegalArgumentException, IllegalAccessException {
-        Class CL_class = CL.getClass();
-        while (CL_class != java.lang.ClassLoader.class) {
-            CL_class = CL_class.getSuperclass();
+    private static Class pickClassFromJarEntry(JarEntry je, String packageName) {
+        if (je.isDirectory() || !je.getName().endsWith(".class")
+        ) {
+            return null;
         }
-        java.lang.reflect.Field ClassLoader_classes_field = CL_class
-                .getDeclaredField("classes");
-        ClassLoader_classes_field.setAccessible(true);
-        return Collections.list(((Vector) ClassLoader_classes_field.get(CL)).elements());
+        Class c = null;
+        try {
+            String className = je.getName().substring(0, je.getName().length() - 6);
+            className = className.replace('/', '.');
+            className =
+                    className.contains("-INF") ?
+                            className.substring(
+                                    className.lastIndexOf("-INF") + 13) :
+                            className;
+
+            if (className.startsWith(packageName)) {
+                c = Class.forName(className);
+            }
+        } catch (NoClassDefFoundError | ClassNotFoundException e) {
+            log.error(e.getMessage(), e);
+        }
+        return c;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.impetus.kundera.configure.Configuration#configure()
+     */
+    @Override
+    public void configure() {
+        log.debug("Loading Entity Metadata...");
+        ApplicationMetadata appMetadata = kunderaMetadata.getApplicationMetadata();
+
+        for (String persistenceUnit : persistenceUnits) {
+            if (appMetadata.getMetamodelMap().get(persistenceUnit.trim()) != null) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Metadata already exists for the Persistence Unit " + persistenceUnit + ". Nothing to do");
+                }
+            } else {
+                loadEntityMetadata(persistenceUnit);
+            }
+        }
     }
 
 //
@@ -195,6 +204,19 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
 ////
 ////        return classes;
 ////    }
+
+    private synchronized List<Class> listVector(ClassLoader CL)
+            throws NoSuchFieldException, SecurityException,
+            IllegalArgumentException, IllegalAccessException {
+        Class CL_class = CL.getClass();
+        while (CL_class != java.lang.ClassLoader.class) {
+            CL_class = CL_class.getSuperclass();
+        }
+        java.lang.reflect.Field ClassLoader_classes_field = CL_class
+                .getDeclaredField("classes");
+        ClassLoader_classes_field.setAccessible(true);
+        return Collections.list(((Vector) ClassLoader_classes_field.get(CL)).elements());
+    }
 
     private synchronized Iterator list(ClassLoader CL)
             throws NoSuchFieldException, SecurityException,
@@ -237,33 +259,6 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
         return crunchifyObject;
     }
 
-
-    private static Class pickClassFromJarEntry(JarEntry je, String packageName) {
-        if (je.isDirectory() || !je.getName().endsWith(".class")
-        ) {
-            return null;
-        }
-        Class c = null;
-        try {
-            String className = je.getName().substring(0, je.getName().length() - 6);
-            className = className.replace('/', '.');
-            className =
-                    className.contains("-INF") ?
-                            className.substring(
-                                    className.lastIndexOf("-INF") + 13) :
-                            className;
-
-            if (className.startsWith(packageName)) {
-                c = Class.forName(className);
-                log.info("Loaded " + className);
-            }
-        } catch (NoClassDefFoundError | ClassNotFoundException e) {
-            log.error(e.getMessage(), e);
-        }
-        return c;
-    }
-
-
     public synchronized Iterable<Class> scanForClasses(String packageName) throws Exception {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
 
@@ -273,22 +268,26 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
 
         while (classLoader != null) {
             // System.out.println("ClassLoader: " + myCL);
-            classList.addAll(listVector(classLoader).stream().filter(
-                    o -> o.isAnnotationPresent(Entity.class)
-            ).collect(Collectors.toList()));
-
+            try {
+                out.addAll(listVector(classLoader).stream().filter(
+                        o -> o.isAnnotationPresent(Entity.class) &&
+                                o.getName().toLowerCase().startsWith(packageName)
+                ).collect(Collectors.toList()));
+            } catch (Exception e) {
+                //e.printStackTrace();
+            }
             classLoader = classLoader.getParent();
         }
-        for (Class c : classList) {
-            if (c.getName().toLowerCase().startsWith(packageName))
-                out.add(c);
-        }
+//        for (Class c : classList) {
+//            if (c.getName().toLowerCase().startsWith(packageName))
+//                out.add(c);
+//        }
 
         ///scan for other loaders
         URL u = Thread.currentThread().getContextClassLoader()
                 .getResource("/");
         if (u != null) {
-            String origJar = u.toString().split("!")[0]+"!/";
+            String origJar = u.toString().split("!")[0] + "!/";
             try {
                 List<JarEntry> entryList = listJarContent(origJar);
                 if (entryList.size() > 0) {
@@ -297,19 +296,25 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
 
                         if (je != null && je.getName().endsWith(".class")) {
                             Class c = pickClassFromJarEntry(je, packageName);
-                            if (c != null && c.isAnnotationPresent(Entity.class))
+                            if (c != null && c.isAnnotationPresent(Entity.class)) {
+                                log.info("Loaded " + c.getName());
                                 out.add(c);
-                        }else {
-                            if(je!=null&&je.getName().endsWith(".jar")) {
+                            }
+                        } else {
+                            if (je != null && je.getName().endsWith(".jar")) {
+                                //log.info("JAR: "+je.getName());
                                 byte[] b = extractContentFromJar(origJar,
                                         je.getName());
                                 JarInputStream is = new JarInputStream(new ByteArrayInputStream(b));
-                                while (is.getNextJarEntry() != null) {
-                                    JarEntry internalJarEntry = is.getNextJarEntry();
+                                JarEntry internalJarEntry = is.getNextJarEntry();
+                                while (internalJarEntry != null) {
+                                    internalJarEntry = is.getNextJarEntry();
                                     if (internalJarEntry != null && internalJarEntry.getName().endsWith(".class")) {
                                         Class c = pickClassFromJarEntry(internalJarEntry, packageName);
-                                        if (c != null && c.isAnnotationPresent(Entity.class))
+                                        if (c != null && c.isAnnotationPresent(Entity.class)) {
+                                            log.info("Loaded " + c.getName());
                                             out.add(c);
+                                        }
                                     }
                                 }
                             }
@@ -459,8 +464,6 @@ public class MetamodelConfiguration extends AbstractSchemaConfiguration implemen
                 }
 
             }
-
-
             managedURLs = puMetadata.getManagedURLs();
             client = getClientFactoryName(persistenceUnit);
         }

@@ -19,10 +19,9 @@ import javax.persistence.Entity;
 
 /**
  * @author amitkumar
- *
  */
 
 @Entity
-public class Person extends MappedPerson{
+public class Person extends MappedPerson {
 
 }

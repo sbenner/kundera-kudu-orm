@@ -19,24 +19,20 @@ import javax.persistence.PostLoad;
 import javax.persistence.PostPersist;
 import javax.persistence.PrePersist;
 
-public class PersonHandler
-{
+public class PersonHandler {
 
     @PrePersist
-    public void handledPrePersist(PersonEventDispatch user)
-    {
+    public void handledPrePersist(PersonEventDispatch user) {
         user.setFirstName("Amresh");
     }
 
     @PostPersist
-    public void handledPostPersist(PersonEventDispatch user)
-    {
+    public void handledPostPersist(PersonEventDispatch user) {
         user.setLastName("Singh");
     }
-    
+
     @PostLoad
-    public void handledPostLoad(PersonEventDispatch user)
-    {
+    public void handledPostLoad(PersonEventDispatch user) {
         //if(user != null)
         {
             user.setLastName("Post Load");

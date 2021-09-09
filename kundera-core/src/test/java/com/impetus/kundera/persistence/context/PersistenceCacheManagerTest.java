@@ -21,19 +21,17 @@ import org.junit.Test;
 
 /**
  * Test case for {@link PersistenceCacheManager}
- * @author amresh.singh
  *
+ * @author amresh.singh
  */
-public class PersistenceCacheManagerTest
-{
+public class PersistenceCacheManagerTest {
     PersistenceCacheManager pcm;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         PersistenceCache pc = new PersistenceCache();
         pcm = new PersistenceCacheManager(pc);
     }
@@ -42,10 +40,9 @@ public class PersistenceCacheManagerTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         pcm = null;
-        
+
     }
 
 
@@ -53,16 +50,14 @@ public class PersistenceCacheManagerTest
      * Test method for {@link com.impetus.kundera.persistence.context.PersistenceCacheManager#clearPersistenceCache()}.
      */
     @Test
-    public void testClearPersistenceCache()
-    {
+    public void testClearPersistenceCache() {
     }
 
     /**
      * Test method for {@link com.impetus.kundera.persistence.context.PersistenceCacheManager#markAllNodesNotTraversed()}.
      */
     @Test
-    public void testMarkAllNodesNotTraversed()
-    {
+    public void testMarkAllNodesNotTraversed() {
 
     }
 
@@ -70,14 +65,12 @@ public class PersistenceCacheManagerTest
      * Test method for {@link com.impetus.kundera.persistence.context.PersistenceCacheManager#addEntityToPersistenceCache(java.lang.Object, com.impetus.kundera.persistence.PersistenceDelegator, java.lang.Object)}.
      */
     @Test
-    public void testAddEntityToPersistenceCache()
-    {
+    public void testAddEntityToPersistenceCache() {
 
     }
-    
-    private void buildNodes()
-    {
-       // pcm.addEntityToPersistenceCache(new Perso, pd, entityId)
+
+    private void buildNodes() {
+        // pcm.addEntityToPersistenceCache(new Perso, pd, entityId)
     }
 
 }

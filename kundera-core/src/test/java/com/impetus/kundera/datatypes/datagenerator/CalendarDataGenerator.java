@@ -2,31 +2,26 @@ package com.impetus.kundera.datatypes.datagenerator;
 
 import java.util.Calendar;
 
-public class CalendarDataGenerator implements DataGenerator<Calendar>
-{
+public class CalendarDataGenerator implements DataGenerator<Calendar> {
     private static final Calendar INSTANCE = Calendar.getInstance();
 
     @Override
-    public Calendar randomValue()
-    {
+    public Calendar randomValue() {
         return INSTANCE;
     }
 
     @Override
-    public Calendar maxValue()
-    {
+    public Calendar maxValue() {
         return INSTANCE;
     }
 
     @Override
-    public Calendar minValue()
-    {
+    public Calendar minValue() {
         return INSTANCE;
     }
 
     @Override
-    public Calendar partialValue()
-    {
+    public Calendar partialValue() {
         return null;
     }
 

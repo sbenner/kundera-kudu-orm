@@ -17,11 +17,10 @@ package com.impetus.kundera.proxy;
 
 /**
  * Interface for proxies.*
- * 
+ *
  * @author animesh.kumar
  */
-public interface KunderaProxy
-{
+public interface KunderaProxy {
     public abstract Object writeReplace();
 
     public abstract LazyInitializer getKunderaLazyInitializer();

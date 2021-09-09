@@ -15,20 +15,16 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
+import com.impetus.kundera.property.PropertyAccessor;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.property.PropertyAccessor;
-
 /**
  * @author vivek.mishra
- * 
  */
-public class LongAccessorTest
-{
+public class LongAccessorTest {
 
     private PropertyAccessor<Long> accessor;
 
@@ -36,8 +32,7 @@ public class LongAccessorTest
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         accessor = new LongAccessor();
     }
 
@@ -45,14 +40,12 @@ public class LongAccessorTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
     }
 
     @Test
-    public void testFromBytes()
-    {
-        byte[] bytes = new byte[] {};
+    public void testFromBytes() {
+        byte[] bytes = new byte[]{};
         Assert.assertNull(accessor.fromBytes(LongAccessor.class, bytes));
         Long l = 49L;
         bytes = accessor.toBytes(l);
@@ -65,8 +58,7 @@ public class LongAccessorTest
     }
 
     @Test
-    public void testToBytes()
-    {
+    public void testToBytes() {
         Assert.assertNull(accessor.toBytes(null));
 
         Long d1 = new Long(4);
@@ -80,8 +72,7 @@ public class LongAccessorTest
     }
 
     @Test
-    public void testToStringObject()
-    {
+    public void testToStringObject() {
         Assert.assertNull(accessor.toString(null));
 
         Long d1 = new Long(4);
@@ -93,8 +84,7 @@ public class LongAccessorTest
     }
 
     @Test
-    public void testFromString()
-    {
+    public void testFromString() {
         Assert.assertNull(accessor.fromString(Long.class, null));
         Long d1 = new Long(4);
         String s = d1.toString();
@@ -104,16 +94,14 @@ public class LongAccessorTest
     }
 
     @Test
-    public void testGetCopy()
-    {
+    public void testGetCopy() {
         Long d1 = new Long(4);
         Long d2 = accessor.getCopy(d1);
         Assert.assertEquals(d1, d2);
     }
 
     @Test
-    public void testGetInstance()
-    {
+    public void testGetInstance() {
         Object o = accessor.getInstance(Long.class);
         Assert.assertNotNull(o);
     }

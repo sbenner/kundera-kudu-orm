@@ -15,20 +15,18 @@
  ******************************************************************************/
 package com.impetus.kundera.entity;
 
-import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.UUID;
 
 /**
  * Entity class for user's personal details
- * 
+ *
  * @author amresh.singh
  */
 
 @Embeddable
-public class PersonalDetail
-{
+public class PersonalDetail {
     @Column(name = "personal_detail_id")
     private String personalDetailId;
 
@@ -41,13 +39,11 @@ public class PersonalDetail
     @Column(name = "rel_status")
     private String relationshipStatus;
 
-    public PersonalDetail()
-    {
+    public PersonalDetail() {
 
     }
 
-    public PersonalDetail(String name, String password, String relationshipStatus)
-    {
+    public PersonalDetail(String name, String password, String relationshipStatus) {
         setPersonalDetailId(UUID.randomUUID().toString());
         setName(name);
         setPassword(password);
@@ -57,68 +53,56 @@ public class PersonalDetail
     /**
      * @return the personalDetailId
      */
-    public String getPersonalDetailId()
-    {
+    public String getPersonalDetailId() {
         return personalDetailId;
     }
 
     /**
-     * @param personalDetailId
-     *            the personalDetailId to set
+     * @param personalDetailId the personalDetailId to set
      */
-    public void setPersonalDetailId(String personalDetailId)
-    {
+    public void setPersonalDetailId(String personalDetailId) {
         this.personalDetailId = personalDetailId;
     }
 
     /**
      * @return the name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param name the name to set
      */
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     /**
      * @return the password
      */
-    public String getPassword()
-    {
+    public String getPassword() {
         return password;
     }
 
     /**
-     * @param password
-     *            the password to set
+     * @param password the password to set
      */
-    public void setPassword(String password)
-    {
+    public void setPassword(String password) {
         this.password = password;
     }
 
     /**
      * @return the relationshipStatus
      */
-    public String getRelationshipStatus()
-    {
+    public String getRelationshipStatus() {
         return relationshipStatus;
     }
 
     /**
-     * @param relationshipStatus
-     *            the relationshipStatus to set
+     * @param relationshipStatus the relationshipStatus to set
      */
-    public void setRelationshipStatus(String relationshipStatus)
-    {
+    public void setRelationshipStatus(String relationshipStatus) {
         this.relationshipStatus = relationshipStatus;
     }
 

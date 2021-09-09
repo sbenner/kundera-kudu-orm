@@ -17,56 +17,80 @@ package com.impetus.kundera;
 
 /**
  * Contains all constants properties supported in persistence.xml
- * 
+ *
  * @author amresh.singh
- * 
  */
-public interface PersistenceProperties
-{
+public interface PersistenceProperties {
 
-    /** The Constant KUNDERA_NODES. */
+    /**
+     * The Constant KUNDERA_NODES.
+     */
     public static final String KUNDERA_NODES = "kundera.nodes";
 
 
-    /** The Constant DEFAULT_REPLICATION_FACTOR. */
+    /**
+     * The Constant DEFAULT_REPLICATION_FACTOR.
+     */
     public static final String KUNDERA_REPLICATION_FACTOR = "kundera.replication.factor";
 
-    /** The Constant KUNDERA_PORT. */
+    /**
+     * The Constant KUNDERA_PORT.
+     */
     public static final String KUNDERA_PORT = "kundera.port";
 
-    /** The Constant KUNDERA_KEYSPACE. */
+    /**
+     * The Constant KUNDERA_KEYSPACE.
+     */
     public static final String KUNDERA_KEYSPACE = "kundera.keyspace";
 
-    /** The Constant KUNDERA_DIALECT. */
+    /**
+     * The Constant KUNDERA_DIALECT.
+     */
     public static final String KUNDERA_DIALECT = "kundera.dialect";
 
-    /** The Constant Kundera Client factory */
+    /**
+     * The Constant Kundera Client factory
+     */
     public static final String KUNDERA_CLIENT_FACTORY = "kundera.client.lookup.class";
 
-    /** The Constant KUNDERA_CACHE_PROVIDER_CLASS. */
+    /**
+     * The Constant KUNDERA_CACHE_PROVIDER_CLASS.
+     */
     public static final String KUNDERA_CACHE_PROVIDER_CLASS = "kundera.cache.provider.class";
 
-    /** The Constant KUNDERA_CACHE_CONFIG_RESOURCE. */
+    /**
+     * The Constant KUNDERA_CACHE_CONFIG_RESOURCE.
+     */
     public static final String KUNDERA_CACHE_CONFIG_RESOURCE = "kundera.cache.config.resource";
 
-    /** The Constant KUNDERA_FETCH_MAX_DEPTH. */
+    /**
+     * The Constant KUNDERA_FETCH_MAX_DEPTH.
+     */
     public static final String KUNDERA_FETCH_MAX_DEPTH = "kundera.fetch.max.depth";
 
-    /** Connection Pooling related constants. */
+    /**
+     * Connection Pooling related constants.
+     */
 
     // Cap on the number of object instances managed by the pool per node.
     public static final String KUNDERA_POOL_SIZE_MAX_ACTIVE = "kundera.pool.size.max.active";
 
     // Cap on the number of "idle" instances in the pool.
-    /** The Constant KUNDERA_POOL_SIZE_MAX_IDLE. */
+    /**
+     * The Constant KUNDERA_POOL_SIZE_MAX_IDLE.
+     */
     public static final String KUNDERA_POOL_SIZE_MAX_IDLE = "kundera.pool.size.max.idle";
 
     // Minimum number of idle objects to maintain in each of the nodes.
-    /** The Constant KUNDERA_POOL_SIZE_MIN_IDLE. */
+    /**
+     * The Constant KUNDERA_POOL_SIZE_MIN_IDLE.
+     */
     public static final String KUNDERA_POOL_SIZE_MIN_IDLE = "kundera.pool.size.min.idle";
 
     // Cap on the total number of instances from all nodes combined.
-    /** The Constant KUNDERA_POOL_SIZE_MAX_TOTAL. */
+    /**
+     * The Constant KUNDERA_POOL_SIZE_MAX_TOTAL.
+     */
     public static final String KUNDERA_POOL_SIZE_MAX_TOTAL = "kundera.pool.size.max.total";
 
     /**
@@ -77,12 +101,16 @@ public interface PersistenceProperties
     public static final String SCAN_PACKAGE = "scan.package";
     public static final String KUDU_READ_TIMEOUT = "kudu.read.timeout";
     public static final String KUDU_OP_TIMEOUT = "kudu.op.timeout";
-    /** Option to create schema. */
+    /**
+     * Option to create schema.
+     */
     public static final String KUNDERA_DDL_AUTO_PREPARE = "kundera.ddl.auto.prepare";
 
-    public static final String KUNDERA_SHOW_QUERY="kundera.show.query";
-    
-    /** Option to give kundera-cassandra property information */
+    public static final String KUNDERA_SHOW_QUERY = "kundera.show.query";
+
+    /**
+     * Option to give kundera-cassandra property information
+     */
     public static final String KUNDERA_CLIENT_PROPERTY = "kundera.client.property";
 
     public static final String KUNDERA_USERNAME = "kundera.username";
@@ -93,12 +121,14 @@ public interface PersistenceProperties
 
     public static final String KUNDERA_TRANSACTION_TIMEOUT = "kundera.transaction.timeout";
 
-    /** Location where datastore file is stored */
+    /**
+     * Location where datastore file is stored
+     */
     public static final String KUNDERA_DATASTORE_FILE_PATH = "kundera.datastore.file.path";
 
     public static final String KUNDERA_TRANSACTION_RESOURCE = "kundera.transaction.resource.class";
 
     public static final String KUNDERA_INDEXER_CLASS = "kundera.indexer.class";
-    
+
     public static final String KUNDERA_AUTO_GENERATOR_CLASS = "kundera.auto.generator.class";
 }

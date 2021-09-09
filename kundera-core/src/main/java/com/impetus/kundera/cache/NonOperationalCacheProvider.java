@@ -15,37 +15,35 @@
  ******************************************************************************/
 package com.impetus.kundera.cache;
 
-import java.util.Map;
-
 import javax.persistence.Cache;
+import java.util.Map;
 
 /**
  * NonOperational cache provider.
- * 
+ *
  * @author animesh.kumar
  */
-public class NonOperationalCacheProvider implements CacheProvider
-{
+public class NonOperationalCacheProvider implements CacheProvider {
 
-    /** The cache. */
+    /**
+     * The cache.
+     */
     private Cache cache = new NonOperationalCache();
 
     /**
      * Instantiates a new non operational cache provider.
      */
-    public NonOperationalCacheProvider()
-    {
+    public NonOperationalCacheProvider() {
     }
 
     /* @see com.impetus.kundera.cache.CacheProvider#init(java.util.Map) */
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.cache.CacheProvider#init(java.util.Map)
      */
     @Override
-    public void init(Map<?, ?> properties)
-    {
+    public void init(Map<?, ?> properties) {
     }
 
     /*
@@ -54,46 +52,42 @@ public class NonOperationalCacheProvider implements CacheProvider
      */
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.cache.CacheProvider#createCache(java.lang.String)
      */
     @Override
-    public Cache createCache(String name)
-    {
+    public Cache createCache(String name) {
         return cache;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.cache.CacheProvider#getCache(java.lang.String)
      */
     @Override
-    public Cache getCache(String name) throws CacheException
-    {
+    public Cache getCache(String name) throws CacheException {
         return null;
     }
 
     /* @see com.impetus.kundera.cache.CacheProvider#shutdown() */
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.cache.CacheProvider#shutdown()
      */
     @Override
-    public void shutdown()
-    {
+    public void shutdown() {
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.cache.CacheProvider#init(java.lang.String)
      */
     @Override
-    public void init(String cacheResourceName) throws CacheException
-    {
+    public void init(String cacheResourceName) throws CacheException {
 
     }
 

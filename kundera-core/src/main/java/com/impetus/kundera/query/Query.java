@@ -20,21 +20,19 @@ import java.util.Iterator;
 /**
  * Query Interface, clients query class must implement these method in order to
  * support pagination.
- * 
+ *
  * @author Kuldeep.Mishra
  */
-public interface Query
-{
+public interface Query {
+    /**
+     * @return fetch size value.
+     */
+    Integer getFetchSize();
+
     /**
      * To set fetch size for query.
      */
     void setFetchSize(Integer fetchsize);
-
-    /**
-     * 
-     * @return fetch size value.
-     */
-    Integer getFetchSize();
 
     /**
      * Reinstate .
@@ -48,7 +46,7 @@ public interface Query
 
     /**
      * Iterates over result.
-     * 
+     *
      * @return
      */
     <E> Iterator<E> iterate();

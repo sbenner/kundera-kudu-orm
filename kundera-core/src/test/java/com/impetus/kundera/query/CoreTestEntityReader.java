@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.impetus.kundera.query;
 
-import java.util.List;
-
 import com.impetus.kundera.client.Client;
 import com.impetus.kundera.client.EnhanceEntity;
 import com.impetus.kundera.metadata.model.EntityMetadata;
@@ -24,33 +22,29 @@ import com.impetus.kundera.persistence.AbstractEntityReader;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.persistence.EntityReader;
 
+import java.util.List;
+
 /**
  * @author amresh.singh
- *  
- *  
  */
-public class CoreTestEntityReader extends AbstractEntityReader implements EntityReader
-{
+public class CoreTestEntityReader extends AbstractEntityReader implements EntityReader {
 
     /**
-     * 
+     *
      */
-    public CoreTestEntityReader(KunderaMetadata kunderaMetadata)
-    {
+    public CoreTestEntityReader(KunderaMetadata kunderaMetadata) {
         super(kunderaMetadata);
     }
 
     @Override
-    public List<EnhanceEntity> populateRelation(EntityMetadata m, Client client, int maxResults)
-    {
+    public List<EnhanceEntity> populateRelation(EntityMetadata m, Client client, int maxResults) {
         return null;
     }
 
     @Override
-    public EnhanceEntity findById(Object primaryKey, EntityMetadata m, Client client)
-    {
-        
+    public EnhanceEntity findById(Object primaryKey, EntityMetadata m, Client client) {
+
         return super.findById(primaryKey, m, client);
-    }   
+    }
 
 }

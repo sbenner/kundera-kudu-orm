@@ -15,74 +15,60 @@
  ******************************************************************************/
 package com.impetus.kundera.index.lucene;
 
-import java.util.Map;
-
 import com.impetus.kundera.metadata.model.EntityMetadata;
 import com.impetus.kundera.metadata.model.MetamodelImpl;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 
+import java.util.Map;
+
 /**
  * Interface to define the behavior of an Indexer.
- * 
+ *
  * @author animesh.kumar
  */
-public interface Indexer extends com.impetus.kundera.index.Indexer
-{
+public interface Indexer extends com.impetus.kundera.index.Indexer {
 
     /**
      * Unindexed an entity with key:id.
-     * 
-     * @param metadata
-     *            the metadata
-     * @param id
-     *            the id
+     *
+     * @param metadata the metadata
+     * @param id       the id
      */
 
-    void unindex(EntityMetadata metadata, Object id,KunderaMetadata kunderaMetadata, Class<?> parentClazz);
+    void unindex(EntityMetadata metadata, Object id, KunderaMetadata kunderaMetadata, Class<?> parentClazz);
 
     /**
      * Indexes and object.
-     * 
-     * @param metadata
-     *            the metadata
-     * @param object
-     *            the object
+     *
+     * @param metadata the metadata
+     * @param object   the object
      */
     void index(EntityMetadata metadata, final MetamodelImpl metaModel, Object object);
 
     /**
      * Indexes and object.
-     * 
-     * @param metadata
-     *            the meta data.
-     * @param object
-     *            the object.
-     * @param parentId
-     *            parent Id.
-     * @param clazz
-     *            parent class.
+     *
+     * @param metadata the meta data.
+     * @param object   the object.
+     * @param parentId parent Id.
+     * @param clazz    parent class.
      */
     void index(EntityMetadata metadata, final MetamodelImpl metaModel, Object object, String parentId, Class<?> clazz);
 
     /**
      * Searches for an object. Note that the "query" must be in Indexer
      * specified form.
-     * 
-     * @param luceneQuery
-     *            the lucene query
-     * @param start
-     *            the start
-     * @param count
-     *            the count
-     * @param fetchRelation
-     *            the fetch relation
+     *
+     * @param luceneQuery   the lucene query
+     * @param start         the start
+     * @param count         the count
+     * @param fetchRelation the fetch relation
      * @return the list
      */
 
     Map<String, Object> search(String luceneQuery, int start, int count, boolean fetchRelation,
-            KunderaMetadata kunderaMetadata, EntityMetadata metadata);
+                               KunderaMetadata kunderaMetadata, EntityMetadata metadata);
 
-    
 
     /**
      * Close on index writer/reader.
@@ -96,22 +82,21 @@ public interface Indexer extends com.impetus.kundera.index.Indexer
 
     /**
      * Validates, if document exists in index.
-     * 
+     *
      * @param metadata entity metadata
      * @param id   entity id
      * @return true, if exists else false.
      */
-    
 
-    
+
     /**
      * Updates the existing document.
-     * 
-     * @param metadata   entity metadata.
-     * @param entity     entity object. 
-     * @param id         entity id
-     * @param parentId   parent entity id
-     * @param parentClazz  parent class
+     *
+     * @param metadata    entity metadata.
+     * @param entity      entity object.
+     * @param id          entity id
+     * @param parentId    parent entity id
+     * @param parentClazz parent class
      */
     void update(EntityMetadata metadata, final MetamodelImpl metaModel, Object entity, Object id, String parentId);
 
@@ -132,7 +117,7 @@ public interface Indexer extends com.impetus.kundera.index.Indexer
      * @return
      */
     boolean documentExistsInIndex(EntityMetadata metadata, Object id, KunderaMetadata kunderaMetadata,
-            boolean isEmbeddedId, Class<?> parentClazz);
+                                  boolean isEmbeddedId, Class<?> parentClazz);
 
-    
+
 }

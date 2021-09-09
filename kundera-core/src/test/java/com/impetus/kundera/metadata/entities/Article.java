@@ -15,159 +15,133 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.entities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
 
+import javax.persistence.*;
+import java.util.*;
+
 /**
  * Entity class for Blog post
+ *
  * @author amresh.singh
  */
 @Entity
-@Table(name="article", schema="KunderaTests@patest")
-@IndexCollection(columns = { @Index(name = "body")})
-public class Article
-{    
+@Table(name = "article", schema = "KunderaTests@patest")
+@IndexCollection(columns = {@Index(name = "body")})
+public class Article {
     @Id
-    @Column(name="post_id")
+    @Column(name = "post_id")
     private int postId;
-    
+
     //Body of the post
-    @Column(name="body")
-    private String body;       
-    
+    @Column(name = "body")
+    private String body;
+
     //Useful tags specified by author
     @ElementCollection
-    @Column(name="tags")
-    private Set<String> tags;  
-    
+    @Column(name = "tags")
+    private Set<String> tags;
+
     //List of user IDs who liked this blog post
     @ElementCollection
-    @Column(name="liked_by")
-    private List<Integer> likedBy;   
-    
+    @Column(name = "liked_by")
+    private List<Integer> likedBy;
+
     //User IDs and their respective comments on this blog
     @ElementCollection
-    @Column(name="comments")
-    private Map<Integer, String> comments; 
+    @Column(name = "comments")
+    private Map<Integer, String> comments;
 
     /**
      * @return the postId
      */
-    public int getPostId()
-    {
+    public int getPostId() {
         return postId;
     }
 
     /**
      * @param postId the postId to set
      */
-    public void setPostId(int postId)
-    {
+    public void setPostId(int postId) {
         this.postId = postId;
     }
 
     /**
      * @return the body
      */
-    public String getBody()
-    {
+    public String getBody() {
         return body;
     }
 
     /**
      * @param body the body to set
      */
-    public void setBody(String body)
-    {
+    public void setBody(String body) {
         this.body = body;
     }
 
     /**
      * @return the tags
      */
-    public Set<String> getTags()
-    {
+    public Set<String> getTags() {
         return tags;
     }
 
     /**
      * @param tags the tags to set
      */
-    public void setTags(Set<String> tags)
-    {
+    public void setTags(Set<String> tags) {
         this.tags = tags;
     }
 
     /**
      * @return the likedBy
      */
-    public List<Integer> getLikedBy()
-    {
+    public List<Integer> getLikedBy() {
         return likedBy;
     }
 
     /**
      * @param likedBy the likedBy to set
      */
-    public void setLikedBy(List<Integer> likedBy)
-    {
+    public void setLikedBy(List<Integer> likedBy) {
         this.likedBy = likedBy;
     }
 
     /**
      * @return the comments
      */
-    public Map<Integer, String> getComments()
-    {
+    public Map<Integer, String> getComments() {
         return comments;
     }
 
     /**
      * @param comments the comments to set
      */
-    public void setComments(Map<Integer, String> comments)
-    {
+    public void setComments(Map<Integer, String> comments) {
         this.comments = comments;
     }
-    
-    public void addTag(String tag)
-    {
-        if(tags == null)
-        {
+
+    public void addTag(String tag) {
+        if (tags == null) {
             tags = new HashSet<String>();
         }
         tags.add(tag);
     }
-    
-    public void addLikedBy(int likedByUserId)
-    {
-        if(likedBy == null)
-        {
+
+    public void addLikedBy(int likedByUserId) {
+        if (likedBy == null) {
             likedBy = new ArrayList<Integer>();
         }
         likedBy.add(likedByUserId);
     }
-    
-    public void addComment(int userId, String comment)
-    {
-        if(comments == null)
-        {
+
+    public void addComment(int userId, String comment) {
+        if (comments == null) {
             comments = new HashMap<Integer, String>();
         }
         comments.put(userId, comment);
     }
-    
+
 }

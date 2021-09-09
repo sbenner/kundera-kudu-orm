@@ -15,31 +15,29 @@
  ******************************************************************************/
 package com.impetus.kundera.validation;
 
+import com.impetus.kundera.validation.rules.IRule;
+import com.impetus.kundera.validation.rules.RuleValidationException;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.impetus.kundera.validation.rules.IRule;
-import com.impetus.kundera.validation.rules.RuleValidationException;
-
 /**
  * @author Chhavi Gangwal
- *
  */
-public interface ValidationFactory
-{
+public interface ValidationFactory {
     /**
-     * validates whether a valid entity class or not 
-     * 
+     * validates whether a valid entity class or not
+     *
      * @param clazz
      * @return
      * @throws RuleValidationException
      */
     boolean validate(Class clazz) throws RuleValidationException;
-    
+
     /**
      * validates a given entity with given set of rules
-     * 
+     *
      * @param clazz
      * @param rules
      * @return
@@ -49,18 +47,18 @@ public interface ValidationFactory
 
     /**
      * validates a field of a class with given set of rules
-     * 
+     *
      * @param field
      * @param rules
      * @return
      * @throws RuleValidationException
      */
     boolean validate(Field field, IRule... rules) throws RuleValidationException;
-    
-    
+
+
     /**
      * validates a field against its value with given set of rules
-     * 
+     *
      * @param field
      * @param fieldValue
      * @param rules
@@ -68,35 +66,31 @@ public interface ValidationFactory
      * @throws RuleValidationException
      */
     boolean validate(Field field, Object fieldValue, IRule... rules) throws RuleValidationException;
-       
-    
+
+
     /**
      * RuleFactory to be used in different validation factories
-     *
      */
-    class RuleFactory
-    {
+    class RuleFactory {
         /**
          * list of jpa rules to be applied
          */
         private List<IRule> jpaRules = new ArrayList<IRule>();
-        
+
         /**
          * @return
          */
-        IRule[] getJpaRules()
-        {
+        IRule[] getJpaRules() {
             IRule[] jrule = new IRule[jpaRules.size()];
             return (IRule[]) jpaRules.toArray(jrule);
         }
 
         /**
          * builds static rule list for validation factory
-         * 
+         *
          * @param rules
          */
-        void addRule(List<IRule> rules)
-        {
+        void addRule(List<IRule> rules) {
             jpaRules.addAll(rules);
         }
     }

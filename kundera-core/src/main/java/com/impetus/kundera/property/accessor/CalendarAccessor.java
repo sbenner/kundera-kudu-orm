@@ -15,36 +15,35 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
+import com.impetus.kundera.property.PropertyAccessor;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import com.impetus.kundera.property.PropertyAccessor;
-
 /**
  * The Class CalendarAccessor.
- * 
+ *
  * @author amresh.singh
  */
-public class CalendarAccessor implements PropertyAccessor<Calendar>
-{
+public class CalendarAccessor implements PropertyAccessor<Calendar> {
 
-    /** The Constant DATE_FORMATTER. */
+    /**
+     * The Constant DATE_FORMATTER.
+     */
     private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.ENGLISH);
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.property.PropertyAccessor#fromBytes(byte[])
      */
     @Override
-    public Calendar fromBytes(Class targetClass, byte[] b)
-    {
+    public Calendar fromBytes(Class targetClass, byte[] b) {
         Calendar cal = Calendar.getInstance();
         Date d = new Date();
-        if (b == null)
-        {
+        if (b == null) {
             return null;
         }
         LongAccessor longAccessor = new LongAccessor();
@@ -55,15 +54,13 @@ public class CalendarAccessor implements PropertyAccessor<Calendar>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toBytes(java.lang.Object)
      */
     @Override
-    public byte[] toBytes(Object object)
-    {
-        if (object == null)
-        {
+    public byte[] toBytes(Object object) {
+        if (object == null) {
             return null;
         }
         Calendar cal = (Calendar) object;
@@ -75,17 +72,15 @@ public class CalendarAccessor implements PropertyAccessor<Calendar>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toString(java.lang.Object)
      */
     @Override
-    public String toString(Object object)
-    {
+    public String toString(Object object) {
         Calendar calendar = (Calendar) object;
 
-        if (calendar == null)
-        {
+        if (calendar == null) {
             return null;
         }
         return String.valueOf(calendar.getTime().getTime());
@@ -93,16 +88,14 @@ public class CalendarAccessor implements PropertyAccessor<Calendar>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#fromString(java.lang.String
      * )
      */
     @Override
-    public Calendar fromString(Class targetClass, String s)
-    {
-        if (s == null)
-        {
+    public Calendar fromString(Class targetClass, String s) {
+        if (s == null) {
             return null;
         }
         Calendar cal = Calendar.getInstance();
@@ -114,8 +107,7 @@ public class CalendarAccessor implements PropertyAccessor<Calendar>
     }
 
     @Override
-    public Calendar getCopy(Object object)
-    {
+    public Calendar getCopy(Object object) {
         if (object == null)
             return null;
         Calendar c = (Calendar) object;
@@ -124,8 +116,7 @@ public class CalendarAccessor implements PropertyAccessor<Calendar>
         return copy;
     }
 
-    public Calendar getInstance(Class<?> clazz)
-    {
+    public Calendar getInstance(Class<?> clazz) {
         return Calendar.getInstance();
     }
 }

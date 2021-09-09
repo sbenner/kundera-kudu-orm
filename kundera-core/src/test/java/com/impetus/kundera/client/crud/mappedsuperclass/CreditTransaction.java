@@ -15,26 +15,18 @@
  ******************************************************************************/
 package com.impetus.kundera.client.crud.mappedsuperclass;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author vivek.mishra
  * Credit transaction extends {@link Transaction}
- *
  */
 
 @Entity
 @Table(name = "TRNX_CREDIT")
 @DiscriminatorValue(value = "CREDIT")
-@AttributeOverride(name="bankIdentifier",column= @Column(name="CREDIT_BANK_IDENT"))
-public class CreditTransaction extends Transaction
-{
+@AttributeOverride(name = "bankIdentifier", column = @Column(name = "CREDIT_BANK_IDENT"))
+public class CreditTransaction extends Transaction {
 
     @Column
     private Integer amount;
@@ -43,28 +35,23 @@ public class CreditTransaction extends Transaction
     @Enumerated(EnumType.STRING)
     private Status txStatus;
 
-    public CreditTransaction()
-    {
-        
+    public CreditTransaction() {
+
     }
-    
-    public Integer getAmount()
-    {
+
+    public Integer getAmount() {
         return amount;
     }
 
-    public void setAmount(Integer amount)
-    {
+    public void setAmount(Integer amount) {
         this.amount = amount;
     }
 
-    public Status getTxStatus()
-    {
+    public Status getTxStatus() {
         return txStatus;
     }
 
-    public void setTxStatus(Status txStatus)
-    {
+    public void setTxStatus(Status txStatus) {
         this.txStatus = txStatus;
     }
 

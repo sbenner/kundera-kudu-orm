@@ -15,28 +15,17 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.model;
 
+import javax.persistence.Column;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
 /**
  * @author impetus
- * 
  */
 @Entity
 @Table(name = "KunderaUser", schema = "KunderaMetaDataTest@metaDataTest")
-public class KunderaUser
-{
+public class KunderaUser {
 
     @Id
     @Column(name = "USER_ID")
@@ -48,53 +37,45 @@ public class KunderaUser
     private List<TweetKundera> tweets;
 
     // One to many, will be persisted separately
-    @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinColumn(name = "FRIEND_ID")
     private List<KunderaUser> friends; // List of users whom I follow
 
     // One to many, will be persisted separately
-    @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinColumn(name = "FOLLOWER_ID")
     private List<KunderaUser> followers; // List of users who are following me
 
-    public KunderaUser()
-    {
+    public KunderaUser() {
 
     }
 
     /**
      * @return the userId
      */
-    public String getUserId()
-    {
+    public String getUserId() {
         return userId;
     }
 
     /**
-     * @param userId
-     *            the userId to set
+     * @param userId the userId to set
      */
-    public void setUserId(String userId)
-    {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 
     /**
      * @return the tweets
      */
-    public List<TweetKundera> getTweets()
-    {
+    public List<TweetKundera> getTweets() {
         return tweets;
     }
 
     /**
-     * @param tweets
-     *            the tweets to set
+     * @param tweets the tweets to set
      */
-    public void addTweet(TweetKundera tweet)
-    {
-        if (this.tweets == null || this.tweets.isEmpty())
-        {
+    public void addTweet(TweetKundera tweet) {
+        if (this.tweets == null || this.tweets.isEmpty()) {
             this.tweets = new ArrayList<TweetKundera>();
         }
         this.tweets.add(tweet);
@@ -103,19 +84,15 @@ public class KunderaUser
     /**
      * @return the friends
      */
-    public List<KunderaUser> getFriends()
-    {
+    public List<KunderaUser> getFriends() {
         return friends;
     }
 
     /**
-     * @param friends
-     *            the friends to set
+     * @param friends the friends to set
      */
-    public void addFriend(KunderaUser friend)
-    {
-        if (this.friends == null || this.friends.isEmpty())
-        {
+    public void addFriend(KunderaUser friend) {
+        if (this.friends == null || this.friends.isEmpty()) {
             this.friends = new ArrayList<KunderaUser>();
         }
         this.friends.add(friend);
@@ -124,19 +101,15 @@ public class KunderaUser
     /**
      * @return the followers
      */
-    public List<KunderaUser> getFollowers()
-    {
+    public List<KunderaUser> getFollowers() {
         return followers;
     }
 
     /**
-     * @param followers
-     *            the followers to set
+     * @param followers the followers to set
      */
-    public void addFollower(KunderaUser follower)
-    {
-        if (this.followers == null || this.followers.isEmpty())
-        {
+    public void addFollower(KunderaUser follower) {
+        if (this.followers == null || this.followers.isEmpty()) {
             this.followers = new ArrayList<KunderaUser>();
         }
 

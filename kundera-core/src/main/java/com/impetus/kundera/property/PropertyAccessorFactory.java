@@ -15,54 +15,34 @@
  ******************************************************************************/
 package com.impetus.kundera.property;
 
+import com.impetus.kundera.gis.geometry.Point;
+import com.impetus.kundera.property.accessor.*;
+
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import com.impetus.kundera.gis.geometry.Point;
-import com.impetus.kundera.property.accessor.BigDecimalAccessor;
-import com.impetus.kundera.property.accessor.BigIntegerAccessor;
-import com.impetus.kundera.property.accessor.BooleanAccessor;
-import com.impetus.kundera.property.accessor.ByteAccessor;
-import com.impetus.kundera.property.accessor.CalendarAccessor;
-import com.impetus.kundera.property.accessor.CharAccessor;
-import com.impetus.kundera.property.accessor.DateAccessor;
-import com.impetus.kundera.property.accessor.DoubleAccessor;
-import com.impetus.kundera.property.accessor.EnumAccessor;
-import com.impetus.kundera.property.accessor.FloatAccessor;
-import com.impetus.kundera.property.accessor.IntegerAccessor;
-import com.impetus.kundera.property.accessor.LongAccessor;
-import com.impetus.kundera.property.accessor.ObjectAccessor;
-import com.impetus.kundera.property.accessor.PointAccessor;
-import com.impetus.kundera.property.accessor.SQLDateAccessor;
-import com.impetus.kundera.property.accessor.SQLTimeAccessor;
-import com.impetus.kundera.property.accessor.SQLTimestampAccessor;
-import com.impetus.kundera.property.accessor.ShortAccessor;
-import com.impetus.kundera.property.accessor.StringAccessor;
-import com.impetus.kundera.property.accessor.UUIDAccessor;
+import java.util.*;
 
 /**
  * The Class PropertyAccessorFactory.
- * 
+ *
  * @author animesh.kumar
  */
 
-public class PropertyAccessorFactory
-{
+public class PropertyAccessorFactory {
 
-    /** The map. */
+    /**
+     * Making String Accessor easy to access.
+     */
+    public static final PropertyAccessor<String> STRING = new StringAccessor();
+    /**
+     * The map.
+     */
     public static Map<Class<?>, PropertyAccessor<?>> map = new HashMap<Class<?>, PropertyAccessor<?>>();
 
-    static
-    {
+    static {
         // Premitive Type accessors
         map.put(boolean.class, new BooleanAccessor());
         map.put(byte.class, new ByteAccessor());
@@ -110,46 +90,32 @@ public class PropertyAccessorFactory
         map.put(Point.class, new PointAccessor());
     }
 
-    /** Making String Accessor easy to access. */
-    public static final PropertyAccessor<String> STRING = new StringAccessor();
-
     /**
      * Instantiates a new property accessor factory.
      */
-    private PropertyAccessorFactory()
-    {
+    private PropertyAccessorFactory() {
     }
 
     /**
      * Gets the property accessor.
-     * 
-     * @param clazz
-     *            the clazz
-     * 
+     *
+     * @param clazz the clazz
      * @return the property accessor
      */
     @SuppressWarnings("unchecked")
-    public static PropertyAccessor getPropertyAccessor(Class<?> clazz)
-    {
+    public static PropertyAccessor getPropertyAccessor(Class<?> clazz) {
         PropertyAccessor<?> accessor;
-        if (clazz.isEnum())
-        {
+        if (clazz.isEnum()) {
             accessor = new EnumAccessor();
-        }
-        else
-        {
+        } else {
             accessor = map.get(clazz);
         }
 
         // allow fall-back to Object streamer.
-        if (null == accessor)
-        {
-            if (Enum.class.isAssignableFrom(clazz))
-            {
+        if (null == accessor) {
+            if (Enum.class.isAssignableFrom(clazz)) {
                 accessor = map.get(Enum.class);
-            }
-            else
-            {
+            } else {
                 accessor = map.get(Object.class);
             }
 
@@ -159,27 +125,21 @@ public class PropertyAccessorFactory
 
     /**
      * Gets the property accessor.
-     * 
-     * @param property
-     *            the property
-     * 
+     *
+     * @param property the property
      * @return the property accessor
      */
-    public static PropertyAccessor<?> getPropertyAccessor(Field property)
-    {
+    public static PropertyAccessor<?> getPropertyAccessor(Field property) {
         return getPropertyAccessor(property.getType());
     }
 
     /**
      * Adds the.
-     * 
-     * @param key
-     *            the key
-     * @param value
-     *            the value
+     *
+     * @param key   the key
+     * @param value the value
      */
-    public static void add(Class<?> key, PropertyAccessor<?> value)
-    {
+    public static void add(Class<?> key, PropertyAccessor<?> value) {
         map.put(key, value);
     }
 

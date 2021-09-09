@@ -15,65 +15,89 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.model;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-
 import com.impetus.kundera.metadata.KunderaMetadataManager;
 import com.impetus.kundera.metadata.model.attributes.AbstractAttribute;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.property.PropertyAccessorHelper;
 import com.impetus.kundera.utils.ReflectUtils;
 
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
+
 /**
  * The Class Relation.
  */
-public final class Relation
-{
+public final class Relation {
 
-    /** The property. */
+    /**
+     * The property.
+     */
     private Field property;
 
-    /** The target entity. */
+    /**
+     * The target entity.
+     */
     private Class<?> targetEntity;
 
-    /** If relation is through a Map, Map Key Join Class */
+    /**
+     * If relation is through a Map, Map Key Join Class
+     */
     private Class<?> mapKeyJoinClass;
 
-    /** The property type. */
+    /**
+     * The property type.
+     */
     private Class<?> propertyType;
 
-    /** The fetch type. */
+    /**
+     * The fetch type.
+     */
     private FetchType fetchType;
 
-    /** The cascades. */
+    /**
+     * The cascades.
+     */
     private List<CascadeType> cascades;
 
-    /** The optional. */
+    /**
+     * The optional.
+     */
     private boolean optional;
 
-    /** The mapped by. */
+    /**
+     * The mapped by.
+     */
     private String mappedBy;
 
-    /** The type. */
+    /**
+     * The type.
+     */
     private Relation.ForeignKey type;
 
-    /** Join column name for this relationship. */
+    /**
+     * Join column name for this relationship.
+     */
     private String joinColumnName;
 
-    /** Whether this relationship is through a Join Table. */
+    /**
+     * Whether this relationship is through a Join Table.
+     */
     private boolean isRelatedViaJoinTable;
 
-    /** Metadata for JoinTable, applicable only if isRelatedViaJoinTable==true. */
+    /**
+     * Metadata for JoinTable, applicable only if isRelatedViaJoinTable==true.
+     */
     private JoinTableMetadata joinTableMetadata;
 
-    /** Target entity metadata. */
+    /**
+     * Target entity metadata.
+     */
     private EntityMetadata targetEntityMetadata;
     /**
      * Whether this relationship is joined by primary key, only applicable for
@@ -81,26 +105,28 @@ public final class Relation
      */
     private boolean isJoinedByPrimaryKey;
 
-    private Field biDirectionalField; 
+    private Field biDirectionalField;
+
     /**
-     * 
-     * The Enum ForeignKey.
+     * Specifies the type of the metadata.
      */
-    public static enum ForeignKey
-    {
-        /** The ON e_ t o_ one. */
-        ONE_TO_ONE,
-        /** The ON e_ t o_ many. */
-        ONE_TO_MANY,
-        /** The MAN y_ t o_ one. */
-        MANY_TO_ONE,
-        /** The MAN y_ t o_ many. */
-        MANY_TO_MANY
+
+    public Relation(Field property, Class<?> targetEntity, Class<?> propertyType, FetchType fetchType,
+                    List<CascadeType> cascades, boolean optional, String mappedBy, Relation.ForeignKey type) {
+        super();
+        this.property = property;
+        this.targetEntity = targetEntity;
+        this.propertyType = propertyType;
+        this.fetchType = fetchType;
+        this.cascades = cascades;
+        this.optional = optional;
+        this.mappedBy = mappedBy;
+        this.type = type;
     }
 
     /**
      * Instantiates a new relation.
-     * 
+     *
      * @param property
      *            the property
      * @param targetEntity
@@ -120,284 +146,249 @@ public final class Relation
      */
 
     /**
-     * Specifies the type of the metadata.
-     */
-
-    public Relation(Field property, Class<?> targetEntity, Class<?> propertyType, FetchType fetchType,
-            List<CascadeType> cascades, boolean optional, String mappedBy, Relation.ForeignKey type)
-    {
-        super();
-        this.property = property;
-        this.targetEntity = targetEntity;
-        this.propertyType = propertyType;
-        this.fetchType = fetchType;
-        this.cascades = cascades;
-        this.optional = optional;
-        this.mappedBy = mappedBy;
-        this.type = type;
-    }
-
-    /**
      * Gets the property.
-     * 
+     *
      * @return the property
      */
-    public Field getProperty()
-    {
+    public Field getProperty() {
         return property;
     }
 
     /**
      * Gets the target entity.
-     * 
+     *
      * @return the targetEntity
      */
-    public Class<?> getTargetEntity()
-    {
+    public Class<?> getTargetEntity() {
         return targetEntity;
     }
 
     /**
      * @return the mapKeyJoinClass
      */
-    public Class<?> getMapKeyJoinClass()
-    {
+    public Class<?> getMapKeyJoinClass() {
         return mapKeyJoinClass;
     }
 
     /**
-     * @param mapKeyJoinClass
-     *            the mapKeyJoinClass to set
+     * @param mapKeyJoinClass the mapKeyJoinClass to set
      */
-    public void setMapKeyJoinClass(Class<?> mapKeyJoinClass)
-    {
+    public void setMapKeyJoinClass(Class<?> mapKeyJoinClass) {
         this.mapKeyJoinClass = mapKeyJoinClass;
     }
 
     /**
      * Gets the property type.
-     * 
+     *
      * @return the propertyType
      */
-    public Class<?> getPropertyType()
-    {
+    public Class<?> getPropertyType() {
         return propertyType;
     }
 
     /**
      * Gets the fetch type.
-     * 
+     *
      * @return the fetchType
      */
-    public FetchType getFetchType()
-    {
+    public FetchType getFetchType() {
         return fetchType;
     }
 
     /**
      * Gets the cascades.
-     * 
+     *
      * @return the cascades
      */
-    public List<CascadeType> getCascades()
-    {
+    public List<CascadeType> getCascades() {
         return cascades;
     }
 
     /**
      * Checks if is optional.
-     * 
+     *
      * @return the optional
      */
-    public boolean isOptional()
-    {
+    public boolean isOptional() {
         return optional;
     }
 
     /**
      * Gets the mapped by.
-     * 
+     *
      * @return the mappedBy
      */
-    public String getMappedBy()
-    {
+    public String getMappedBy() {
         return mappedBy;
     }
 
     /**
      * Gets the type.
-     * 
+     *
      * @return the type
      */
-    public Relation.ForeignKey getType()
-    {
+    public Relation.ForeignKey getType() {
         return type;
     }
 
     /**
      * Gets the join column name.
-     * 
+     *
      * @return the joinColumnName
      */
-    public String getJoinColumnName(final KunderaMetadata kunderaMetadata)
-    {
-                
-        if(joinColumnName == null && isJoinedByPrimaryKey)
-        {
+    public String getJoinColumnName(final KunderaMetadata kunderaMetadata) {
+
+        if (joinColumnName == null && isJoinedByPrimaryKey) {
             EntityMetadata joinClassMetadata = KunderaMetadataManager.getEntityMetadata(kunderaMetadata, targetEntity);
-            joinColumnName  = ((AbstractAttribute)joinClassMetadata.getIdAttribute()).getJPAColumnName();
+            joinColumnName = ((AbstractAttribute) joinClassMetadata.getIdAttribute()).getJPAColumnName();
         }
-        
-        if(joinTableMetadata != null)
-        {
-            joinColumnName = joinTableMetadata.getJoinColumns() != null? joinTableMetadata.getJoinColumns().iterator().next():null;
+
+        if (joinTableMetadata != null) {
+            joinColumnName = joinTableMetadata.getJoinColumns() != null ? joinTableMetadata.getJoinColumns().iterator().next() : null;
         }
-        
-        if(isBiDirectional())
-        {
+
+        if (isBiDirectional()) {
             // Give precedence to join column name!
-            if(biDirectionalField.isAnnotationPresent(JoinColumn.class))
-            {
+            if (biDirectionalField.isAnnotationPresent(JoinColumn.class)) {
                 joinColumnName = biDirectionalField.getAnnotation(JoinColumn.class).name();
             }
         }
-        
-        return joinColumnName !=null? joinColumnName:property.getName();
+
+        return joinColumnName != null ? joinColumnName : property.getName();
     }
 
     /**
      * Sets the join column name.
-     * 
-     * @param joinColumnName
-     *            the joinColumnName to set
+     *
+     * @param joinColumnName the joinColumnName to set
      */
-    public void setJoinColumnName(String joinColumnName)
-    {
+    public void setJoinColumnName(String joinColumnName) {
         this.joinColumnName = joinColumnName;
     }
 
     /**
      * Checks if is related via join table.
-     * 
+     *
      * @return the isRelatedViaJoinTable
      */
-    public boolean isRelatedViaJoinTable()
-    {
+    public boolean isRelatedViaJoinTable() {
         return isRelatedViaJoinTable;
     }
 
     /**
      * Sets the related via join table.
-     * 
-     * @param isRelatedViaJoinTable
-     *            the isRelatedViaJoinTable to set
+     *
+     * @param isRelatedViaJoinTable the isRelatedViaJoinTable to set
      */
-    public void setRelatedViaJoinTable(boolean isRelatedViaJoinTable)
-    {
+    public void setRelatedViaJoinTable(boolean isRelatedViaJoinTable) {
         this.isRelatedViaJoinTable = isRelatedViaJoinTable;
     }
 
     /**
      * Gets the join table metadata.
-     * 
+     *
      * @return the joinTableMetadata
      */
-    public JoinTableMetadata getJoinTableMetadata()
-    {
+    public JoinTableMetadata getJoinTableMetadata() {
         return joinTableMetadata;
     }
 
     /**
      * Sets the join table metadata.
-     * 
-     * @param joinTableMetadata
-     *            the joinTableMetadata to set
+     *
+     * @param joinTableMetadata the joinTableMetadata to set
      */
-    public void setJoinTableMetadata(JoinTableMetadata joinTableMetadata)
-    {
+    public void setJoinTableMetadata(JoinTableMetadata joinTableMetadata) {
         this.joinTableMetadata = joinTableMetadata;
     }
 
     /**
      * Checks if is joined by primary key.
-     * 
+     *
      * @return the isJoinedByPrimaryKey
      */
-    public boolean isJoinedByPrimaryKey()
-    {
+    public boolean isJoinedByPrimaryKey() {
         return isJoinedByPrimaryKey;
     }
 
     /**
      * Sets the joined by primary key.
-     * 
-     * @param isJoinedByPrimaryKey
-     *            the isJoinedByPrimaryKey to set
+     *
+     * @param isJoinedByPrimaryKey the isJoinedByPrimaryKey to set
      */
-    public void setJoinedByPrimaryKey(boolean isJoinedByPrimaryKey)
-    {
+    public void setJoinedByPrimaryKey(boolean isJoinedByPrimaryKey) {
         this.isJoinedByPrimaryKey = isJoinedByPrimaryKey;
     }
 
     /**
      * Checks if is unary.
-     * 
+     *
      * @return true, if is unary
      */
-    public boolean isUnary()
-    {
+    public boolean isUnary() {
         return type.equals(Relation.ForeignKey.ONE_TO_ONE) || type.equals(Relation.ForeignKey.MANY_TO_ONE);
     }
 
     /**
      * Checks if is collection.
-     * 
+     *
      * @return true, if is collection
      */
-    public boolean isCollection()
-    {
+    public boolean isCollection() {
         return type.equals(Relation.ForeignKey.ONE_TO_MANY) || type.equals(Relation.ForeignKey.MANY_TO_MANY);
     }
 
-
-    public boolean isBiDirectional()
-    {
-        return biDirectionalField != null;       
+    public boolean isBiDirectional() {
+        return biDirectionalField != null;
     }
-    
-    public Field getBiDirectionalField()
-    {
+
+    public Field getBiDirectionalField() {
         return biDirectionalField;
     }
-    
-    public void setBiDirectionalField(Class referencedClass)
-    {
+
+    public void setBiDirectionalField(Class referencedClass) {
         Field[] fields = this.getTargetEntity().getDeclaredFields();
         Class<?> clazzz = null;
-        for (Field field : fields)
-        {
-            if (!ReflectUtils.isTransientOrStatic(field))
-            {
+        for (Field field : fields) {
+            if (!ReflectUtils.isTransientOrStatic(field)) {
                 clazzz = field.getType();
-                if (PropertyAccessorHelper.isCollection(clazzz))
-                {
+                if (PropertyAccessorHelper.isCollection(clazzz)) {
                     ParameterizedType type = (ParameterizedType) field.getGenericType();
                     Type[] types = type.getActualTypeArguments();
                     clazzz = (Class<?>) types[0];
-                }
-                else if (Map.class.isAssignableFrom(clazzz))
-                {
+                } else if (Map.class.isAssignableFrom(clazzz)) {
                     ParameterizedType type = (ParameterizedType) field.getGenericType();
                     Type[] types = type.getActualTypeArguments();
                     clazzz = (Class<?>) types[1];
                 }
-                if (clazzz.equals(referencedClass))
-                {
+                if (clazzz.equals(referencedClass)) {
                     biDirectionalField = field;
                     break;
                 }
             }
         }
- 
+
+    }
+
+    /**
+     * The Enum ForeignKey.
+     */
+    public static enum ForeignKey {
+        /**
+         * The ON e_ t o_ one.
+         */
+        ONE_TO_ONE,
+        /**
+         * The ON e_ t o_ many.
+         */
+        ONE_TO_MANY,
+        /**
+         * The MAN y_ t o_ one.
+         */
+        MANY_TO_ONE,
+        /**
+         * The MAN y_ t o_ many.
+         */
+        MANY_TO_MANY
     }
 }

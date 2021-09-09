@@ -19,23 +19,19 @@ import com.impetus.kundera.KunderaException;
 
 /**
  * @author Chhavi Gangwal
- *
  */
-public class RuleValidationException extends KunderaException
-{
+public class RuleValidationException extends KunderaException {
 
     /**
-     * 
+     *
      */
-    public RuleValidationException()
-    {
+    public RuleValidationException() {
     }
 
     /**
      * @param arg0
      */
-    public RuleValidationException(String message)
-    {
+    public RuleValidationException(String message) {
         super(message);
 
     }
@@ -43,8 +39,7 @@ public class RuleValidationException extends KunderaException
     /**
      * @param arg0
      */
-    public RuleValidationException(Throwable arg0)
-    {
+    public RuleValidationException(Throwable arg0) {
         super(arg0);
 
     }
@@ -53,8 +48,7 @@ public class RuleValidationException extends KunderaException
      * @param arg0
      * @param arg1
      */
-    public RuleValidationException(String message, Throwable arg1)
-    {
+    public RuleValidationException(String message, Throwable arg1) {
         super(message, arg1);
 
     }

@@ -15,26 +15,20 @@
  ******************************************************************************/
 package com.impetus.kundera.index;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * Annotation interface for collection of {@link Index}
- * 
+ *
  * @author Kuldeep Mishra
- * 
  */
-@Target({ ElementType.TYPE, ElementType.FIELD })
+@Target({ElementType.TYPE, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface IndexCollection
-{
+public @interface IndexCollection {
     /**
      * Array of index columns to index.
-     * 
+     *
      * @return the string[]
      */
     public abstract Index[] columns();

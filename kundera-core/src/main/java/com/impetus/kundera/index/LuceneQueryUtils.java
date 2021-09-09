@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,14 +17,13 @@ package com.impetus.kundera.index;
 
 /**
  * Provides utility methods for Lucene Query related functionality
- * 
+ *
  * @author amresh.singh
  */
-public class LuceneQueryUtils
-{
+public class LuceneQueryUtils {
     /**
      * Returns lucene based query.
-     * 
+     *
      * @param clazzFieldName
      *            lucene field name for class
      * @param clazzName
@@ -35,8 +34,7 @@ public class LuceneQueryUtils
      *            lucene id field value
      * @return query lucene query.
      */
-    public static String getQuery(String clazzFieldName, String clazzName, String idFieldName, String idFieldValue)
-    {
+    public static String getQuery(String clazzFieldName, String clazzName, String idFieldName, String idFieldValue) {
         StringBuffer sb = new StringBuffer("+");
         sb.append(clazzFieldName);
         sb.append(":");
@@ -51,7 +49,7 @@ public class LuceneQueryUtils
 
     /**
      * Returns lucene based query.
-     * 
+     *
      * @param clazzFieldName
      *            lucene field name for class
      * @param clazzName
@@ -65,8 +63,7 @@ public class LuceneQueryUtils
      * @return query lucene query.
      */
     public static String getQuery(String clazzFieldName, String clazzName, String idFieldName, Object idFieldValue,
-            String entityClazz)
-    {
+                                  String entityClazz) {
         StringBuffer sb = new StringBuffer("+");
         sb.append(clazzFieldName);
         sb.append(":");
@@ -76,8 +73,7 @@ public class LuceneQueryUtils
         sb.append(idFieldName);
         sb.append(":");
         sb.append(idFieldValue);
-        if (entityClazz != null)
-        {
+        if (entityClazz != null) {
             sb.append(" AND ");
             sb.append("+");
             sb.append(IndexingConstants.ENTITY_CLASS_FIELD);

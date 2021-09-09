@@ -26,15 +26,18 @@ import java.util.*;
  * Responsible for holding reference to complete metamodel and relative
  * information, in the form of: a) EntityTypes b) Embeddables
  * c)MappedSuperClassTypes
- * 
+ *
  * @author vivek.mishra
  */
 @StaticMetamodel(value = MetamodelImpl.class)
-public class MetamodelImpl implements Metamodel
-{
-    /** The entity metadata map. */
+public class MetamodelImpl implements Metamodel {
+    /**
+     * The entity metadata map.
+     */
     Map<String, EntityMetadata> entityMetadataMap;
-    /** The entity name to class map. */
+    /**
+     * The entity name to class map.
+     */
     Map<String, Class<?>> entityNameToClassMap;
 
     /**
@@ -62,17 +65,23 @@ public class MetamodelImpl implements Metamodel
      */
     private Map<Class<?>, List<String>> classToTables;
 
+    /**
+     * Instantiates a new metamodel impl.
+     */
+    public MetamodelImpl() {
+        super();
+        setEntityMetadataMap(new HashMap<String, EntityMetadata>());
+    }
+
     /*
      * (non-Javadoc)
      *
      * @see javax.persistence.metamodel.Metamodel#entity(java.lang.Class)
      */
     @Override
-    public <X> EntityType<X> entity(Class<X> paramClass)
-    {
+    public <X> EntityType<X> entity(Class<X> paramClass) {
         EntityType entityType = entityTypes.get(paramClass);
-        if (entityType == null)
-        {
+        if (entityType == null) {
             throw new IllegalArgumentException("Not an entity, {class:" + paramClass + "}");
         }
         return entityType;
@@ -80,24 +89,20 @@ public class MetamodelImpl implements Metamodel
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.metamodel.Metamodel#managedType(java.lang.Class)
      */
     @Override
-    public <X> ManagedType<X> managedType(Class<X> paramClass)
-    {
+    public <X> ManagedType<X> managedType(Class<X> paramClass) {
         ManagedType managedType = entityTypes.get(paramClass);
-        if (managedType == null)
-        {
+        if (managedType == null) {
             managedType = embeddables.get(paramClass);
-            if (managedType == null)
-            {
+            if (managedType == null) {
                 managedType = mappedSuperClassTypes.get(paramClass);
             }
         }
 
-        if (managedType == null)
-        {
+        if (managedType == null) {
             throw new IllegalArgumentException("Not a managed type, {class: " + paramClass + "}");
         }
         return managedType;
@@ -105,15 +110,13 @@ public class MetamodelImpl implements Metamodel
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.metamodel.Metamodel#embeddable(java.lang.Class)
      */
     @Override
-    public <X> EmbeddableType<X> embeddable(Class<X> paramClass)
-    {
+    public <X> EmbeddableType<X> embeddable(Class<X> paramClass) {
         EmbeddableType embeddableType = (EmbeddableType) embeddables.get(paramClass);
-        if (embeddableType == null)
-        {
+        if (embeddableType == null) {
             throw new IllegalArgumentException("Not a embeddable type, {class: " + paramClass + "}");
         }
 
@@ -122,23 +125,19 @@ public class MetamodelImpl implements Metamodel
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.metamodel.Metamodel#getManagedTypes()
      */
     @Override
-    public Set<ManagedType<?>> getManagedTypes()
-    {
+    public Set<ManagedType<?>> getManagedTypes() {
         Set<ManagedType<?>> managedTypeCollection = new HashSet<ManagedType<?>>();
-        if (entityTypes != null)
-        {
+        if (entityTypes != null) {
             managedTypeCollection.addAll(entityTypes.values());
         }
-        if (embeddables != null)
-        {
+        if (embeddables != null) {
             managedTypeCollection.addAll((Collection<? extends ManagedType<?>>) embeddables.values());
         }
-        if (mappedSuperClassTypes != null)
-        {
+        if (mappedSuperClassTypes != null) {
             managedTypeCollection.addAll((Collection<? extends ManagedType<?>>) mappedSuperClassTypes.values());
         }
         return managedTypeCollection;
@@ -146,15 +145,13 @@ public class MetamodelImpl implements Metamodel
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.metamodel.Metamodel#getEntities()
      */
     @Override
-    public Set<EntityType<?>> getEntities()
-    {
+    public Set<EntityType<?>> getEntities() {
         Set<EntityType<?>> entities = null;
-        if (entityTypes != null)
-        {
+        if (entityTypes != null) {
             entities = new HashSet<EntityType<?>>(entityTypes.values());
         }
         return entities;
@@ -162,38 +159,25 @@ public class MetamodelImpl implements Metamodel
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.metamodel.Metamodel#getEmbeddables()
      */
     @Override
-    public Set<EmbeddableType<?>> getEmbeddables()
-    {
+    public Set<EmbeddableType<?>> getEmbeddables() {
         Set embeddableEntities = null;
-        if (embeddables != null)
-        {
+        if (embeddables != null) {
             embeddableEntities = new HashSet(embeddables.values());
         }
         return embeddableEntities;
     }
 
     /**
-     * Instantiates a new metamodel impl.
-     */
-    public MetamodelImpl()
-    {
-        super();
-        setEntityMetadataMap(new HashMap<String, EntityMetadata>());
-    }
-
-    /**
      * Gets the entity metadata map.
-     * 
+     *
      * @return the entityMetadataMap
      */
-    public Map<String, EntityMetadata> getEntityMetadataMap()
-    {
-        if (entityMetadataMap == null)
-        {
+    public Map<String, EntityMetadata> getEntityMetadataMap() {
+        if (entityMetadataMap == null) {
             entityMetadataMap = new HashMap<String, EntityMetadata>();
         }
         return entityMetadataMap;
@@ -201,49 +185,40 @@ public class MetamodelImpl implements Metamodel
 
     /**
      * Sets the entity metadata map.
-     * 
-     * @param entityMetadataMap
-     *            the entityMetadataMap to set
+     *
+     * @param entityMetadataMap the entityMetadataMap to set
      */
-    public void setEntityMetadataMap(Map<String, EntityMetadata> entityMetadataMap)
-    {
+    public void setEntityMetadataMap(Map<String, EntityMetadata> entityMetadataMap) {
         this.entityMetadataMap = entityMetadataMap;
     }
 
     /**
      * Adds the entity metadata.
-     * 
-     * @param clazz
-     *            the clazz
-     * @param entityMetadata
-     *            the entity metadata
+     *
+     * @param clazz          the clazz
+     * @param entityMetadata the entity metadata
      */
-    public void addEntityMetadata(Class<?> clazz, EntityMetadata entityMetadata)
-    {
+    public void addEntityMetadata(Class<?> clazz, EntityMetadata entityMetadata) {
         getEntityMetadataMap().put(clazz.getName(), entityMetadata);
     }
 
     /**
      * Gets the entity metadata.
-     * 
-     * @param entityClass
-     *            the entity class
+     *
+     * @param entityClass the entity class
      * @return the entity metadata
      */
-    public EntityMetadata getEntityMetadata(Class<?> entityClass)
-    {
+    public EntityMetadata getEntityMetadata(Class<?> entityClass) {
         return getEntityMetadataMap().get(entityClass.getName());
     }
 
     /**
      * Gets the entity name to class map.
-     * 
+     *
      * @return the entityNameToClassMap
      */
-    public Map<String, Class<?>> getEntityNameToClassMap()
-    {
-        if (entityNameToClassMap == null)
-        {
+    public Map<String, Class<?>> getEntityNameToClassMap() {
+        if (entityNameToClassMap == null) {
             entityNameToClassMap = new HashMap<String, Class<?>>();
         }
         return entityNameToClassMap;
@@ -251,120 +226,92 @@ public class MetamodelImpl implements Metamodel
 
     /**
      * Sets the entity name to class map.
-     * 
-     * @param entityNameToClassMap
-     *            the entityNameToClassMap to set
+     *
+     * @param entityNameToClassMap the entityNameToClassMap to set
      */
-    public void setEntityNameToClassMap(Map<String, Class<?>> entityNameToClassMap)
-    {
+    public void setEntityNameToClassMap(Map<String, Class<?>> entityNameToClassMap) {
         this.entityNameToClassMap = entityNameToClassMap;
     }
 
     /**
      * Adds the entity name to class mapping.
-     * 
-     * @param className
-     *            the class name
-     * @param entityClass
-     *            the entity class
+     *
+     * @param className   the class name
+     * @param entityClass the entity class
      */
-    public void addEntityNameToClassMapping(String className, Class<?> entityClass)
-    {
+    public void addEntityNameToClassMapping(String className, Class<?> entityClass) {
         getEntityNameToClassMap().put(className, entityClass);
     }
 
     /**
      * Gets the entity class.
-     * 
-     * @param className
-     *            the class name
+     *
+     * @param className the class name
      * @return the entity class
      */
-    public Class<?> getEntityClass(String className)
-    {
+    public Class<?> getEntityClass(String className) {
         return getEntityNameToClassMap().get(className);
     }
 
     /**
      * Assign to managedTypes.
-     * 
-     * @param managedTypes
-     *            the managedTypes to set
+     *
+     * @param managedTypes the managedTypes to set
      */
-    public void assignManagedTypes(Map<Class<?>, EntityType<?>> managedTypes)
-    {
-        if (this.entityTypes == null)
-        {
+    public void assignManagedTypes(Map<Class<?>, EntityType<?>> managedTypes) {
+        if (this.entityTypes == null) {
             this.entityTypes = managedTypes;
-        }
-        else
-        {
+        } else {
             this.entityTypes.putAll(managedTypes);
         }
     }
 
     /**
      * Assign embeddables to embeddables collection.
-     * 
-     * @param embeddables
-     *            the embeddables to set
+     *
+     * @param embeddables the embeddables to set
      */
-    public void assignEmbeddables(Map<Class<?>, ManagedType<?>> embeddables)
-    {
-        if (this.embeddables == null)
-        {
+    public void assignEmbeddables(Map<Class<?>, ManagedType<?>> embeddables) {
+        if (this.embeddables == null) {
             this.embeddables = embeddables;
-        }
-        else
-        {
+        } else {
             this.embeddables.putAll(embeddables);
         }
     }
 
     /**
      * Adds mapped super class to mapped super class collection.
-     * 
-     * @param mappedSuperClass
-     *            the mappedSuperClassTypes to set
+     *
+     * @param mappedSuperClass the mappedSuperClassTypes to set
      */
-    public void assignMappedSuperClass(Map<Class<?>, ManagedType<?>> mappedSuperClass)
-    {
-        if (this.mappedSuperClassTypes == null)
-        {
+    public void assignMappedSuperClass(Map<Class<?>, ManagedType<?>> mappedSuperClass) {
+        if (this.mappedSuperClassTypes == null) {
             this.mappedSuperClassTypes = mappedSuperClass;
-        }
-        else
-        {
+        } else {
             this.mappedSuperClassTypes.putAll(mappedSuperClassTypes);
         }
     }
 
     /**
      * Returns true, if attribute is embeddable.
-     * 
-     * @param embeddableClazz
-     *            class for embeddable type attribute.
+     *
+     * @param embeddableClazz class for embeddable type attribute.
      * @return try, if paramterized class is of embeddable java type.
      */
-    public boolean isEmbeddable(Class embeddableClazz)
-    {
+    public boolean isEmbeddable(Class embeddableClazz) {
         return embeddables != null ? embeddables.containsKey(embeddableClazz)
                 && embeddables.get(embeddableClazz).getPersistenceType().equals(PersistenceType.EMBEDDABLE) : false;
     }
 
     /**
      * Returns entity attribute for given managed entity class.
-     * 
-     * @param clazz
-     *            Entity class
-     * @param fieldName
-     *            field name
+     *
+     * @param clazz     Entity class
+     * @param fieldName field name
      * @return entity attribute
      */
-    public Attribute getEntityAttribute(Class clazz, String fieldName)
-    {
-        if (entityTypes != null && entityTypes.containsKey(clazz))
-        {
+    public Attribute getEntityAttribute(Class clazz, String fieldName) {
+        if (entityTypes != null && entityTypes.containsKey(clazz)) {
             EntityType entityType = entityTypes.get(clazz);
             return entityType.getAttribute(fieldName);
         }
@@ -374,25 +321,20 @@ public class MetamodelImpl implements Metamodel
     /**
      * Custom implementation to offer map of embeddables available for given
      * entityType.
-     * 
-     * @param clazz
-     *            entity class
+     *
+     * @param clazz entity class
      * @return map of holding {@link EmbeddableType} as value and attribute name
-     *         as key.
+     * as key.
      */
-    public Map<String, EmbeddableType> getEmbeddables(Class clazz)
-    {
+    public Map<String, EmbeddableType> getEmbeddables(Class clazz) {
         Map<String, EmbeddableType> embeddableAttibutes = new HashMap<String, EmbeddableType>();
 
-        if (entityTypes != null)
-        {
+        if (entityTypes != null) {
             EntityType entity = entityTypes.get(clazz);
             Iterator<Attribute> iter = entity.getAttributes().iterator();
-            while (iter.hasNext())
-            {
+            while (iter.hasNext()) {
                 Attribute attribute = iter.next();
-                if (isEmbeddable(((AbstractAttribute) attribute).getBindableJavaType()))
-                {
+                if (isEmbeddable(((AbstractAttribute) attribute).getBindableJavaType())) {
                     embeddableAttibutes.put(attribute.getName(),
                             embeddable(((AbstractAttribute) attribute).getBindableJavaType()));
                 }

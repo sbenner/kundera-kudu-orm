@@ -15,24 +15,15 @@
  ******************************************************************************/
 package com.impetus.kundera.client.crud.associations;
 
+import javax.persistence.*;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 /**
  * @author Pragalbh Garg
- * 
  */
 @Entity
 @Table(name = "mobile_manufacturer")
-public class MobileManufacturer
-{
+public class MobileManufacturer {
 
     @Id
     @Column(name = "app_id")
@@ -41,36 +32,30 @@ public class MobileManufacturer
     @Column(name = "app_name")
     private String name;
 
-    @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER, mappedBy = "manufacturer")
+    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER, mappedBy = "manufacturer")
     private Set<MobileHandset> handsets;
 
-    public Set<MobileHandset> getHandsets()
-    {
+    public Set<MobileHandset> getHandsets() {
         return handsets;
     }
 
-    public void setHandsets(Set<MobileHandset> handsets)
-    {
+    public void setHandsets(Set<MobileHandset> handsets) {
         this.handsets = handsets;
     }
 
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 
-    public void setId(String id)
-    {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 

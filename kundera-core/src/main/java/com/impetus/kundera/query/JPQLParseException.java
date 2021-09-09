@@ -17,32 +17,27 @@ package com.impetus.kundera.query;
 
 /**
  * @author amresh
- * 
  */
-public class JPQLParseException extends QueryHandlerException
-{
+public class JPQLParseException extends QueryHandlerException {
 
     /**
-     * 
+     *
      */
-    public JPQLParseException()
-    {
+    public JPQLParseException() {
         super();
     }
 
     /**
      * @param paramThrowable
      */
-    public JPQLParseException(Throwable paramThrowable)
-    {
+    public JPQLParseException(Throwable paramThrowable) {
         super(paramThrowable);
     }
 
     /**
      * @param errMsg
      */
-    public JPQLParseException(String errMsg)
-    {
+    public JPQLParseException(String errMsg) {
         super(
                 errMsg
                         + ". For details, see: http://openjpa.apache.org/builds/1.0.4/apache-openjpa-1.0.4/docs/manual/jpa_langref.html#jpa_langref_bnf");

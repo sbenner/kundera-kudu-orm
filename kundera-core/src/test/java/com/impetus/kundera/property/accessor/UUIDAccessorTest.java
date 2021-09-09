@@ -15,30 +15,25 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
-import java.util.UUID;
-
+import com.impetus.kundera.property.PropertyAccessor;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.property.PropertyAccessor;
+import java.util.UUID;
 
 /**
  * @author amresh.singh
- *
  */
-public class UUIDAccessorTest
-{
+public class UUIDAccessorTest {
     PropertyAccessor<UUID> accessor;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         accessor = new UUIDAccessor();
     }
 
@@ -46,8 +41,7 @@ public class UUIDAccessorTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         accessor = null;
     }
 
@@ -55,12 +49,11 @@ public class UUIDAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.UUIDAccessor#fromBytes(java.lang.Class, byte[])}.
      */
     @Test
-    public void testFromBytes()
-    {
+    public void testFromBytes() {
         Assert.assertNull(accessor.fromBytes(UUID.class, null));
         UUID uuid = UUID.randomUUID();
         byte[] b = accessor.toBytes(uuid);
-        
+
         UUID uuid2 = accessor.fromBytes(UUID.class, b);
         Assert.assertEquals(uuid, uuid2);
 
@@ -70,12 +63,11 @@ public class UUIDAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.UUIDAccessor#toBytes(java.lang.Object)}.
      */
     @Test
-    public void testToBytes()
-    {
+    public void testToBytes() {
         Assert.assertNull(accessor.toBytes(null));
         UUID uuid = UUID.randomUUID();
         byte[] b = accessor.toBytes(uuid);
-        
+
         UUID uuid2 = accessor.fromBytes(UUID.class, b);
         Assert.assertEquals(uuid, uuid2);
     }
@@ -84,8 +76,7 @@ public class UUIDAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.UUIDAccessor#toString(java.lang.Object)}.
      */
     @Test
-    public void testToStringObject()
-    {
+    public void testToStringObject() {
         Assert.assertNull(accessor.toString(null));
         UUID uuid = UUID.randomUUID();
         String s1 = uuid.toString();
@@ -97,13 +88,12 @@ public class UUIDAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.UUIDAccessor#fromString(java.lang.Class, java.lang.String)}.
      */
     @Test
-    public void testFromString()
-    {
+    public void testFromString() {
         Assert.assertNull(accessor.fromString(UUID.class, null));
-        
+
         UUID uuid = UUID.randomUUID();
         String s = uuid.toString();
-        
+
         UUID uuid2 = accessor.fromString(UUID.class, s);
         Assert.assertEquals(uuid, uuid2);
     }
@@ -112,10 +102,9 @@ public class UUIDAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.UUIDAccessor#getCopy(java.lang.Object)}.
      */
     @Test
-    public void testGetCopy()
-    {
+    public void testGetCopy() {
         UUID uuid = UUID.randomUUID();
-        
+
         UUID uuid2 = accessor.getCopy(uuid);
         Assert.assertEquals(uuid, uuid2);
 
@@ -125,8 +114,7 @@ public class UUIDAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.UUIDAccessor#getInstance(java.lang.Class)}.
      */
     @Test
-    public void testGetInstance()
-    {
+    public void testGetInstance() {
         Object o = accessor.getInstance(UUID.class);
         Assert.assertNotNull(o);
         Assert.assertTrue(o instanceof UUID);

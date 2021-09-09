@@ -15,35 +15,30 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.mappedsuperclass;
 
-import java.util.Set;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.EntityType;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.impetus.kundera.KunderaException;
 import com.impetus.kundera.metadata.KunderaMetadataManager;
 import com.impetus.kundera.metadata.model.EntityMetadata;
 import com.impetus.kundera.metadata.model.MetamodelImpl;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
 import com.impetus.kundera.query.QueryHandlerException;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.EntityType;
+import java.util.Set;
 
 /**
  * @author vivek.mishra
- * 
- *         MappedSuper class junit.
- * 
+ * <p>
+ * MappedSuper class junit.
  */
-public class MappedSuperClassTest
-{
+public class MappedSuperClassTest {
 
     private EntityManagerFactory emf;
 
@@ -52,15 +47,13 @@ public class MappedSuperClassTest
     private String persistenceUnit = "mappedsu";
 
     @Before
-    public void setup()
-    {
+    public void setup() {
         emf = Persistence.createEntityManagerFactory("mappedsu");
         em = emf.createEntityManager();
     }
 
     @Test
-    public void testMappedMetamodel()
-    {
+    public void testMappedMetamodel() {
         EntityMetadata entityMetadata = KunderaMetadataManager.getEntityMetadata(
                 ((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance(), Employee.class);
         MetamodelImpl metaModel = (MetamodelImpl) ((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance()
@@ -77,28 +70,22 @@ public class MappedSuperClassTest
     }
 
     @Test
-    public void testValidateQuery()
-    {
+    public void testValidateQuery() {
         String query = " Select p from MappedPerson p";
 
-        try
-        {
+        try {
             em.createQuery(query);
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (QueryHandlerException qhex)
-        {
+        } catch (QueryHandlerException qhex) {
             Assert.assertEquals("No entity found by the name: MappedPerson", qhex.getMessage());
         }
 
     }
 
     @Test
-    public void testEntityOperations()
-    {
+    public void testEntityOperations() {
 
-        try
-        {
+        try {
             MappedPerson p = new MappedPerson();
             p.setId("dd");
             p.setFirstName("mapped");
@@ -106,17 +93,14 @@ public class MappedSuperClassTest
 
             em.persist(p);
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (KunderaException kex)
-        {
+        } catch (KunderaException kex) {
             Assert.assertNotNull(kex.getMessage());
         }
 
     }
 
     @Test
-    public void testValidOperations()
-    {
+    public void testValidOperations() {
         Employee emp = new Employee();
         emp.setId("emp_1");
         emp.setDepartmentId(1);
@@ -136,16 +120,13 @@ public class MappedSuperClassTest
     }
 
     @After
-    public void tearDown()
-    {
-        if (em != null)
-        {
+    public void tearDown() {
+        if (em != null) {
             em.close();
             em = null;
         }
 
-        if (emf != null)
-        {
+        if (emf != null) {
             emf.close();
             emf = null;
         }

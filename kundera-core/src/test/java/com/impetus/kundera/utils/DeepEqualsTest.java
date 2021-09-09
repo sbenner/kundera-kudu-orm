@@ -24,169 +24,27 @@ import java.util.*;
 
 /**
  * Test for DeepEquals (equals() and hashCode())
- * 
+ *
  * @author John DeRegnaucourt (jdereg@gmail.com) <br/>
- *         Copyright [2010] John DeRegnaucourt <br/>
+ * Copyright [2010] John DeRegnaucourt <br/>
  * <br/>
- *         Licensed under the Apache License, Version 2.0 (the "License"); you
- *         may not use this file except in compliance with the License. You may
- *         obtain a copy of the License at <br/>
+ * Licensed under the Apache License, Version 2.0 (the "License"); you
+ * may not use this file except in compliance with the License. You may
+ * obtain a copy of the License at <br/>
  * <br/>
- *         http://www.apache.org/licenses/LICENSE-2.0 <br/>
+ * http://www.apache.org/licenses/LICENSE-2.0 <br/>
  * <br/>
- *         Unless required by applicable law or agreed to in writing, software
- *         distributed under the License is distributed on an "AS IS" BASIS,
- *         WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
- *         implied. See the License for the specific language governing
- *         permissions and limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+ * implied. See the License for the specific language governing
+ * permissions and limitations under the License.
  */
-public class DeepEqualsTest extends TestCase
-{
-    public DeepEqualsTest()
-    {
+public class DeepEqualsTest extends TestCase {
+    public DeepEqualsTest() {
     }
 
-    private class Person
-    {
-        String first;
-
-        String last;
-
-        Pet pet;
-    }
-
-    private class Pet
-    {
-        Pet(String nm, String t)
-        {
-            name = new String(nm);
-            type = new String(t);
-        }
-
-        String name;
-
-        String type;
-    }
-
-    private class Pathelogical
-    {
-    }
-
-    private class ComparablePet extends Pet implements Comparable
-    {
-        ComparablePet(String nm, String t)
-        {
-            super(nm, t);
-        }
-
-        public int compareTo(Object o)
-        {
-            if (o == null || !(o instanceof ComparablePet))
-            {
-                return 1;
-            }
-            ComparablePet that = (ComparablePet) o;
-            if (name.compareTo(that.name) == 0)
-            {
-                return type.compareTo(that.type);
-            }
-            return name.compareTo(that.name);
-        }
-
-    }
-
-    private class ArrayClass
-    {
-        String name;
-
-        Object[] items;
-    }
-
-    private class Cycle
-    {
-        String value;
-
-        Object next;
-    }
-
-    private class FixedHierarchy
-    {
-        String value;
-
-        Object child1;
-
-        Object child2;
-
-        Object child3;
-    }
-
-    private class CollectionClass
-    {
-        String value;
-
-        Collection items;
-    }
-
-    private class MapClass
-    {
-        String value;
-
-        Map items;
-    }
-
-    private class SmartPet extends Pet
-    {
-        SmartPet(String nm, String t)
-        {
-            super(nm, t);
-        }
-
-        // Pathological equals!!! Intentionally wrong to prove that it is
-        // called.
-        public boolean equals(Object o)
-        {
-            if (o == null || !(o instanceof Pet))
-            {
-                return false;
-            }
-
-            Pet that = (Pet) o;
-            boolean nameEquals;
-            if (name == null || that.name == null)
-            {
-                nameEquals = name != that.name;
-            }
-            else
-            {
-                nameEquals = !name.equals(that.name);
-            }
-
-            if (!nameEquals)
-            {
-                return false;
-            }
-            boolean typeEquals;
-            if (type == null || that.type == null)
-            {
-                typeEquals = type != that.type;
-            }
-            else
-            {
-                typeEquals = !type.equals(that.type);
-            }
-            return typeEquals;
-        }
-
-        public int hashCode()
-        {
-            int h1 = (name == null) ? 0 : name.hashCode();
-            int h2 = (type == null) ? 0 : type.hashCode();
-            return h1 + h2;
-        }
-    }
-
-    public void testHashCodeAndEquals()
-    {
+    public void testHashCodeAndEquals() {
         Person p1 = new Person();
         p1.first = new String("John");
         p1.last = new String("DeRegnaucourt");
@@ -213,11 +71,10 @@ public class DeepEqualsTest extends TestCase
         p2.pet = pet1;
         assertTrue(DeepEquals.deepEquals(p1, p2));
         assertTrue(!p1.equals(p2)); // should be different because it would use
-                                    // Object.equals() which is instance based
+        // Object.equals() which is instance based
     }
 
-    public void testCycleHandlingHashCode()
-    {
+    public void testCycleHandlingHashCode() {
         Cycle a = new Cycle();
         a.value = new String("foo");
         Cycle b = new Cycle();
@@ -236,8 +93,7 @@ public class DeepEqualsTest extends TestCase
         assertTrue(ha == hb && hb == hc);
     }
 
-    public void testCycleHandlingEquals()
-    {
+    public void testCycleHandlingEquals() {
         Cycle a1 = new Cycle();
         a1.value = new String("foo");
         Cycle b1 = new Cycle();
@@ -268,8 +124,7 @@ public class DeepEqualsTest extends TestCase
         assertFalse(DeepEquals.deepEquals(c1, a2));
     }
 
-    public void testHierarchyCycleEquals()
-    {
+    public void testHierarchyCycleEquals() {
         FixedHierarchy h1 = new FixedHierarchy();
         h1.value = new String("root");
         FixedHierarchy c1 = new FixedHierarchy();
@@ -295,31 +150,29 @@ public class DeepEqualsTest extends TestCase
         assertTrue(DeepEquals.deepEquals(h1, h2));
     }
 
-    public void testDeepEquals()
-    {
+    public void testDeepEquals() {
         SmartPet smartPet1 = new SmartPet("Fido", "Terrier");
         SmartPet smartPet2 = new SmartPet("Fido", "Terrier");
 
         assertFalse(DeepEquals.deepEquals(smartPet1, smartPet2)); // Only way to
-                                                                  // get false
-                                                                  // is if it
-                                                                  // calls
-                                                                  // .equals()
+        // get false
+        // is if it
+        // calls
+        // .equals()
 
         ArrayClass ac1 = new ArrayClass();
         ac1.name = new String("Object Array");
-        ac1.items = new Object[] { new String("Hello"), 16, 16L, null, 'c', new Boolean(true), 0.04,
-                new Object[] { "a", 2, 'c' }, new String[] { "larry", "curly", new String("mo") } };
+        ac1.items = new Object[]{new String("Hello"), 16, 16L, null, 'c', new Boolean(true), 0.04,
+                new Object[]{"a", 2, 'c'}, new String[]{"larry", "curly", new String("mo")}};
         ArrayClass ac2 = new ArrayClass();
         ac2.name = new String("Object Array");
-        ac2.items = new Object[] { new String("Hello"), 16, 16L, null, 'c', Boolean.TRUE, new Double(0.04),
-                new Object[] { "a", 2, 'c' }, new String[] { "larry", new String("curly"), "mo" } };
+        ac2.items = new Object[]{new String("Hello"), 16, 16L, null, 'c', Boolean.TRUE, new Double(0.04),
+                new Object[]{"a", 2, 'c'}, new String[]{"larry", new String("curly"), "mo"}};
 
         assertTrue(DeepEquals.deepEquals(ac1, ac2));
     }
 
-    public void testBasicEquals()
-    {
+    public void testBasicEquals() {
         String one = new String("One");
         String two = new String("Two");
         String a = new String("One");
@@ -335,8 +188,7 @@ public class DeepEqualsTest extends TestCase
         assertTrue(DeepEquals.deepEquals(x, z));
     }
 
-    public void testBasicHashCode()
-    {
+    public void testBasicHashCode() {
         String one = new String("One");
         assertTrue(DeepEquals.deepHashCode(one) == one.hashCode());
 
@@ -350,8 +202,7 @@ public class DeepEqualsTest extends TestCase
         assertTrue(DeepEquals.deepHashCode(date) == date.hashCode());
     }
 
-    public void testCollection()
-    {
+    public void testCollection() {
         Pet p1 = new Pet("Eddie", "Terrier");
         Pet p2 = new Pet("Eddie", "Terrier");
         Pet p3 = new Pet("Penny", "Chihuahua");
@@ -416,8 +267,7 @@ public class DeepEqualsTest extends TestCase
         assertFalse(DeepEquals.deepEquals(c1, c2));
     }
 
-    public void testMap()
-    {
+    public void testMap() {
         Pet p1 = new Pet("Eddie", "Terrier");
         Pet p2 = new Pet("Eddie", "Terrier");
         Pet p3 = new Pet("Penny", "Chihuahua");
@@ -509,16 +359,14 @@ public class DeepEqualsTest extends TestCase
         assertFalse(DeepEquals.deepEquals(map1, map2));
     }
 
-    public void testPathelogical()
-    {
+    public void testPathelogical() {
         Pathelogical a = new Pathelogical();
         Pathelogical b = new Pathelogical();
 
         assertTrue(DeepEquals.deepEquals(a, b));
     }
 
-    public void testPhotographer()
-    {
+    public void testPhotographer() {
         // Object 1
         PhotographerUni_1_M_1_M a1 = new PhotographerUni_1_M_1_M();
         a1.setPhotographerId(1);
@@ -655,5 +503,117 @@ public class DeepEqualsTest extends TestCase
         a2.setPhotographerName(originalPhotographerName);
         b22.setAlbumDescription(originalAlbumDescription);
         c24.setPhotoCaption(originalPhotoCaption);
+    }
+
+    private class Person {
+        String first;
+
+        String last;
+
+        Pet pet;
+    }
+
+    private class Pet {
+        String name;
+        String type;
+
+        Pet(String nm, String t) {
+            name = new String(nm);
+            type = new String(t);
+        }
+    }
+
+    private class Pathelogical {
+    }
+
+    private class ComparablePet extends Pet implements Comparable {
+        ComparablePet(String nm, String t) {
+            super(nm, t);
+        }
+
+        public int compareTo(Object o) {
+            if (o == null || !(o instanceof ComparablePet)) {
+                return 1;
+            }
+            ComparablePet that = (ComparablePet) o;
+            if (name.compareTo(that.name) == 0) {
+                return type.compareTo(that.type);
+            }
+            return name.compareTo(that.name);
+        }
+
+    }
+
+    private class ArrayClass {
+        String name;
+
+        Object[] items;
+    }
+
+    private class Cycle {
+        String value;
+
+        Object next;
+    }
+
+    private class FixedHierarchy {
+        String value;
+
+        Object child1;
+
+        Object child2;
+
+        Object child3;
+    }
+
+    private class CollectionClass {
+        String value;
+
+        Collection items;
+    }
+
+    private class MapClass {
+        String value;
+
+        Map items;
+    }
+
+    private class SmartPet extends Pet {
+        SmartPet(String nm, String t) {
+            super(nm, t);
+        }
+
+        // Pathological equals!!! Intentionally wrong to prove that it is
+        // called.
+        public boolean equals(Object o) {
+            if (o == null || !(o instanceof Pet)) {
+                return false;
+            }
+
+            Pet that = (Pet) o;
+            boolean nameEquals;
+            if (name == null || that.name == null) {
+                nameEquals = name != that.name;
+            } else {
+                nameEquals = !name.equals(that.name);
+            }
+
+            if (!nameEquals) {
+                return false;
+            }
+            boolean typeEquals;
+            if (type == null || that.type == null) {
+                typeEquals = type != that.type;
+            } else {
+                typeEquals = !type.equals(that.type);
+            }
+            return typeEquals;
+        }
+
+        public int hashCode() {
+            int h1 = (name == null) ? 0 : name.hashCode();
+            int h2 = (type == null) ? 0 : type.hashCode();
+            return h1 + h2;
+        }
     }
 }

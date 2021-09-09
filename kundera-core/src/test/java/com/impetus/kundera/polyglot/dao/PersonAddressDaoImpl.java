@@ -15,78 +15,66 @@
  ******************************************************************************/
 package com.impetus.kundera.polyglot.dao;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-
-public class PersonAddressDaoImpl extends BaseDao
-{
+public class PersonAddressDaoImpl extends BaseDao {
     private String persistenceUnit;
 
-    public PersonAddressDaoImpl(String pu)
-    {
+    public PersonAddressDaoImpl(String pu) {
         this.persistenceUnit = pu;
     }
 
-    public Query createQuery(String query)
-    {
+    public Query createQuery(String query) {
         EntityManager em = getEntityManager(persistenceUnit);
         Query q = em.createQuery(query);
         return q;
     }
 
-    public void insert(Object person)
-    {
+    public void insert(Object person) {
         em = getEntityManager(persistenceUnit);
         em.persist(person);
         closeEntityManager();
     }
 
-    public void update(Object obj)
-    {
+    public void update(Object obj) {
         em.merge(obj);
         closeEntityManager();
     }
 
-    public Object findPerson(Class entityClass, Object personId)
-    {
+    public Object findPerson(Class entityClass, Object personId) {
         em = getEntityManager(persistenceUnit);
         Object personnel = em.find(entityClass, personId);
         return personnel;
     }
 
-    public void savePersons(Set<?> personnels)
-    {
+    public void savePersons(Set<?> personnels) {
         EntityManager em = getEntityManager(persistenceUnit);
 
-        for (Object personnel : personnels)
-        {
+        for (Object personnel : personnels) {
             em.persist(personnel);
         }
 
         closeEntityManager();
     }
 
-    public void remove(Object pKey, Class clazz)
-    {
+    public void remove(Object pKey, Class clazz) {
         em = getEntityManager(persistenceUnit);
         Object obj = em.find(clazz, pKey);
         em.remove(obj);
         closeEntityManager();
     }
 
-    public void merge(Object modifiedObj)
-    {
+    public void merge(Object modifiedObj) {
         em = getEntityManager(persistenceUnit);
         em.merge(modifiedObj);
         closeEntityManager();
 
     }
 
-    public List<?> getAllPersons(String className)
-    {
+    public List<?> getAllPersons(String className) {
         EntityManager em = getEntityManager(persistenceUnit);
         Query q = em.createQuery("select p from " + className + " p");
         List<?> persons = q.getResultList();
@@ -94,8 +82,7 @@ public class PersonAddressDaoImpl extends BaseDao
         return persons;
     }
 
-    public Object findPersonByIdColumn(Class entityClass, Object personId)
-    {
+    public Object findPersonByIdColumn(Class entityClass, Object personId) {
         EntityManager em = getEntityManager(persistenceUnit);
         String query = "Select p from " + entityClass.getSimpleName() + " p where p.personId = " + personId;
         Query q = em.createQuery(query);
@@ -108,8 +95,7 @@ public class PersonAddressDaoImpl extends BaseDao
         return persons.get(0);
     }
 
-    public List findPersonByName(Class entityClass, String personName)
-    {
+    public List findPersonByName(Class entityClass, String personName) {
         EntityManager em = getEntityManager(persistenceUnit);
         String query = "Select p from " + entityClass.getSimpleName() + " p where p.personName = " + personName;
         Query q = em.createQuery(query);
@@ -119,8 +105,7 @@ public class PersonAddressDaoImpl extends BaseDao
         return persons;
     }
 
-    public Object findAddressByIdColumn(Class entityClass, Object addressId)
-    {
+    public Object findAddressByIdColumn(Class entityClass, Object addressId) {
         EntityManager em = getEntityManager(persistenceUnit);
         String query = "Select a from " + entityClass.getSimpleName() + " a where a.addressId = " + addressId;
         Query q = em.createQuery(query);
@@ -133,8 +118,7 @@ public class PersonAddressDaoImpl extends BaseDao
         return addresses.get(0);
     }
 
-    public List findAddressByStreet(Class entityClass, String street)
-    {
+    public List findAddressByStreet(Class entityClass, String street) {
         EntityManager em = getEntityManager(persistenceUnit);
         String query = "Select a from " + entityClass.getSimpleName() + " a where a.street = " + street;
         Query q = em.createQuery(query);

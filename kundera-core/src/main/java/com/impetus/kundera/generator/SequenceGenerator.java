@@ -21,12 +21,10 @@ import com.impetus.kundera.metadata.model.SequenceGeneratorDescriptor;
 /**
  * {@link SequenceGenerator} interface , all client should implement this
  * interface in order to support sequence generation strategy.
- * 
+ *
  * @author Kuldeep.Mishra
- * 
  */
-public interface SequenceGenerator extends Generator
-{
+public interface SequenceGenerator extends Generator {
 
     /**
      * Generate.

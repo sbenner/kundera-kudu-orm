@@ -15,77 +15,60 @@
  ******************************************************************************/
 package com.impetus.kundera.client.crud.associations;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author Pragalbh Garg
- *
  */
 @Entity
 @Table(name = "mobile_handset")
-public class MobileHandset
-{
+public class MobileHandset {
 
     @Id
     private String id;
-    
-    @Column(name="mob_name")
+
+    @Column(name = "mob_name")
     private String name;
-    
-    @ManyToOne(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     @JoinColumn(name = "os")
     private MobileOperatingSystem os;
-    
-    @ManyToOne(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
-    @JoinColumn(name="manufacturer")
+
+    @ManyToOne(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinColumn(name = "manufacturer")
     private MobileManufacturer manufacturer;
 
-    public MobileManufacturer getManufacturer()
-    {
+    public MobileManufacturer getManufacturer() {
         return manufacturer;
     }
 
-    public void setManufacturer(MobileManufacturer manufacturer)
-    {
+    public void setManufacturer(MobileManufacturer manufacturer) {
         this.manufacturer = manufacturer;
     }
 
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 
-    public void setId(String id)
-    {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public MobileOperatingSystem getOs()
-    {
+    public MobileOperatingSystem getOs() {
         return os;
     }
 
-    public void setOs(MobileOperatingSystem os)
-    {
+    public void setOs(MobileOperatingSystem os) {
         this.os = os;
     }
-    
-    
+
+
 }

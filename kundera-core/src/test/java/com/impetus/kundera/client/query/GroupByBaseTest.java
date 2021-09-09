@@ -15,67 +15,60 @@
  ******************************************************************************/
 package com.impetus.kundera.client.query;
 
+import com.impetus.kundera.query.Person;
+import junit.framework.Assert;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
-
-import junit.framework.Assert;
-
-import com.impetus.kundera.query.Person;
-import com.impetus.kundera.query.Person.Day;
-
 /**
  * The Class GroupByBaseTest.
- * 
+ *
  * @author karthikp.manchala
- * 
  */
-public abstract class GroupByBaseTest
-{
-    /** The emf. */
+public abstract class GroupByBaseTest {
+    /**
+     * The emf.
+     */
     protected static EntityManagerFactory emf;
 
-    /** The em. */
+    /**
+     * The em.
+     */
     protected static EntityManager em;
 
-    /** The person. */
+    /**
+     * The person.
+     */
     private static Person person;
 
     /**
      * Check if server running.
-     * 
+     *
      * @return true, if successful
      */
-    protected static boolean checkIfServerRunning()
-    {
-        try
-        {
+    protected static boolean checkIfServerRunning() {
+        try {
             Socket socket = new Socket("127.0.0.1", 9300);
             return socket.getInetAddress() != null;
-        }
-        catch (UnknownHostException e)
-        {
+        } catch (UnknownHostException e) {
             return false;
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             return false;
         }
     }
 
     /**
      * Inits the.
-     * 
-     * @throws InterruptedException
-     *             the interrupted exception
+     *
+     * @throws InterruptedException the interrupted exception
      */
-    protected static void init() throws InterruptedException
-    {
+    protected static void init() throws InterruptedException {
         createPerson("1", 10, "Amit", 100.0);
         createPerson("2", 20, "Dev", 200.0);
         createPerson("3", 30, "Karthik", 300.0);
@@ -89,18 +82,13 @@ public abstract class GroupByBaseTest
 
     /**
      * Creates the person.
-     * 
-     * @param id
-     *            the id
-     * @param age
-     *            the age
-     * @param name
-     *            the name
-     * @param salary
-     *            the salary
+     *
+     * @param id     the id
+     * @param age    the age
+     * @param name   the name
+     * @param salary the salary
      */
-    private static void createPerson(String id, int age, String name, Double salary)
-    {
+    private static void createPerson(String id, int age, String name, Double salary) {
         person = new Person();
         person.setAge(age);
         person.setPersonId(id);
@@ -111,10 +99,18 @@ public abstract class GroupByBaseTest
     }
 
     /**
+     * Wait thread.
+     *
+     * @throws InterruptedException the interrupted exception
+     */
+    protected static void waitThread() throws InterruptedException {
+        Thread.sleep(2000);
+    }
+
+    /**
      * Test aggregation.
      */
-    protected void testAggregation()
-    {
+    protected void testAggregation() {
         testGroupBy();
         testGroupByRowKey();
         testGroupByWithWhereClause();
@@ -138,8 +134,7 @@ public abstract class GroupByBaseTest
     /**
      * Test group by.
      */
-    private void testGroupBy()
-    {
+    private void testGroupBy() {
         String queryString = "Select sum(p.salary) from Person p group by p.age";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -155,8 +150,7 @@ public abstract class GroupByBaseTest
     /**
      * Test group by row key.
      */
-    private void testGroupByRowKey()
-    {
+    private void testGroupByRowKey() {
         String queryString = "Select sum(p.salary) from Person p group by p.personId";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -175,8 +169,7 @@ public abstract class GroupByBaseTest
     /**
      * Test group by with where clause.
      */
-    private void testGroupByWithWhereClause()
-    {
+    private void testGroupByWithWhereClause() {
         String queryString = "Select sum(p.salary) from Person p where p.age > 20 group by p.age";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -189,8 +182,7 @@ public abstract class GroupByBaseTest
     /**
      * Test group by with entity.
      */
-    private void testGroupByWithEntity()
-    {
+    private void testGroupByWithEntity() {
         String queryString = "Select p from Person p where p.age < 20 group by p.age";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -206,8 +198,7 @@ public abstract class GroupByBaseTest
     /**
      * Test group by with fields.
      */
-    private void testGroupByWithFields()
-    {
+    private void testGroupByWithFields() {
         String queryString = "Select p.age, p.personName, p.personId from Person p where p.age < 30 group by p.age";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -224,8 +215,7 @@ public abstract class GroupByBaseTest
     /**
      * Test group by with metric agg.
      */
-    private void testGroupByWithMetricAgg()
-    {
+    private void testGroupByWithMetricAgg() {
         String queryString = "Select p.salary, sum(p.age), p.personName, p.personId from Person p where p.age < 30 group by p.salary";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -260,8 +250,7 @@ public abstract class GroupByBaseTest
     /**
      * Test having.
      */
-    private void testHaving()
-    {
+    private void testHaving() {
         String queryString = "Select sum(p.salary) from Person p group by p.age having avg(p.age) > 20";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -275,8 +264,7 @@ public abstract class GroupByBaseTest
     /**
      * Test having with where clause.
      */
-    private void testHavingWithWhereClause()
-    {
+    private void testHavingWithWhereClause() {
         String queryString = "Select sum(p.salary) from Person p where p.age > 20 group by p.age having sum(p.age) > 70";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -288,8 +276,7 @@ public abstract class GroupByBaseTest
     /**
      * Test having with entity.
      */
-    private void testHavingWithEntity()
-    {
+    private void testHavingWithEntity() {
         String queryString = "Select p from Person p where p.age < 40 group by p.age having max(p.salary) > 600";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -305,8 +292,7 @@ public abstract class GroupByBaseTest
     /**
      * Test having with count.
      */
-    private void testHavingWithCount()
-    {
+    private void testHavingWithCount() {
         String queryString = "Select p.age, p.personName, p.personId from Person p where p.age < 30 group by p.age having count(p) > 1";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -323,8 +309,7 @@ public abstract class GroupByBaseTest
     /**
      * Test having with no match.
      */
-    private void testHavingWithNoMatch()
-    {
+    private void testHavingWithNoMatch() {
         String queryString = "Select p.age, p.personName, p.personId from Person p where p.age < 30 group by p.age having count(p) > 2";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -335,8 +320,7 @@ public abstract class GroupByBaseTest
     /**
      * Test having with metric agg.
      */
-    private void testHavingWithMetricAgg()
-    {
+    private void testHavingWithMetricAgg() {
         String queryString = "Select p.salary, sum(p.age), p.personName, p.personId from Person p group by p.personId having sum(p.age) < 30";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -371,8 +355,7 @@ public abstract class GroupByBaseTest
     /**
      * Test having with and.
      */
-    private void testHavingWithAnd()
-    {
+    private void testHavingWithAnd() {
         String queryString = "Select p.age, p.personName, p.personId from Person p where p.age > 20 group by p.age having sum(p.age) > 50 and avg(p.age) < 40";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -388,8 +371,7 @@ public abstract class GroupByBaseTest
     /**
      * Test having with or.
      */
-    private void testHavingWithOr()
-    {
+    private void testHavingWithOr() {
         String queryString = "Select sum(p.age), count(p.age) from Person p where p.salary > 200.0 group by p.age having sum(p.age) > 50 or avg(p.age) < 40";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -416,8 +398,7 @@ public abstract class GroupByBaseTest
     /**
      * Test group by buckets.
      */
-    private void testGroupByBuckets()
-    {
+    private void testGroupByBuckets() {
         createPerson("9", 10, "Amit", 100.0);
         createPerson("10", 10, "Dev", 200.0);
         createPerson("11", 10, "Karthik", 300.0);
@@ -426,12 +407,9 @@ public abstract class GroupByBaseTest
         createPerson("14", 10, "D", 600.0);
         createPerson("15", 10, "KPM", 700.0);
         createPerson("16", 10, "PG", 800.0);
-        try
-        {
+        try {
             waitThread();
-        }
-        catch (InterruptedException e)
-        {
+        } catch (InterruptedException e) {
         }
 
         String queryString = "Select sum(p.age) from Person p where p.age < 40 group by p.personId";
@@ -446,16 +424,5 @@ public abstract class GroupByBaseTest
 
         Assert.assertEquals(3, resultList.size());
         Assert.assertEquals(100.0, resultList.get(0));
-    }
-
-    /**
-     * Wait thread.
-     * 
-     * @throws InterruptedException
-     *             the interrupted exception
-     */
-    protected static void waitThread() throws InterruptedException
-    {
-        Thread.sleep(2000);
     }
 }

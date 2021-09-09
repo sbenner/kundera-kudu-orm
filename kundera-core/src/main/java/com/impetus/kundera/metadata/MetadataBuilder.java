@@ -15,21 +15,6 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.PersistenceException;
-import javax.persistence.Table;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.kundera.PersistenceProperties;
 import com.impetus.kundera.metadata.model.ApplicationMetadata;
 import com.impetus.kundera.metadata.model.EntityMetadata;
@@ -42,40 +27,56 @@ import com.impetus.kundera.metadata.validator.EntityValidator;
 import com.impetus.kundera.metadata.validator.EntityValidatorImpl;
 import com.impetus.kundera.metadata.validator.InvalidEntityDefinitionException;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Concrete implementation of IMetadataManager.
- * 
+ *
  * @author animesh.kumar
  */
-public class MetadataBuilder
-{
+public class MetadataBuilder {
 
-    /** the log used by this class. */
+    /**
+     * the log used by this class.
+     */
     private static Logger log = LoggerFactory.getLogger(MetadataBuilder.class);
 
-    /** The metadata processors. */
+    /**
+     * The metadata processors.
+     */
     private List<MetadataProcessor> metadataProcessors;
 
-    /** The Validator. */
+    /**
+     * The Validator.
+     */
     private EntityValidator validator;
 
-    /** persistence unit */
+    /**
+     * persistence unit
+     */
     private String persistenceUnit;
 
-    /** kundera client */
+    /**
+     * kundera client
+     */
     private String client;
 
     private Map puProperties;
 
     private KunderaMetadata kunderaMetadata;
+
     /**
      * Instantiates a new metadata manager.
-     * 
      */
 
-    public MetadataBuilder(String puName, String client, Map puProperties, KunderaMetadata kunderaMetadata)
-    {
+    public MetadataBuilder(String puName, String client, Map puProperties, KunderaMetadata kunderaMetadata) {
         this.persistenceUnit = puName;
         this.client = client;
         this.puProperties = puProperties;
@@ -84,46 +85,39 @@ public class MetadataBuilder
         this.kunderaMetadata = kunderaMetadata;
 
         // add processors to chain.
-        this.metadataProcessors.add(new TableProcessor(puProperties,kunderaMetadata));
+        this.metadataProcessors.add(new TableProcessor(puProperties, kunderaMetadata));
         this.metadataProcessors.add(new CacheableAnnotationProcessor());
         this.metadataProcessors.add(new IndexProcessor(kunderaMetadata));
         this.metadataProcessors.add(new EntityListenersProcessor());
-        
+
     }
 
     /**
      * Validate.
-     * 
-     * @param clazz
-     *            the clazz
-     * 
-     * @throws PersistenceException
-     *             the persistence exception
+     *
+     * @param clazz the clazz
+     * @throws PersistenceException the persistence exception
      */
-    public final void validate(Class<?> clazz) throws PersistenceException
-    {
+    public final void validate(Class<?> clazz) throws PersistenceException {
         validator.validate(clazz);
     }
 
     /**
      * Process.
-     * 
-     * @param clazz
-     *            the clazz
+     *
+     * @param clazz              the clazz
      * @param externalProperties
      * @return the entity metadata
      */
-    public EntityMetadata buildEntityMetadata(Class<?> clazz)
-    {
+    public EntityMetadata buildEntityMetadata(Class<?> clazz) {
 
         EntityMetadata metadata = new EntityMetadata(clazz);
-      //  validate(clazz);
+        //  validate(clazz);
 
         if (log.isDebugEnabled())
             log.debug("Processing @Entity >> " + clazz);
 
-        for (MetadataProcessor processor : metadataProcessors)
-        {
+        for (MetadataProcessor processor : metadataProcessors) {
             // // in case it is not intend for current persistence unit.
             // checkForRDBMS(metadata);
             // checkForNeo4J(metadata);
@@ -132,17 +126,14 @@ public class MetadataBuilder
 
             processor.process(clazz, metadata);
             metadata = belongsToPersistenceUnit(metadata);
-            if (metadata == null)
-            {
+            if (metadata == null) {
                 break;
             }
 
             // Check for schema attribute of Table annotation.
             if (MetadataUtils.isSchemaAttributeRequired(metadata.getPersistenceUnit(), kunderaMetadata)
-                    && StringUtils.isBlank(metadata.getSchema()))
-            {
-                if (log.isErrorEnabled())
-                {
+                    && StringUtils.isBlank(metadata.getSchema())) {
+                if (log.isErrorEnabled()) {
                     log.error("It is mandatory to specify Schema alongwith Table name:" + metadata.getTableName()
                             + ". This entity won't be persisted");
                 }
@@ -157,30 +148,25 @@ public class MetadataBuilder
     /**
      * If parameterised metadata is not for intended persistence unit, assign it
      * to null.
-     * 
-     * @param metadata
-     *            entity metadata
+     *
+     * @param metadata entity metadata
      * @return metadata.
      */
-    private EntityMetadata belongsToPersistenceUnit(EntityMetadata metadata)
-    {
+    private EntityMetadata belongsToPersistenceUnit(EntityMetadata metadata) {
 
         // if pu is null and client is not rdbms OR metadata pu does not match
         // with configured one. don't process for anything.
 
         PersistenceUnitMetadata puMetadata = kunderaMetadata.getApplicationMetadata()
                 .getPersistenceUnitMetadata(persistenceUnit);
-        String keyspace = puProperties != null ? (String) puProperties.get(PersistenceProperties.KUNDERA_KEYSPACE):null;
-        
-        keyspace = keyspace == null ? puMetadata.getProperty(PersistenceProperties.KUNDERA_KEYSPACE):keyspace;
+        String keyspace = puProperties != null ? (String) puProperties.get(PersistenceProperties.KUNDERA_KEYSPACE) : null;
+
+        keyspace = keyspace == null ? puMetadata.getProperty(PersistenceProperties.KUNDERA_KEYSPACE) : keyspace;
 
         if (metadata.getPersistenceUnit() != null && !metadata.getPersistenceUnit().equals(persistenceUnit)
-                || (keyspace != null && metadata.getSchema() != null && !metadata.getSchema().equals(keyspace)))
-        {
+                || (keyspace != null && metadata.getSchema() != null && !metadata.getSchema().equals(keyspace))) {
             metadata = null;
-        }
-        else
-        {
+        } else {
             applyMetadataChanges(metadata);
         }
 
@@ -196,38 +182,33 @@ public class MetadataBuilder
         return metadata;
     }
 
-    private void applyMetadataChanges(EntityMetadata metadata)
-    {
+    private void applyMetadataChanges(EntityMetadata metadata) {
 //        log.debug("In apply changes class is " + metadata.getEntityClazz().getName());
 //        log.debug("In apply changes pu is " + persistenceUnit);
         metadata.setPersistenceUnit(persistenceUnit);
         PersistenceUnitMetadata puMetadata = kunderaMetadata.getApplicationMetadata()
                 .getPersistenceUnitMetadata(persistenceUnit);
-        
-        String keyspace = puProperties != null ? (String) puProperties.get(PersistenceProperties.KUNDERA_KEYSPACE):null;
-        
-        keyspace = keyspace == null ? puMetadata.getProperty(PersistenceProperties.KUNDERA_KEYSPACE):keyspace;
+
+        String keyspace = puProperties != null ? (String) puProperties.get(PersistenceProperties.KUNDERA_KEYSPACE) : null;
+
+        keyspace = keyspace == null ? puMetadata.getProperty(PersistenceProperties.KUNDERA_KEYSPACE) : keyspace;
 
         // precedence to @Table annotation.
-        if (metadata.getSchema() == null)
-        {
+        if (metadata.getSchema() == null) {
             metadata.setSchema(keyspace);
         }
-        if (metadata.getTableName() == null)
-        {
+        if (metadata.getTableName() == null) {
             metadata.setTableName(metadata.getEntityClazz().getSimpleName());
         }
     }
 
-    private void setSchemaAndPU(Class<?> clazz, EntityMetadata metadata)
-    {
+    private void setSchemaAndPU(Class<?> clazz, EntityMetadata metadata) {
         Table table = clazz.getAnnotation(Table.class);
-        if (table != null)
-        {
+        if (table != null) {
 //            log.debug("In set schema and pu, class is " + clazz.getName());
             // Set Name of persistence object
-            metadata.setTableName(!StringUtils.isBlank(table.name()) ? 
-                     table.name() : clazz.getSimpleName());
+            metadata.setTableName(!StringUtils.isBlank(table.name()) ?
+                    table.name() : clazz.getSimpleName());
             // Add named/native query related application metadata.
             addNamedNativeQueryMetadata(clazz);
             // set schema name and persistence unit name (if provided)
@@ -235,8 +216,7 @@ public class MetadataBuilder
 
             MetadataUtils.setSchemaAndPersistenceUnit(metadata, schemaStr, puProperties);
         }
-        if (metadata.getPersistenceUnit() == null)
-        {
+        if (metadata.getPersistenceUnit() == null) {
 //            log.debug("In set schema and pu, pu is " + persistenceUnit);
             metadata.setPersistenceUnit(persistenceUnit);
         }
@@ -244,44 +224,36 @@ public class MetadataBuilder
 
     /**
      * Add named/native query annotated fields to application meta data.
-     * 
-     * @param clazz
-     *            entity class.
+     *
+     * @param clazz entity class.
      */
-    private void addNamedNativeQueryMetadata(Class clazz)
-    {
+    private void addNamedNativeQueryMetadata(Class clazz) {
         ApplicationMetadata appMetadata = kunderaMetadata.getApplicationMetadata();
         String name, query = null;
-        if (clazz.isAnnotationPresent(NamedQuery.class))
-        {
+        if (clazz.isAnnotationPresent(NamedQuery.class)) {
             NamedQuery ann = (NamedQuery) clazz.getAnnotation(NamedQuery.class);
             appMetadata.addQueryToCollection(ann.name(), ann.query(), false, clazz);
         }
 
-        if (clazz.isAnnotationPresent(NamedQueries.class))
-        {
+        if (clazz.isAnnotationPresent(NamedQueries.class)) {
             NamedQueries ann = (NamedQueries) clazz.getAnnotation(NamedQueries.class);
 
             NamedQuery[] anns = ann.value();
-            for (NamedQuery a : anns)
-            {
+            for (NamedQuery a : anns) {
                 appMetadata.addQueryToCollection(a.name(), a.query(), false, clazz);
             }
         }
 
-        if (clazz.isAnnotationPresent(NamedNativeQuery.class))
-        {
+        if (clazz.isAnnotationPresent(NamedNativeQuery.class)) {
             NamedNativeQuery ann = (NamedNativeQuery) clazz.getAnnotation(NamedNativeQuery.class);
             appMetadata.addQueryToCollection(ann.name(), ann.query(), true, clazz);
         }
 
-        if (clazz.isAnnotationPresent(NamedNativeQueries.class))
-        {
+        if (clazz.isAnnotationPresent(NamedNativeQueries.class)) {
             NamedNativeQueries ann = (NamedNativeQueries) clazz.getAnnotation(NamedNativeQueries.class);
 
             NamedNativeQuery[] anns = ann.value();
-            for (NamedNativeQuery a : anns)
-            {
+            for (NamedNativeQuery a : anns) {
                 appMetadata.addQueryToCollection(a.name(), a.query(), true, clazz);
             }
         }

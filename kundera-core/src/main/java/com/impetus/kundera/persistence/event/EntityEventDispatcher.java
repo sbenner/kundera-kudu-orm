@@ -15,48 +15,40 @@
  ******************************************************************************/
 package com.impetus.kundera.persistence.event;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
-
+import com.impetus.kundera.metadata.model.EntityMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.impetus.kundera.metadata.model.EntityMetadata;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import java.util.List;
 
 /**
  * The Class EntityEventDispatcher.
  */
-public class EntityEventDispatcher
-{
+public class EntityEventDispatcher {
 
-    /** The Constant log. */
+    /**
+     * The Constant log.
+     */
     private static final Logger log = LoggerFactory.getLogger(EntityManager.class);
 
     /**
      * Fire event listeners.
-     * 
-     * @param metadata
-     *            the metadata
-     * @param entity
-     *            the entity
-     * @param event
-     *            the event
-     * @throws PersistenceException
-     *             the persistence exception
+     *
+     * @param metadata the metadata
+     * @param entity   the entity
+     * @param event    the event
+     * @throws PersistenceException the persistence exception
      */
-    public void fireEventListeners(EntityMetadata metadata, Object entity, Class<?> event)
-    {
+    public void fireEventListeners(EntityMetadata metadata, Object entity, Class<?> event) {
 
         // handle external listeners first
         List<? extends CallbackMethod> callBackMethods = metadata.getCallbackMethods(event);
 
-        if (null != callBackMethods && !callBackMethods.isEmpty() && null != entity)
-        {
+        if (null != callBackMethods && !callBackMethods.isEmpty() && null != entity) {
             log.debug("Callback >> " + event.getSimpleName() + " on " + metadata.getEntityClazz().getName());
-            for (CallbackMethod callback : callBackMethods)
-            {
+            for (CallbackMethod callback : callBackMethods) {
                 log.debug("Firing >> " + callback);
 
                 callback.invoke(entity);

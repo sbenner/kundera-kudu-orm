@@ -15,48 +15,43 @@
  ******************************************************************************/
 package com.impetus.kundera.proxy.cglib;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.impetus.kundera.entity.PersonnelDTO;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.proxy.KunderaProxy;
 import com.impetus.kundera.proxy.LazyInitializer;
 import com.impetus.kundera.proxy.LazyInitializerFactory;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  * @author amresh.singh
  */
-public class CglibLazyInitializerFactoryTest
-{
+public class CglibLazyInitializerFactoryTest {
 
     private static EntityManagerFactory emf;
 
     private static EntityManager em;
-    
+
     private static KunderaMetadata kunderaMetadata;
 
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception
-    {
-        
+    public static void setUpBeforeClass() throws Exception {
+
         emf = Persistence.createEntityManagerFactory("kunderatest");
         kunderaMetadata = ((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance();
         em = emf.createEntityManager();
     }
 
     @AfterClass
-    public static void tearDownAfterClass() throws Exception
-    {
+    public static void tearDownAfterClass() throws Exception {
         em.close();
         emf.close();
     }
@@ -65,8 +60,7 @@ public class CglibLazyInitializerFactoryTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
 
     }
 
@@ -76,8 +70,7 @@ public class CglibLazyInitializerFactoryTest
      * .
      */
     @Test
-    public void testGetProxy()
-    {
+    public void testGetProxy() {
 
         LazyInitializerFactory factory = kunderaMetadata.getCoreMetadata().getLazyInitializerFactory();
         KunderaProxy proxy = factory.getProxy("personnel", PersonnelDTO.class, null, null, "1", null);

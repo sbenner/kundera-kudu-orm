@@ -15,19 +15,6 @@
  ******************************************************************************/
 package com.impetus.kundera.lifecycle.states;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
-import javax.persistence.CascadeType;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.impetus.kundera.graph.BillingCounter;
 import com.impetus.kundera.graph.Node;
 import com.impetus.kundera.graph.StoreBuilder;
@@ -36,13 +23,21 @@ import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.persistence.PersistenceDelegator;
 import com.impetus.kundera.persistence.context.PersistenceCache;
 import com.impetus.kundera.utils.DeepEquals;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.persistence.CascadeType;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author amresh.singh
- * 
  */
-public class TransientStateTest
-{
+public class TransientStateTest {
     PersistenceCache pc;
 
     TransientState state;
@@ -51,8 +46,7 @@ public class TransientStateTest
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         pc = new PersistenceCache();
         state = new TransientState();
     }
@@ -61,8 +55,7 @@ public class TransientStateTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         pc = null;
     }
 
@@ -72,8 +65,7 @@ public class TransientStateTest
      * .
      */
     @Test
-    public void testInitialize()
-    {
+    public void testInitialize() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.initialize(storeNode);
         Assert.assertNotNull(pc);
@@ -83,7 +75,7 @@ public class TransientStateTest
      * Test method for
      * {@link com.impetus.kundera.lifecycle.states.TransientState#handlePersist(com.impetus.kundera.lifecycle.NodeStateContext)}
      * .
-     * 
+     *
      * @throws NoSuchMethodException
      * @throws SecurityException
      * @throws InvocationTargetException
@@ -93,8 +85,7 @@ public class TransientStateTest
      */
     @Test
     public void testHandlePersist() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
-            InstantiationException, IllegalAccessException, InvocationTargetException
-    {
+            InstantiationException, IllegalAccessException, InvocationTargetException {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
 
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("kunderatest");
@@ -129,15 +120,13 @@ public class TransientStateTest
      * .
      */
     @Test
-    public void testHandleRemove()
-    {
+    public void testHandleRemove() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.REMOVE);
         state.handleRemove(storeNode);
 
         Assert.assertEquals(TransientState.class, storeNode.getCurrentNodeState().getClass());
 
-        for (Node childNode : storeNode.getChildren().values())
-        {
+        for (Node childNode : storeNode.getChildren().values()) {
             Assert.assertEquals(BillingCounter.class, childNode.getDataClass());
             Assert.assertEquals(TransientState.class, childNode.getCurrentNodeState().getClass());
         }
@@ -149,16 +138,12 @@ public class TransientStateTest
      * .
      */
     @Test
-    public void testHandleRefresh()
-    {
+    public void testHandleRefresh() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.REFRESH);
-        try
-        {
+        try {
             state.handleRefresh(storeNode);
             Assert.fail("Refresh operation in Transient state should have thrown exception");
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Assert.assertEquals(IllegalArgumentException.class, e.getClass());
         }
     }
@@ -167,7 +152,7 @@ public class TransientStateTest
      * Test method for
      * {@link com.impetus.kundera.lifecycle.states.TransientState#handleMerge(com.impetus.kundera.lifecycle.NodeStateContext)}
      * .
-     * 
+     *
      * @throws NoSuchMethodException
      * @throws SecurityException
      * @throws InvocationTargetException
@@ -177,8 +162,7 @@ public class TransientStateTest
      */
     @Test
     public void testHandleMerge() throws SecurityException, NoSuchMethodException, IllegalArgumentException,
-            InstantiationException, IllegalAccessException, InvocationTargetException
-    {
+            InstantiationException, IllegalAccessException, InvocationTargetException {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.MERGE);
 
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("kunderatest");
@@ -202,8 +186,7 @@ public class TransientStateTest
      * .
      */
     @Test
-    public void testHandleDetach()
-    {
+    public void testHandleDetach() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.DETACH);
         state.handleDetach(storeNode);
     }
@@ -214,8 +197,7 @@ public class TransientStateTest
      * .
      */
     @Test
-    public void testHandleClose()
-    {
+    public void testHandleClose() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleClose(storeNode);
     }
@@ -226,8 +208,7 @@ public class TransientStateTest
      * .
      */
     @Test
-    public void testHandleLock()
-    {
+    public void testHandleLock() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleLock(storeNode);
     }
@@ -238,8 +219,7 @@ public class TransientStateTest
      * .
      */
     @Test
-    public void testHandleCommit()
-    {
+    public void testHandleCommit() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleCommit(storeNode);
     }
@@ -250,8 +230,7 @@ public class TransientStateTest
      * .
      */
     @Test
-    public void testHandleRollback()
-    {
+    public void testHandleRollback() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleRollback(storeNode);
     }
@@ -262,8 +241,7 @@ public class TransientStateTest
      * .
      */
     @Test
-    public void testHandleFind()
-    {
+    public void testHandleFind() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleFind(storeNode);
     }
@@ -274,8 +252,7 @@ public class TransientStateTest
      * .
      */
     @Test
-    public void testHandleGetReference()
-    {
+    public void testHandleGetReference() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleGetReference(storeNode);
     }
@@ -286,8 +263,7 @@ public class TransientStateTest
      * .
      */
     @Test
-    public void testHandleContains()
-    {
+    public void testHandleContains() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleContains(storeNode);
     }
@@ -298,8 +274,7 @@ public class TransientStateTest
      * .
      */
     @Test
-    public void testHandleClear()
-    {
+    public void testHandleClear() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleClear(storeNode);
     }
@@ -310,8 +285,7 @@ public class TransientStateTest
      * .
      */
     @Test
-    public void testHandleFlush()
-    {
+    public void testHandleFlush() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleFlush(storeNode);
     }

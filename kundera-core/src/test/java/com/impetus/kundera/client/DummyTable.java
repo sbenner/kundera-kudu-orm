@@ -20,56 +20,47 @@ import java.util.Map;
 
 /**
  * Class used in test cases as dumy table
- * @author amresh.singh
  *
+ * @author amresh.singh
  */
-public class DummyTable
-{ 
-    
+public class DummyTable {
+
     private Map<Object, Object> records;
-    
+
     /**
      * @return the records
      */
-    public Map<Object, Object> getRecords()
-    {
+    public Map<Object, Object> getRecords() {
         return records;
     }
-    
-    public Object getRecord(Object pk)
-    {
-        if(records == null) return null;
-        
+
+    public Object getRecord(Object pk) {
+        if (records == null) return null;
+
         return records.get(pk);
     }
-    
+
     /**
      * @param records the records to set
      */
-    public void addRecord(Object pk, Object record)
-    {
-        if(records == null)
-        {
+    public void addRecord(Object pk, Object record) {
+        if (records == null) {
             records = new HashMap<Object, Object>();
         }
         records.put(pk, record);
     }
-    
-    public void removeRecord(Object pk)
-    {
-        if(records != null)
-        {
+
+    public void removeRecord(Object pk) {
+        if (records != null) {
             records.remove(pk);
         }
     }
-    
-    public void truncate()
-    {
-        if(records != null)
-        {
+
+    public void truncate() {
+        if (records != null) {
             records.clear();
         }
     }
-    
+
 
 }

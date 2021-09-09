@@ -19,11 +19,8 @@ import javax.persistence.Entity;
 
 /**
  * @author amitkumar
- *
  */
 @Entity
-public class PersonChild extends Person
-
-{
+public class PersonChild extends Person {
 
 }

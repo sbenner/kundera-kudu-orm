@@ -1,22 +1,17 @@
 /**
- * 
+ *
  */
 package com.impetus.kundera.metadata.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * @author Kuldeep Mishra
- * 
+ *
  */
 @Entity
 @Table(name = "transient_entity_table", schema = "testSchema@keyspace")
-public class TransientEntity
-{
+public class TransientEntity {
 
     @Id
     @Column(name = "TransientEntity_Id")
@@ -34,8 +29,7 @@ public class TransientEntity
     /**
      * @return the rowKey
      */
-    public String getRowKey()
-    {
+    public String getRowKey() {
         return assoRowKey;
     }
 
@@ -43,16 +37,14 @@ public class TransientEntity
      * @param rowKey
      *            the rowKey to set
      */
-    public void setRowKey(String rowKey)
-    {
+    public void setRowKey(String rowKey) {
         this.assoRowKey = rowKey;
     }
 
     /**
      * @return the address
      */
-    public String getAddress()
-    {
+    public String getAddress() {
         return address;
     }
 
@@ -60,16 +52,14 @@ public class TransientEntity
      * @param address
      *            the address to set
      */
-    public void setAddress(String address)
-    {
+    public void setAddress(String address) {
         this.address = address;
     }
 
     /**
      * @return the age
      */
-    public int getAge()
-    {
+    public int getAge() {
         return age;
     }
 
@@ -77,16 +67,14 @@ public class TransientEntity
      * @param age
      *            the age to set
      */
-    public void setAge(int age)
-    {
+    public void setAge(int age) {
         this.age = age;
     }
 
     /**
      * @return the embeddableTransientEntity
      */
-    public EmbeddableTransientEntity getEmbeddableTransientEntity()
-    {
+    public EmbeddableTransientEntity getEmbeddableTransientEntity() {
         return embeddableTransientField;
     }
 
@@ -94,8 +82,7 @@ public class TransientEntity
      * @param embeddableTransientEntity
      *            the embeddableTransientEntity to set
      */
-    public void setEmbeddableTransientEntity(EmbeddableTransientEntity embeddableTransientEntity)
-    {
+    public void setEmbeddableTransientEntity(EmbeddableTransientEntity embeddableTransientEntity) {
         this.embeddableTransientField = embeddableTransientEntity;
     }
 

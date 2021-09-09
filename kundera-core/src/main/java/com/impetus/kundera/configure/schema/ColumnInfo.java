@@ -23,11 +23,10 @@ import java.util.Map;
 
 /**
  * The Class ColumnInfo holds column related information.
- * 
+ *
  * @author Kuldeep.Kumar
  */
-public class ColumnInfo
-{
+public class ColumnInfo {
 
     private boolean nullable = true;
     /**
@@ -60,23 +59,19 @@ public class ColumnInfo
     /**
      * Instantiates a new column info.
      */
-    public ColumnInfo()
-    {
+    public ColumnInfo() {
 
     }
 
     /**
      * Equals method compare two object of columnInfo on the basis of their
      * name.
-     * 
-     * @param Object
-     *            instance.
-     * 
+     *
+     * @param Object instance.
      * @return boolean value.
      */
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
 
         // / if object's class and column name matches then return true;
 
@@ -88,10 +83,9 @@ public class ColumnInfo
     @Override
     /**
      * returns the hash code for object. 
-     * 
+     *
      */
-    public int hashCode()
-    {
+    public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
@@ -113,57 +107,49 @@ public class ColumnInfo
 
     /**
      * Gets the column name.
-     * 
+     *
      * @return the columnName
      */
-    public String getColumnName()
-    {
+    public String getColumnName() {
         return columnName;
     }
 
     /**
      * Sets the column name.
-     * 
-     * @param columnName
-     *            the columnName to set
+     *
+     * @param columnName the columnName to set
      */
-    public void setColumnName(String columnName)
-    {
+    public void setColumnName(String columnName) {
         this.columnName = columnName;
     }
 
     /**
      * Checks if is indexable.
-     * 
+     *
      * @return the isIndexable
      */
-    public boolean isIndexable()
-    {
+    public boolean isIndexable() {
         return isIndexable;
     }
 
     /**
      * Sets the indexable.
-     * 
-     * @param isIndexable
-     *            the isIndexable to set
+     *
+     * @param isIndexable the isIndexable to set
      */
-    public void setIndexable(boolean isIndexable)
-    {
+    public void setIndexable(boolean isIndexable) {
         this.isIndexable = isIndexable;
     }
 
     /**
      * @return the type
      */
-    public Class getType()
-    {
+    public Class getType() {
         return type;
     }
 
     /**
-     * @param type
-     *            the type to set
+     * @param type the type to set
      */
     public void setType(Class type) {
         this.type = type;

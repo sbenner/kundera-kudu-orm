@@ -22,35 +22,44 @@ import java.util.jar.JarInputStream;
 
 /**
  * Iterates through a Jar file for each file resource.
- * 
+ *
  * @author animesh.kumar
  */
-public final class JarFileIterator implements ResourceIterator
-{
+public final class JarFileIterator implements ResourceIterator {
 
-    /** The jar. */
+    /**
+     * The jar.
+     */
     private JarInputStream jar;
 
-    /** The next. */
+    /**
+     * The next.
+     */
     private JarEntry next;
 
-    /** The filter. */
+    /**
+     * The filter.
+     */
     private Filter filter;
 
-    /** The initial. */
+    /**
+     * The initial.
+     */
     private boolean initial = true;
 
-    /** The closed. */
+    /**
+     * The closed.
+     */
     private boolean closed = false;
 
     /**
      * Instantiates a new jar file iterator.
-     * 
+     *
      * @param file
      *            the file
      * @param filter
      *            the filter
-     * 
+     *
      * @throws IOException
      *             Signals that an I/O exception has occurred.
      */
@@ -61,24 +70,16 @@ public final class JarFileIterator implements ResourceIterator
 
     /**
      * Instantiates a new jar file iterator.
-     * 
-     * @param is
-     *            the is
-     * @param filter
-     *            the filter
-     * 
-     * @throws IOException
-     *             Signals that an I/O exception has occurred.
+     *
+     * @param is     the is
+     * @param filter the filter
+     * @throws IOException Signals that an I/O exception has occurred.
      */
-    public JarFileIterator(InputStream is, Filter filter)
-    {
+    public JarFileIterator(InputStream is, Filter filter) {
         this.filter = filter;
-        try
-        {
+        try {
             jar = new JarInputStream(is);
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new ResourceReadingException(e);
         }
     }
@@ -86,36 +87,28 @@ public final class JarFileIterator implements ResourceIterator
     /**
      * Sets the next.
      */
-    private void setNext()
-    {
+    private void setNext() {
         initial = true;
-        try
-        {
-            if (next != null)
-            {
+        try {
+            if (next != null) {
                 jar.closeEntry();
             }
             next = null;
 
-            do
-            {
+            do {
                 next = jar.getNextJarEntry();
             }
             while (next != null && (next.isDirectory() || (filter == null || !filter.accepts(next.getName()))));
 
-            if (next == null)
-            {
+            if (next == null) {
                 close();
             }
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new ResourceReadingException("Failed to browse jar:", e);
         }
     }
 
-    public InputStream next()
-    {
+    public InputStream next() {
         if (closed || (next == null && !initial))
             return null;
 
@@ -126,15 +119,11 @@ public final class JarFileIterator implements ResourceIterator
         return new InputStreamWrapper(jar);
     }
 
-    public void close()
-    {
-        try
-        {
+    public void close() {
+        try {
             closed = true;
             jar.close();
-        }
-        catch (IOException ignored)
-        {
+        } catch (IOException ignored) {
 
         }
 
@@ -143,72 +132,59 @@ public final class JarFileIterator implements ResourceIterator
     /**
      * The Class InputStreamWrapper.
      */
-    class InputStreamWrapper extends InputStream
-    {
+    class InputStreamWrapper extends InputStream {
 
-        /** The delegate. */
+        /**
+         * The delegate.
+         */
         private InputStream delegate;
 
         /**
          * Instantiates a new input stream wrapper.
-         * 
-         * @param delegate
-         *            the delegate
+         *
+         * @param delegate the delegate
          */
-        public InputStreamWrapper(InputStream delegate)
-        {
+        public InputStreamWrapper(InputStream delegate) {
             this.delegate = delegate;
         }
 
-        public int read() throws IOException
-        {
+        public int read() throws IOException {
             return delegate.read();
         }
 
-        public int read(byte[] bytes) throws IOException
-        {
+        public int read(byte[] bytes) throws IOException {
             return delegate.read(bytes);
         }
 
-        public int read(byte[] bytes, int i, int i1) throws IOException
-        {
+        public int read(byte[] bytes, int i, int i1) throws IOException {
             return delegate.read(bytes, i, i1);
         }
 
-        public long skip(long l) throws IOException
-        {
+        public long skip(long l) throws IOException {
             return delegate.skip(l);
         }
 
-        public int available() throws IOException
-        {
+        public int available() throws IOException {
             return delegate.available();
         }
 
-        public void close() throws IOException
-        {
+        public void close() throws IOException {
             // ignored
         }
 
-        public void mark(int i)
-        {
+        public void mark(int i) {
             delegate.mark(i);
         }
 
-        public void reset() throws IOException
-        {
-            try
-            {
+        public void reset() throws IOException {
+            try {
                 delegate.reset();
-            }
-            catch (IOException e)
-            {
+            } catch (IOException e) {
                 throw e;
             }
         }
 
-        public boolean markSupported()
-        {
+        public boolean markSupported() {
             return delegate.markSupported();
         }
     }

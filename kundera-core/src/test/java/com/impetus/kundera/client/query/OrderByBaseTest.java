@@ -15,69 +15,65 @@
  ******************************************************************************/
 package com.impetus.kundera.client.query;
 
+import com.impetus.kundera.graph.Node;
+import com.impetus.kundera.query.Person;
+import com.impetus.kundera.query.Person.Day;
+import junit.framework.Assert;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
-
-import junit.framework.Assert;
-
-import com.impetus.kundera.graph.Node;
-import com.impetus.kundera.query.Person;
-import com.impetus.kundera.query.Person.Day;
-
 /**
  * @author Amit Kumar
- * 
  */
-public abstract class OrderByBaseTest
-{
-    /** The emf. */
+public abstract class OrderByBaseTest {
+    /**
+     * The emf.
+     */
     protected static EntityManagerFactory emf;
 
-    /** The em. */
+    /**
+     * The em.
+     */
     protected static EntityManager em;
 
-    /** The node. */
+    /**
+     * The node.
+     */
     protected static Node node = null;
 
-    /** The person. */
+    /**
+     * The person.
+     */
     protected static Person persons[] = new Person[4];
 
     /**
      * Check if server running.
-     * 
+     *
      * @return true, if successful
      */
-    protected static boolean checkIfServerRunning()
-    {
-        try
-        {
+    protected static boolean checkIfServerRunning() {
+        try {
             Socket socket = new Socket("127.0.0.1", 9300);
             return socket.getInetAddress() != null;
-        }
-        catch (UnknownHostException e)
-        {
+        } catch (UnknownHostException e) {
             return false;
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             return false;
         }
     }
 
     /**
      * Inits the.
-     * 
-     * @throws InterruptedException
-     *             the interrupted exception
+     *
+     * @throws InterruptedException the interrupted exception
      */
-    protected static void init() throws InterruptedException
-    {
+    protected static void init() throws InterruptedException {
         persons[0] = createPerson("1", 50, "karthik", 500.0);
         persons[1] = createPerson("2", 20, "pragalbh", 700.0);
         persons[2] = createPerson("3", 60, "amit", 300.0);
@@ -88,19 +84,14 @@ public abstract class OrderByBaseTest
 
     /**
      * Creates the person.
-     * 
-     * @param id
-     *            the id
-     * @param age
-     *            the age
-     * @param name
-     *            the name
-     * @param salary
-     *            the salary
+     *
+     * @param id     the id
+     * @param age    the age
+     * @param name   the name
+     * @param salary the salary
      * @return the person es
      */
-    protected static Person createPerson(String id, int age, String name, Double salary)
-    {
+    protected static Person createPerson(String id, int age, String name, Double salary) {
         Person person = new Person();
         person.setAge(age);
         person.setDay(Day.FRIDAY);
@@ -114,10 +105,18 @@ public abstract class OrderByBaseTest
     }
 
     /**
+     * Wait thread.
+     *
+     * @throws InterruptedException the interrupted exception
+     */
+    protected static void waitThread() throws InterruptedException {
+        Thread.sleep(2000);
+    }
+
+    /**
      * Test query.
      */
-    public void testQuery()
-    {
+    public void testQuery() {
         testOrderBy();
         testOrderByDescending();
         testOrderByRowId();
@@ -135,8 +134,7 @@ public abstract class OrderByBaseTest
     /**
      * Test order by.
      */
-    private void testOrderBy()
-    {
+    private void testOrderBy() {
         String queryString = "Select p from Person p order by p.age";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -152,8 +150,7 @@ public abstract class OrderByBaseTest
     /**
      * Test order by descending.
      */
-    private void testOrderByDescending()
-    {
+    private void testOrderByDescending() {
         String queryString = "Select p from Person p order by p.age DESC";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -169,8 +166,7 @@ public abstract class OrderByBaseTest
     /**
      * Test order by row id.
      */
-    private void testOrderByRowId()
-    {
+    private void testOrderByRowId() {
         String queryString = "Select p from Person p order by p.personId";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -186,8 +182,7 @@ public abstract class OrderByBaseTest
     /**
      * Test order by row id descending.
      */
-    private void testOrderByRowIdDescending()
-    {
+    private void testOrderByRowIdDescending() {
         String queryString = "Select p from Person p order by p.personId DESC";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -203,8 +198,7 @@ public abstract class OrderByBaseTest
     /**
      * Test order by ascending.
      */
-    private void testOrderByAscending()
-    {
+    private void testOrderByAscending() {
         String queryString = "Select p.personName from Person p order by p.age ASC";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -220,8 +214,7 @@ public abstract class OrderByBaseTest
     /**
      * Test order by desc with string.
      */
-    private void testOrderByDescWithString()
-    {
+    private void testOrderByDescWithString() {
         String queryString = "Select p.personName from Person p order by p.personName DESC";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -237,8 +230,7 @@ public abstract class OrderByBaseTest
     /**
      * Test order by asc where clause.
      */
-    private void testOrderByASCWhereClause()
-    {
+    private void testOrderByASCWhereClause() {
         String queryString = "Select p.personName from Person p where p.salary > 350.0 order by p.age ASC";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -253,8 +245,7 @@ public abstract class OrderByBaseTest
     /**
      * Test order by asc multiple fields.
      */
-    private void testOrderByASCMultipleFields()
-    {
+    private void testOrderByASCMultipleFields() {
         String queryString = "Select p.personName, p.age, p.salary from Person p where p.salary <> 300.0 order by p.age ASC";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -277,8 +268,7 @@ public abstract class OrderByBaseTest
     /**
      * Test order by with group by.
      */
-    private void testOrderByWithGroupBy()
-    {
+    private void testOrderByWithGroupBy() {
         String queryString = "Select p from Person p where p.salary <> 300.0 group by p.age order by p.age ASC";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -293,8 +283,7 @@ public abstract class OrderByBaseTest
     /**
      * Test order by with group by desc.
      */
-    private void testOrderByWithGroupByDESC()
-    {
+    private void testOrderByWithGroupByDESC() {
         String queryString = "Select p from Person p group by p.age order by p.age DESC";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -310,8 +299,7 @@ public abstract class OrderByBaseTest
     /**
      * Test order by with group by string.
      */
-    private void testOrderByWithGroupByString()
-    {
+    private void testOrderByWithGroupByString() {
         String queryString = "Select p.personName, p.age, p.salary from Person p where p.salary <> 300.0 group by p.personName order by p.personName ASC";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -334,8 +322,7 @@ public abstract class OrderByBaseTest
     /**
      * Test order by with group by string desc.
      */
-    private void testOrderByWithGroupByStringDESC()
-    {
+    private void testOrderByWithGroupByStringDESC() {
         String queryString = "Select p.personName, p.age, p.salary from Person p where p.salary <> 300.0 group by p.personName order by p.personName DESC";
         Query query = em.createQuery(queryString);
         List resultList = query.getResultList();
@@ -357,14 +344,11 @@ public abstract class OrderByBaseTest
 
     /**
      * Assert person.
-     * 
-     * @param actual
-     *            the actual
-     * @param person
-     *            the person
+     *
+     * @param actual the actual
+     * @param person the person
      */
-    private void assertPerson(Object actual, Person person)
-    {
+    private void assertPerson(Object actual, Person person) {
         Person actualPerson = (Person) actual;
 
         Assert.assertEquals(actualPerson.getPersonId(), person.getPersonId());
@@ -372,16 +356,5 @@ public abstract class OrderByBaseTest
         Assert.assertEquals(actualPerson.getAge().intValue(), person.getAge().intValue());
         Assert.assertEquals(actualPerson.getSalary(), person.getSalary());
         Assert.assertEquals(actualPerson.getDay(), person.getDay());
-    }
-
-    /**
-     * Wait thread.
-     * 
-     * @throws InterruptedException
-     *             the interrupted exception
-     */
-    protected static void waitThread() throws InterruptedException
-    {
-        Thread.sleep(2000);
     }
 }

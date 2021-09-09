@@ -15,28 +15,26 @@
  ******************************************************************************/
 package com.impetus.client.kudu;
 
-import java.util.UUID;
-
 import com.impetus.kundera.client.Client;
 import com.impetus.kundera.generator.AutoGenerator;
 
+import java.util.UUID;
+
 /**
  * The Class KuduDBIdGenerator.
- * 
+ *
  * @author karthikp.manchala
  */
-public class KuduDBIdGenerator implements AutoGenerator
-{
+public class KuduDBIdGenerator implements AutoGenerator {
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.generator.AutoGenerator#generate(com.impetus.kundera
      * .client.Client, java.lang.Object)
      */
     @Override
-    public Object generate(Client<?> client, String dataType)
-    {
+    public Object generate(Client<?> client, String dataType) {
         return UUID.randomUUID().toString();
     }
 }

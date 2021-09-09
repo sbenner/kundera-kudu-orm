@@ -15,22 +15,21 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.model;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-
 import com.impetus.kundera.index.Index;
 import com.impetus.kundera.index.IndexCollection;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
 /**
  * Class for Tweets
- * 
+ *
  * @author amresh.singh
  */
 
 @Embeddable
-@IndexCollection(columns = { @Index(name = "body"), @Index(name = "device") })
-public class TweetKundera
-{
+@IndexCollection(columns = {@Index(name = "body"), @Index(name = "device")})
+public class TweetKundera {
 
     @Column(name = "tweet_id")
     private String tweetId;
@@ -43,67 +42,56 @@ public class TweetKundera
 
     // private long timestamp;
 
-    public TweetKundera(String body, String device)
-    {
+    public TweetKundera(String body, String device) {
         this.tweetId = "123";
         this.body = body;
         this.device = device;
         // this.timestamp = ExampleUtils.getCurrentTimestamp();
     }
 
-    public TweetKundera()
-    {
+    public TweetKundera() {
 
     }
 
     /**
      * @return the tweetId
      */
-    public String getTweetId()
-    {
+    public String getTweetId() {
         return tweetId;
     }
 
     /**
-     * @param tweetId
-     *            the tweetId to set
+     * @param tweetId the tweetId to set
      */
-    public void setTweetId(String tweetId)
-    {
+    public void setTweetId(String tweetId) {
         this.tweetId = tweetId;
     }
 
     /**
      * @return the body
      */
-    public String getBody()
-    {
+    public String getBody() {
         return body;
     }
 
     /**
-     * @param body
-     *            the body to set
+     * @param body the body to set
      */
-    public void setBody(String body)
-    {
+    public void setBody(String body) {
         this.body = body;
     }
 
     /**
      * @return the device
      */
-    public String getDevice()
-    {
+    public String getDevice() {
         return device;
     }
 
     /**
-     * @param device
-     *            the device to set
+     * @param device the device to set
      */
-    public void setDevice(String device)
-    {
+    public void setDevice(String device) {
         this.device = device;
     }
 

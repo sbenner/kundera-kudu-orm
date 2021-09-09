@@ -21,8 +21,7 @@ import javax.persistence.MappedSuperclass;
 
 //TODOO: While doing for attribute override, i need to verify with hibernate if i am having id attribute 
 @MappedSuperclass
-public class MappedPerson
-{
+public class MappedPerson {
 
     @Id
     private String id;
@@ -37,45 +36,37 @@ public class MappedPerson
 //    @Column
     private transient int version;
 
-    public String getFirstName()
-    {
+    public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName)
-    {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public String getLastName()
-    {
+    public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName)
-    {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    public int getVersion()
-    {
+    public int getVersion() {
         return version;
     }
 
-    public void setVersion(int version)
-    {
+    public void setVersion(int version) {
         this.version = version;
     }
 
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 
-    public void setId(String id)
-    {
+    public void setId(String id) {
         this.id = id;
     }
 
-    
+
 }

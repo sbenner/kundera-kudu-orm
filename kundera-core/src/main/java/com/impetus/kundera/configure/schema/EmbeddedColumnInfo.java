@@ -16,24 +16,25 @@
 
 package com.impetus.kundera.configure.schema;
 
-import java.util.List;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import javax.persistence.metamodel.EmbeddableType;
-
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import java.util.List;
 
 /**
  * The Class ColumnInfo holds the information of Embedded Columns.
- * 
+ *
  * @author Kuldeep.Kumar
- * 
  */
-public class EmbeddedColumnInfo
-{
-    /** The embedded column name variable . */
+public class EmbeddedColumnInfo {
+    /**
+     * The embedded column name variable .
+     */
     private String embeddedColumnName;
 
-    /** The list of columns variable is columns . */
+    /**
+     * The list of columns variable is columns .
+     */
     private List<ColumnInfo> columns;
 
     private EmbeddableType embeddable;
@@ -41,65 +42,54 @@ public class EmbeddedColumnInfo
     /**
      * @param metaModel
      */
-    public EmbeddedColumnInfo(EmbeddableType metaModel)
-    {
+    public EmbeddedColumnInfo(EmbeddableType metaModel) {
         this.embeddable = metaModel;
     }
 
     /**
      * @return the embeddable
      */
-    public EmbeddableType getEmbeddable()
-    {
+    public EmbeddableType getEmbeddable() {
         return embeddable;
     }
 
     /**
      * @return the embeddedColumnName
      */
-    public String getEmbeddedColumnName()
-    {
+    public String getEmbeddedColumnName() {
         return embeddedColumnName;
     }
 
     /**
-     * @param embeddedColumnName
-     *            the embeddedColumnName to set
+     * @param embeddedColumnName the embeddedColumnName to set
      */
-    public void setEmbeddedColumnName(String embeddedColumnName)
-    {
+    public void setEmbeddedColumnName(String embeddedColumnName) {
         this.embeddedColumnName = embeddedColumnName;
     }
 
     /**
      * @return the columns
      */
-    public List<ColumnInfo> getColumns()
-    {
+    public List<ColumnInfo> getColumns() {
         return columns;
     }
 
     /**
-     * @param columns
-     *            the columns to set
+     * @param columns the columns to set
      */
-    public void setColumns(List<ColumnInfo> columns)
-    {
+    public void setColumns(List<ColumnInfo> columns) {
         this.columns = columns;
     }
 
     /**
      * Equals method compare two object of EmbeddedColumnInfo on the basis of
      * their name.
-     * 
-     * @param Object
-     *            instance.
-     * 
+     *
+     * @param Object instance.
      * @return boolean value.
      */
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
         return obj != null && obj instanceof EmbeddedColumnInfo
                 && ((EmbeddedColumnInfo) obj).embeddedColumnName != null ? this.embeddedColumnName != null
                 && this.embeddedColumnName.equals(((EmbeddedColumnInfo) obj).embeddedColumnName) : false;
@@ -108,20 +98,18 @@ public class EmbeddedColumnInfo
     @Override
     /**
      * returns the hash code for object.
-     * 
+     *
      */
-    public int hashCode()
-    {
+    public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
     @Override
     /**
      * returns the string representation of object .
-     * 
+     *
      */
-    public String toString()
-    {
+    public String toString() {
         StringBuilder strBuilder = new StringBuilder("embeddedColumnName:==> ");
         strBuilder.append(embeddedColumnName);
         return strBuilder.toString();

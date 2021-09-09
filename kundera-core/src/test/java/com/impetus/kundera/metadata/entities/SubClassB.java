@@ -1,11 +1,10 @@
 package com.impetus.kundera.metadata.entities;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 /*******************************************************************************
  * * Copyright 2012 Impetus Infotech.
@@ -25,12 +24,10 @@ import javax.persistence.Table;
 
 /**
  * @author vivek.mishra
- * 
  */
 @Entity
 @Table(name = "table", schema = "testSchema@keyspace")
-public class SubClassB extends MappedSuperClass
-{
+public class SubClassB extends MappedSuperClass {
     @Id
     private String subClassBStr;
 
@@ -43,51 +40,42 @@ public class SubClassB extends MappedSuperClass
     /**
      * @return the subClassBStr
      */
-    public String getSubClassBStr()
-    {
+    public String getSubClassBStr() {
         return subClassBStr;
     }
 
     /**
-     * @param subClassBStr
-     *            the subClassBStr to set
+     * @param subClassBStr the subClassBStr to set
      */
-    public void setSubClassBStr(String subClassBStr)
-    {
+    public void setSubClassBStr(String subClassBStr) {
         this.subClassBStr = subClassBStr;
     }
 
     /**
      * @return the subClassBDt
      */
-    public Date getSubClassBDt()
-    {
+    public Date getSubClassBDt() {
         return subClassBDt;
     }
 
     /**
-     * @param subClassBDt
-     *            the subClassBDt to set
+     * @param subClassBDt the subClassBDt to set
      */
-    public void setSubClassBDt(Date subClassBDt)
-    {
+    public void setSubClassBDt(Date subClassBDt) {
         this.subClassBDt = subClassBDt;
     }
 
     /**
      * @return the subClassBLng
      */
-    public long getSubClassBLng()
-    {
+    public long getSubClassBLng() {
         return subClassBLng;
     }
 
     /**
-     * @param subClassBLng
-     *            the subClassBLng to set
+     * @param subClassBLng the subClassBLng to set
      */
-    public void setSubClassBLng(long subClassBLng)
-    {
+    public void setSubClassBLng(long subClassBLng) {
         this.subClassBLng = subClassBLng;
     }
 

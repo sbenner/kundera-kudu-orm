@@ -3,9 +3,9 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,14 +21,13 @@ import javax.persistence.Table;
 
 /**
  * Entity class for photo
- * 
+ *
  * @author amresh.singh
  */
 
 @Entity
 @Table(name = "PHOTO", schema = "KunderaTest@kunderatest")
-public class PhotoUni_M_M_M_M
-{
+public class PhotoUni_M_M_M_M {
     @Id
     @Column(name = "PHOTO_ID")
     private String photoId;
@@ -39,13 +38,11 @@ public class PhotoUni_M_M_M_M
     @Column(name = "PHOTO_DESC")
     private String photoDescription;
 
-    public PhotoUni_M_M_M_M()
-    {
+    public PhotoUni_M_M_M_M() {
 
     }
 
-    public PhotoUni_M_M_M_M(String photoId, String caption, String description)
-    {
+    public PhotoUni_M_M_M_M(String photoId, String caption, String description) {
         this.photoId = photoId;
         this.photoCaption = caption;
         this.photoDescription = description;
@@ -54,8 +51,7 @@ public class PhotoUni_M_M_M_M
     /**
      * @return the photoId
      */
-    public String getPhotoId()
-    {
+    public String getPhotoId() {
         return photoId;
     }
 
@@ -63,16 +59,14 @@ public class PhotoUni_M_M_M_M
      * @param photoId
      *            the photoId to set
      */
-    public void setPhotoId(String photoId)
-    {
+    public void setPhotoId(String photoId) {
         this.photoId = photoId;
     }
 
     /**
      * @return the photoCaption
      */
-    public String getPhotoCaption()
-    {
+    public String getPhotoCaption() {
         return photoCaption;
     }
 
@@ -80,16 +74,14 @@ public class PhotoUni_M_M_M_M
      * @param photoCaption
      *            the photoCaption to set
      */
-    public void setPhotoCaption(String photoCaption)
-    {
+    public void setPhotoCaption(String photoCaption) {
         this.photoCaption = photoCaption;
     }
 
     /**
      * @return the photoDescription
      */
-    public String getPhotoDescription()
-    {
+    public String getPhotoDescription() {
         return photoDescription;
     }
 
@@ -97,8 +89,7 @@ public class PhotoUni_M_M_M_M
      * @param photoDescription
      *            the photoDescription to set
      */
-    public void setPhotoDescription(String photoDescription)
-    {
+    public void setPhotoDescription(String photoDescription) {
         this.photoDescription = photoDescription;
     }
 

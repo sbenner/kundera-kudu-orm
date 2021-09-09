@@ -15,15 +15,14 @@
  ******************************************************************************/
 package com.impetus.kundera.service.policy;
 
+import com.impetus.kundera.service.Host;
+import com.impetus.kundera.utils.KunderaThreadFactory;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
-import com.impetus.kundera.service.Host;
-import com.impetus.kundera.utils.KunderaThreadFactory;
-
-public abstract class RetryService
-{
+public abstract class RetryService {
 
     protected final ScheduledExecutorService executor;
 
@@ -31,10 +30,8 @@ public abstract class RetryService
 
     protected int retryDelayInSeconds = 100;
 
-    public RetryService(int retryDelay)
-    {
-        if (retryDelay > 0)
-        {
+    public RetryService(int retryDelay) {
+        if (retryDelay > 0) {
             this.retryDelayInSeconds = retryDelay;
         }
         this.executor = Executors.newScheduledThreadPool(1, new KunderaThreadFactory(RetryService.class.getName()));

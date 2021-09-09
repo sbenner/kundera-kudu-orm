@@ -18,38 +18,44 @@ package com.impetus.kundera.index;
 
 /**
  * The Class IndexingConstants.
- * 
+ *
  * @author vivek.mishra
  */
-public final class IndexingConstants
-{
+public final class IndexingConstants {
 
     // persistent-unit-name
 
-    /** The Constant UUID. */
-    private static final long UUID = 6077004083174677888L;
-
-    /** The Constant DELIMETER. */
+    /**
+     * The Constant DELIMETER.
+     */
     public static final String DELIMETER = "~";
-
-    /** The Constant ENTITY_ID_FIELD. */
-    public static final String ENTITY_ID_FIELD = UUID + ".entity.id";
-
-    /** The Constant KUNDERA_ID_FIELD. */
-    public static final String KUNDERA_ID_FIELD = UUID + ".kundera.id";
-
-    /** The Constant ENTITY_INDEXNAME_FIELD. */
-    public static final String ENTITY_INDEXNAME_FIELD = UUID + ".entity.indexname";
-
-    /** The Constant ENTITY_CLASS_FIELD. */
+    /**
+     * The Constant ENTITY_CLASS_FIELD.
+     */
     public static final String ENTITY_CLASS_FIELD = /* UUID + */"entity.class";
-
-    /** The Constant PARENT_ID_FIELD. */
-    public static final String PARENT_ID_FIELD = UUID + ".parent.id";
-
-    /** The Constant PARENT_ID_CLASS. */
-    public static final String PARENT_ID_CLASS = UUID + ".parent.class";
-
-    
     public static final String LUCENE_INDEXER = "com.impetus.kundera.index.LuceneIndexer";
+    /**
+     * The Constant UUID.
+     */
+    private static final long UUID = 6077004083174677888L;
+    /**
+     * The Constant ENTITY_ID_FIELD.
+     */
+    public static final String ENTITY_ID_FIELD = UUID + ".entity.id";
+    /**
+     * The Constant KUNDERA_ID_FIELD.
+     */
+    public static final String KUNDERA_ID_FIELD = UUID + ".kundera.id";
+    /**
+     * The Constant ENTITY_INDEXNAME_FIELD.
+     */
+    public static final String ENTITY_INDEXNAME_FIELD = UUID + ".entity.indexname";
+    /**
+     * The Constant PARENT_ID_FIELD.
+     */
+    public static final String PARENT_ID_FIELD = UUID + ".parent.id";
+    /**
+     * The Constant PARENT_ID_CLASS.
+     */
+    public static final String PARENT_ID_CLASS = UUID + ".parent.class";
 }

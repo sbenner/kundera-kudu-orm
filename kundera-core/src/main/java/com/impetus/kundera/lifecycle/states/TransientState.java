@@ -21,18 +21,14 @@ import com.impetus.kundera.utils.ObjectUtils;
 
 /**
  * @author amresh
- * 
  */
-public class TransientState extends NodeState
-{
+public class TransientState extends NodeState {
     @Override
-    public void initialize(NodeStateContext nodeStateContext)
-    {
+    public void initialize(NodeStateContext nodeStateContext) {
     }
 
     @Override
-    public void handlePersist(NodeStateContext nodeStateContext)
-    {
+    public void handlePersist(NodeStateContext nodeStateContext) {
 
         // Transient ---> Managed
         moveNodeToNextState(nodeStateContext, new ManagedState());
@@ -48,8 +44,7 @@ public class TransientState extends NodeState
     }
 
     @Override
-    public void handleRemove(NodeStateContext nodeStateContext)
-    {
+    public void handleRemove(NodeStateContext nodeStateContext) {
         // Ignored, Entity will remain in the Transient state
 
         // Recurse remove operation for all related entities for whom
@@ -58,14 +53,12 @@ public class TransientState extends NodeState
     }
 
     @Override
-    public void handleRefresh(NodeStateContext nodeStateContext)
-    {
+    public void handleRefresh(NodeStateContext nodeStateContext) {
         throw new IllegalArgumentException("Refresh operation not allowed in Transient state");
     }
 
     @Override
-    public void handleMerge(NodeStateContext nodeStateContext)
-    {
+    public void handleMerge(NodeStateContext nodeStateContext) {
         // create a new managed entity and copy state of original entity into
         // this one.
         Object copiedNodeData = ObjectUtils.deepCopy(nodeStateContext.getData(), nodeStateContext.getPersistenceDelegator().getKunderaMetadata());
@@ -76,61 +69,51 @@ public class TransientState extends NodeState
     }
 
     @Override
-    public void handleFind(NodeStateContext nodeStateContext)
-    {
+    public void handleFind(NodeStateContext nodeStateContext) {
         // Nothing to do, Entity once found, jusmps directly to managed state
     }
 
     @Override
-    public void handleClose(NodeStateContext nodeStateContext)
-    {
+    public void handleClose(NodeStateContext nodeStateContext) {
         // Nothing to do, only entities in Managed/ Removed state move to
         // detached state
     }
 
     @Override
-    public void handleClear(NodeStateContext nodeStateContext)
-    {
+    public void handleClear(NodeStateContext nodeStateContext) {
         // Nothing to do, only entities in Managed/ Removed state move to
         // detached state
     }
 
     @Override
-    public void handleFlush(NodeStateContext nodeStateContext)
-    {
+    public void handleFlush(NodeStateContext nodeStateContext) {
         // Nothing to do, Entities are flushed from Managed/ Removed state only
     }
 
     @Override
-    public void handleLock(NodeStateContext nodeStateContext)
-    {
+    public void handleLock(NodeStateContext nodeStateContext) {
     }
 
     @Override
-    public void handleDetach(NodeStateContext nodeStateContext)
-    {
+    public void handleDetach(NodeStateContext nodeStateContext) {
         // Nothing to do, only entities in Managed/ Removed state move to
         // detached state
     }
 
     @Override
-    public void handleCommit(NodeStateContext nodeStateContext)
-    {
+    public void handleCommit(NodeStateContext nodeStateContext) {
     }
 
     @Override
-    public void handleRollback(NodeStateContext nodeStateContext)
-    {
+    public void handleRollback(NodeStateContext nodeStateContext) {
     }
 
     @Override
-    public void handleGetReference(NodeStateContext nodeStateContext)
-    {
+    public void handleGetReference(NodeStateContext nodeStateContext) {
     }
 
     @Override
-    public void handleContains(NodeStateContext nodeStateContext)
-    {
+    public void handleContains(NodeStateContext nodeStateContext) {
     }
 
 }

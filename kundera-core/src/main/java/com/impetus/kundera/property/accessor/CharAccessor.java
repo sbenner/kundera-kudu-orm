@@ -15,34 +15,29 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
+import com.impetus.kundera.property.PropertyAccessException;
+import com.impetus.kundera.property.PropertyAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.impetus.kundera.property.PropertyAccessException;
-import com.impetus.kundera.property.PropertyAccessor;
-
 /**
  * The Class CharAccessor.
- * 
+ *
  * @author Amresh Singh
  */
-public class CharAccessor implements PropertyAccessor<Character>
-{
+public class CharAccessor implements PropertyAccessor<Character> {
 
     private final static Logger log = LoggerFactory.getLogger(CharAccessor.class);
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.property.PropertyAccessor#fromBytes(byte[])
      */
     @Override
-    public Character fromBytes(Class targetClass, byte[] data)
-    {
-        if (data == null || data.length != 2)
-        {
-            if (log.isWarnEnabled())
-            {
+    public Character fromBytes(Class targetClass, byte[] data) {
+        if (data == null || data.length != 2) {
+            if (log.isWarnEnabled()) {
                 log.warn("Data length is not matching");
             }
             return 0x0;
@@ -52,41 +47,34 @@ public class CharAccessor implements PropertyAccessor<Character>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toBytes(java.lang.Object)
      */
     @Override
-    public byte[] toBytes(Object object)
-    {
-        if (object == null)
-        {
+    public byte[] toBytes(Object object) {
+        if (object == null) {
             return null;
         }
         Character data = null;
-        if (object.getClass().isAssignableFrom(String.class))
-        {
+        if (object.getClass().isAssignableFrom(String.class)) {
             data = ((String) object).charAt(0);
-        }
-        else
-        {
+        } else {
             data = (Character) object;
         }
 
-        return new byte[] { (byte) ((data >> 8) & 0xff), (byte) ((data >> 0) & 0xff), };
+        return new byte[]{(byte) ((data >> 8) & 0xff), (byte) ((data >> 0) & 0xff),};
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toString(java.lang.Object)
      */
     @Override
-    public String toString(Object object)
-    {
-        if (object == null)
-        {
+    public String toString(Object object) {
+        if (object == null) {
             return null;
         }
 
@@ -95,49 +83,39 @@ public class CharAccessor implements PropertyAccessor<Character>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#fromString(java.lang.String
      * )
      */
     @Override
-    public Character fromString(Class targetClass, String s)
-    {
-        try
-        {
-            if (s == null)
-            {
+    public Character fromString(Class targetClass, String s) {
+        try {
+            if (s == null) {
                 log.error("Can't convert String " + s + " to character");
                 throw new PropertyAccessException("Can't convert String " + s + " to character");
             }
 
             Character c = null;
-            if (s.length() == 1)
-            {
+            if (s.length() == 1) {
                 c = s.charAt(0);
-            }
-            else
-            {
+            } else {
                 c = Character.MIN_VALUE;
             }
 
             return c;
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             log.error("Number format exception caught,Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
     }
 
     @Override
-    public Character getCopy(Object object)
-    {
+    public Character getCopy(Object object) {
         return object != null ? new Character((Character) object) : null;
     }
 
-    public Character getInstance(Class<?> clazz)
-    {
+    public Character getInstance(Class<?> clazz) {
         return Character.MAX_VALUE;
     }
 }

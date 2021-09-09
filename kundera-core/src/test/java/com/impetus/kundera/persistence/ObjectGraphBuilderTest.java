@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,30 +15,23 @@
  */
 package com.impetus.kundera.persistence;
 
-import java.util.Map;
-
-import javax.persistence.Persistence;
-
+import com.impetus.kundera.configure.PersistenceUnitConfiguration;
+import com.impetus.kundera.graph.*;
+import com.impetus.kundera.persistence.context.PersistenceCache;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.configure.PersistenceUnitConfiguration;
-import com.impetus.kundera.graph.BillingCounter;
-import com.impetus.kundera.graph.Node;
-import com.impetus.kundera.graph.ObjectGraph;
-import com.impetus.kundera.graph.ObjectGraphBuilder;
-import com.impetus.kundera.graph.Store;
-import com.impetus.kundera.persistence.context.PersistenceCache;
+import javax.persistence.Persistence;
+import java.util.Map;
 
 /**
  * Test case for {@link ObjectGraphBuilder}
- * 
+ *
  * @author amresh.singh
  */
-public class ObjectGraphBuilderTest
-{
+public class ObjectGraphBuilderTest {
     private ObjectGraphBuilder graphBuilder;
 
     private String _persistenceUnit = "kunderatest";
@@ -47,8 +40,7 @@ public class ObjectGraphBuilderTest
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         EntityManagerFactoryImpl emfImpl = getEntityManagerFactory();
         new PersistenceUnitConfiguration(null, emfImpl.getKunderaMetadataInstance(), "kunderatest").configure();
         PersistenceCache persistenceCache = new PersistenceCache();
@@ -61,8 +53,7 @@ public class ObjectGraphBuilderTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
 
     }
 
@@ -72,8 +63,7 @@ public class ObjectGraphBuilderTest
      * .
      */
     @Test
-    public void testGetObjectGraph()
-    {
+    public void testGetObjectGraph() {
         Store store = new Store(1, "Food Bazaar, Noida");
         store.addCounter(new BillingCounter(1, "A"));
         store.addCounter(new BillingCounter(2, "B"));
@@ -96,14 +86,13 @@ public class ObjectGraphBuilderTest
 
     /**
      * Gets the entity manager factory.
-     * 
+     *
      * @param useLucene
      * @param property
-     * 
+     *
      * @return the entity manager factory
      */
-    private EntityManagerFactoryImpl getEntityManagerFactory()
-    {
+    private EntityManagerFactoryImpl getEntityManagerFactory() {
         return (EntityManagerFactoryImpl) Persistence.createEntityManagerFactory(_persistenceUnit);
     }
 }

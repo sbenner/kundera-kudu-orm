@@ -1,12 +1,12 @@
 /**
  * Copyright 2013 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,23 +14,6 @@
  * limitations under the License.
  */
 package com.impetus.kundera.query;
-
-import java.util.Calendar;
-import java.util.Date;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.FlushModeType;
-import javax.persistence.LockModeType;
-import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
-import javax.persistence.TemporalType;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import com.impetus.kundera.CoreTestUtilities;
 import com.impetus.kundera.client.DummyDatabase;
@@ -40,13 +23,20 @@ import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.persistence.PersistenceDelegator;
 import com.impetus.kundera.utils.LuceneCleanupUtilities;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.persistence.*;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author vivek.mishra junit for {@link QueryImpl}
- * 
+ *
  */
-public class QueryImplTest
-{
+public class QueryImplTest {
 
     private static final String PU = "patest";
 
@@ -60,8 +50,7 @@ public class QueryImplTest
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
 
         emf = Persistence.createEntityManagerFactory(PU);
         kunderaMetadata = ((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance();
@@ -69,8 +58,7 @@ public class QueryImplTest
 
     }
 
-    private KunderaQuery parseQuery(final String query)
-    {
+    private KunderaQuery parseQuery(final String query) {
         KunderaQuery kunderaQuery = new KunderaQuery(query, kunderaMetadata);
         KunderaQueryParser queryParser = new KunderaQueryParser(kunderaQuery);
         queryParser.parse();
@@ -79,8 +67,7 @@ public class QueryImplTest
     }
 
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
         DummyDatabase.INSTANCE.dropDatabase();
         LuceneCleanupUtilities.cleanLuceneDirectory(kunderaMetadata.getApplicationMetadata()
                 .getPersistenceUnitMetadata(PU));
@@ -95,8 +82,7 @@ public class QueryImplTest
      */
     @Test
     public void assertOnUnsupportedMethod() throws NoSuchFieldException, SecurityException, IllegalArgumentException,
-            IllegalAccessException
-    {
+            IllegalAccessException {
         String queryStr = "Select p from Person p where p.personId = :personId";
 
         PersistenceDelegator delegator = CoreTestUtilities.getDelegator(em);
@@ -106,130 +92,89 @@ public class QueryImplTest
 
         CoreQuery query = new CoreQuery(kunderaQuery, delegator, kunderaMetadata);
 
-        try
-        {
+        try {
             query.setFlushMode(FlushModeType.AUTO);
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("setFlushMode is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.setFirstResult(1);
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("setFirstResult is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.getSingleResult();
-        }
-        catch (NoResultException e)
-        {
+        } catch (NoResultException e) {
             Assert.assertEquals("No result found!", e.getMessage());
         }
-        
-        try
-        {
+
+        try {
             query.getFirstResult();
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("getFirstResult is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.setLockMode(LockModeType.NONE);
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("setLockMode is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.getLockMode();
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("getLockMode is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.setParameter(0, new Date(), TemporalType.DATE);
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("setParameter is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.setParameter("param", new Date(), TemporalType.DATE);
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("setParameter is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.setParameter(0, Calendar.getInstance(), TemporalType.DATE);
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("setParameter is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.setParameter("param", Calendar.getInstance(), TemporalType.DATE);
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("setParameter is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.setParameter(CoreTestUtilities.getParameter(), Calendar.getInstance(), TemporalType.DATE);
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("setParameter is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.setParameter(CoreTestUtilities.getParameter(), new Date(), TemporalType.DATE);
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("setParameter is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.getFlushMode();
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("getFlushMode is unsupported by Kundera", usex.getMessage());
         }
 
     }
 
     @Test
-    public void testGetColumns()
-    {
-        try
-        {
+    public void testGetColumns() {
+        try {
             String queryStr = "Select p from Person p where p.personId = :personId";
 
             PersistenceDelegator delegator = CoreTestUtilities.getDelegator(em);
@@ -240,33 +185,23 @@ public class QueryImplTest
             CoreQuery query = new CoreQuery(kunderaQuery, delegator, kunderaMetadata);
 
             EntityMetadata m = KunderaMetadataManager.getEntityMetadata(kunderaMetadata, Person.class);
-            String[] columns = query.getColumns(new String[] { "personName", "age" }, m);
+            String[] columns = query.getColumns(new String[]{"personName", "age"}, m);
             Assert.assertNotNull(columns);
             Assert.assertTrue(columns.length > 0);
-        }
-        catch (SecurityException e)
-        {
+        } catch (SecurityException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (IllegalArgumentException e)
-        {
+        } catch (IllegalArgumentException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (NoSuchFieldException e)
-        {
+        } catch (NoSuchFieldException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (IllegalAccessException e)
-        {
+        } catch (IllegalAccessException e) {
             Assert.fail(e.getMessage());
         }
     }
 
     @Test
-    public void testGroupByAndOrderBy()
-    {
-        try
-        {
+    public void testGroupByAndOrderBy() {
+        try {
             String queryStr = "Select p from Person p where p.personId = :personId GROUP BY personId";
             KunderaQuery kunderaQuery = new KunderaQuery(queryStr, kunderaMetadata);
             KunderaQueryParser queryParser = new KunderaQueryParser(kunderaQuery);
@@ -284,9 +219,7 @@ public class QueryImplTest
             queryParser = new KunderaQueryParser(kunderaQuery);
             queryParser.parse();
             kunderaQuery.postParsingInit();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
 

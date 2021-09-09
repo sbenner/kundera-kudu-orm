@@ -15,28 +15,23 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
+import com.impetus.kundera.property.PropertyAccessor;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.property.PropertyAccessor;
-
 /**
  * @author amresh.singh
- *
  */
-public class ByteAccessorTest
-{
+public class ByteAccessorTest {
     PropertyAccessor<Byte> accessor;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         accessor = new ByteAccessor();
     }
 
@@ -44,8 +39,7 @@ public class ByteAccessorTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         accessor = null;
     }
 
@@ -53,12 +47,11 @@ public class ByteAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.ByteAccessor#fromBytes(java.lang.Class, byte[])}.
      */
     @Test
-    public void testFromBytes()
-    {
+    public void testFromBytes() {
         Assert.assertNull(accessor.fromBytes(Byte.class, null));
         Byte v1 = new Byte("7");
         byte[] b = accessor.toBytes(v1);
-        
+
         Byte v2 = accessor.fromBytes(Byte.class, b);
         Assert.assertEquals(v1, v2);
     }
@@ -67,12 +60,11 @@ public class ByteAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.ByteAccessor#toBytes(java.lang.Object)}.
      */
     @Test
-    public void testToBytes()
-    {
+    public void testToBytes() {
         Assert.assertNull(accessor.toBytes(null));
         Byte v1 = new Byte("7");
         byte[] b = accessor.toBytes(v1);
-        
+
         Byte v2 = accessor.fromBytes(Byte.class, b);
         Assert.assertEquals(v1, v2);
     }
@@ -81,25 +73,23 @@ public class ByteAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.ByteAccessor#toString(java.lang.Object)}.
      */
     @Test
-    public void testToStringObject()
-    {
+    public void testToStringObject() {
         Assert.assertNull(accessor.toString(null));
         Byte v1 = new Byte("7");
-        
+
         String s = accessor.toString(v1);
-        
+
         Assert.assertEquals("7", s);
-        
+
     }
 
     /**
      * Test method for {@link com.impetus.kundera.property.accessor.ByteAccessor#fromString(java.lang.Class, java.lang.String)}.
      */
     @Test
-    public void testFromString()
-    {
+    public void testFromString() {
         Assert.assertNull(accessor.fromString(Byte.class, null));
-        
+
         Byte v1 = new Byte("7");
         Byte v2 = accessor.fromString(Byte.class, "7");
         Assert.assertEquals(v1, v2);
@@ -109,10 +99,9 @@ public class ByteAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.ByteAccessor#getCopy(java.lang.Object)}.
      */
     @Test
-    public void testGetCopy()
-    {
+    public void testGetCopy() {
         Assert.assertNull(accessor.getCopy(null));
-        
+
         Byte v1 = new Byte("7");
         Byte v2 = accessor.getCopy(v1);
         Assert.assertEquals(v1, v2);
@@ -122,11 +111,10 @@ public class ByteAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.ByteAccessor#getInstance(java.lang.Class)}.
      */
     @Test
-    public void testGetInstance()
-    {
+    public void testGetInstance() {
         Assert.assertNotNull(accessor.getInstance(Byte.class));
         Assert.assertTrue(accessor.getInstance(Byte.class) instanceof Byte);
-        Assert.assertEquals(Byte.MAX_VALUE, accessor.getInstance(Byte.class));        
+        Assert.assertEquals(Byte.MAX_VALUE, accessor.getInstance(Byte.class));
     }
 
 }

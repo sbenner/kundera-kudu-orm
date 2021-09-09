@@ -4,33 +4,28 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
-public class Polygon extends Shape
-{
-    
+public class Polygon extends Shape {
+
     @Column(name = "sides")
     private int sides;
 
     @Column(name = "type")
     private String type;
 
-  
-    public int getSides()
-    {
+
+    public int getSides() {
         return sides;
     }
 
-    public void setSides(int sides)
-    {
+    public void setSides(int sides) {
         this.sides = sides;
     }
 
-    public String getType()
-    {
+    public String getType() {
         return type;
     }
 
-    public void setgetType(String type)
-    {
+    public void setgetType(String type) {
         this.type = type;
     }
 

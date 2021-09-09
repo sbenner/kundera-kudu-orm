@@ -47,51 +47,51 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implementation class for {@link EntityManagerFactory}
- * 
+ *
  * @author animesh.kumar
  */
-public class EntityManagerFactoryImpl implements EntityManagerFactory
-{
+public class EntityManagerFactoryImpl implements EntityManagerFactory {
 
-    /** the log used by this class. */
+    /**
+     * the log used by this class.
+     */
     private static Logger logger = LoggerFactory.getLogger(EntityManagerFactoryImpl.class);
+    private final KunderaPersistenceUnitUtil util;
+    private final PersistenceUtilHelper.MetadataCache cache = new PersistenceUtilHelper.MetadataCache();
 
-    /** Whether or not the factory has been closed. */
+    // TODO: Move it to Application Metadata
+    /**
+     * The Constant INSTANCE holds all application and core metadata.
+     */
+    private final KunderaMetadata kunderaMetadata = new KunderaMetadata();
+    /**
+     * Whether or not the factory has been closed.
+     */
     private boolean closed;
-
     /**
      * Persistence Unit Properties Overriden by user provided factory
      * properties.
      */
     private Map<String, Object> properties;
-
-    // TODO: Move it to Application Metadata
-    /** The cache provider. */
+    /**
+     * The cache provider.
+     */
     private CacheProvider cacheProvider;
-
     /**
      * Array of persistence units. (Contains only one string usually except when
      * persisting in multiple data-stores)
      */
     private String[] persistenceUnits;
-
     // Transaction type
     private PersistenceUnitTransactionType transactionType;
-
-    private final KunderaPersistenceUnitUtil util;
-
-    private final PersistenceUtilHelper.MetadataCache cache = new PersistenceUtilHelper.MetadataCache();
-
-    /** ClientFactory map holds one clientfactory for one persistence unit */
+    /**
+     * ClientFactory map holds one clientfactory for one persistence unit
+     */
     private Map<String, ClientFactory> clientFactories = new ConcurrentHashMap<String, ClientFactory>();
 
-    /** The Constant INSTANCE holds all application and core metadata. */
-    private final KunderaMetadata kunderaMetadata = new KunderaMetadata();
-
-    public EntityManagerFactoryImpl(PersistenceUnitInfo puInfo, Map<String, Object> properties)
-    {
+    public EntityManagerFactoryImpl(PersistenceUnitInfo puInfo, Map<String, Object> properties) {
         // Load Core
-        logger.info("Loading Core");
+        logger.info(Thread.currentThread().getName() + "Loading Core cons 1");
         new CoreLoader().load(kunderaMetadata);
 
         this.configurePersistenceUnit(puInfo, properties);
@@ -102,16 +102,13 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
 
     /**
      * Use this if you want to construct this directly.
-     * 
-     * @param persistenceUnit
-     *            used to prefix the Cassandra domains
-     * @param properties
-     *            the properties
+     *
+     * @param persistenceUnit used to prefix the Cassandra domains
+     * @param properties      the properties
      */
-    public EntityManagerFactoryImpl(String persistenceUnit, Map<String, Object> properties)
-    {
+    public EntityManagerFactoryImpl(String persistenceUnit, Map<String, Object> properties) {
         // Load Core
-        logger.info("Loading Core");
+        logger.info(Thread.currentThread().getName() + " Loading Core cons 2");
         new CoreLoader().load(kunderaMetadata);
 
         this.configurePersistenceUnit(persistenceUnit, properties);
@@ -121,16 +118,13 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
     }
 
     /**
-     * 
      * @param persistenceUnit
      * @param properties
      */
-    private void configure(String persistenceUnit, Map<String, Object> properties)
-    {
+    private void configure(String persistenceUnit, Map<String, Object> properties) {
         Map<String, Object> propsMap = new HashMap<String, Object>();
 
-        if (properties != null)
-        {
+        if (properties != null) {
             propsMap.putAll(properties);
         }
 
@@ -150,30 +144,24 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
 
         Set<PersistenceUnitTransactionType> txTypes = new HashSet<PersistenceUnitTransactionType>();
 
-        for (String pu : persistenceUnits)
-        {
-            PersistenceUnitMetadata puMetadata = KunderaMetadataManager.getPersistenceUnitMetadata(kunderaMetadata,  pu);
+        for (String pu : persistenceUnits) {
+            PersistenceUnitMetadata puMetadata = KunderaMetadataManager.getPersistenceUnitMetadata(kunderaMetadata, pu);
             PersistenceUnitTransactionType txType = KunderaMetadataManager.getPersistenceUnitMetadata(kunderaMetadata, pu).getTransactionType();
             txTypes.add(txType);
-            if (cacheProvider == null)
-            {
+            if (cacheProvider == null) {
                 this.cacheProvider = initSecondLevelCache(puMetadata);
                 this.cacheProvider.createCache(Constants.KUNDERA_SECONDARY_CACHE_NAME);
             }
         }
 
-        if (txTypes.size() != 1)
-        {
+        if (txTypes.size() != 1) {
             throw new IllegalArgumentException(
                     "For polyglot persistence, it is mandatory for all persistence units to have same Transction type.");
-        }
-        else
-        {
+        } else {
             this.transactionType = txTypes.iterator().next();
         }
 
-        if (logger.isInfoEnabled())
-        {
+        if (logger.isInfoEnabled()) {
             logger.info("EntityManagerFactory created for persistence unit : " + persistenceUnit);
         }
     }
@@ -184,35 +172,28 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
      * IllegalStateException, except for isOpen, which will return false. Once
      * an EntityManagerFactory has been closed, all its entity managers are
      * considered to be in the closed state.
-     * 
-     * @throws IllegalStateException
-     *             if the entity manager factory has been closed
+     *
+     * @throws IllegalStateException if the entity manager factory has been closed
      * @see javax.persistence.EntityManagerFactory#close()
      */
     @Override
-    public final void close()
-    {
-        if (isOpen())
-        {
+    public final void close() {
+        if (isOpen()) {
             closed = true;
 
             // Shut cache provider down
-            if (cacheProvider != null)
-            {
+            if (cacheProvider != null) {
                 cacheProvider.shutdown();
             }
 
-            for (String pu : persistenceUnits)
-            {
+            for (String pu : persistenceUnits) {
                 ((ClientLifeCycleManager) getClientFactories().get(pu)).destroy();
             }
             this.persistenceUnits = null;
             this.properties = null;
             getClientFactories().clear();
             setClientFactories(new ConcurrentHashMap<String, ClientFactory>());
-        }
-        else
-        {
+        } else {
             throw new IllegalStateException("Entity manager factory has been closed");
         }
     }
@@ -221,17 +202,14 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
      * Create a new application-managed EntityManager. This method returns a new
      * EntityManager instance each time it is invoked. The isOpen method will
      * return true on the returned instance.
-     * 
+     *
      * @return entity manager instance
-     * @throws IllegalStateException
-     *             if the entity manager factory has been closed
+     * @throws IllegalStateException if the entity manager factory has been closed
      */
     @Override
-    public final EntityManager createEntityManager()
-    {
+    public final EntityManager createEntityManager() {
         // For Application managed persistence context, type is always EXTENDED
-        if (isOpen())
-        {
+        if (isOpen()) {
             return new EntityManagerImpl(this, transactionType, PersistenceContextType.EXTENDED);
         }
         throw new IllegalStateException("Entity manager factory has been closed.");
@@ -241,19 +219,15 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
      * Create a new application-managed EntityManager with the specified Map of
      * properties. This method returns a new EntityManager instance each time it
      * is invoked. The isOpen method will return true on the returned instance.
-     * 
-     * @param map
-     *            properties for entity manager
+     *
+     * @param map properties for entity manager
      * @return entity manager instance
-     * @throws IllegalStateException
-     *             if the entity manager factory has been closed
+     * @throws IllegalStateException if the entity manager factory has been closed
      */
     @Override
-    public final EntityManager createEntityManager(Map map)
-    {
+    public final EntityManager createEntityManager(Map map) {
         // For Application managed persistence context, type is always EXTENDED
-        if (isOpen())
-        {
+        if (isOpen()) {
             return new EntityManagerImpl(this, map, transactionType, PersistenceContextType.EXTENDED);
         }
         throw new IllegalStateException("Entity manager factory has been closed.");
@@ -262,30 +236,26 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
     /**
      * Indicates whether the factory is open. Returns true until the factory has
      * been closed.
-     * 
+     *
      * @return boolean indicating whether the factory is open
      * @see javax.persistence.EntityManagerFactory#isOpen()
      */
     @Override
-    public final boolean isOpen()
-    {
+    public final boolean isOpen() {
         return !closed;
     }
 
     /**
      * Return an instance of CriteriaBuilder for the creation of CriteriaQuery
      * objects.
-     * 
+     *
      * @return CriteriaBuilder instance
-     * @throws IllegalStateException
-     *             if the entity manager factory has been closed
+     * @throws IllegalStateException if the entity manager factory has been closed
      * @see javax.persistence.EntityManagerFactory#getCriteriaBuilder()
      */
     @Override
-    public CriteriaBuilder getCriteriaBuilder()
-    {
-        if (isOpen())
-        {
+    public CriteriaBuilder getCriteriaBuilder() {
+        if (isOpen()) {
             return new KunderaCriteriaBuilder(this);
         }
         throw new IllegalStateException("Entity manager factory has been closed.");
@@ -294,24 +264,19 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
     /**
      * Return an instance of Metamodel interface for access to the metamodel of
      * the persistence unit.
-     * 
+     *
      * @return Metamodel instance
-     * @throws IllegalStateException
-     *             if the entity manager factory has been closed
+     * @throws IllegalStateException if the entity manager factory has been closed
      * @see javax.persistence.EntityManagerFactory#getMetamodel()
      */
     @Override
-    public Metamodel getMetamodel()
-    {
-        if (isOpen())
-        {
+    public Metamodel getMetamodel() {
+        if (isOpen()) {
             MetamodelImpl metamodel = null;
-            for (String pu : persistenceUnits)
-            {
+            for (String pu : persistenceUnits) {
                 metamodel = (MetamodelImpl) kunderaMetadata.getApplicationMetadata().getMetamodel(pu);
 
-                if (metamodel != null)
-                {
+                if (metamodel != null) {
                     return metamodel;
                 }
             }
@@ -325,17 +290,14 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
      * Get the properties and associated values that are in effect for the
      * entity manager factory. Changing the contents of the map does not change
      * the configuration in effect.
-     * 
+     *
      * @return properties
-     * @throws IllegalStateException
-     *             if the entity manager factory has been closed
+     * @throws IllegalStateException if the entity manager factory has been closed
      * @see javax.persistence.EntityManagerFactory#getProperties()
      */
     @Override
-    public Map<String, Object> getProperties()
-    {
-        if (isOpen())
-        {
+    public Map<String, Object> getProperties() {
+        if (isOpen()) {
             return properties;
         }
         throw new IllegalStateException("Entity manager factory has been closed.");
@@ -344,17 +306,14 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
     /**
      * Access the cache that is associated with the entity manager factory (the
      * "second level cache").
-     * 
+     *
      * @return instance of the Cache interface
-     * @throws IllegalStateException
-     *             if the entity manager factory has been closed
+     * @throws IllegalStateException if the entity manager factory has been closed
      * @see javax.persistence.EntityManagerFactory#getCache()
      */
     @Override
-    public Cache getCache()
-    {
-        if (isOpen())
-        {
+    public Cache getCache() {
+        if (isOpen()) {
             return cacheProvider.getCache(Constants.KUNDERA_SECONDARY_CACHE_NAME);
         }
         throw new IllegalStateException("Entity manager factory has been closed.");
@@ -363,17 +322,14 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
     /**
      * Return interface providing access to utility methods for the persistence
      * unit.
-     * 
+     *
      * @return PersistenceUnitUtil interface
-     * @throws IllegalStateException
-     *             if the entity manager factory has been closed
+     * @throws IllegalStateException if the entity manager factory has been closed
      * @see javax.persistence.EntityManagerFactory#getPersistenceUnitUtil()
      */
     @Override
-    public PersistenceUnitUtil getPersistenceUnitUtil()
-    {
-        if (!isOpen())
-        {
+    public PersistenceUnitUtil getPersistenceUnitUtil() {
+        if (!isOpen()) {
             throw new IllegalStateException("Entity manager factory has been closed.");
         }
         return this.util;
@@ -382,12 +338,11 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
     /**
      * Initialize and load clientFactory for all persistenceUnit with external
      * properties.
-     * 
+     *
      * @param persistenceUnit
      * @param externalProperties
      */
-    private void configureClientFactories()
-    {
+    private void configureClientFactories() {
         ClientMetadataBuilder builder = new ClientMetadataBuilder(getProperties(), kunderaMetadata,
                 getPersistenceUnits());
         builder.buildClientFactoryMetadata(getClientFactories(), kunderaMetadata);
@@ -396,11 +351,10 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
 
     /**
      * Inits the second level cache.
-     * 
+     *
      * @return the cache provider
      */
-    private CacheProvider initSecondLevelCache(final PersistenceUnitMetadata puMetadata)
-    {
+    private CacheProvider initSecondLevelCache(final PersistenceUnitMetadata puMetadata) {
 
         String classResourceName = (String) getProperties().get(PersistenceProperties.KUNDERA_CACHE_CONFIG_RESOURCE);
 
@@ -414,30 +368,21 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
                 .getProperty(PersistenceProperties.KUNDERA_CACHE_PROVIDER_CLASS);
 
         CacheProvider cacheProvider = null;
-        if (cacheProviderClassName != null)
-        {
-            try
-            {
+        if (cacheProviderClassName != null) {
+            try {
                 Class<CacheProvider> cacheProviderClass = (Class<CacheProvider>) Class.forName(cacheProviderClassName);
                 cacheProvider = cacheProviderClass.newInstance();
                 cacheProvider.init(classResourceName);
-            }
-            catch (ClassNotFoundException e)
-            {
+            } catch (ClassNotFoundException e) {
                 throw new CacheException("Could not find class " + cacheProviderClassName
                         + ". Check whether you spelled it correctly in persistence.xml", e);
-            }
-            catch (InstantiationException e)
-            {
+            } catch (InstantiationException e) {
                 throw new CacheException("Could not instantiate " + cacheProviderClassName, e);
-            }
-            catch (IllegalAccessException e)
-            {
+            } catch (IllegalAccessException e) {
                 throw new CacheException(e);
             }
         }
-        if (cacheProvider == null)
-        {
+        if (cacheProvider == null) {
             cacheProvider = new NonOperationalCacheProvider();
         }
         return cacheProvider;
@@ -445,24 +390,20 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
 
     /**
      * Gets the persistence units.
-     * 
+     *
      * @return the persistence units
      */
-    String[] getPersistenceUnits()
-    {
+    String[] getPersistenceUnits() {
         return persistenceUnits;
     }
 
     /**
-     * 
      * @param pu
      * @return
      */
-    ClientFactory getClientFactory(final String pu)
-    {
+    ClientFactory getClientFactory(final String pu) {
         ClientFactory clientFactory = getClientFactories().get(pu);
-        if (clientFactory != null)
-        {
+        if (clientFactory != null) {
             return clientFactory;
         }
         logger.error("Client Factory Not Configured For Specified Client Type : ");
@@ -470,11 +411,9 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
     }
 
     /**
-     * 
      * @return Kundera metadata instance.
      */
-    public KunderaMetadata getKunderaMetadataInstance()
-    {
+    public KunderaMetadata getKunderaMetadataInstance() {
         return kunderaMetadata;
     }
 
@@ -489,165 +428,37 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
         this.clientFactories = clientFactories;
     }
 
-    /**
-     * The Class KunderaMetadata.
-     * 
-     * @author amresh.singh
-     */
-    public static class KunderaMetadata
-    {
-        /* Metadata for Kundera core */
-        /** The core metadata. */
-        private CoreMetadata coreMetadata;
-
-        /* User application specific metadata */
-        /** The application metadata. */
-        private ApplicationMetadata applicationMetadata;
-
-        /**
-         * Instantiates a new kundera metadata.
-         */
-        private KunderaMetadata()
-        {
-
-        }
-
-        /**
-         * Gets the application metadata.
-         * 
-         * @return the applicationMetadata
-         */
-        public ApplicationMetadata getApplicationMetadata()
-        {
-            if (applicationMetadata == null)
-            {
-                applicationMetadata = new ApplicationMetadata();
-            }
-            return applicationMetadata;
-        }
-
-        /**
-         * Gets the core metadata.
-         * 
-         * @return the coreMetadata
-         */
-        public CoreMetadata getCoreMetadata()
-        {
-            return coreMetadata;
-        }
-
-        /**
-         * Sets the application metadata.
-         * 
-         * @param applicationMetadata
-         *            the applicationMetadata to set
-         */
-        public void setApplicationMetadata(ApplicationMetadata applicationMetadata)
-        {
-            this.applicationMetadata = applicationMetadata;
-        }
-
-        /**
-         * Sets the core metadata.
-         * 
-         * @param coreMetadata
-         *            the coreMetadata to set
-         */
-        public void setCoreMetadata(CoreMetadata coreMetadata)
-        {
-            this.coreMetadata = coreMetadata;
-        }
-    }
-
-    /**
-     * {@link PersistenceUnitUtil} for {@link KunderaPersistence}
-     * 
-     * @author amresh.singh
-     */
-    private class KunderaPersistenceUnitUtil implements PersistenceUnitUtil
-    {
-        private transient PersistenceUtilHelper.MetadataCache cache;
-
-        public KunderaPersistenceUnitUtil(PersistenceUtilHelper.MetadataCache cache)
-        {
-            this.cache = cache;
-        }
-
-        @Override
-        public boolean isLoaded(Object entity, String attributeName)
-        {
-            LoadState state = PersistenceUtilHelper.isLoadedWithoutReference(entity, attributeName, this.cache);
-            if (state == LoadState.LOADED)
-            {
-                return true;
-            }
-            if (state == LoadState.NOT_LOADED)
-            {
-                return false;
-            }
-            return (PersistenceUtilHelper.isLoadedWithReference(entity, attributeName, this.cache) != LoadState.NOT_LOADED);
-        }
-
-        @Override
-        public boolean isLoaded(Object entity)
-        {
-            return (PersistenceUtilHelper.isLoaded(entity) != LoadState.NOT_LOADED);
-        }
-
-        @Override
-        public Object getIdentifier(Object entity)
-        {
-            Class<?> entityClass = entity.getClass();
-            EntityMetadata entityMetadata = KunderaMetadataManager.getEntityMetadata(kunderaMetadata,  entityClass);
-
-            if (entityMetadata == null)
-            {
-                throw new IllegalArgumentException(entityClass + " is not an entity");
-            }
-            return PropertyAccessorHelper.getId(entity, entityMetadata);
-        }
-
-    }
-
-
     @Override
-    public void addNamedQuery(String paramString, Query paramQuery)
-    {
+    public void addNamedQuery(String paramString, Query paramQuery) {
         //TODO: See https://github.com/impetus-opensource/Kundera/issues/457
         // Do nothing. Not yet implemented.
     }
 
     @Override
-    public <T> T unwrap(Class<T> paramClass)
-    {
+    public <T> T unwrap(Class<T> paramClass) {
         //TODO: See https://github.com/impetus-opensource/Kundera/issues/457
         // Do nothing. Not yet implemented.
         return null;
     }
 
     @Override
-    public <T> void addNamedEntityGraph(String paramString, EntityGraph<T> paramEntityGraph)
-    {
+    public <T> void addNamedEntityGraph(String paramString, EntityGraph<T> paramEntityGraph) {
         //TODO: See https://github.com/impetus-opensource/Kundera/issues/457
         // Do nothing. Not yet implemented.
-        
+
     }
-    
+
     /**
      * One time initialization for persistence unit metadata.
-     * 
-     * @param persistenceUnit
-     *            Persistence Unit/ Comma separated persistence units
+     *
+     * @param persistenceUnit Persistence Unit/ Comma separated persistence units
      */
-    private void configurePersistenceUnit(String persistenceUnit, Map props)
-    {
+    private void configurePersistenceUnit(String persistenceUnit, Map props) {
         // Invoke Persistence unit MetaData
-        if (persistenceUnit == null)
-        {
+        if (persistenceUnit == null) {
             throw new KunderaException("Persistence unit name should not be null");
         }
-        if (logger.isInfoEnabled())
-        {
+        if (logger.isInfoEnabled()) {
             logger.info("Loading Persistence Unit MetaData For Persistence Unit(s) {}.", persistenceUnit);
         }
 
@@ -658,19 +469,15 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
 
     /**
      * One time initialization for persistence unit metadata.
-     * 
-     * @param persistenceUnit
-     *            Persistence Unit/ Comma separated persistence units
+     *
+     * @param persistenceUnit Persistence Unit/ Comma separated persistence units
      */
-    private void configurePersistenceUnit(PersistenceUnitInfo puInfo, Map props)
-    {
+    private void configurePersistenceUnit(PersistenceUnitInfo puInfo, Map props) {
         // Invoke Persistence unit MetaData
-        if (puInfo.getPersistenceUnitName() == null)
-        {
+        if (puInfo.getPersistenceUnitName() == null) {
             throw new KunderaException("Persistence unit name should not be null");
         }
-        if (logger.isInfoEnabled())
-        {
+        if (logger.isInfoEnabled()) {
             logger.info("Loading Persistence Unit MetaData For Persistence Unit(s) {}.",
                     puInfo.getPersistenceUnitName());
         }
@@ -681,15 +488,120 @@ public class EntityManagerFactoryImpl implements EntityManagerFactory
     }
 
     @Override
-    public EntityManager createEntityManager(SynchronizationType paramSynchronizationType)
-    {
+    public EntityManager createEntityManager(SynchronizationType paramSynchronizationType) {
         return createEntityManager();
     }
 
     @Override
-    public EntityManager createEntityManager(SynchronizationType paramSynchronizationType, Map paramMap)
-    {
+    public EntityManager createEntityManager(SynchronizationType paramSynchronizationType, Map paramMap) {
         return createEntityManager(paramMap);
+    }
+
+    /**
+     * The Class KunderaMetadata.
+     *
+     * @author amresh.singh
+     */
+    public static class KunderaMetadata {
+        /* Metadata for Kundera core */
+        /**
+         * The core metadata.
+         */
+        private CoreMetadata coreMetadata;
+
+        /* User application specific metadata */
+        /**
+         * The application metadata.
+         */
+        private ApplicationMetadata applicationMetadata;
+
+        /**
+         * Instantiates a new kundera metadata.
+         */
+        private KunderaMetadata() {
+
+        }
+
+        /**
+         * Gets the application metadata.
+         *
+         * @return the applicationMetadata
+         */
+        public ApplicationMetadata getApplicationMetadata() {
+            if (applicationMetadata == null) {
+                applicationMetadata = new ApplicationMetadata();
+            }
+            return applicationMetadata;
+        }
+
+        /**
+         * Sets the application metadata.
+         *
+         * @param applicationMetadata the applicationMetadata to set
+         */
+        public void setApplicationMetadata(ApplicationMetadata applicationMetadata) {
+            this.applicationMetadata = applicationMetadata;
+        }
+
+        /**
+         * Gets the core metadata.
+         *
+         * @return the coreMetadata
+         */
+        public CoreMetadata getCoreMetadata() {
+            return coreMetadata;
+        }
+
+        /**
+         * Sets the core metadata.
+         *
+         * @param coreMetadata the coreMetadata to set
+         */
+        public void setCoreMetadata(CoreMetadata coreMetadata) {
+            this.coreMetadata = coreMetadata;
+        }
+    }
+
+    /**
+     * {@link PersistenceUnitUtil} for {@link KunderaPersistence}
+     *
+     * @author amresh.singh
+     */
+    private class KunderaPersistenceUnitUtil implements PersistenceUnitUtil {
+        private transient PersistenceUtilHelper.MetadataCache cache;
+
+        public KunderaPersistenceUnitUtil(PersistenceUtilHelper.MetadataCache cache) {
+            this.cache = cache;
+        }
+
+        @Override
+        public boolean isLoaded(Object entity, String attributeName) {
+            LoadState state = PersistenceUtilHelper.isLoadedWithoutReference(entity, attributeName, this.cache);
+            if (state == LoadState.LOADED) {
+                return true;
+            }
+            if (state == LoadState.NOT_LOADED) {
+                return false;
+            }
+            return (PersistenceUtilHelper.isLoadedWithReference(entity, attributeName, this.cache) != LoadState.NOT_LOADED);
+        }
+
+        @Override
+        public boolean isLoaded(Object entity) {
+            return (PersistenceUtilHelper.isLoaded(entity) != LoadState.NOT_LOADED);
+        }
+
+        @Override
+        public Object getIdentifier(Object entity) {
+            Class<?> entityClass = entity.getClass();
+            EntityMetadata entityMetadata = KunderaMetadataManager.getEntityMetadata(kunderaMetadata, entityClass);
+
+            if (entityMetadata == null) {
+                throw new IllegalArgumentException(entityClass + " is not an entity");
+            }
+            return PropertyAccessorHelper.getId(entity, entityMetadata);
+        }
+
     }
 
 }

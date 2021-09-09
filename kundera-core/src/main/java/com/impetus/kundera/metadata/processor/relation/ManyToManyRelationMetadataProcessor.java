@@ -15,16 +15,6 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.processor.relation;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.MapKeyClass;
-import javax.persistence.MapKeyJoinColumn;
-
 import com.impetus.kundera.loader.MetamodelLoaderException;
 import com.impetus.kundera.metadata.model.EntityMetadata;
 import com.impetus.kundera.metadata.model.JoinTableMetadata;
@@ -34,51 +24,52 @@ import com.impetus.kundera.metadata.validator.EntityValidatorImpl;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.property.PropertyAccessorHelper;
 
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.MapKeyClass;
+import javax.persistence.MapKeyJoinColumn;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 /**
  * The Class ManyToManyRelationMetadataProcessor.
- * 
+ *
  * @author Amresh Singh
  */
 public class ManyToManyRelationMetadataProcessor extends AbstractEntityFieldProcessor implements
-        RelationMetadataProcessor
-{
+        RelationMetadataProcessor {
 
     /**
      * Instantiates a new many to many relation metadata processor.
      */
-    public ManyToManyRelationMetadataProcessor(KunderaMetadata kunderaMetadata)
-    {
+    public ManyToManyRelationMetadataProcessor(KunderaMetadata kunderaMetadata) {
         super(kunderaMetadata);
         validator = new EntityValidatorImpl();
     }
 
     @Override
-    public void addRelationIntoMetadata(Field relationField, EntityMetadata metadata)
-    {
+    public void addRelationIntoMetadata(Field relationField, EntityMetadata metadata) {
         ManyToMany m2mAnnotation = relationField.getAnnotation(ManyToMany.class);
 
 //        boolean isJoinedByFK = relationField.isAnnotationPresent(JoinColumn.class);
         boolean isJoinedByTable = relationField.isAnnotationPresent(JoinTable.class);
         boolean isJoinedByMap = false;
-        if (m2mAnnotation != null && relationField.getType().isAssignableFrom(Map.class))
-        {
+        if (m2mAnnotation != null && relationField.getType().isAssignableFrom(Map.class)) {
             isJoinedByMap = true;
         }
 
         Class<?> targetEntity = null;
         Class<?> mapKeyClass = null;
 
-        if (!isJoinedByMap)
-        {
+        if (!isJoinedByMap) {
 
             targetEntity = PropertyAccessorHelper.getGenericClass(relationField);
-        }
-        else
-        {
+        } else {
             List<Class<?>> genericClasses = PropertyAccessorHelper.getGenericClasses(relationField);
 
-            if (!genericClasses.isEmpty() && genericClasses.size() == 2)
-            {
+            if (!genericClasses.isEmpty() && genericClasses.size() == 2) {
                 mapKeyClass = genericClasses.get(0);
                 targetEntity = genericClasses.get(1);
             }
@@ -87,8 +78,7 @@ public class ManyToManyRelationMetadataProcessor extends AbstractEntityFieldProc
 
             // Check for Map key class specified at annotation
             if (mapKeyClass == null && mapKeyClassAnn != null && mapKeyClassAnn.value() != null
-                    && !mapKeyClassAnn.value().getSimpleName().equals("void"))
-            {
+                    && !mapKeyClassAnn.value().getSimpleName().equals("void")) {
                 mapKeyClass = mapKeyClassAnn.value();
             }
 
@@ -97,8 +87,7 @@ public class ManyToManyRelationMetadataProcessor extends AbstractEntityFieldProc
 
         // Check for target class specified at annotation
         if (targetEntity == null && null != m2mAnnotation.targetEntity()
-                && !m2mAnnotation.targetEntity().getSimpleName().equals("void"))
-        {
+                && !m2mAnnotation.targetEntity().getSimpleName().equals("void")) {
             targetEntity = m2mAnnotation.targetEntity();
         }
         Relation relation = new Relation(relationField, targetEntity, relationField.getType(), m2mAnnotation.fetch(),
@@ -106,25 +95,21 @@ public class ManyToManyRelationMetadataProcessor extends AbstractEntityFieldProc
                 Relation.ForeignKey.MANY_TO_MANY);
 
 
-
-        if (isJoinedByTable)
-        {
+        if (isJoinedByTable) {
             JoinTableMetadata jtMetadata = new JoinTableMetadata(relationField);
 
             relation.setRelatedViaJoinTable(true);
             relation.setJoinTableMetadata(jtMetadata);
         }
 
-        if (isJoinedByMap)
-        {
+        if (isJoinedByMap) {
             relation.setMapKeyJoinClass(mapKeyClass);
 
             MapKeyJoinColumn mapKeyJoinColumnAnn = relationField.getAnnotation(MapKeyJoinColumn.class);
-            if (mapKeyJoinColumnAnn != null)
-            {
+            if (mapKeyJoinColumnAnn != null) {
                 String mapKeyJoinColumnName = mapKeyJoinColumnAnn.name();
 
-                    relation.setJoinColumnName(mapKeyJoinColumnName);
+                relation.setJoinColumnName(mapKeyJoinColumnName);
 
             }
 
@@ -136,16 +121,14 @@ public class ManyToManyRelationMetadataProcessor extends AbstractEntityFieldProc
 
         // Set whether this entity has at least one Join table relation, if not
         // already set
-        if (!metadata.isRelationViaJoinTable())
-        {
+        if (!metadata.isRelationViaJoinTable()) {
             metadata.setRelationViaJoinTable(relation.isRelatedViaJoinTable());
         }
 
     }
 
     @Override
-    public void process(Class<?> clazz, EntityMetadata metadata)
-    {
+    public void process(Class<?> clazz, EntityMetadata metadata) {
         throw new MetamodelLoaderException("Method call not applicable for Relation processors");
     }
 

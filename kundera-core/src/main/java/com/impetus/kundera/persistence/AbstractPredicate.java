@@ -15,31 +15,26 @@
  ******************************************************************************/
 package com.impetus.kundera.persistence;
 
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Selection;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Selection;
-
 /**
  * Abstract super class for {@link Predicate}
- *  
- * @author vivek.mishra
  *
+ * @author vivek.mishra
  */
-abstract class AbstractPredicate implements Predicate
-{
-
+abstract class AbstractPredicate implements Predicate {
 
 
     /* (non-Javadoc)
      * @see javax.persistence.criteria.Predicate#getOperator()
      */
     @Override
-    public BooleanOperator getOperator()
-    {
+    public BooleanOperator getOperator() {
         return BooleanOperator.AND;
     }
 
@@ -48,8 +43,7 @@ abstract class AbstractPredicate implements Predicate
      * @see javax.persistence.criteria.Expression#isNull()
      */
     @Override
-    public Predicate isNull()
-    {
+    public Predicate isNull() {
         throw new UnsupportedOperationException("Method isNull() not yet supported");
     }
 
@@ -57,8 +51,7 @@ abstract class AbstractPredicate implements Predicate
      * @see javax.persistence.criteria.Expression#isNotNull()
      */
     @Override
-    public Predicate isNotNull()
-    {
+    public Predicate isNotNull() {
         throw new UnsupportedOperationException("Method isNotNull() not yet supported");
     }
 
@@ -66,8 +59,7 @@ abstract class AbstractPredicate implements Predicate
      * @see javax.persistence.criteria.Expression#in(java.lang.Object[])
      */
     @Override
-    public Predicate in(Object... paramArrayOfObject)
-    {
+    public Predicate in(Object... paramArrayOfObject) {
         throw new UnsupportedOperationException("Method in(Object... paramArrayOfObject) not yet supported");
     }
 
@@ -75,8 +67,7 @@ abstract class AbstractPredicate implements Predicate
      * @see javax.persistence.criteria.Expression#in(javax.persistence.criteria.Expression<?>[])
      */
     @Override
-    public Predicate in(Expression<?>... paramArrayOfExpression)
-    {
+    public Predicate in(Expression<?>... paramArrayOfExpression) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Method in(Expression<?>... paramArrayOfExpression) not yet supported");
     }
@@ -85,8 +76,7 @@ abstract class AbstractPredicate implements Predicate
      * @see javax.persistence.criteria.Expression#in(java.util.Collection)
      */
     @Override
-    public Predicate in(Collection<?> paramCollection)
-    {
+    public Predicate in(Collection<?> paramCollection) {
         throw new UnsupportedOperationException("Method in(Collection<?> paramCollection) not yet supported");
     }
 
@@ -94,8 +84,7 @@ abstract class AbstractPredicate implements Predicate
      * @see javax.persistence.criteria.Expression#in(javax.persistence.criteria.Expression)
      */
     @Override
-    public Predicate in(Expression<Collection<?>> paramExpression)
-    {
+    public Predicate in(Expression<Collection<?>> paramExpression) {
         throw new UnsupportedOperationException("Method in(Expression<Collection<?>> paramExpression) not yet supported");
     }
 
@@ -103,8 +92,7 @@ abstract class AbstractPredicate implements Predicate
      * @see javax.persistence.criteria.Expression#as(java.lang.Class)
      */
     @Override
-    public <X> Expression<X> as(Class<X> paramClass)
-    {
+    public <X> Expression<X> as(Class<X> paramClass) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -113,8 +101,7 @@ abstract class AbstractPredicate implements Predicate
      * @see javax.persistence.criteria.Selection#alias(java.lang.String)
      */
     @Override
-    public Selection<Boolean> alias(String paramString)
-    {
+    public Selection<Boolean> alias(String paramString) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -123,8 +110,7 @@ abstract class AbstractPredicate implements Predicate
      * @see javax.persistence.criteria.Selection#isCompoundSelection()
      */
     @Override
-    public boolean isCompoundSelection()
-    {
+    public boolean isCompoundSelection() {
         return false;
     }
 
@@ -132,8 +118,7 @@ abstract class AbstractPredicate implements Predicate
      * @see javax.persistence.criteria.Selection#getCompoundSelectionItems()
      */
     @Override
-    public List<Selection<?>> getCompoundSelectionItems()
-    {
+    public List<Selection<?>> getCompoundSelectionItems() {
         return Collections.emptyList();
     }
 
@@ -141,8 +126,7 @@ abstract class AbstractPredicate implements Predicate
      * @see javax.persistence.TupleElement#getJavaType()
      */
     @Override
-    public Class<? extends Boolean> getJavaType()
-    {
+    public Class<? extends Boolean> getJavaType() {
         return null;
     }
 
@@ -150,8 +134,7 @@ abstract class AbstractPredicate implements Predicate
      * @see javax.persistence.TupleElement#getAlias()
      */
     @Override
-    public String getAlias()
-    {
+    public String getAlias() {
         return null;
     }
 
@@ -159,8 +142,7 @@ abstract class AbstractPredicate implements Predicate
      * @see javax.persistence.criteria.Predicate#isNegated()
      */
     @Override
-    public boolean isNegated()
-    {
+    public boolean isNegated() {
         throw new UnsupportedOperationException("Method isNegated() not yet supported");
     }
 
@@ -168,24 +150,21 @@ abstract class AbstractPredicate implements Predicate
      * @see javax.persistence.criteria.Predicate#not()
      */
     @Override
-    public Predicate not()
-    {
+    public Predicate not() {
         throw new UnsupportedOperationException("Method not() not yet supported");
     }
 
-    
+
     /* (non-Javadoc)
      * @see javax.persistence.criteria.Predicate#getExpressions()
      */
     @Override
-    public List<Expression<Boolean>> getExpressions()
-    {
+    public List<Expression<Boolean>> getExpressions() {
         return java.util.Collections.emptyList();
     }
 
 
-    public static enum ConditionalOperator
-    {
+    public static enum ConditionalOperator {
         EQ, NEQ, LT, LTE, GT, GTE, BTW;
     }
 }

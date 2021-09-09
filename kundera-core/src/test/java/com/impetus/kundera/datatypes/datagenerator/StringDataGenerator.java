@@ -1,35 +1,30 @@
 /*
- * 
+ *
  */
 package com.impetus.kundera.datatypes.datagenerator;
 
-public class StringDataGenerator implements DataGenerator<String>
-{
+public class StringDataGenerator implements DataGenerator<String> {
 
     // private static final String AMRESH = new String("Amresh");
     // private static final String random = new String("Kuldeep");
 
     @Override
-    public String randomValue()
-    {
+    public String randomValue() {
         return new String("Amresh");
     }
 
     @Override
-    public String maxValue()
-    {
+    public String maxValue() {
         return new String("Vivek");
     }
 
     @Override
-    public String minValue()
-    {
+    public String minValue() {
         return new String("Kuldeep");
     }
 
     @Override
-    public String partialValue()
-    {
+    public String partialValue() {
         return null;
     }
 }

@@ -17,28 +17,24 @@ package com.impetus.kundera.index;
 
 /**
  * @author amresh.singh
- * 
  */
-public class LuceneIndexingException extends IndexingException
-{
+public class LuceneIndexingException extends IndexingException {
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -9021996457355536038L;
 
     /**
-     * 
+     *
      */
-    public LuceneIndexingException()
-    {
+    public LuceneIndexingException() {
     }
 
     /**
      * @param arg0
      * @param arg1
      */
-    public LuceneIndexingException(String arg0, Throwable arg1)
-    {
+    public LuceneIndexingException(String arg0, Throwable arg1) {
         super(arg0, arg1);
 
     }
@@ -46,8 +42,7 @@ public class LuceneIndexingException extends IndexingException
     /**
      * @param arg0
      */
-    public LuceneIndexingException(String arg0)
-    {
+    public LuceneIndexingException(String arg0) {
         super(arg0);
 
     }
@@ -55,8 +50,7 @@ public class LuceneIndexingException extends IndexingException
     /**
      * @param arg0
      */
-    public LuceneIndexingException(Throwable arg0)
-    {
+    public LuceneIndexingException(Throwable arg0) {
         super(arg0);
 
     }

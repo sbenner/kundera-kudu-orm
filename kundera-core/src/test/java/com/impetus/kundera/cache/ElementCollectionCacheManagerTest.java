@@ -15,22 +15,17 @@
  ******************************************************************************/
 package com.impetus.kundera.cache;
 
-import junit.framework.Assert;
-
-import org.junit.Test;
-
 import com.impetus.kundera.query.Person;
+import junit.framework.Assert;
+import org.junit.Test;
 
 /**
  * @author vivek.mishra junit for {@link ElementCollectionCacheManager}
- * 
  */
-public class ElementCollectionCacheManagerTest
-{
+public class ElementCollectionCacheManagerTest {
 
     @Test
-    public void test()
-    {
+    public void test() {
         Person p = new Person(); // create object.
         p.setAge(23);
         p.setPersonId("personId");
@@ -50,14 +45,11 @@ public class ElementCollectionCacheManagerTest
         manager.addElementCollectionCacheMapping("personId", p, "personName#1");
         Assert.assertEquals("personName#1", manager.getElementCollectionObjectName("personId", p));
 
-        try
-        {
+        try {
             manager.addElementCollectionCacheMapping("personId", p, "personName");
             manager.getLastElementCollectionObjectCount("personId");
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (CacheException cex)
-        {
+        } catch (CacheException cex) {
             Assert.assertNotNull(cex.getMessage());
         }
 

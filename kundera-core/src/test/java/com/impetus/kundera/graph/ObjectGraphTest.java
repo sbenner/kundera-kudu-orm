@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,24 +15,20 @@
  */
 package com.impetus.kundera.graph;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-
+import com.impetus.kundera.graph.NodeLink.LinkProperty;
+import com.impetus.kundera.persistence.context.PersistenceCache;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.graph.NodeLink.LinkProperty;
-import com.impetus.kundera.persistence.context.PersistenceCache;
+import static org.junit.Assert.*;
 
 /**
  * Test case for {@link ObjectGraph}
- * 
+ *
  * @author amresh.singh
  */
-public class ObjectGraphTest
-{
+public class ObjectGraphTest {
     ObjectGraph objectGraph;
 
     PersistenceCache pc;
@@ -41,8 +37,7 @@ public class ObjectGraphTest
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         objectGraph = new ObjectGraph();
         pc = new PersistenceCache();
     }
@@ -51,16 +46,14 @@ public class ObjectGraphTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
     }
 
     /**
      * Tests one parent and three child nodes
      */
     @Test
-    public void testOneParentAndThreeChildNodes()
-    {
+    public void testOneParentAndThreeChildNodes() {
         Store store = new Store();
         BillingCounter b1 = new BillingCounter();
         BillingCounter b2 = new BillingCounter();

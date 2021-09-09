@@ -15,30 +15,26 @@
  ******************************************************************************/
 package com.impetus.kundera.classreading;
 
-import junit.framework.Assert;
-
-import org.junit.Test;
-
 import com.impetus.kundera.db.RelationHolder;
 import com.impetus.kundera.persistence.event.AddressEntity;
 import com.impetus.kundera.query.Person;
+import junit.framework.Assert;
+import org.junit.Test;
 
 /**
  * @author vivek.mishra
  * Relation holder junit test
  */
-public class RelationHolderTest
-{
+public class RelationHolderTest {
 
     @Test
-    public void test()
-    {
+    public void test() {
         Person p = new Person();
         RelationHolder rlHolder = new RelationHolder("parent", p);
-        
+
         Assert.assertEquals("parent", rlHolder.getRelationName());
         Assert.assertEquals(p, rlHolder.getRelationValue());
-        
+
         AddressEntity relationEntity = new AddressEntity();
         rlHolder = new RelationHolder("child", p, relationEntity);
         Assert.assertEquals("child", rlHolder.getRelationName());

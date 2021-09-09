@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,11 +19,10 @@ import com.impetus.kundera.gis.SurfaceType;
 
 /**
  * Geometric class representing circle shape
- * 
+ *
  * @author amresh.singh
  */
-public class Circle
-{
+public class Circle {
     private Coordinate centre;
 
     private double radius;
@@ -31,14 +30,12 @@ public class Circle
     /** Surface type on which this circle is based */
     private SurfaceType surfaceType = SurfaceType.FLAT;
 
-    public Circle(double x, double y, double r)
-    {
+    public Circle(double x, double y, double r) {
         setCentre(new Coordinate(x, y));
         setRadius(r);
     }
 
-    public Circle(Coordinate centre, double radius)
-    {
+    public Circle(Coordinate centre, double radius) {
         this.centre = centre;
         this.radius = radius;
     }
@@ -46,8 +43,7 @@ public class Circle
     /**
      * @return the centre
      */
-    public Coordinate getCentre()
-    {
+    public Coordinate getCentre() {
         return centre;
     }
 
@@ -55,16 +51,14 @@ public class Circle
      * @param centre
      *            the centre to set
      */
-    public void setCentre(Coordinate centre)
-    {
+    public void setCentre(Coordinate centre) {
         this.centre = centre;
     }
 
     /**
      * @return the radius
      */
-    public double getRadius()
-    {
+    public double getRadius() {
         return radius;
     }
 
@@ -72,16 +66,14 @@ public class Circle
      * @param radius
      *            the radius to set
      */
-    public void setRadius(double radius)
-    {
+    public void setRadius(double radius) {
         this.radius = radius;
     }
 
     /**
      * @return the surfaceType
      */
-    public SurfaceType getSurfaceType()
-    {
+    public SurfaceType getSurfaceType() {
         return surfaceType;
     }
 
@@ -89,8 +81,7 @@ public class Circle
      * @param surfaceType
      *            the surfaceType to set
      */
-    public void setSurfaceType(SurfaceType surfaceType)
-    {
+    public void setSurfaceType(SurfaceType surfaceType) {
         this.surfaceType = surfaceType;
     }
 

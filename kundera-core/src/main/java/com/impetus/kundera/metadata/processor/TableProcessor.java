@@ -15,29 +15,6 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.processor;
 
-import java.lang.reflect.Field;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
-import javassist.Modifier;
-
-import javax.persistence.ElementCollection;
-import javax.persistence.Embeddable;
-import javax.persistence.Embedded;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.PersistenceException;
-import javax.persistence.Transient;
-import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.SingularAttribute;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.kundera.loader.MetamodelLoaderException;
 import com.impetus.kundera.metadata.MetadataUtils;
 import com.impetus.kundera.metadata.model.ApplicationMetadata;
@@ -54,19 +31,34 @@ import com.impetus.kundera.validation.ValidationFactoryGenerator;
 import com.impetus.kundera.validation.ValidationFactoryGenerator.ValidationFactoryType;
 import com.impetus.kundera.validation.rules.RelationAttributeRule;
 import com.impetus.kundera.validation.rules.RuleValidationException;
+import javassist.Modifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.*;
+import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.SingularAttribute;
+import java.lang.reflect.Field;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Metadata processor class for persistent entities.
- * 
+ *
  * @author amresh.singh
  */
-public class TableProcessor extends AbstractEntityFieldProcessor
-{
+public class TableProcessor extends AbstractEntityFieldProcessor {
 
-    /** The Constant log. */
+    /**
+     * The Constant log.
+     */
     private static final Logger LOG = LoggerFactory.getLogger(TableProcessor.class);
 
-    /** holds pu prperties */
+    /**
+     * holds pu prperties
+     */
     private Map puProperties;
 
     private ValidationFactory factory;
@@ -74,8 +66,7 @@ public class TableProcessor extends AbstractEntityFieldProcessor
     /**
      * Instantiates a new table processor.
      */
-    public TableProcessor(Map puProperty, KunderaMetadata kunderaMetadata)
-    {
+    public TableProcessor(Map puProperty, KunderaMetadata kunderaMetadata) {
         super(kunderaMetadata);
         validator = new EntityValidatorImpl(puProperty);
         // validator = new EntityValidatorImpl(puProperty);
@@ -86,14 +77,13 @@ public class TableProcessor extends AbstractEntityFieldProcessor
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.metadata.MetadataProcessor#process(java.lang.Class,
      * com.impetus.kundera.metadata.model.EntityMetadata)
      */
     @Override
-    public void process(Class clazz, EntityMetadata metadata)
-    {
+    public void process(Class clazz, EntityMetadata metadata) {
 
         if (LOG.isDebugEnabled())
             LOG.debug("Processing @Entity(" + clazz.getName() + ") for Persistence Object.");
@@ -102,23 +92,17 @@ public class TableProcessor extends AbstractEntityFieldProcessor
 
     /**
      * Populate metadata.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param <T>
-     *            the generic type
-     * @param metadata
-     *            the metadata
-     * @param clazz
-     *            the clazz
+     *
+     * @param <X>      the generic type
+     * @param <T>      the generic type
+     * @param metadata the metadata
+     * @param clazz    the clazz
      */
     private <X extends Class, T extends Object> void populateMetadata(EntityMetadata metadata, Class<X> clazz,
-            Map puProperties)
-    {
+                                                                      Map puProperties) {
         // process for metamodelImpl
 
-        if (metadata.getPersistenceUnit() != null)
-        {
+        if (metadata.getPersistenceUnit() != null) {
             MetaModelBuilder<X, T> metaModelBuilder = kunderaMetadata.getApplicationMetadata().getMetaModelBuilder(
                     metadata.getPersistenceUnit());
 
@@ -126,11 +110,9 @@ public class TableProcessor extends AbstractEntityFieldProcessor
 
             metaModelBuilder.process(clazz);
 
-            for (Field f : clazz.getDeclaredFields())
-            {
+            for (Field f : clazz.getDeclaredFields()) {
                 if (f != null && !Modifier.isStatic(f.getModifiers()) && !Modifier.isTransient(f.getModifiers())
-                        && !f.isAnnotationPresent(Transient.class))
-                {
+                        && !f.isAnnotationPresent(Transient.class)) {
                     // construct metamodel.
                     metaModelBuilder.construct(clazz, f);
 
@@ -156,23 +138,17 @@ public class TableProcessor extends AbstractEntityFieldProcessor
 
     /**
      * Populate metadata.
-     * 
-     * @param entityType
-     *            the EntityType
-     * @param <X>
-     *            the generic type
-     * @param metadata
-     *            the metadata
+     *
+     * @param entityType the EntityType
+     * @param <X>        the generic type
+     * @param metadata   the metadata
      * @throws RuleValidationException
      */
-    private <X> void populateRelationMetaData(EntityType entityType, Class<X> clazz, EntityMetadata metadata)
-    {
+    private <X> void populateRelationMetaData(EntityType entityType, Class<X> clazz, EntityMetadata metadata) {
         Set<Attribute> attributes = entityType.getAttributes();
 
-        for (Attribute attribute : attributes)
-        {
-            if (attribute.isAssociation())
-            {
+        for (Attribute attribute : attributes) {
+            if (attribute.isAssociation()) {
 
                 addRelationIntoMetadata(clazz, (Field) attribute.getJavaMember(), metadata);
             }
@@ -182,27 +158,19 @@ public class TableProcessor extends AbstractEntityFieldProcessor
 
     /**
      * Populate metadata.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param <T>
-     *            the generic type
-     * @param metaModelBuilder
-     *            the metaModelBuilder
+     *
+     * @param <X>              the generic type
+     * @param <T>              the generic type
+     * @param metaModelBuilder the metaModelBuilder
      */
-    private <X, T> void onBuildMetaModelSuperClass(Class<? super X> clazz, MetaModelBuilder<X, T> metaModelBuilder)
-    {
-        if (clazz != null && clazz.isAnnotationPresent(javax.persistence.Entity.class))
-        {
-            while (clazz != null && clazz.isAnnotationPresent(javax.persistence.Entity.class))
-            {
+    private <X, T> void onBuildMetaModelSuperClass(Class<? super X> clazz, MetaModelBuilder<X, T> metaModelBuilder) {
+        if (clazz != null && clazz.isAnnotationPresent(javax.persistence.Entity.class)) {
+            while (clazz != null && clazz.isAnnotationPresent(javax.persistence.Entity.class)) {
                 metaModelBuilder.process((Class<X>) clazz);
 
-                for (Field f : clazz.getDeclaredFields())
-                {
+                for (Field f : clazz.getDeclaredFields()) {
                     if (f != null && !Modifier.isStatic(f.getModifiers()) && !Modifier.isTransient(f.getModifiers())
-                            && !f.isAnnotationPresent(Transient.class))
-                    {
+                            && !f.isAnnotationPresent(Transient.class)) {
                         metaModelBuilder.construct((Class<X>) clazz, f);
                     }
 
@@ -215,19 +183,14 @@ public class TableProcessor extends AbstractEntityFieldProcessor
     /**
      * Adds relationship info into metadata for a given field
      * <code>relationField</code>.
-     * 
-     * @param entityClass
-     *            the entity class
-     * @param relationField
-     *            the relation field
-     * @param metadata
-     *            the metadata
+     *
+     * @param entityClass   the entity class
+     * @param relationField the relation field
+     * @param metadata      the metadata
      */
-    private void addRelationIntoMetadata(Class<?> entityClass, Field relationField, EntityMetadata metadata)
-    {
+    private void addRelationIntoMetadata(Class<?> entityClass, Field relationField, EntityMetadata metadata) {
         RelationMetadataProcessor relProcessor = null;
-        try
-        {
+        try {
             relProcessor = RelationMetadataProcessorFactory
                     .getRelationMetadataProcessor(relationField, kunderaMetadata);
 
@@ -236,14 +199,11 @@ public class TableProcessor extends AbstractEntityFieldProcessor
             relProcessor = RelationMetadataProcessorFactory
                     .getRelationMetadataProcessor(relationField, kunderaMetadata);
 
-            if (relProcessor != null)
-            {
+            if (relProcessor != null) {
                 relProcessor.addRelationIntoMetadata(relationField, metadata);
             }
 
-        }
-        catch (PersistenceException pe)
-        {
+        } catch (PersistenceException pe) {
             throw new MetamodelLoaderException("Error with relationship in @Entity(" + entityClass + "."
                     + relationField.getName() + "), reason: " + pe);
         }
@@ -252,44 +212,36 @@ public class TableProcessor extends AbstractEntityFieldProcessor
 
     /**
      * Add named/native query annotated fields to application meta data.
-     * 
-     * @param clazz
-     *            entity class.
+     *
+     * @param clazz entity class.
      */
-    private void addNamedNativeQueryMetadata(Class clazz)
-    {
+    private void addNamedNativeQueryMetadata(Class clazz) {
         ApplicationMetadata appMetadata = kunderaMetadata.getApplicationMetadata();
         String name, query = null;
-        if (clazz.isAnnotationPresent(NamedQuery.class))
-        {
+        if (clazz.isAnnotationPresent(NamedQuery.class)) {
             NamedQuery ann = (NamedQuery) clazz.getAnnotation(NamedQuery.class);
             appMetadata.addQueryToCollection(ann.name(), ann.query(), false, clazz);
         }
 
-        if (clazz.isAnnotationPresent(NamedQueries.class))
-        {
+        if (clazz.isAnnotationPresent(NamedQueries.class)) {
             NamedQueries ann = (NamedQueries) clazz.getAnnotation(NamedQueries.class);
 
             NamedQuery[] anns = ann.value();
-            for (NamedQuery a : anns)
-            {
+            for (NamedQuery a : anns) {
                 appMetadata.addQueryToCollection(a.name(), a.query(), false, clazz);
             }
         }
 
-        if (clazz.isAnnotationPresent(NamedNativeQuery.class))
-        {
+        if (clazz.isAnnotationPresent(NamedNativeQuery.class)) {
             NamedNativeQuery ann = (NamedNativeQuery) clazz.getAnnotation(NamedNativeQuery.class);
             appMetadata.addQueryToCollection(ann.name(), ann.query(), true, clazz);
         }
 
-        if (clazz.isAnnotationPresent(NamedNativeQueries.class))
-        {
+        if (clazz.isAnnotationPresent(NamedNativeQueries.class)) {
             NamedNativeQueries ann = (NamedNativeQueries) clazz.getAnnotation(NamedNativeQueries.class);
 
             NamedNativeQuery[] anns = ann.value();
-            for (NamedNativeQuery a : anns)
-            {
+            for (NamedNativeQuery a : anns) {
                 appMetadata.addQueryToCollection(a.name(), a.query(), true, clazz);
             }
         }
@@ -297,23 +249,17 @@ public class TableProcessor extends AbstractEntityFieldProcessor
 
     /**
      * On id attribute.
-     * 
-     * @param builder
-     *            the builder
-     * @param entityMetadata
-     *            the entity metadata
-     * @param clazz
-     *            the clazz
-     * @param f
-     *            the f
+     *
+     * @param builder        the builder
+     * @param entityMetadata the entity metadata
+     * @param clazz          the clazz
+     * @param f              the f
      */
-    private void onIdAttribute(final MetaModelBuilder builder, EntityMetadata entityMetadata, final Class clazz, Field f)
-    {
+    private void onIdAttribute(final MetaModelBuilder builder, EntityMetadata entityMetadata, final Class clazz, Field f) {
         EntityType entity = (EntityType) builder.getManagedTypes().get(clazz);
 
         Attribute attrib = entity.getAttribute(f.getName());
-        if (!attrib.isCollection() && ((SingularAttribute) attrib).isId())
-        {
+        if (!attrib.isCollection() && ((SingularAttribute) attrib).isId()) {
             entityMetadata.setIdAttribute((SingularAttribute) attrib);
             populateIdAccessorMethods(entityMetadata, clazz, f);
         }
@@ -321,48 +267,34 @@ public class TableProcessor extends AbstractEntityFieldProcessor
 
     /**
      * On family type.
-     * 
-     * @param entityMetadata
-     *            the entity metadata
-     * @param clazz
-     *            the clazz
-     * @param f
-     *            the f
+     *
+     * @param entityMetadata the entity metadata
+     * @param clazz          the clazz
+     * @param f              the f
      */
-    private void onFamilyType(EntityMetadata entityMetadata, final Class clazz, Field f)
-    {
-        if (entityMetadata.getType() == null || !entityMetadata.getType().equals(Type.SUPER_COLUMN_FAMILY))
-        {
-            if ((f.isAnnotationPresent(Embedded.class) && f.getType().getAnnotation(Embeddable.class) != null))
-            {
+    private void onFamilyType(EntityMetadata entityMetadata, final Class clazz, Field f) {
+        if (entityMetadata.getType() == null || !entityMetadata.getType().equals(Type.SUPER_COLUMN_FAMILY)) {
+            if ((f.isAnnotationPresent(Embedded.class) && f.getType().getAnnotation(Embeddable.class) != null)) {
                 entityMetadata.setType(Type.SUPER_COLUMN_FAMILY);
-            }
-            else if (f.isAnnotationPresent(ElementCollection.class) && !MetadataUtils.isBasicElementCollectionField(f))
-            {
+            } else if (f.isAnnotationPresent(ElementCollection.class) && !MetadataUtils.isBasicElementCollectionField(f)) {
                 entityMetadata.setType(Type.SUPER_COLUMN_FAMILY);
-            }
-            else
-            {
+            } else {
                 entityMetadata.setType(Type.COLUMN_FAMILY);
             }
         }
     }
 
     /**
-     * 
      * @param metadata
      * @param clazz
      * @param metaModelBuilder
      */
     private <X, T> void validateAndSetId(EntityMetadata metadata, Class<X> clazz,
-            MetaModelBuilder<X, T> metaModelBuilder)
-    {
-        if (metadata.getIdAttribute() == null)
-        {
+                                         MetaModelBuilder<X, T> metaModelBuilder) {
+        if (metadata.getIdAttribute() == null) {
             EntityType entityType = (EntityType) metaModelBuilder.getManagedTypes().get(clazz);
 
-            if (entityType.getSupertype() != null)
-            {
+            if (entityType.getSupertype() != null) {
                 Attribute idAttribute = ((AbstractIdentifiableType) entityType.getSupertype()).getIdAttribute();
 
                 metadata.setIdAttribute((SingularAttribute) idAttribute);
@@ -372,35 +304,30 @@ public class TableProcessor extends AbstractEntityFieldProcessor
 
         validateIdAttribute(metadata.getIdAttribute(), clazz);
     }
-    
+
     /**
-     * 
      * @param metadata
      * @param clazz
      * @param metaModelBuilder
      */
     private <X, T> void validateandSetEntityType(EntityMetadata metadata, Class<X> clazz,
-            MetaModelBuilder<X, T> metaModelBuilder)
-    {
-        if (metadata.getType() == null && clazz != null && !clazz.equals(Object.class) 
-                            && clazz.isAnnotationPresent(javax.persistence.Entity.class))
-        {
+                                                 MetaModelBuilder<X, T> metaModelBuilder) {
+        if (metadata.getType() == null && clazz != null && !clazz.equals(Object.class)
+                && clazz.isAnnotationPresent(javax.persistence.Entity.class)) {
             EntityType entityType = (EntityType) metaModelBuilder.getManagedTypes().get(clazz);
 
-            if (entityType.getSupertype() != null)
-            {
+            if (entityType.getSupertype() != null) {
                 Set<Attribute> attributes = ((AbstractIdentifiableType) entityType.getSupertype()).getAttributes();
                 Iterator<Attribute> iter = attributes.iterator();
 
-                while (iter.hasNext())
-                {
+                while (iter.hasNext()) {
                     Attribute attribute = iter.next();
-                   
+
                     Field f = (Field) ((Field) attribute.getJavaMember());
-                    
+
                     onFamilyType(metadata, clazz, f);
                 }
-                
+
 
             }
             validateandSetEntityType(metadata, (Class<X>) clazz.getSuperclass(), metaModelBuilder);
@@ -409,17 +336,14 @@ public class TableProcessor extends AbstractEntityFieldProcessor
     }
 
     /**
-     * 
      * @param idAttribute
      * @param clazz
      */
-    private void validateIdAttribute(SingularAttribute idAttribute, Class clazz)
-    {
+    private void validateIdAttribute(SingularAttribute idAttribute, Class clazz) {
         // Means if id attribute not found neither on entity or mappedsuper
         // class.
 
-        if (idAttribute == null)
-        {
+        if (idAttribute == null) {
             throw new InvalidEntityDefinitionException(clazz.getName() + " must have an @Id field.");
         }
     }

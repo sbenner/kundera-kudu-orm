@@ -15,13 +15,13 @@
  ******************************************************************************/
 package com.impetus.kundera.index;
 
-import java.util.Map;
-
 import com.impetus.kundera.metadata.model.EntityMetadata;
 import com.impetus.kundera.metadata.model.MetamodelImpl;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.persistence.PersistenceDelegator;
 import com.impetus.kundera.query.KunderaQuery;
+
+import java.util.Map;
 
 /**
  * Indexer interface. Any custom implementation for this interface can be
@@ -32,35 +32,27 @@ import com.impetus.kundera.query.KunderaQuery;
  * developer may rely upon custom index implementation for inverted
  * indexes(e.g. @Id attributes) but entity data population will be handled by
  * Kundera.
- * 
+ *
  * @author vivek.mishra
- * 
  */
-public interface Indexer
-{
+public interface Indexer {
     /**
      * Index a document for given entity class and collection of values.
-     * 
-     * @param entityClazz
-     *            entity class
-     * 
-     * @param values
-     *            map of values containing field name as key and it's value.
+     *
+     * @param entityClazz entity class
+     * @param values      map of values containing field name as key and it's value.
      */
     void index(final Class entityClazz, EntityMetadata entityMetadata, Map<String, Object> values,
-            final Object parentId, final Class parentClazz);
+               final Object parentId, final Class parentClazz);
 
     /**
      * Executes lucene query and returns inverted indices as output. TODO:
      * Indexer interface shouldn't make any assumption about its implementation,
      * this method signature accepts lucene query, and hence should go away
-     * 
-     * @param queryString
-     *            lucene query.
-     * @param start
-     *            start counter
-     * @param end
-     *            end counter
+     *
+     * @param queryString lucene query.
+     * @param start       start counter
+     * @param end         end counter
      * @return collection containing stored index value.
      */
     @Deprecated
@@ -68,23 +60,20 @@ public interface Indexer
 
     /**
      * Searches into a secondary index
-     * 
+     *
      * @return
      */
     Map<String, Object> search(String query, Class<?> parentClass, EntityMetadata parentMetadata, Class<?> childClass,
-            EntityMetadata childMetadata, Object entityId, int start, int count);
+                               EntityMetadata childMetadata, Object entityId, int start, int count);
 
     Map<String, Object> search(KunderaMetadata kunderaMetadata, KunderaQuery kunderaQuery,
-            PersistenceDelegator persistenceDelegator, EntityMetadata m, int firstResult, int maxResults);
+                               PersistenceDelegator persistenceDelegator, EntityMetadata m, int firstResult, int maxResults);
 
     /**
      * Deletes index for given entity class.
-     * 
-     * @param entityClazz
-     *            entity class
-     * 
-     * @param entity
-     *            Entity object
+     *
+     * @param entityClazz entity class
+     * @param entity      Entity object
      */
     void unIndex(final Class entityClazz, final Object entity, EntityMetadata entityMetadata, MetamodelImpl metamodel);
 

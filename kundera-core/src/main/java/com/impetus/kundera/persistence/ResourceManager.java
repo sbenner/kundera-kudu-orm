@@ -17,11 +17,10 @@ package com.impetus.kundera.persistence;
 
 /**
  * The Interface ResourceManager.
- * 
+ *
  * @author vivek.mishra
  */
-public interface ResourceManager
-{
+public interface ResourceManager {
 
     /**
      * Do commit.

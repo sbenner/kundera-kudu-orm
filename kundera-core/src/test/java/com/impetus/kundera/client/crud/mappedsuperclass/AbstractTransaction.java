@@ -15,11 +15,10 @@
  ******************************************************************************/
 package com.impetus.kundera.client.crud.mappedsuperclass;
 
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import java.util.Date;
 
 /**
  * @author vivek.mishra
@@ -27,32 +26,27 @@ import javax.persistence.MappedSuperclass;
  */
 
 @MappedSuperclass
-public class AbstractTransaction
-{
+public class AbstractTransaction {
 
     @Id
     private String txId;
-    
+
     @Column
     private Date transactionDt;
 
-    public Date getTransactionDt()
-    {
+    public Date getTransactionDt() {
         return transactionDt;
     }
 
-    public void setTransactionDt(Date transactionDt)
-    {
+    public void setTransactionDt(Date transactionDt) {
         this.transactionDt = transactionDt;
     }
 
-    public String getTxId()
-    {
+    public String getTxId() {
         return txId;
     }
 
-    public void setTxId(String txId)
-    {
+    public void setTxId(String txId) {
         this.txId = txId;
     }
 

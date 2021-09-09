@@ -22,77 +22,66 @@ import javax.persistence.Table;
 
 /**
  * Entity with singular attributes for meta model processing.
- * 
+ *
  * @author vivek.mishra
- * 
  */
 
 @Entity
 @Table(name = "table", schema = "KunderaTest@kunderatest")
-public class SampleEntity
-{
+public class SampleEntity {
 
     @Id
-    private Integer key;   
+    private Integer key;
 
     @Column(name = "name")
     private String name;
-    
+
     @Column(name = "city", nullable = false)
     private String city;
 
-    public SampleEntity()
-    {
+    public SampleEntity() {
 
     }
 
     /**
      * @return the key
      */
-    public Integer getKey()
-    {
+    public Integer getKey() {
         return key;
     }
 
     /**
-     * @param key
-     *            the key to set
+     * @param key the key to set
      */
-    public void setKey(Integer key)
-    {
+    public void setKey(Integer key) {
         this.key = key;
-    }   
+    }
 
     /**
      * @return the city
      */
-    public String getCity()
-    {
+    public String getCity() {
         return city;
     }
 
     /**
      * @param city the city to set
      */
-    public void setCity(String city)
-    {
+    public void setCity(String city) {
         this.city = city;
     }
 
     /**
      * @return the name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param name the name to set
      */
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 

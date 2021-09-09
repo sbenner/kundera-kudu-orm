@@ -21,12 +21,10 @@ import javax.persistence.Embeddable;
 
 /**
  * @author Kuldeep Mishra
- * 
  */
 @Embeddable
-public class PersonalDetailEmbedded
-{
-    @Column(name="PHONENO")
+public class PersonalDetailEmbedded {
+    @Column(name = "PHONENO")
     private long phoneNo;
 
     private String emailId;
@@ -34,33 +32,27 @@ public class PersonalDetailEmbedded
     private String address;
 
 
-    public String getEmailId()
-    {
+    public String getEmailId() {
         return emailId;
     }
 
-    public void setEmailId(String emailId)
-    {
+    public void setEmailId(String emailId) {
         this.emailId = emailId;
     }
 
-    public String getAddress()
-    {
+    public String getAddress() {
         return address;
     }
 
-    public void setAddress(String address)
-    {
+    public void setAddress(String address) {
         this.address = address;
     }
 
-    public long getPhoneNo()
-    {
+    public long getPhoneNo() {
         return phoneNo;
     }
 
-    public void setPhoneNo(long phoneNo)
-    {
+    public void setPhoneNo(long phoneNo) {
         this.phoneNo = phoneNo;
     }
 

@@ -15,53 +15,44 @@
  ******************************************************************************/
 package com.impetus.kundera.client.crud.mappedsuperclass;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-
 import junit.framework.Assert;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.persistence.*;
+import java.util.Date;
+import java.util.List;
+
 /**
  * @author vivek.mishra junit for {@link MappedSuperclass},
- *         {@link AttributeOverride}, {@link AttributeOverrides}.
+ * {@link AttributeOverride}, {@link AttributeOverrides}.
  */
-public abstract class MappedSuperClassBase
-{
+public abstract class MappedSuperClassBase {
 
-    /** log for this class. */
+    /**
+     * The emf.
+     */
+    protected static EntityManagerFactory emf;
+    /**
+     * The em.
+     */
+    protected static EntityManager em;
+    /**
+     * log for this class.
+     */
     private static Logger log = LoggerFactory.getLogger(MappedSuperClassBase.class);
-
     protected String _PU = "corePu";
 
-    /** The emf. */
-    protected static EntityManagerFactory emf;
-
-    /** The em. */
-    protected static EntityManager em;
-
-    protected void setUpInternal() throws Exception
-    {
+    protected void setUpInternal() throws Exception {
         emf = Persistence.createEntityManagerFactory(_PU);
         em = emf.createEntityManager();
     }
 
-    protected void assertInternal()
-    {
+    protected void assertInternal() {
         assertInternal(false);
     }
 
-    protected void assertInternal(boolean wait)
-    {
+    protected void assertInternal(boolean wait) {
         CreditTransaction creditTx = new CreditTransaction();
         creditTx.setTxId("credit1");
         creditTx.setTxStatus(Status.APPROVED);
@@ -103,35 +94,26 @@ public abstract class MappedSuperClassBase
 
     /**
      * Tear down.
-     * 
-     * @throws Exception
-     *             the exception
+     *
+     * @throws Exception the exception
      */
-    protected void tearDownInternal() throws Exception
-    {
-        if (emf != null)
-        {
+    protected void tearDownInternal() throws Exception {
+        if (emf != null) {
             emf.close();
         }
 
-        if (em != null)
-        {
+        if (em != null) {
             em.close();
         }
 
-        
+
     }
 
-    private void waitThread(boolean toWait)
-    {
-        if (toWait)
-        {
-            try
-            {
+    private void waitThread(boolean toWait) {
+        if (toWait) {
+            try {
                 Thread.sleep(2000);
-            }
-            catch (InterruptedException e)
-            {
+            } catch (InterruptedException e) {
                 log.error("Error while thread interruption, {}", e);
             }
         }

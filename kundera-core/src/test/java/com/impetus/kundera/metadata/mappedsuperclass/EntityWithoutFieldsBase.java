@@ -1,16 +1,15 @@
 /**
- * 
+ *
  */
 package com.impetus.kundera.metadata.mappedsuperclass;
+
+import junit.framework.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-
-import junit.framework.Assert;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author amitkumar
@@ -20,82 +19,76 @@ import org.slf4j.LoggerFactory;
  */
 public class EntityWithoutFieldsBase {
 
-	protected static EntityManagerFactory emf;
+    protected static EntityManagerFactory emf;
 
-	protected static EntityManager em;
+    protected static EntityManager em;
 
-	protected static String persistenceUnit = "inheritanceTest";
-	
-	private static Logger logger = LoggerFactory.getLogger(EntityWithoutFieldsBase.class);
+    protected static String persistenceUnit = "inheritanceTest";
 
-	protected void setupInternal()
-	{
-		emf = Persistence.createEntityManagerFactory(persistenceUnit);
-		em = emf.createEntityManager();
-	}
+    private static Logger logger = LoggerFactory.getLogger(EntityWithoutFieldsBase.class);
 
-	protected void testEntityWithNoFieldsBase()
-	{
-		logger.info("Test entity with no fields, all the fields declared in mappedsuperclass.");
+    protected void setupInternal() {
+        emf = Persistence.createEntityManagerFactory(persistenceUnit);
+        em = emf.createEntityManager();
+    }
 
-		// Persist Person
-		Person person = new Person();
-		person.setId("1");
-		person.setFirstName("Amit");
-		person.setLastName("Kumar");
+    protected void testEntityWithNoFieldsBase() {
+        logger.info("Test entity with no fields, all the fields declared in mappedsuperclass.");
 
-		em.persist(person);
+        // Persist Person
+        Person person = new Person();
+        person.setId("1");
+        person.setFirstName("Amit");
+        person.setLastName("Kumar");
 
-		Person fetchPerson = em.find(Person.class, "1");
+        em.persist(person);
 
-		// Assertions to validate persisted object
-		Assert.assertNotNull(fetchPerson);
-		Assert.assertEquals("1", fetchPerson.getId());
-		Assert.assertEquals("Amit", fetchPerson.getFirstName());
-		Assert.assertEquals("Kumar", fetchPerson.getLastName());
+        Person fetchPerson = em.find(Person.class, "1");
 
-		// Assert to verify that person has been removed
-		em.remove(fetchPerson);
-		Assert.assertNull(em.find(Person.class, "1"));
-	}
+        // Assertions to validate persisted object
+        Assert.assertNotNull(fetchPerson);
+        Assert.assertEquals("1", fetchPerson.getId());
+        Assert.assertEquals("Amit", fetchPerson.getFirstName());
+        Assert.assertEquals("Kumar", fetchPerson.getLastName());
 
-	protected void testEntityWithNoFields2LevelInheritanceBase()
-	{
-		logger.info("Test entity with no fields with two level inheritance, all the fields declared in mappedsuperclass.");
+        // Assert to verify that person has been removed
+        em.remove(fetchPerson);
+        Assert.assertNull(em.find(Person.class, "1"));
+    }
 
-		// Persist Person
-		PersonChild person = new PersonChild();
-		person.setId("1");
-		person.setFirstName("Amit");
-		person.setLastName("Kumar");
+    protected void testEntityWithNoFields2LevelInheritanceBase() {
+        logger.info("Test entity with no fields with two level inheritance, all the fields declared in mappedsuperclass.");
 
-		em.persist(person);
+        // Persist Person
+        PersonChild person = new PersonChild();
+        person.setId("1");
+        person.setFirstName("Amit");
+        person.setLastName("Kumar");
 
-		PersonChild fetchPerson = em.find(PersonChild.class, "1");
+        em.persist(person);
 
-		// Assertions to validate persisted object
-		Assert.assertNotNull(fetchPerson);
-		Assert.assertEquals("1", fetchPerson.getId());
-		Assert.assertEquals("Amit", fetchPerson.getFirstName());
-		Assert.assertEquals("Kumar", fetchPerson.getLastName());
+        PersonChild fetchPerson = em.find(PersonChild.class, "1");
 
-		// Assert to verify that person has been removed
-		em.remove(fetchPerson);
-		Assert.assertNull(em.find(PersonChild.class, "1"));
-	}
+        // Assertions to validate persisted object
+        Assert.assertNotNull(fetchPerson);
+        Assert.assertEquals("1", fetchPerson.getId());
+        Assert.assertEquals("Amit", fetchPerson.getFirstName());
+        Assert.assertEquals("Kumar", fetchPerson.getLastName());
 
-	protected void tearDownInternal()
-	{
-		if (em != null)
-		{
-			em.close();
-			em = null;
-		}
+        // Assert to verify that person has been removed
+        em.remove(fetchPerson);
+        Assert.assertNull(em.find(PersonChild.class, "1"));
+    }
 
-		if (emf != null)
-		{
-			emf.close();
-			emf = null;
-		}
-	}
+    protected void tearDownInternal() {
+        if (em != null) {
+            em.close();
+            em = null;
+        }
+
+        if (emf != null) {
+            emf.close();
+            emf = null;
+        }
+    }
 }

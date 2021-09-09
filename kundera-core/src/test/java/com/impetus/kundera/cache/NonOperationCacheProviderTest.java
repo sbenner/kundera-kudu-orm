@@ -15,35 +15,31 @@
  ******************************************************************************/
 package com.impetus.kundera.cache;
 
-import java.util.HashMap;
-
 import junit.framework.Assert;
-
 import org.junit.Test;
+
+import java.util.HashMap;
 
 /**
  * @author vivek.mishra
  * junit for {@link NonOperationalCacheProvider}.
  * Current implementation doesn't do anything. So junit needs to modified later.
- *
  */
 
-public class NonOperationCacheProviderTest
-{
+public class NonOperationCacheProviderTest {
 
     @Test
-    public void test()
-    {
+    public void test() {
 
         NonOperationalCacheProvider cacheProvider = new NonOperationalCacheProvider();
-        
+
         cacheProvider.createCache("person");
         cacheProvider.init(new HashMap());
         cacheProvider.init("none");
-        
+
         // No implementation is in place, hence it will return null.
         Assert.assertNull(cacheProvider.getCache("person"));
-        
+
     }
 
 }

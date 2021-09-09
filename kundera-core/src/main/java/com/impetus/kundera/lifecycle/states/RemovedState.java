@@ -15,26 +15,22 @@
  ******************************************************************************/
 package com.impetus.kundera.lifecycle.states;
 
-import javax.persistence.PersistenceContextType;
-
 import com.impetus.kundera.client.Client;
 import com.impetus.kundera.graph.Node;
 import com.impetus.kundera.lifecycle.NodeStateContext;
 
+import javax.persistence.PersistenceContextType;
+
 /**
  * @author amresh
- * 
  */
-public class RemovedState extends NodeState
-{
+public class RemovedState extends NodeState {
     @Override
-    public void initialize(NodeStateContext nodeStateContext)
-    {
+    public void initialize(NodeStateContext nodeStateContext) {
     }
 
     @Override
-    public void handlePersist(NodeStateContext nodeStateContext)
-    {
+    public void handlePersist(NodeStateContext nodeStateContext) {
         // Removed ---> Managed State
         moveNodeToNextState(nodeStateContext, new ManagedState());
 
@@ -44,8 +40,7 @@ public class RemovedState extends NodeState
     }
 
     @Override
-    public void handleRemove(NodeStateContext nodeStateContext)
-    {
+    public void handleRemove(NodeStateContext nodeStateContext) {
         // Ignored, entity will remain in removed state
 
         // Recurse remove operation for all related entities for whom
@@ -54,37 +49,31 @@ public class RemovedState extends NodeState
     }
 
     @Override
-    public void handleRefresh(NodeStateContext nodeStateContext)
-    {
+    public void handleRefresh(NodeStateContext nodeStateContext) {
         throw new IllegalArgumentException("Refresh operation not allowed in Removed state");
     }
 
     @Override
-    public void handleMerge(NodeStateContext nodeStateContext)
-    {
+    public void handleMerge(NodeStateContext nodeStateContext) {
         throw new IllegalArgumentException("Merge operation not allowed in Removed state");
     }
 
     @Override
-    public void handleFind(NodeStateContext nodeStateContext)
-    {
+    public void handleFind(NodeStateContext nodeStateContext) {
     }
 
     @Override
-    public void handleClose(NodeStateContext nodeStateContext)
-    {
+    public void handleClose(NodeStateContext nodeStateContext) {
         // Nothing to do, only entities in Managed state move to detached state
     }
 
     @Override
-    public void handleClear(NodeStateContext nodeStateContext)
-    {
+    public void handleClear(NodeStateContext nodeStateContext) {
         // Nothing to do, only entities in Managed state move to detached state
     }
 
     @Override
-    public void handleFlush(NodeStateContext nodeStateContext)
-    {
+    public void handleFlush(NodeStateContext nodeStateContext) {
         // Entity state to remain as Removed
 
         // Flush this node to database
@@ -104,13 +93,11 @@ public class RemovedState extends NodeState
     }
 
     @Override
-    public void handleLock(NodeStateContext nodeStateContext)
-    {
+    public void handleLock(NodeStateContext nodeStateContext) {
     }
 
     @Override
-    public void handleDetach(NodeStateContext nodeStateContext)
-    {
+    public void handleDetach(NodeStateContext nodeStateContext) {
         // Removed ---> Detached
         moveNodeToNextState(nodeStateContext, new DetachedState());
 
@@ -120,38 +107,31 @@ public class RemovedState extends NodeState
     }
 
     @Override
-    public void handleCommit(NodeStateContext nodeStateContext)
-    {
+    public void handleCommit(NodeStateContext nodeStateContext) {
         nodeStateContext.setCurrentNodeState(new TransientState());
     }
 
     @Override
-    public void handleRollback(NodeStateContext nodeStateContext)
-    {
+    public void handleRollback(NodeStateContext nodeStateContext) {
         // If persistence context is EXTENDED, Next state should be Managed
         // If persistence context is TRANSACTIONAL, Node should be detached
 
-        if (PersistenceContextType.EXTENDED.equals(nodeStateContext.getPersistenceCache().getPersistenceContextType()))
-        {
+        if (PersistenceContextType.EXTENDED.equals(nodeStateContext.getPersistenceCache().getPersistenceContextType())) {
             moveNodeToNextState(nodeStateContext, new ManagedState());
 
-        }
-        else if (PersistenceContextType.TRANSACTION.equals(nodeStateContext.getPersistenceCache()
-                .getPersistenceContextType()))
-        {
+        } else if (PersistenceContextType.TRANSACTION.equals(nodeStateContext.getPersistenceCache()
+                .getPersistenceContextType())) {
             nodeStateContext.detach();
         }
 
     }
 
     @Override
-    public void handleGetReference(NodeStateContext nodeStateContext)
-    {
+    public void handleGetReference(NodeStateContext nodeStateContext) {
     }
 
     @Override
-    public void handleContains(NodeStateContext nodeStateContext)
-    {
+    public void handleContains(NodeStateContext nodeStateContext) {
     }
 
 }

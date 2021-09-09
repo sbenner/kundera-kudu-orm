@@ -21,42 +21,41 @@ import java.util.List;
 /**
  * Utility class that represents a row in Column family based datastores like
  * cassandra and HBase.
- * 
- * @param <TF>
- *            the generic type
+ *
+ * @param <TF> the generic type
  * @author amresh.singh
  */
-public class DataRow<TF>
-{
-    /** Id of the row. */
+public class DataRow<TF> {
+    /**
+     * Id of the row.
+     */
     private String id;
 
-    /** name of the family. */
+    /**
+     * name of the family.
+     */
     private String columnFamilyName;
 
-    /** list of thrift columns from the row. */
+    /**
+     * list of thrift columns from the row.
+     */
     private List<TF> columns;
 
     /**
      * default constructor.
      */
-    public DataRow()
-    {
+    public DataRow() {
         columns = new ArrayList<TF>();
     }
 
     /**
      * The Constructor.
-     * 
-     * @param id
-     *            the id
-     * @param columnFamilyName
-     *            the column family name
-     * @param columns
-     *            the columns
+     *
+     * @param id               the id
+     * @param columnFamilyName the column family name
+     * @param columns          the columns
      */
-    public DataRow(String id, String columnFamilyName, List<TF> columns)
-    {
+    public DataRow(String id, String columnFamilyName, List<TF> columns) {
         this.id = id;
         this.columnFamilyName = columnFamilyName;
         this.columns = columns;
@@ -64,42 +63,37 @@ public class DataRow<TF>
 
     /**
      * Gets the id.
-     * 
+     *
      * @return the id
      */
-    public String getId()
-    {
+    public String getId() {
         return id;
     }
 
     /**
      * Gets the column family name.
-     * 
+     *
      * @return the columnFamilyName
      */
-    public String getColumnFamilyName()
-    {
+    public String getColumnFamilyName() {
         return columnFamilyName;
     }
 
     /**
      * Gets the columns.
-     * 
+     *
      * @return the columns
      */
-    public List<TF> getColumns()
-    {
+    public List<TF> getColumns() {
         return columns;
     }
 
     /**
      * Adds the column.;
-     * 
-     * @param column
-     *            the column
+     *
+     * @param column the column
      */
-    public void addColumn(TF column)
-    {
+    public void addColumn(TF column) {
         columns.add(column);
     }
 }

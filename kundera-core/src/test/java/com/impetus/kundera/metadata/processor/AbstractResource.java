@@ -26,45 +26,38 @@ import javax.persistence.MappedSuperclass;
  */
 
 @MappedSuperclass
-public abstract class AbstractResource
-{
+public abstract class AbstractResource {
 
     @Id
     private String cprId;
 
     @Column
     private String resourceName;
-    
+
     @Embedded
     private CarEngine engine;
 
-    public String getCarPartResourceId()
-    {
+    public String getCarPartResourceId() {
         return cprId;
     }
 
-    public void setCarPartResourceId(String cprId)
-    {
+    public void setCarPartResourceId(String cprId) {
         this.cprId = cprId;
     }
 
-    public String getCarPartResourceName()
-    {
+    public String getCarPartResourceName() {
         return resourceName;
     }
 
-    public void setCarPartResourceName(String resourceName)
-    {
+    public void setCarPartResourceName(String resourceName) {
         this.resourceName = resourceName;
     }
-    
-    public CarEngine getEngine()
-    {
+
+    public CarEngine getEngine() {
         return engine;
     }
 
-    public void setEngine(CarEngine engine)
-    {
+    public void setEngine(CarEngine engine) {
         this.engine = engine;
     }
 

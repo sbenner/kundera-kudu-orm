@@ -20,12 +20,10 @@ import java.util.List;
 
 /**
  * Holds High level search result info from database records
- * 
+ *
  * @author amresh
- * 
  */
-public class SearchResult
-{
+public class SearchResult {
     private Object primaryKey;
 
     private String embeddedColumnName;
@@ -35,53 +33,43 @@ public class SearchResult
     /**
      * @return the primaryKey
      */
-    public Object getPrimaryKey()
-    {
+    public Object getPrimaryKey() {
         return primaryKey;
     }
 
     /**
-     * @param primaryKey
-     *            the primaryKey to set
+     * @param primaryKey the primaryKey to set
      */
-    public void setPrimaryKey(Object primaryKey)
-    {
+    public void setPrimaryKey(Object primaryKey) {
         this.primaryKey = primaryKey;
     }
 
     /**
      * @return the embeddedColumnName
      */
-    public String getEmbeddedColumnName()
-    {
+    public String getEmbeddedColumnName() {
         return embeddedColumnName;
     }
 
     /**
-     * @param embeddedColumnName
-     *            the embeddedColumnName to set
+     * @param embeddedColumnName the embeddedColumnName to set
      */
-    public void setEmbeddedColumnName(String embeddedColumnName)
-    {
+    public void setEmbeddedColumnName(String embeddedColumnName) {
         this.embeddedColumnName = embeddedColumnName;
     }
 
     /**
      * @return the embeddedColumnValues
      */
-    public List<String> getEmbeddedColumnValues()
-    {
+    public List<String> getEmbeddedColumnValues() {
         return embeddedColumnValues;
     }
 
     /**
-     * @param embeddedColumnValues
-     *            the embeddedColumnValues to set
+     * @param embeddedColumnValues the embeddedColumnValues to set
      */
-    public void addEmbeddedColumnValue(String embeddedColumnValue)
-    {
-        if (embeddedColumnValues == null)
-        {
+    public void addEmbeddedColumnValue(String embeddedColumnValue) {
+        if (embeddedColumnValues == null) {
             embeddedColumnValues = new ArrayList<String>();
         }
         embeddedColumnValues.add(embeddedColumnValue);

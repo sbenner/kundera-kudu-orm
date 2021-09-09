@@ -15,23 +15,17 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Entity with singular attributes for meta model processing.
- * 
+ *
  * @author vivek.mishra
- * 
  */
 
 @Entity
 @Table(name = "embeddable", schema = "KunderaTests@patest")
-public class SingularEntityEmbeddable
-{
+public class SingularEntityEmbeddable {
 
     @Id
     private Integer key;
@@ -51,85 +45,70 @@ public class SingularEntityEmbeddable
     /**
      * @return the key
      */
-    public Integer getKey()
-    {
+    public Integer getKey() {
         return key;
     }
 
     /**
-     * @param key
-     *            the key to set
+     * @param key the key to set
      */
-    public void setKey(Integer key)
-    {
+    public void setKey(Integer key) {
         this.key = key;
     }
 
     /**
      * @return the field
      */
-    public String getField()
-    {
+    public String getField() {
         return field;
     }
 
     /**
-     * @param field
-     *            the field to set
+     * @param field the field to set
      */
-    public void setField(String field)
-    {
+    public void setField(String field) {
         this.field = field;
     }
 
     /**
      * @return the name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param name the name to set
      */
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     /**
      * @return the embeddableEntity
      */
-    public EmbeddableEntity getEmbeddableEntity()
-    {
+    public EmbeddableEntity getEmbeddableEntity() {
         return embeddableEntity;
     }
 
     /**
-     * @param embeddableEntity
-     *            the embeddableEntity to set
+     * @param embeddableEntity the embeddableEntity to set
      */
-    public void setEmbeddableEntity(EmbeddableEntity embeddableEntity)
-    {
+    public void setEmbeddableEntity(EmbeddableEntity embeddableEntity) {
         this.embeddableEntity = embeddableEntity;
     }
 
     /**
      * @return the embeddableEntityTwo
      */
-    public EmbeddableEntityTwo getEmbeddableEntityTwo()
-    {
+    public EmbeddableEntityTwo getEmbeddableEntityTwo() {
         return embeddableEntityTwo;
     }
 
     /**
-     * @param embeddableEntityTwo
-     *            the embeddableEntityTwo to set
+     * @param embeddableEntityTwo the embeddableEntityTwo to set
      */
-    public void setEmbeddableEntityTwo(EmbeddableEntityTwo embeddableEntityTwo)
-    {
+    public void setEmbeddableEntityTwo(EmbeddableEntityTwo embeddableEntityTwo) {
         this.embeddableEntityTwo = embeddableEntityTwo;
     }
 

@@ -19,20 +19,20 @@ import com.impetus.kundera.KunderaException;
 
 /**
  * Captures any indexing related exceptions.
- * 
+ *
  * @author animesh.kumar
  */
-public class IndexingException extends KunderaException
-{
+public class IndexingException extends KunderaException {
 
-    /** The Constant serialVersionUID. */
+    /**
+     * The Constant serialVersionUID.
+     */
     private static final long serialVersionUID = 7917821486831927353L;
 
     /**
-     * 
+     *
      */
-    public IndexingException()
-    {
+    public IndexingException() {
         super();
 
     }
@@ -41,8 +41,7 @@ public class IndexingException extends KunderaException
      * @param arg0
      * @param arg1
      */
-    public IndexingException(String arg0, Throwable arg1)
-    {
+    public IndexingException(String arg0, Throwable arg1) {
         super(arg0, arg1);
 
     }
@@ -50,8 +49,7 @@ public class IndexingException extends KunderaException
     /**
      * @param arg0
      */
-    public IndexingException(String arg0)
-    {
+    public IndexingException(String arg0) {
         super(arg0);
 
     }
@@ -59,8 +57,7 @@ public class IndexingException extends KunderaException
     /**
      * @param arg0
      */
-    public IndexingException(Throwable arg0)
-    {
+    public IndexingException(Throwable arg0) {
         super(arg0);
 
     }

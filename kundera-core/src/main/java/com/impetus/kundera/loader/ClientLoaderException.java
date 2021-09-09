@@ -19,28 +19,24 @@ import com.impetus.kundera.KunderaException;
 
 /**
  * @author amresh.singh
- * 
  */
-public class ClientLoaderException extends KunderaException
-{
+public class ClientLoaderException extends KunderaException {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -2780499169457052865L;
 
     /**
-     * 
+     *
      */
-    public ClientLoaderException()
-    {
+    public ClientLoaderException() {
     }
 
     /**
      * @param arg0
      */
-    public ClientLoaderException(String arg0)
-    {
+    public ClientLoaderException(String arg0) {
         super(arg0);
 
     }
@@ -48,8 +44,7 @@ public class ClientLoaderException extends KunderaException
     /**
      * @param arg0
      */
-    public ClientLoaderException(Throwable arg0)
-    {
+    public ClientLoaderException(Throwable arg0) {
         super(arg0);
 
     }
@@ -58,8 +53,7 @@ public class ClientLoaderException extends KunderaException
      * @param arg0
      * @param arg1
      */
-    public ClientLoaderException(String arg0, Throwable arg1)
-    {
+    public ClientLoaderException(String arg0, Throwable arg1) {
         super(arg0, arg1);
 
     }

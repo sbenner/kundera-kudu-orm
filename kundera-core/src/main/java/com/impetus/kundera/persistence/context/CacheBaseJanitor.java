@@ -26,12 +26,12 @@ public class CacheBaseJanitor implements Runnable {
             final long currentTime = System.currentTimeMillis();
             nodeCache.
                     values().stream().filter(o ->
-            {
-                long millis = currentTime - o.getCreationTime();
-                return millis >= 120000;
-            }).collect(Collectors.toList()).forEach(
-                    cacheBase::removeNodeFromCache
-            );
+                    {
+                        long millis = currentTime - o.getCreationTime();
+                        return millis >= 120000;
+                    }).collect(Collectors.toList()).forEach(
+                            cacheBase::removeNodeFromCache
+                    );
             try {
                 Thread.sleep(30000);
             } catch (InterruptedException ie) {

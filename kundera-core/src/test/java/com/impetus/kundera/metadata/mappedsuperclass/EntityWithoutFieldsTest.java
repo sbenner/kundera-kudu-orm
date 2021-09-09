@@ -7,35 +7,30 @@ import org.junit.Test;
 
 /**
  * @author amitkumar
- *
- *	Class to verify that at least one field in entity class is not mandatory if the 
- *	superclass contains all the mandatory fields
+ * <p>
+ * Class to verify that at least one field in entity class is not mandatory if the
+ * superclass contains all the mandatory fields
  */
-public class EntityWithoutFieldsTest extends EntityWithoutFieldsBase 
-{
-	
-	@Before
-	public void setup()
-	{
-		setupInternal();
-	}
-	
-	@Test
-	public void testEntityWithNoFields()
-	{
-		testEntityWithNoFieldsBase();
-	}
-	
-	@Test
-	public void testEntityWithNoFields2LevelInheritance()
-	{
-		testEntityWithNoFields2LevelInheritanceBase();
-	}
+public class EntityWithoutFieldsTest extends EntityWithoutFieldsBase {
 
-	@After
-	public void tearDown()
-	{
-		tearDownInternal();
-	}
+    @Before
+    public void setup() {
+        setupInternal();
+    }
+
+    @Test
+    public void testEntityWithNoFields() {
+        testEntityWithNoFieldsBase();
+    }
+
+    @Test
+    public void testEntityWithNoFields2LevelInheritance() {
+        testEntityWithNoFields2LevelInheritanceBase();
+    }
+
+    @After
+    public void tearDown() {
+        tearDownInternal();
+    }
 }
 

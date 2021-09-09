@@ -1,12 +1,12 @@
 /**
  * Copyright 2013 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,41 +15,29 @@
  */
 package com.impetus.kundera.query;
 
-import java.util.Calendar;
-import java.util.Date;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.FlushModeType;
-import javax.persistence.LockModeType;
-import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
-import javax.persistence.TemporalType;
-import javax.persistence.TypedQuery;
-
+import com.impetus.kundera.metadata.entities.SampleEntity;
 import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.metadata.entities.SampleEntity;
+import javax.persistence.*;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author vivek.mishra
- * 
+ *
  *         junit for {@link KunderaTypedQuery}
- * 
+ *
  */
-public class KunderaTypedQueryTest
-{
+public class KunderaTypedQueryTest {
 
     private EntityManager em;
 
     private EntityManagerFactory emf;
 
     @Before
-    public void setUp()
-    {
+    public void setUp() {
 
         emf = Persistence.createEntityManagerFactory("kunderatest");
 
@@ -57,8 +45,7 @@ public class KunderaTypedQueryTest
     }
 
     @Test
-    public void testTypedQuery()
-    {
+    public void testTypedQuery() {
         final String namedQuery = "Select s from SampleEntity s where s.name = :name";
 
         TypedQuery<SampleEntity> query = em.createNamedQuery(namedQuery, SampleEntity.class);
@@ -93,12 +80,9 @@ public class KunderaTypedQueryTest
 
         Assert.assertNull(((Query) query).iterate());
 
-        try
-        {
+        try {
             query.getSingleResult();
-        }
-        catch (NoResultException e)
-        {
+        } catch (NoResultException e) {
             Assert.assertEquals("No result found!", e.getMessage());
         }
         ((Query) query).close();
@@ -107,23 +91,16 @@ public class KunderaTypedQueryTest
     /**
      * @param query
      */
-    private void assertOnUnsupportedMethod(TypedQuery<SampleEntity> query)
-    {
-        try
-        {
+    private void assertOnUnsupportedMethod(TypedQuery<SampleEntity> query) {
+        try {
             query.setFlushMode(FlushModeType.AUTO);
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("setFlushMode is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.setFirstResult(1);
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("setFirstResult is unsupported by Kundera", usex.getMessage());
         }
 
@@ -136,75 +113,51 @@ public class KunderaTypedQueryTest
         // usex.getMessage());
         // }
 
-        try
-        {
+        try {
             query.getFirstResult();
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("getFirstResult is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.setLockMode(LockModeType.NONE);
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("setLockMode is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.getLockMode();
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("getLockMode is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.setParameter(0, new Date(), TemporalType.DATE);
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("setParameter is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.setParameter("param", new Date(), TemporalType.DATE);
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("setParameter is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.setParameter(0, Calendar.getInstance(), TemporalType.DATE);
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("setParameter is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.setParameter("param", Calendar.getInstance(), TemporalType.DATE);
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("setParameter is unsupported by Kundera", usex.getMessage());
         }
 
-        try
-        {
+        try {
             query.getFlushMode();
-        }
-        catch (UnsupportedOperationException usex)
-        {
+        } catch (UnsupportedOperationException usex) {
             Assert.assertEquals("getFlushMode is unsupported by Kundera", usex.getMessage());
         }
 

@@ -21,24 +21,21 @@ import javax.persistence.metamodel.Type;
 
 /**
  * Default implementation of {@link EmbeddableType}
- * 
+ *
  * <code> DefaultEmbeddableType</code> implements <code>EmbeddableType</code>
  * interface, invokes constructor with PersistenceType.EMBEDDABLE. Default
  * implementation of {@link Type} interface is provided by {@link AbstractType}
- * 
+ *
+ * @param <X> Embeddable generic java type.
  * @author vivek.mishra
- * @param <X>
- *            Embeddable generic java type.
  */
-public class DefaultEmbeddableType<X> extends AbstractManagedType<X> implements EmbeddableType<X>
-{
+public class DefaultEmbeddableType<X> extends AbstractManagedType<X> implements EmbeddableType<X> {
 
     /**
      * Default constructor using fields.
      */
     public DefaultEmbeddableType(Class<X> clazz, javax.persistence.metamodel.Type.PersistenceType persistenceType,
-            ManagedType<? super X> superClazzType)
-    {
+                                 ManagedType<? super X> superClazzType) {
         super(clazz, persistenceType, superClazzType);
     }
 

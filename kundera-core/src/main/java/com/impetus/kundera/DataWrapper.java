@@ -17,22 +17,21 @@ package com.impetus.kundera;
 
 /**
  * The Interface DataWrapper.
- * 
+ *
  * @author vivek.mishra
  */
-public interface DataWrapper
-{
+public interface DataWrapper {
 
     /**
      * Returns column family.
-     * 
+     *
      * @return column family.
      */
     String getColumnFamily();
 
     /**
      * Returns row key.
-     * 
+     *
      * @return rowKey.
      */
     byte[] getRowKey();

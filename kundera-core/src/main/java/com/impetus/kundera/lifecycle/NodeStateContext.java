@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.impetus.kundera.lifecycle;
 
-import java.util.Map;
-
 import com.impetus.kundera.client.Client;
 import com.impetus.kundera.graph.Node;
 import com.impetus.kundera.graph.NodeLink;
@@ -24,14 +22,14 @@ import com.impetus.kundera.lifecycle.states.NodeState;
 import com.impetus.kundera.persistence.PersistenceDelegator;
 import com.impetus.kundera.persistence.context.PersistenceCache;
 
+import java.util.Map;
+
 /**
  * State context of a given entity
- * 
+ *
  * @author amresh
- * 
  */
-public interface NodeStateContext
-{
+public interface NodeStateContext {
     // State methods
     NodeState getCurrentNodeState();
 

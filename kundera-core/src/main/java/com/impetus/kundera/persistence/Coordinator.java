@@ -16,91 +16,77 @@
 
 package com.impetus.kundera.persistence;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.impetus.kundera.persistence.KunderaEntityTransaction.TxAction;
 import com.impetus.kundera.persistence.TransactionResource.Response;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author vivek
- * 
  */
-class Coordinator
-{
+class Coordinator {
 
     // private List<TransactionResource> txResources = new
     // ArrayList<TransactionResource>();
 
     private Map<String, TransactionResource> txResources = new HashMap<String, TransactionResource>();
 
-    public Coordinator()
-    {
+    public Coordinator() {
 
     }
 
-    void addResource(TransactionResource resource, final String pu)
-    {
+    void addResource(TransactionResource resource, final String pu) {
         txResources.put(pu, resource);
     }
 
-    TransactionResource getResource(final String pu)
-    {
+    TransactionResource getResource(final String pu) {
         return txResources.get(pu);
     }
 
-    Response coordinate(TxAction action)
-    {
+    Response coordinate(TxAction action) {
         Response response = Response.YES;
-        switch (action)
-        {
-        case BEGIN:
-            for (TransactionResource res : txResources.values())
-            {
-                res.onBegin();
-            }
-            break;
+        switch (action) {
+            case BEGIN:
+                for (TransactionResource res : txResources.values()) {
+                    res.onBegin();
+                }
+                break;
 
-        case PREPARE:
+            case PREPARE:
 
-            // TODO:: need to handle case of two phase commit, in case of
-            // polyglot persistence.
+                // TODO:: need to handle case of two phase commit, in case of
+                // polyglot persistence.
 
-            for (TransactionResource res : txResources.values())
-            {
-                res.prepare();
-            }
-            break;
+                for (TransactionResource res : txResources.values()) {
+                    res.prepare();
+                }
+                break;
 
-        case COMMIT:
+            case COMMIT:
 
-            for (TransactionResource res : txResources.values())
-            {
-                res.onCommit();
-            }
-            break;
+                for (TransactionResource res : txResources.values()) {
+                    res.onCommit();
+                }
+                break;
 
-        case ROLLBACK:
-            for (TransactionResource res : txResources.values())
-            {
-                res.onRollback();
-            }
+            case ROLLBACK:
+                for (TransactionResource res : txResources.values()) {
+                    res.onRollback();
+                }
 
-            break;
+                break;
 
-        default:
-            throw new IllegalArgumentException("Invalid transaction action : " + action);
+            default:
+                throw new IllegalArgumentException("Invalid transaction action : " + action);
         }
 
         return response;
     }
 
-    boolean isTransactionActive()
-    {
-        for (TransactionResource res : txResources.values())
-        {
-            if (res.isActive())
-            {
+    boolean isTransactionActive() {
+        for (TransactionResource res : txResources.values()) {
+            if (res.isActive()) {
                 return true;
             }
 

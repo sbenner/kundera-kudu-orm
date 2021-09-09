@@ -15,29 +15,26 @@
  ******************************************************************************/
 package com.impetus.kundera.configure;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.impetus.kundera.entity.PersonnelDTO;
 import com.impetus.kundera.metadata.KunderaMetadataManager;
 import com.impetus.kundera.metadata.model.EntityMetadata;
 import com.impetus.kundera.metadata.model.PersistenceUnitMetadata;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
 /**
  * junit test case for {@link Configurator}.
- * 
+ *
  * @author vivek.mishra
  */
-public class ConfiguratorTest
-{
+public class ConfiguratorTest {
     private final String _persistenceUnit = "kunderatest";
 
     private final String kundera_client = "com.impetus.kundera.client.CoreTestClientFactory";
@@ -46,13 +43,11 @@ public class ConfiguratorTest
 
     /**
      * Sets the up.
-     * 
-     * @throws Exception
-     *             the exception
+     *
+     * @throws Exception the exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
 
     }
 
@@ -60,10 +55,9 @@ public class ConfiguratorTest
      * Test valid configure.
      */
     @Test
-    public void testValidConfigure()
-    {
+    public void testValidConfigure() {
         // invoke configure.
-       EntityManagerFactoryImpl emfImpl = getEntityManagerFactory();
+        EntityManagerFactoryImpl emfImpl = getEntityManagerFactory();
 
 
         // Assert entity metadata
@@ -83,8 +77,7 @@ public class ConfiguratorTest
     }
 
     // @Test
-    public void testEntityListener()
-    {
+    public void testEntityListener() {
         EntityManagerFactory emf = getEntityManagerFactory();
         EntityManager em = emf.createEntityManager();
         PersonnelDTO dto = new PersonnelDTO();
@@ -103,51 +96,43 @@ public class ConfiguratorTest
      * Test invalid configure.
      */
     @Test
-    public void testInvalidConfigure()
-    {
+    public void testInvalidConfigure() {
         final String invalidPuName = "invalid";
         PersistenceUnitMetadata puMetadata = null;
-        try
-        {
+        try {
             EntityManagerFactoryImpl emf = getEntityManagerFactory();
             puMetadata = emf.getKunderaMetadataInstance().getApplicationMetadata().getPersistenceUnitMetadata(invalidPuName);
-        }
-        catch (PersistenceUnitConfigurationException iex)
-        {
+        } catch (PersistenceUnitConfigurationException iex) {
             Assert.assertNull(puMetadata);
         }
     }
 
     /**
      * Tear down.
-     * 
-     * @throws Exception
-     *             the exception
+     *
+     * @throws Exception the exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
 
     }
 
     /**
      * Gets the entity manager factory.
-     * 
+     *
      * @param useLucene
      * @param property
-     * 
      * @return the entity manager factory
      */
-    private EntityManagerFactoryImpl getEntityManagerFactory()
-    {
+    private EntityManagerFactoryImpl getEntityManagerFactory() {
         return (EntityManagerFactoryImpl) Persistence.createEntityManagerFactory("kunderatest");
     }
     /* *//**
      * Gets the entity manager factory.
-     * 
+     *
      * @param useLucene
      * @param property
-     * 
+     *
      * @return the entity manager factory
      */
     /*

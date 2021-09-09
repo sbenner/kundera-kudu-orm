@@ -15,40 +15,36 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
-import java.math.BigInteger;
-
 import com.impetus.kundera.property.PropertyAccessor;
+
+import java.math.BigInteger;
 
 /**
  * The Class BigIntegerAccessor.
- * 
+ *
  * @author amresh.singh
  */
-public class BigIntegerAccessor implements PropertyAccessor<BigInteger>
-{
+public class BigIntegerAccessor implements PropertyAccessor<BigInteger> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.property.PropertyAccessor#fromBytes(byte[])
      */
     @Override
-    public BigInteger fromBytes(Class targetClass, byte[] b)
-    {
+    public BigInteger fromBytes(Class targetClass, byte[] b) {
         return b != null ? new BigInteger(b) : null;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toBytes(java.lang.Object)
      */
     @Override
-    public byte[] toBytes(Object object)
-    {
-        if (object == null)
-        {
+    public byte[] toBytes(Object object) {
+        if (object == null) {
             return null;
         }
         BigInteger b = (BigInteger) object;
@@ -57,15 +53,13 @@ public class BigIntegerAccessor implements PropertyAccessor<BigInteger>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toString(java.lang.Object)
      */
     @Override
-    public String toString(Object object)
-    {
-        if (object == null)
-        {
+    public String toString(Object object) {
+        if (object == null) {
             return null;
         }
         return object.toString();
@@ -73,26 +67,23 @@ public class BigIntegerAccessor implements PropertyAccessor<BigInteger>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#fromString(java.lang.String
      * )
      */
     @Override
-    public BigInteger fromString(Class targetClass, String s)
-    {
+    public BigInteger fromString(Class targetClass, String s) {
         return s != null ? new BigInteger(s) : null;
     }
 
     @Override
-    public BigInteger getCopy(Object object)
-    {
+    public BigInteger getCopy(Object object) {
         BigInteger i = (BigInteger) object;
         return object != null ? new BigInteger(i.toByteArray()) : null;
     }
 
-    public BigInteger getInstance(Class<?> clazz)
-    {
+    public BigInteger getInstance(Class<?> clazz) {
         return BigInteger.TEN;
     }
 }

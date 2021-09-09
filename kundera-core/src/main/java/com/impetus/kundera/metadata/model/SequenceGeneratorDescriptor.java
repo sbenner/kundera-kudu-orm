@@ -58,40 +58,35 @@ public class SequenceGeneratorDescriptor {
     /**
      * @return the initialValue
      */
-    public int getInitialValue()
-    {
+    public int getInitialValue() {
         return initialValue;
     }
 
     /**
      * @return the allocationSize
      */
-    public int getAllocationSize()
-    {
+    public int getAllocationSize() {
         return allocationSize;
     }
 
     /**
      * @return the sequenceName
      */
-    public String getSequenceName()
-    {
+    public String getSequenceName() {
         return sequenceName;
     }
 
     /**
      * @return the schemaName
      */
-    public String getSchemaName()
-    {
+    public String getSchemaName() {
         return schemaName;
     }
 
     /**
      * @return the catalog
      */
-    public String getCatalog()
-    {
+    public String getCatalog() {
         return catalog;
     }
 

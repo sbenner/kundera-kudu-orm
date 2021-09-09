@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,21 +23,18 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 
 /**
  * Geometric Point implementation
- * 
+ *
  * @author amresh.singh
  */
-public class Point extends com.vividsolutions.jts.geom.Point
-{
+public class Point extends com.vividsolutions.jts.geom.Point {
     /** Surface type on which this point is based */
     private SurfaceType surfaceType = SurfaceType.FLAT;
 
-    public Point(com.vividsolutions.jts.geom.Point point)
-    {
+    public Point(com.vividsolutions.jts.geom.Point point) {
         super(point.getCoordinate(), point.getPrecisionModel(), point.getSRID());
     }
 
-    public Point(double x, double y)
-    {
+    public Point(double x, double y) {
         super(new Coordinate(x, y), new PrecisionModel(), 0);
     }
 
@@ -45,8 +42,7 @@ public class Point extends com.vividsolutions.jts.geom.Point
      * @param coordinates
      * @param factory
      */
-    public Point(CoordinateSequence coordinates, GeometryFactory factory)
-    {
+    public Point(CoordinateSequence coordinates, GeometryFactory factory) {
         super(coordinates, factory);
     }
 
@@ -56,8 +52,7 @@ public class Point extends com.vividsolutions.jts.geom.Point
      * @param SRID
      * @deprecated
      */
-    public Point(Coordinate coordinate, PrecisionModel precisionModel, int SRID)
-    {
+    public Point(Coordinate coordinate, PrecisionModel precisionModel, int SRID) {
         super(coordinate, precisionModel, SRID);
 
     }
@@ -65,8 +60,7 @@ public class Point extends com.vividsolutions.jts.geom.Point
     /**
      * @return the surfaceType
      */
-    public SurfaceType getSurfaceType()
-    {
+    public SurfaceType getSurfaceType() {
         return surfaceType;
     }
 
@@ -74,8 +68,7 @@ public class Point extends com.vividsolutions.jts.geom.Point
      * @param surfaceType
      *            the surfaceType to set
      */
-    public void setSurfaceType(SurfaceType surfaceType)
-    {
+    public void setSurfaceType(SurfaceType surfaceType) {
         this.surfaceType = surfaceType;
     }
 

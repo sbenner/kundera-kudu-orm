@@ -15,32 +15,33 @@
  ******************************************************************************/
 package com.impetus.kundera.service;
 
+import com.impetus.kundera.PersistenceProperties;
+import com.impetus.kundera.configure.ClientProperties.DataStore.Connection.Server;
+import com.impetus.kundera.metadata.model.PersistenceUnitMetadata;
+import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.impetus.kundera.PersistenceProperties;
-import com.impetus.kundera.configure.ClientProperties.DataStore.Connection.Server;
-import com.impetus.kundera.metadata.model.PersistenceUnitMetadata;
-import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
-
 /**
  * Configure host name and port and build Hosts array.
- * 
+ *
  * @author Kuldeep.Mishra
- * 
  */
-public abstract class HostConfiguration
-{
-    /** The logger. */
+public abstract class HostConfiguration {
+    /**
+     * The logger.
+     */
     private static Logger logger = LoggerFactory.getLogger(HostConfiguration.class);
 
-    /** Delay time for host retry */
+    /**
+     * Delay time for host retry
+     */
     protected int retryDelay = 100;
 
     /**
@@ -61,72 +62,60 @@ public abstract class HostConfiguration
     protected List<Host> hostsList = new CopyOnWriteArrayList<Host>();
 
     public HostConfiguration(Map externalProperties, List<Server> servers, String persistenceUnit,
-            final KunderaMetadata kunderaMetadata)
-    {
+                             final KunderaMetadata kunderaMetadata) {
         buildHosts(externalProperties, servers, persistenceUnit, kunderaMetadata);
     }
 
     /**
      * Build host array.
-     * 
+     *
      * @param externalProperties
      * @param servers
      * @param persistenceUnit
      */
     private void buildHosts(Map externalProperties, List<Server> servers, String persistenceUnit,
-            final KunderaMetadata kunderaMetadata)
-    {
+                            final KunderaMetadata kunderaMetadata) {
         persistenceUnitMetadata = kunderaMetadata.getApplicationMetadata().getPersistenceUnitMetadata(persistenceUnit);
         Properties props = persistenceUnitMetadata.getProperties();
         this.externalProperties = externalProperties;
         String hosts = null;
         String portAsString = null;
 
-        if (externalProperties != null)
-        {
+        if (externalProperties != null) {
             hosts = (String) externalProperties.get(PersistenceProperties.KUNDERA_NODES);
             portAsString = (String) externalProperties.get(PersistenceProperties.KUNDERA_PORT);
         }
-        if (hosts == null)
-        {
+        if (hosts == null) {
             hosts = (String) props.get(PersistenceProperties.KUNDERA_NODES);
         }
-        if (portAsString == null)
-        {
+        if (portAsString == null) {
             portAsString = (String) props.get(PersistenceProperties.KUNDERA_PORT);
         }
 
-        if (hosts != null && portAsString != null)
-        {
+        if (hosts != null && portAsString != null) {
             buildHosts(hosts, portAsString, this.hostsList);
-        }
-        else if (servers != null && servers.size() >= 1)
-        {
+        } else if (servers != null && servers.size() >= 1) {
             buildHosts(servers, this.hostsList);
         }
     }
 
     /**
      * Validate host and port.
-     * 
+     *
      * @param host
      * @param port
      */
-    protected void onValidation(final String host, final String port)
-    {
-        if (host == null || !StringUtils.isNumeric(port) || port.isEmpty())
-        {
+    protected void onValidation(final String host, final String port) {
+        if (host == null || !StringUtils.isNumeric(port) || port.isEmpty()) {
             logger.error("Host or port should not be null / port should be numeric.");
             throw new IllegalArgumentException("Host or port should not be null / port should be numeric.");
         }
     }
 
     /**
-     * 
      * @return Array of hosts.
      */
-    public List<Host> getHosts()
-    {
+    public List<Host> getHosts() {
         return hostsList;
     }
 

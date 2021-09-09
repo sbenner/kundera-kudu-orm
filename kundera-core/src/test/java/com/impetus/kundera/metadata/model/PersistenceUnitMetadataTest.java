@@ -1,12 +1,12 @@
 /**
  * Copyright 2013 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,51 +15,44 @@
  */
 package com.impetus.kundera.metadata.model;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-
+import com.impetus.kundera.loader.PersistenceXMLLoader;
 import junit.framework.Assert;
-
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.impetus.kundera.loader.PersistenceXMLLoader;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
 
 /**
  * @author kuldeep.mishra
  * junit for {@link PersistenceUnitMetadata}
  *
  */
-public class PersistenceUnitMetadataTest
-{
+public class PersistenceUnitMetadataTest {
     private static List<PersistenceUnitMetadata> metadatas;
 
     @BeforeClass
-    public static void setUp() throws Exception
-    {
+    public static void setUp() throws Exception {
         Enumeration<URL> xmls = PersistenceUnitMetadata.class.getClassLoader().getResources("META-INF/persistence.xml");
 
-        while (xmls.hasMoreElements())
-        {
+        while (xmls.hasMoreElements()) {
             String[] persistenceUnits = new String[1];
             persistenceUnits[0] = "kunderatest";
-            
+
             metadatas = PersistenceXMLLoader.findPersistenceUnits(xmls.nextElement(), persistenceUnits);
         }
     }
 
     @AfterClass
-    public static void tearDown() throws Exception
-    {
+    public static void tearDown() throws Exception {
         metadatas = null;
     }
 
     @Test
-    public void testGetPersistenceUnitName()
-    {
+    public void testGetPersistenceUnitName() {
         Assert.assertNotNull(metadatas);
         Assert.assertFalse(metadatas.isEmpty());
         Assert.assertNotNull(metadatas.get(0));
@@ -68,8 +61,7 @@ public class PersistenceUnitMetadataTest
     }
 
     @Test
-    public void testGetPersistenceProviderClassName()
-    {
+    public void testGetPersistenceProviderClassName() {
         Assert.assertNotNull(metadatas);
         Assert.assertFalse(metadatas.isEmpty());
         Assert.assertNotNull(metadatas.get(0));
@@ -78,8 +70,7 @@ public class PersistenceUnitMetadataTest
     }
 
     @Test
-    public void testGetPersistenceXMLSchemaVersion()
-    {
+    public void testGetPersistenceXMLSchemaVersion() {
         Assert.assertNotNull(metadatas);
         Assert.assertFalse(metadatas.isEmpty());
         Assert.assertNotNull(metadatas.get(0));
@@ -87,17 +78,15 @@ public class PersistenceUnitMetadataTest
     }
 
     @Test
-    public void testGetClassLoader()
-    {
+    public void testGetClassLoader() {
         Assert.assertNotNull(metadatas);
         Assert.assertFalse(metadatas.isEmpty());
         Assert.assertNotNull(metadatas.get(0));
         Assert.assertNotNull(metadatas.get(0).getClassLoader());
     }
-    
+
     @Test
-    public void testAddJarFile()
-    {
+    public void testAddJarFile() {
         Assert.assertNotNull(metadatas);
         Assert.assertFalse(metadatas.isEmpty());
         Assert.assertNotNull(metadatas.get(0));
@@ -106,28 +95,29 @@ public class PersistenceUnitMetadataTest
         Assert.assertNotNull(puMetadata.getJarFiles());
         Assert.assertFalse(puMetadata.getJarFiles().isEmpty());
         Assert.assertNotNull(puMetadata.getJarFileUrls());
-        Assert.assertFalse(puMetadata.getJarFileUrls().isEmpty());        
+        Assert.assertFalse(puMetadata.getJarFileUrls().isEmpty());
     }
-    
+
     @Test
-    public void testGetFields()
-    {
+    public void testGetFields() {
         Assert.assertNotNull(metadatas);
         Assert.assertFalse(metadatas.isEmpty());
         Assert.assertNotNull(metadatas.get(0));
         PersistenceUnitMetadata puMetadata = metadatas.get(0);
-        
+
         Assert.assertFalse(puMetadata.getClasses().isEmpty());
         Assert.assertTrue(puMetadata.getPackages().isEmpty());
-        List<String> classes = new ArrayList<String>(); classes.add("MyClass");
-        List<String> packages = new ArrayList<String>(); packages.add("com.impetus.my.package");
-        
+        List<String> classes = new ArrayList<String>();
+        classes.add("MyClass");
+        List<String> packages = new ArrayList<String>();
+        packages.add("com.impetus.my.package");
+
         puMetadata.setClasses(classes);
         puMetadata.setPackages(packages);
-        
+
         Assert.assertFalse(puMetadata.getClasses().isEmpty());
         Assert.assertFalse(puMetadata.getPackages().isEmpty());
-        
+
         Assert.assertNull(puMetadata.getJtaDataSource());
         Assert.assertNull(puMetadata.getNonJtaDataSource());
         Assert.assertNull(puMetadata.getMappingFileNames());
@@ -138,21 +128,17 @@ public class PersistenceUnitMetadataTest
         Assert.assertNotNull(puMetadata.getProperties());
         Assert.assertTrue(puMetadata.getExcludeUnlistedClasses());
         Assert.assertTrue(puMetadata.excludeUnlistedClasses());
-        Assert.assertEquals(0, puMetadata.getBatchSize());     
-        
-        for(PersistenceUnitMetadata pmd : metadatas)
-        {
-            try
-            {
+        Assert.assertEquals(0, puMetadata.getBatchSize());
+
+        for (PersistenceUnitMetadata pmd : metadatas) {
+            try {
                 pmd.getBatchSize();
-            }
-            catch (Exception e)
-            {                
+            } catch (Exception e) {
                 Assert.fail(e.getMessage());
-             }
-            
+            }
+
         }
-        
-    }  
-    
+
+    }
+
 }

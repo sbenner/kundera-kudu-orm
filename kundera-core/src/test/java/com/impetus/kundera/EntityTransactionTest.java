@@ -15,43 +15,37 @@
  ******************************************************************************/
 package com.impetus.kundera;
 
+import com.impetus.kundera.client.DummyDatabase;
+import com.impetus.kundera.query.Person;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.impetus.kundera.client.DummyDatabase;
-import com.impetus.kundera.query.Person;
-
 /**
  * Test case for Testing {@link EntityTransaction}
- * 
+ *
  * @author amresh.singh
- * 
  */
-public class EntityTransactionTest
-{
+public class EntityTransactionTest {
 
     private EntityManagerFactory emf;
 
     private EntityManager em;
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         emf = Persistence.createEntityManagerFactory("patest");
         em = emf.createEntityManager();
     }
 
-//    @Test
-    public void testRollback()
-    {
+    //    @Test
+    public void testRollback() {
 
         em.getTransaction().begin();
         Object p1 = prepareData("1", 10);
@@ -77,8 +71,7 @@ public class EntityTransactionTest
     }
 
     @Test
-    public void testCommit()
-    {
+    public void testCommit() {
 
         em.getTransaction().begin();
 
@@ -113,11 +106,9 @@ public class EntityTransactionTest
     }
 
     @Test
-    public void testRollbackOnError()
-    {
+    public void testRollbackOnError() {
         Person p = null;
-        try
-        {
+        try {
             Object p1 = prepareData("1", 10);
             Object p2 = prepareData("2", 20);
             em.persist(p1);
@@ -136,9 +127,7 @@ public class EntityTransactionTest
 
             // As this is a runtime exception so rollback should happen and
             // delete out commited data.
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
 
             p = findById(Person.class, "1", em);
             Assert.assertNull(p);
@@ -158,16 +147,13 @@ public class EntityTransactionTest
         em1.persist(p3);
         em1.getTransaction().commit();
 
-        try
-        {
+        try {
             // remove with another em with auto flush.
             EntityManager em2 = emf.createEntityManager();
             Person person = em2.find(Person.class, "4");
             em2.remove(person);
             em2.merge(null);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             // Deleted records cannot be rolled back in cassandra!
             // em1.clear();
 
@@ -182,8 +168,7 @@ public class EntityTransactionTest
      * Roll back with multi transactions.
      */
     @Test
-    public void testRollbackWithMultiTransactions()
-    {
+    public void testRollbackWithMultiTransactions() {
         EntityManager em1 = emf.createEntityManager();
         // em1.setFlushMode(FlushModeType.COMMIT);
 
@@ -212,13 +197,10 @@ public class EntityTransactionTest
         EntityManager em3 = emf.createEntityManager();
         found = em3.find(Person.class, "11");
         found.setPersonName("lastemerge");
-        try
-        {
+        try {
             em3.merge(found);
             em3.merge(null);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Person finalFound = em2.find(Person.class, "11");
             Assert.assertNotNull(finalFound);
             Assert.assertEquals("merged", finalFound.getPersonName());
@@ -227,20 +209,17 @@ public class EntityTransactionTest
 
     /**
      * Tear down.
-     * 
-     * @throws Exception
-     *             the exception
+     *
+     * @throws Exception the exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         em.close();
         emf.close();
         DummyDatabase.INSTANCE.dropDatabase();
     }
 
-    private Person prepareData(String rowKey, int age)
-    {
+    private Person prepareData(String rowKey, int age) {
         Person o = new Person();
         o.setPersonId(rowKey);
         o.setPersonName("vivek");
@@ -248,8 +227,7 @@ public class EntityTransactionTest
         return o;
     }
 
-    private <E extends Object> E findById(Class<E> clazz, Object rowKey, EntityManager em)
-    {
+    private <E extends Object> E findById(Class<E> clazz, Object rowKey, EntityManager em) {
         return em.find(clazz, rowKey);
     }
 

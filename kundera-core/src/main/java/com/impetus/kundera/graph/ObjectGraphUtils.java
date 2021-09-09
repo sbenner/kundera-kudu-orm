@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,31 +15,27 @@
  */
 package com.impetus.kundera.graph;
 
-import java.lang.reflect.Field;
-
-import javax.persistence.GeneratedValue;
-
-import org.apache.commons.lang.StringUtils;
-
 import com.impetus.kundera.Constants;
 import com.impetus.kundera.utils.NumericUtils;
+import org.apache.commons.lang.StringUtils;
+
+import javax.persistence.GeneratedValue;
+import java.lang.reflect.Field;
 
 /**
  * Provides utility methods for object graph
- * 
+ *
  * @author amresh.singh
  */
-public class ObjectGraphUtils
-{
+public class ObjectGraphUtils {
 
     /**
-     * 
+     *
      * @param pk
      * @param objectClass
      * @return
      */
-    public static String getNodeId(Object pk, Class<?> objectClass)
-    {
+    public static String getNodeId(Object pk, Class<?> objectClass) {
         StringBuffer strBuffer = new StringBuffer(objectClass.getName());
         strBuffer.append(Constants.NODE_ID_SEPARATOR);
         strBuffer.append(pk);
@@ -47,18 +43,17 @@ public class ObjectGraphUtils
     }
 
     /**
-     * 
+     *
      * @param nodeId
      * @return
      */
-    public static Object getEntityId(String nodeId)
-    {
+    public static Object getEntityId(String nodeId) {
         return nodeId.substring(nodeId.indexOf(Constants.NODE_ID_SEPARATOR) + 1, nodeId.length());
     }
 
     /**
      * Validates and set id, in case not set and intended for auto generation.
-     * 
+     *
      * @param idField
      *            id field
      * @param idValue
@@ -66,10 +61,8 @@ public class ObjectGraphUtils
      * @return returns true if id is not set and @GeneratedValue annotation is
      *         present. Else false.
      */
-    public static boolean onAutoGenerateId(Field idField, Object idValue)
-    {
-        if (idField.isAnnotationPresent(GeneratedValue.class))
-        {
+    public static boolean onAutoGenerateId(Field idField, Object idValue) {
+        if (idField.isAnnotationPresent(GeneratedValue.class)) {
             return !isIdSet(idValue, idField);
         }
 
@@ -77,18 +70,16 @@ public class ObjectGraphUtils
     }
 
     /**
-     * 
+     *
      * @param id
      * @param idField
      * @return
      */
-    private static boolean isIdSet(Object id, Field idField)
-    {
+    private static boolean isIdSet(Object id, Field idField) {
         // return true, if it is non blank and not zero in case of numeric
         // value.
 
-        if (id != null)
-        {
+        if (id != null) {
             return !(NumericUtils.checkIfZero(id.toString(), idField.getType()) || (StringUtils
                     .isNumeric(id.toString()) && StringUtils.isBlank(id.toString())));
         }

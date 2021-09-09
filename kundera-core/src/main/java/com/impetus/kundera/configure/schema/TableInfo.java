@@ -15,26 +15,30 @@
  ******************************************************************************/
 package com.impetus.kundera.configure.schema;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 import java.lang.annotation.Annotation;
 import java.util.*;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
 /**
  * TableInfo class holds table creation related information.
- * 
+ *
  * @author Kuldeep.Kumar
- * 
  */
-public class TableInfo
-{
-    /** The table name. */
+public class TableInfo {
+    /**
+     * The table name.
+     */
     private String tableName;
 
-    /** The column metadatas. */
+    /**
+     * The column metadatas.
+     */
     private List<ColumnInfo> columnMetadatas;
 
-    /** The table id class. */
+    /**
+     * The table id class.
+     */
     private Class<?> idClazz;
 
 
@@ -42,32 +46,58 @@ public class TableInfo
 
     private Map<String, Annotation> idFieldAnnotations;
 
-    /** The table id name. */
+    /**
+     * The table id name.
+     */
     private String idColumnName;
 
-    /** The type. */
+    /**
+     * The type.
+     */
     private String type;
 
-    /** The embedded column metadatas. */
+    /**
+     * The embedded column metadatas.
+     */
     private List<EmbeddedColumnInfo> embeddedColumnMetadatas;
 
-    /** The collection column metadatas. */
+    /**
+     * The collection column metadatas.
+     */
     private List<CollectionColumnInfo> collectionColumnMetadatas;
 
-    /** The element collection metadatas. */
+    /**
+     * The element collection metadatas.
+     */
     private List<CollectionColumnInfo> elementCollectionMetadatas;
 
     private Set<String> lobColumnInfos;
+    /**
+     * The column to be indexed.
+     */
+    private List<IndexInfo> columnToBeIndexed = new ArrayList<IndexInfo>();
 
-    public Set<String> getLobColumnInfo()
-    {
+    /**
+     * Instantiates a new table info.
+     *
+     * @param tableName       the table name
+     * @param tableSchemaType the table schema type
+     * @param idClassType     the id class type
+     * @param idColumnName    the id column name
+     */
+    public TableInfo(String tableName, String tableSchemaType, Class<?> idClassType, String idColumnName) {
+        this.tableName = tableName;
+        this.type = tableSchemaType;
+        this.idClazz = idClassType;
+        this.idColumnName = idColumnName;
+    }
+
+    public Set<String> getLobColumnInfo() {
         return lobColumnInfos == null ? new HashSet<String>() : lobColumnInfos;
     }
 
-    public void addLobColumnInfo(String lobColumnInfo)
-    {
-        if (this.lobColumnInfos == null)
-        {
+    public void addLobColumnInfo(String lobColumnInfo) {
+        if (this.lobColumnInfos == null) {
             this.lobColumnInfos = new HashSet<String>();
         }
         lobColumnInfos.add(lobColumnInfo);
@@ -75,13 +105,11 @@ public class TableInfo
 
     /**
      * Gets the element collection metadatas.
-     * 
+     *
      * @return the element collection metadatas
      */
-    public List<CollectionColumnInfo> getElementCollectionMetadatas()
-    {
-        if (this.elementCollectionMetadatas == null)
-        {
+    public List<CollectionColumnInfo> getElementCollectionMetadatas() {
+        if (this.elementCollectionMetadatas == null) {
             this.elementCollectionMetadatas = new ArrayList<CollectionColumnInfo>();
         }
         return elementCollectionMetadatas;
@@ -89,57 +117,28 @@ public class TableInfo
 
     /**
      * Adds the element collection metadata.
-     * 
-     * @param elementCollectionMetadata
-     *            the element collection metadata
+     *
+     * @param elementCollectionMetadata the element collection metadata
      */
-    public void addElementCollectionMetadata(CollectionColumnInfo elementCollectionMetadata)
-    {
-        if (this.elementCollectionMetadatas == null)
-        {
+    public void addElementCollectionMetadata(CollectionColumnInfo elementCollectionMetadata) {
+        if (this.elementCollectionMetadatas == null) {
             this.elementCollectionMetadatas = new ArrayList<CollectionColumnInfo>();
         }
 
-        if (!elementCollectionMetadatas.contains(elementCollectionMetadata))
-        {
+        if (!elementCollectionMetadatas.contains(elementCollectionMetadata)) {
             elementCollectionMetadatas.add(elementCollectionMetadata);
         }
-    }
-
-    /** The column to be indexed. */
-    private List<IndexInfo> columnToBeIndexed = new ArrayList<IndexInfo>();
-
-    /**
-     * Instantiates a new table info.
-     * 
-     * @param tableName
-     *            the table name
-     * @param tableSchemaType
-     *            the table schema type
-     * @param idClassType
-     *            the id class type
-     * @param idColumnName
-     *            the id column name
-     */
-    public TableInfo(String tableName, String tableSchemaType, Class<?> idClassType, String idColumnName)
-    {
-        this.tableName = tableName;
-        this.type = tableSchemaType;
-        this.idClazz = idClassType;
-        this.idColumnName = idColumnName;
     }
 
     /**
      * Equals method compare two object of TableInfo on the basis of their name
      * .
-     * 
-     * @param obj
-     *            the obj
+     *
+     * @param obj the obj
      * @return boolean value.
      */
     @Override
-    public boolean equals(Object obj)
-    {
+    public boolean equals(Object obj) {
 
         return (obj instanceof TableInfo && ((TableInfo) obj).tableName != null) && (this.tableName != null
                 && this.tableName.equals(((TableInfo) obj).tableName));
@@ -148,31 +147,29 @@ public class TableInfo
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
     /**
      * returns the hash code for object. 
-     * 
+     *
      */
-    public int hashCode()
-    {
+    public int hashCode() {
         return HashCodeBuilder.reflectionHashCode(this);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Object#toString()
      */
     @Override
     /**
      * returns the string representation of object .
-     * 
+     *
      */
-    public String toString()
-    {
+    public String toString() {
         String strBuilder = "tableIdType:==> " + idClazz +
                 " | tableName: ==>" +
                 tableName +
@@ -183,56 +180,48 @@ public class TableInfo
 
     /**
      * Gets the table name.
-     * 
+     *
      * @return the tableName
      */
-    public String getTableName()
-    {
+    public String getTableName() {
         return tableName;
     }
 
     /**
      * Sets the table name.
-     * 
-     * @param tableName
-     *            the tableName to set
+     *
+     * @param tableName the tableName to set
      */
-    public void setTableName(String tableName)
-    {
+    public void setTableName(String tableName) {
         this.tableName = tableName;
     }
 
     /**
      * Gets the table id type.
-     * 
+     *
      * @return the tableIdType
      */
-    public Class<?> getTableIdType()
-    {
+    public Class<?> getTableIdType() {
         return idClazz;
     }
 
     /**
      * Sets the table id type.
-     * 
-     * @param tableIdType
-     *            the tableIdType to set
+     *
+     * @param tableIdType the tableIdType to set
      */
-    public void setTableIdType(Class<?> tableIdType)
-    {
+    public void setTableIdType(Class<?> tableIdType) {
         this.idClazz = tableIdType;
     }
 
     /**
      * Gets the column metadatas.
-     * 
+     *
      * @return the columnMetadatas
      */
-    public List<ColumnInfo> getColumnMetadatas()
-    {
+    public List<ColumnInfo> getColumnMetadatas() {
 
-        if (this.columnMetadatas == null)
-        {
+        if (this.columnMetadatas == null) {
             this.columnMetadatas = new ArrayList<ColumnInfo>();
         }
 
@@ -241,49 +230,39 @@ public class TableInfo
 
     /**
      * Adds the column info.
-     * 
-     * @param columnInfo
-     *            the column info
+     *
+     * @param columnInfo the column info
      */
-    public void addColumnInfo(ColumnInfo columnInfo)
-    {
-        if (this.columnMetadatas == null)
-        {
+    public void addColumnInfo(ColumnInfo columnInfo) {
+        if (this.columnMetadatas == null) {
             this.columnMetadatas = new ArrayList<ColumnInfo>();
         }
-        if (!columnMetadatas.contains(columnInfo) && !this.getIdColumnName().equals(columnInfo.getColumnName()))
-        {
+        if (!columnMetadatas.contains(columnInfo) && !this.getIdColumnName().equals(columnInfo.getColumnName())) {
             columnMetadatas.add(columnInfo);
         }
     }
 
     /**
      * Adds the embedded column info.
-     * 
-     * @param embdColumnInfo
-     *            the embd column info
+     *
+     * @param embdColumnInfo the embd column info
      */
-    public void addEmbeddedColumnInfo(EmbeddedColumnInfo embdColumnInfo)
-    {
-        if (this.embeddedColumnMetadatas == null)
-        {
+    public void addEmbeddedColumnInfo(EmbeddedColumnInfo embdColumnInfo) {
+        if (this.embeddedColumnMetadatas == null) {
             this.embeddedColumnMetadatas = new ArrayList<EmbeddedColumnInfo>();
         }
-        if (!embeddedColumnMetadatas.contains(embdColumnInfo))
-        {
+        if (!embeddedColumnMetadatas.contains(embdColumnInfo)) {
             embeddedColumnMetadatas.add(embdColumnInfo);
         }
     }
 
     /**
      * Gets the embedded column metadatas.
-     * 
+     *
      * @return the embeddedColumnMetadatas
      */
-    public List<EmbeddedColumnInfo> getEmbeddedColumnMetadatas()
-    {
-        if (this.embeddedColumnMetadatas == null)
-        {
+    public List<EmbeddedColumnInfo> getEmbeddedColumnMetadatas() {
+        if (this.embeddedColumnMetadatas == null) {
             this.embeddedColumnMetadatas = new ArrayList<EmbeddedColumnInfo>();
         }
         return embeddedColumnMetadatas;
@@ -291,13 +270,11 @@ public class TableInfo
 
     /**
      * Gets the collection column metadatas.
-     * 
+     *
      * @return the collectionColumnMetadatas
      */
-    public List<CollectionColumnInfo> getCollectionColumnMetadatas()
-    {
-        if (this.collectionColumnMetadatas == null)
-        {
+    public List<CollectionColumnInfo> getCollectionColumnMetadatas() {
+        if (this.collectionColumnMetadatas == null) {
             this.collectionColumnMetadatas = new ArrayList<CollectionColumnInfo>();
         }
         return collectionColumnMetadatas;
@@ -305,65 +282,55 @@ public class TableInfo
 
     /**
      * Adds the collection column metadata.
-     * 
-     * @param collectionColumnMetadata
-     *            the collection column metadata
+     *
+     * @param collectionColumnMetadata the collection column metadata
      */
-    public void addCollectionColumnMetadata(CollectionColumnInfo collectionColumnMetadata)
-    {
-        if (this.collectionColumnMetadatas == null)
-        {
+    public void addCollectionColumnMetadata(CollectionColumnInfo collectionColumnMetadata) {
+        if (this.collectionColumnMetadatas == null) {
             this.collectionColumnMetadatas = new ArrayList<CollectionColumnInfo>();
         }
 
-        if (!collectionColumnMetadatas.contains(collectionColumnMetadata))
-        {
+        if (!collectionColumnMetadatas.contains(collectionColumnMetadata)) {
             collectionColumnMetadatas.add(collectionColumnMetadata);
         }
     }
 
     /**
      * Gets the type.
-     * 
+     *
      * @return the type
      */
-    public String getType()
-    {
+    public String getType() {
         return type;
     }
 
     /**
      * Returns name of id attribute.
-     * 
+     *
      * @return id attribute name.
      */
-    public String getIdColumnName()
-    {
+    public String getIdColumnName() {
         return idColumnName;
     }
 
     /**
      * Returns list of index information object.
-     * 
+     *
      * @return the columns to be indexed
      */
-    public List<IndexInfo> getColumnsToBeIndexed()
-    {
+    public List<IndexInfo> getColumnsToBeIndexed() {
         return this.columnToBeIndexed;
     }
 
     /**
      * Gets the column to be indexed.
-     * 
-     * @param columnName
-     *            the column name
+     *
+     * @param columnName the column name
      * @return the column to be indexed
      */
-    public IndexInfo getColumnToBeIndexed(String columnName)
-    {
+    public IndexInfo getColumnToBeIndexed(String columnName) {
         IndexInfo idxInfo = new IndexInfo(columnName);
-        if (columnToBeIndexed.contains(idxInfo))
-        {
+        if (columnToBeIndexed.contains(idxInfo)) {
             int index = columnToBeIndexed.indexOf(idxInfo);
             return getColumnsToBeIndexed().get(index);
         }
@@ -372,19 +339,15 @@ public class TableInfo
 
     /**
      * Adds the to indexed column list.
-     * 
-     * @param indexInfo
-     *            the index info
+     *
+     * @param indexInfo the index info
      */
-    public void addToIndexedColumnList(IndexInfo indexInfo)
-    {
+    public void addToIndexedColumnList(IndexInfo indexInfo) {
         ColumnInfo columnInfo = new ColumnInfo();
         columnInfo.setColumnName(indexInfo.getColumnName());
         if (getEmbeddedColumnMetadatas().isEmpty()
-                || !getEmbeddedColumnMetadatas().get(0).getColumns().contains(columnInfo))
-        {
-            if (!columnToBeIndexed.contains(indexInfo))
-            {
+                || !getEmbeddedColumnMetadatas().get(0).getColumns().contains(columnInfo)) {
+            if (!columnToBeIndexed.contains(indexInfo)) {
                 columnToBeIndexed.add(indexInfo);
             }
         }

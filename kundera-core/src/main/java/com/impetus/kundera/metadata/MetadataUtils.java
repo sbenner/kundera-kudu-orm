@@ -15,17 +15,16 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
+import com.impetus.kundera.Constants;
+import com.impetus.kundera.PersistenceProperties;
+import com.impetus.kundera.index.IndexCollection;
+import com.impetus.kundera.metadata.model.*;
+import com.impetus.kundera.metadata.model.Relation.ForeignKey;
+import com.impetus.kundera.metadata.model.attributes.AbstractAttribute;
+import com.impetus.kundera.metadata.validator.InvalidEntityDefinitionException;
+import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
+import com.impetus.kundera.property.PropertyAccessorHelper;
+import org.apache.commons.lang.StringUtils;
 
 import javax.persistence.Embeddable;
 import javax.persistence.Embedded;
@@ -34,77 +33,42 @@ import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EmbeddableType;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
-import javax.validation.constraints.AssertFalse;
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.DecimalMax;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.Future;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.impetus.kundera.Constants;
-import com.impetus.kundera.PersistenceProperties;
-import com.impetus.kundera.index.IndexCollection;
-import com.impetus.kundera.metadata.model.ClientMetadata;
-import com.impetus.kundera.metadata.model.EntityMetadata;
-import com.impetus.kundera.metadata.model.MetamodelImpl;
-import com.impetus.kundera.metadata.model.PersistenceUnitMetadata;
-import com.impetus.kundera.metadata.model.Relation;
-import com.impetus.kundera.metadata.model.Relation.ForeignKey;
-import com.impetus.kundera.metadata.model.attributes.AbstractAttribute;
-import com.impetus.kundera.metadata.validator.InvalidEntityDefinitionException;
-import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
-import com.impetus.kundera.property.PropertyAccessorHelper;
+import javax.validation.constraints.*;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * Utility class for entity metadata related funcntionality.
- * 
+ *
  * @author amresh.singh
  */
-public class MetadataUtils
-{
+public class MetadataUtils {
 
     /**
      * Populate column and super column maps.
-     * 
-     * @param m
-     *            the m
-     * @param columnNameToFieldMap
-     *            the column name to field map
-     * @param superColumnNameToFieldMap
-     *            the super column name to field map
+     *
+     * @param m                         the m
+     * @param columnNameToFieldMap      the column name to field map
+     * @param superColumnNameToFieldMap the super column name to field map
      */
     public static void populateColumnAndSuperColumnMaps(EntityMetadata m, Map<String, Field> columnNameToFieldMap,
-            Map<String, Field> superColumnNameToFieldMap, final KunderaMetadata kunderaMetadata)
-    {
+                                                        Map<String, Field> superColumnNameToFieldMap, final KunderaMetadata kunderaMetadata) {
 
         getEmbeddableType(m, columnNameToFieldMap, superColumnNameToFieldMap, kunderaMetadata);
     }
 
     /**
      * Creates the columns field map.
-     * 
-     * @param m
-     *            the m
-     * @param superColumn
-     *            the super column
+     *
+     * @param m           the m
+     * @param superColumn the super column
      * @return the map
      */
-    public static Map<String, Field> createColumnsFieldMap(EntityMetadata m, EmbeddableType superColumn)
-    {
+    public static Map<String, Field> createColumnsFieldMap(EntityMetadata m, EmbeddableType superColumn) {
         Map<String, Field> columnNameToFieldMap = new HashMap<String, Field>();
 
         Set<Attribute> attributes = superColumn.getAttributes();
-        for (Attribute column : attributes)
-        {
+        for (Attribute column : attributes) {
             columnNameToFieldMap.put(((AbstractAttribute) column).getJPAColumnName(), (Field) column.getJavaMember());
         }
         return columnNameToFieldMap;
@@ -112,14 +76,12 @@ public class MetadataUtils
 
     /**
      * Creates the super columns field map.
-     * 
-     * @param m
-     *            the m
+     *
+     * @param m the m
      * @return the map
      */
     public static Map<String, Field> createSuperColumnsFieldMap(final EntityMetadata m,
-            final KunderaMetadata kunderaMetadata)
-    {
+                                                                final KunderaMetadata kunderaMetadata) {
         Map<String, Field> superColumnNameToFieldMap = new HashMap<String, Field>();
         getEmbeddableType(m, null, superColumnNameToFieldMap, kunderaMetadata);
         return superColumnNameToFieldMap;
@@ -127,28 +89,20 @@ public class MetadataUtils
 
     /**
      * Gets the embedded collection instance.
-     * 
-     * @param embeddedCollectionField
-     *            the embedded collection field
+     *
+     * @param embeddedCollectionField the embedded collection field
      * @return the embedded collection instance
      */
-    public static Collection getEmbeddedCollectionInstance(Field embeddedCollectionField)
-    {
+    public static Collection getEmbeddedCollectionInstance(Field embeddedCollectionField) {
         Collection embeddedCollection = null;
         Class embeddedCollectionFieldClass = embeddedCollectionField.getType();
 
-        if (embeddedCollection == null || embeddedCollection.isEmpty())
-        {
-            if (embeddedCollectionFieldClass.equals(List.class))
-            {
+        if (embeddedCollection == null || embeddedCollection.isEmpty()) {
+            if (embeddedCollectionFieldClass.equals(List.class)) {
                 embeddedCollection = new ArrayList<Object>();
-            }
-            else if (embeddedCollectionFieldClass.equals(Set.class))
-            {
+            } else if (embeddedCollectionFieldClass.equals(Set.class)) {
                 embeddedCollection = new HashSet<Object>();
-            }
-            else
-            {
+            } else {
                 throw new InvalidEntityDefinitionException("Field " + embeddedCollectionField.getName()
                         + " must be either instance of List or Set");
             }
@@ -158,33 +112,23 @@ public class MetadataUtils
 
     /**
      * Gets the embedded generic object instance.
-     * 
-     * @param embeddedCollectionField
-     *            the embedded collection field
+     *
+     * @param embeddedCollectionField the embedded collection field
      * @return the embedded generic object instance
      */
-    public static Object getEmbeddedGenericObjectInstance(Field embeddedCollectionField)
-    {
+    public static Object getEmbeddedGenericObjectInstance(Field embeddedCollectionField) {
         Class<?> embeddedClass = PropertyAccessorHelper.getGenericClass(embeddedCollectionField);
         Object embeddedObject = null;
         // must have a default no-argument constructor
-        try
-        {
+        try {
             embeddedClass.getConstructor();
             embeddedObject = embeddedClass.newInstance();
-        }
-        catch (NoSuchMethodException nsme)
-        {
+        } catch (NoSuchMethodException nsme) {
             throw new PersistenceException(embeddedClass.getName()
                     + " is @Embeddable and must have a default no-argument constructor.");
-        }
-        catch (InstantiationException e)
-        {
+        } catch (InstantiationException e) {
             throw new PersistenceException(embeddedClass.getName() + " could not be instantiated");
-        }
-
-        catch (IllegalAccessException e)
-        {
+        } catch (IllegalAccessException e) {
             throw new PersistenceException(embeddedClass.getName() + " could not be accessed");
         }
         return embeddedObject;
@@ -192,26 +136,22 @@ public class MetadataUtils
 
     /**
      * Gets the embedded collection prefix.
-     * 
-     * @param embeddedCollectionName
-     *            the embedded collection name
+     *
+     * @param embeddedCollectionName the embedded collection name
      * @return the embedded collection prefix
      */
-    public static String getEmbeddedCollectionPrefix(String embeddedCollectionName)
-    {
+    public static String getEmbeddedCollectionPrefix(String embeddedCollectionName) {
         return embeddedCollectionName.substring(0,
                 embeddedCollectionName.indexOf(Constants.EMBEDDED_COLUMN_NAME_DELIMITER));
     }
 
     /**
      * Gets the embedded collection postfix.
-     * 
-     * @param embeddedCollectionName
-     *            the embedded collection name
+     *
+     * @param embeddedCollectionName the embedded collection name
      * @return the embedded collection postfix
      */
-    public static String getEmbeddedCollectionPostfix(String embeddedCollectionName)
-    {
+    public static String getEmbeddedCollectionPostfix(String embeddedCollectionName) {
         return embeddedCollectionName.substring(
                 embeddedCollectionName.lastIndexOf(Constants.EMBEDDED_COLUMN_NAME_DELIMITER) + 1,
                 embeddedCollectionName.length());
@@ -220,26 +160,21 @@ public class MetadataUtils
     /**
      * Creates a string representation of a set of foreign keys by combining
      * them together separated by "~" character.
-     * 
+     * <p>
      * Note: Assumption is that @Id will never contain "~" character. Checks for
      * this are not added yet.
-     * 
-     * @param foreignKeys
-     *            the foreign keys
+     *
+     * @param foreignKeys the foreign keys
      * @return the string
      */
-    public static String serializeKeys(Set<String> foreignKeys)
-    {
-        if (null == foreignKeys || foreignKeys.isEmpty())
-        {
+    public static String serializeKeys(Set<String> foreignKeys) {
+        if (null == foreignKeys || foreignKeys.isEmpty()) {
             return null;
         }
 
         StringBuilder sb = new StringBuilder();
-        for (String key : foreignKeys)
-        {
-            if (sb.length() > 0)
-            {
+        for (String key : foreignKeys) {
+            if (sb.length() > 0) {
                 sb.append(Constants.FOREIGN_KEY_SEPARATOR);
             }
             sb.append(key);
@@ -249,23 +184,19 @@ public class MetadataUtils
 
     /**
      * Splits foreign keys into Set.
-     * 
-     * @param foreignKeys
-     *            the foreign keys
+     *
+     * @param foreignKeys the foreign keys
      * @return the set
      */
-    public static Set<String> deserializeKeys(String foreignKeys)
-    {
+    public static Set<String> deserializeKeys(String foreignKeys) {
         Set<String> keys = new HashSet<String>();
 
-        if (null == foreignKeys || foreignKeys.isEmpty())
-        {
+        if (null == foreignKeys || foreignKeys.isEmpty()) {
             return keys;
         }
 
         String array[] = foreignKeys.split(Constants.FOREIGN_KEY_SEPARATOR);
-        for (String element : array)
-        {
+        for (String element : array) {
             keys.add(element);
         }
         return keys;
@@ -273,52 +204,42 @@ public class MetadataUtils
 
     /**
      * Sets the schema and persistence unit.
-     * 
-     * @param m
-     *            the m
-     * @param schemaStr
-     *            the schema str
+     *
+     * @param m            the m
+     * @param schemaStr    the schema str
      * @param puProperties
      */
-    public static void setSchemaAndPersistenceUnit(EntityMetadata m, String schemaStr, Map puProperties)
-    {
+    public static void setSchemaAndPersistenceUnit(EntityMetadata m, String schemaStr, Map puProperties) {
 
-        if (schemaStr.indexOf(Constants.SCHEMA_PERSISTENCE_UNIT_SEPARATOR) > 0)
-        {
+        if (schemaStr.indexOf(Constants.SCHEMA_PERSISTENCE_UNIT_SEPARATOR) > 0) {
             String schemaName = null;
-            if (puProperties != null)
-            {
+            if (puProperties != null) {
                 schemaName = (String) puProperties.get(PersistenceProperties.KUNDERA_KEYSPACE);
             }
-            if (schemaName == null)
-            {
+            if (schemaName == null) {
                 schemaName = schemaStr.substring(0, schemaStr.indexOf(Constants.SCHEMA_PERSISTENCE_UNIT_SEPARATOR));
             }
             m.setSchema(schemaName);
             m.setPersistenceUnit(schemaStr.substring(
                     schemaStr.indexOf(Constants.SCHEMA_PERSISTENCE_UNIT_SEPARATOR) + 1, schemaStr.length()));
-        }
-        else
-        {
+        } else {
             m.setSchema(StringUtils.isBlank(schemaStr) ? null : schemaStr);
         }
     }
 
     /**
      * Returns true, if use of secondry index is available, else false.
-     * 
-     * @param persistenceUnit
-     *            persistence unit name
+     *
+     * @param persistenceUnit persistence unit name
      * @return true, if usage is true in pu. else false.
      */
-    public static boolean useSecondryIndex(ClientMetadata clientMetadata)
-    {
+    public static boolean useSecondryIndex(ClientMetadata clientMetadata) {
         return clientMetadata != null ? clientMetadata.isUseSecondryIndex() : false;
     }
 
     /* *//**
      * Returns lucene indexing directory.
-     * 
+     *
      * @param persistenceUnit
      *            persistence unit name
      * @return lucene directory
@@ -328,26 +249,22 @@ public class MetadataUtils
      * (!useSecondryIndex(persistenceUnit)) { ClientMetadata clientMetadata =
      * kunderaMetadata.getClientMetadata(persistenceUnit); return
      * clientMetadata.getLuceneIndexDir(); }
-     * 
+     *
      * return null; }
      */
 
     /**
      * Returns mapped relational name, in case of bi directional mapping, it
      * will return back pKey name of associated entity.
-     * 
-     * @param relation
-     *            holding relation.
+     *
+     * @param relation holding relation.
      * @return mapped/join column name.
      */
     public static String getMappedName(EntityMetadata parentMetadata, Relation relation,
-            final KunderaMetadata kunderaMetadata)
-    {
-        if (relation != null)
-        {
+                                       final KunderaMetadata kunderaMetadata) {
+        if (relation != null) {
             String joinColumn = relation.getJoinColumnName(kunderaMetadata);
-            if (joinColumn == null)
-            {
+            if (joinColumn == null) {
                 Class clazz = relation.getTargetEntity();
                 EntityMetadata metadata = KunderaMetadataManager.getEntityMetadata(kunderaMetadata, clazz);
 
@@ -362,19 +279,15 @@ public class MetadataUtils
 
     /**
      * Gets the enclosing document name.
-     * 
-     * @param m
-     *            the m
-     * @param criteria
-     *            Input criteria
-     * @param viaColumnName
-     *            true if <code>criteria</code> is column Name, false if
-     *            <code>criteria</code> is column field name
+     *
+     * @param m             the m
+     * @param criteria      Input criteria
+     * @param viaColumnName true if <code>criteria</code> is column Name, false if
+     *                      <code>criteria</code> is column field name
      * @return the enclosing document name
      */
     public static String getEnclosingEmbeddedFieldName(EntityMetadata m, String criteria, boolean viaColumnName,
-            final KunderaMetadata kunderaMetadata)
-    {
+                                                       final KunderaMetadata kunderaMetadata) {
         String enclosingEmbeddedFieldName = null;
 
         StringTokenizer strToken = new StringTokenizer(criteria, ".");
@@ -382,111 +295,86 @@ public class MetadataUtils
         String embeddedFieldName = null;
         String nestedEmbeddedFieldName = null;
 
-        if (strToken.countTokens() > 0)
-        {
+        if (strToken.countTokens() > 0) {
             embeddableAttributeName = strToken.nextToken();
         }
-        if (strToken.countTokens() > 0)
-        {
+        if (strToken.countTokens() > 0) {
             embeddedFieldName = strToken.nextToken();
         }
-        if (strToken.countTokens() > 0)
-        {
+        if (strToken.countTokens() > 0) {
             nestedEmbeddedFieldName = strToken.nextToken();
         }
 
         Metamodel metaModel = kunderaMetadata.getApplicationMetadata().getMetamodel(m.getPersistenceUnit());
         EntityType entity = metaModel.entity(m.getEntityClazz());
 
-        try
-        {
+        try {
             Attribute attribute = entity.getAttribute(embeddableAttributeName);
 
-            if (((MetamodelImpl) metaModel).isEmbeddable(((AbstractAttribute) attribute).getBindableJavaType()))
-            {
+            if (((MetamodelImpl) metaModel).isEmbeddable(((AbstractAttribute) attribute).getBindableJavaType())) {
                 EmbeddableType embeddable = metaModel.embeddable(((AbstractAttribute) attribute).getBindableJavaType());
                 Iterator<Attribute> attributeIter = embeddable.getAttributes().iterator();
-                while (attributeIter.hasNext())
-                {
+                while (attributeIter.hasNext()) {
                     AbstractAttribute attrib = (AbstractAttribute) attributeIter.next();
 
-                    if (viaColumnName && attrib.getName().equals(embeddedFieldName))
-                    {
+                    if (viaColumnName && attrib.getName().equals(embeddedFieldName)) {
                         if (nestedEmbeddedFieldName != null
                                 && ((MetamodelImpl) metaModel).isEmbeddable(((AbstractAttribute) attrib)
-                                        .getBindableJavaType()))
-                        {
+                                .getBindableJavaType())) {
                             EmbeddableType nestedEmbeddable = metaModel.embeddable(((AbstractAttribute) attrib)
                                     .getBindableJavaType());
                             Iterator<Attribute> iter = embeddable.getAttributes().iterator();
-                            while (iter.hasNext())
-                            {
+                            while (iter.hasNext()) {
                                 AbstractAttribute nestedAttribute = (AbstractAttribute) iter.next();
 
-                                if (viaColumnName && nestedAttribute.getName().equals(embeddedFieldName))
-                                {
+                                if (viaColumnName && nestedAttribute.getName().equals(embeddedFieldName)) {
                                     return nestedAttribute.getName();
                                 }
 
-                                if (!viaColumnName && nestedAttribute.getJPAColumnName().equals(embeddedFieldName))
-                                {
+                                if (!viaColumnName && nestedAttribute.getJPAColumnName().equals(embeddedFieldName)) {
                                     return nestedAttribute.getName();
                                 }
                             }
-                        }
-                        else if (nestedEmbeddedFieldName != null
+                        } else if (nestedEmbeddedFieldName != null
                                 && !((MetamodelImpl) metaModel).isEmbeddable(((AbstractAttribute) attrib)
-                                        .getBindableJavaType()))
-                        {
+                                .getBindableJavaType())) {
                             return null;
-                        }
-                        else
-                        {
+                        } else {
                             return attribute.getName();
                         }
                     }
 
-                    if (!viaColumnName && attrib.getJPAColumnName().equals(embeddedFieldName))
-                    {
+                    if (!viaColumnName && attrib.getJPAColumnName().equals(embeddedFieldName)) {
                         return attribute.getName();
                     }
                 }
             }
 
-        }
-        catch (IllegalArgumentException iax)
-        {
+        } catch (IllegalArgumentException iax) {
             return null;
         }
         return enclosingEmbeddedFieldName;
     }
 
     private static void getEmbeddableType(EntityMetadata m, Map<String, Field> columnNameToFieldMap,
-            Map<String, Field> superColumnNameToFieldMap, final KunderaMetadata kunderaMetadata)
-    {
+                                          Map<String, Field> superColumnNameToFieldMap, final KunderaMetadata kunderaMetadata) {
         Metamodel metaModel = kunderaMetadata.getApplicationMetadata().getMetamodel(m.getPersistenceUnit());
 
         EntityType entityType = metaModel.entity(m.getEntityClazz());
 
         Set attributes = entityType.getAttributes();
         Iterator<Attribute> iter = attributes.iterator();
-        while (iter.hasNext())
-        {
+        while (iter.hasNext()) {
             Attribute attribute = iter.next();
-            if (((MetamodelImpl) metaModel).isEmbeddable(((AbstractAttribute) attribute).getBindableJavaType()))
-            {
+            if (((MetamodelImpl) metaModel).isEmbeddable(((AbstractAttribute) attribute).getBindableJavaType())) {
                 superColumnNameToFieldMap.put(((AbstractAttribute) attribute).getJPAColumnName(),
                         (Field) attribute.getJavaMember());
-                if (columnNameToFieldMap != null)
-                {
+                if (columnNameToFieldMap != null) {
                     getAttributeOfEmbedddable(columnNameToFieldMap, metaModel, attribute);
                 }
 
-            }
-            else
-            {
-                if (columnNameToFieldMap != null)
-                {
+            } else {
+                if (columnNameToFieldMap != null) {
                     columnNameToFieldMap.put(((AbstractAttribute) attribute).getJPAColumnName(),
                             (Field) attribute.getJavaMember());
                 }
@@ -495,94 +383,76 @@ public class MetadataUtils
     }
 
     private static void getAttributeOfEmbedddable(Map<String, Field> columnNameToFieldMap, Metamodel metaModel,
-            Attribute attribute)
-    {
+                                                  Attribute attribute) {
         EmbeddableType embeddable = metaModel.embeddable(((AbstractAttribute) attribute).getBindableJavaType());
 
         Iterator<Attribute> embeddableIter = embeddable.getAttributes().iterator();
-        while (embeddableIter.hasNext())
-        {
+        while (embeddableIter.hasNext()) {
             Attribute embedAttrib = embeddableIter.next();
 
             // Reason is to avoid in case embeddable attribute within
             // embeddable.
-            if (!((MetamodelImpl) metaModel).isEmbeddable(embedAttrib.getJavaType()))
-            {
+            if (!((MetamodelImpl) metaModel).isEmbeddable(embedAttrib.getJavaType())) {
                 columnNameToFieldMap.put(((AbstractAttribute) embedAttrib).getJPAColumnName(),
                         (Field) embedAttrib.getJavaMember());
-            }
-            else
-            {
+            } else {
                 getAttributeOfEmbedddable(columnNameToFieldMap, metaModel, embedAttrib);
             }
         }
     }
 
-    public static boolean isEmbeddedAtributeIndexable(Field embeddedField)
-    {
+    public static boolean isEmbeddedAtributeIndexable(Field embeddedField) {
         Class<?> embeddableClass = PropertyAccessorHelper.getGenericClass(embeddedField);
-    
+
         IndexCollection indexCollection = embeddableClass.getAnnotation(IndexCollection.class);
-        if (indexCollection != null && indexCollection.columns() != null)
-        {
+        if (indexCollection != null && indexCollection.columns() != null) {
             return true;
         }
-      
+
         return false;
     }
 
-    public static boolean isColumnInEmbeddableIndexable(Field embeddedField, String columnFieldName)
-    {
+    public static boolean isColumnInEmbeddableIndexable(Field embeddedField, String columnFieldName) {
         Class<?> embeddableClass = PropertyAccessorHelper.getGenericClass(embeddedField);
-       
+
         IndexCollection indexCollection = embeddableClass.getAnnotation(IndexCollection.class);
-        if (indexCollection != null && indexCollection.columns() != null)
-        {
-            for (com.impetus.kundera.index.Index column : indexCollection.columns())
-            {
+        if (indexCollection != null && indexCollection.columns() != null) {
+            for (com.impetus.kundera.index.Index column : indexCollection.columns()) {
                 if (columnFieldName != null && column != null && column.name() != null
-                        && column.name().equals(columnFieldName))
-                {
+                        && column.name().equals(columnFieldName)) {
                     return true;
                 }
             }
         }
-     
+
         return false;
     }
 
     /**
      * If client specific to parameterized persistence unit does not support
      * transaction, return true else will return false.
-     * 
+     *
      * @param persistenceUnit
      * @return
      */
     public static boolean defaultTransactionSupported(final String persistenceUnit,
-            final KunderaMetadata kunderaMetadata)
-    {
+                                                      final KunderaMetadata kunderaMetadata) {
         PersistenceUnitMetadata puMetadata = KunderaMetadataManager.getPersistenceUnitMetadata(kunderaMetadata,
                 persistenceUnit);
 
         String txResource = puMetadata.getProperty(PersistenceProperties.KUNDERA_TRANSACTION_RESOURCE);
 
-        if (txResource == null)
-        {
+        if (txResource == null) {
             return true;
-        }
-        else if (txResource.isEmpty())
-        {
+        } else if (txResource.isEmpty()) {
             throw new IllegalArgumentException("Property " + PersistenceProperties.KUNDERA_TRANSACTION_RESOURCE
                     + " is blank");
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
 
-    public static boolean isSchemaAttributeRequired(final String persistenceUnit, final KunderaMetadata kunderaMetadata)
-    {
+    public static boolean isSchemaAttributeRequired(final String persistenceUnit, final KunderaMetadata kunderaMetadata) {
         PersistenceUnitMetadata puMetadata = KunderaMetadataManager.getPersistenceUnitMetadata(kunderaMetadata,
                 persistenceUnit);
         String clientFactoryName = puMetadata != null ? puMetadata
@@ -594,14 +464,11 @@ public class MetadataUtils
     /**
      * Index based search has to be optional, ideally need to register a
      * callback in case index persistence/search etc is optional.
-     * 
-     * @param persistenceUnit
-     *            persistence unit
-     * 
+     *
+     * @param persistenceUnit persistence unit
      * @return true, if index based search is enabled.
      */
-    public static boolean indexSearchEnabled(final String persistenceUnit, final KunderaMetadata kunderaMetadata)
-    {
+    public static boolean indexSearchEnabled(final String persistenceUnit, final KunderaMetadata kunderaMetadata) {
         PersistenceUnitMetadata puMetadata = KunderaMetadataManager.getPersistenceUnitMetadata(kunderaMetadata,
                 persistenceUnit);
         String clientFactoryName = puMetadata != null ? puMetadata
@@ -612,23 +479,19 @@ public class MetadataUtils
 
     /**
      * Checks whether a given field is Element collection field of BASIC type
-     * 
+     *
      * @param collectionField
      * @return
      */
-    public static boolean isBasicElementCollectionField(Field collectionField)
-    {
+    public static boolean isBasicElementCollectionField(Field collectionField) {
         if (!Collection.class.isAssignableFrom(collectionField.getType())
-                && !Map.class.isAssignableFrom(collectionField.getType()))
-        {
+                && !Map.class.isAssignableFrom(collectionField.getType())) {
             return false;
         }
 
         List<Class<?>> genericClasses = PropertyAccessorHelper.getGenericClasses(collectionField);
-        for (Class genericClass : genericClasses)
-        {
-            if (genericClass.getAnnotation(Embeddable.class) != null)
-            {
+        for (Class genericClass : genericClasses) {
+            if (genericClass.getAnnotation(Embeddable.class) != null) {
                 return false;
             }
         }
@@ -637,42 +500,36 @@ public class MetadataUtils
 
     /**
      * Checks whether an entity with given metadata contains a collection field
-     * 
+     *
      * @param m
      * @return
      */
     public static boolean containsBasicElementCollectionField(final EntityMetadata m,
-            final KunderaMetadata kunderaMetadata)
-    {
+                                                              final KunderaMetadata kunderaMetadata) {
         Metamodel metaModel = kunderaMetadata.getApplicationMetadata().getMetamodel(m.getPersistenceUnit());
         EntityType entityType = metaModel.entity(m.getEntityClazz());
         Iterator<Attribute> iter = entityType.getAttributes().iterator();
-        while (iter.hasNext())
-        {
+        while (iter.hasNext()) {
             Attribute attr = iter.next();
 
             if (attr.isCollection() && !attr.isAssociation()
-                    && isBasicElementCollectionField((Field) attr.getJavaMember()))
-            {
+                    && isBasicElementCollectionField((Field) attr.getJavaMember())) {
                 return true;
             }
         }
         return false;
     }
 
-    public static void onJPAColumnMapping(final EntityType entityType, EntityMetadata entityMetadata)
-    {
+    public static void onJPAColumnMapping(final EntityType entityType, EntityMetadata entityMetadata) {
         Set<Attribute> attributes = entityType.getAttributes();
 
         Iterator<Attribute> iter = attributes.iterator();
 
-        while (iter.hasNext())
-        {
+        while (iter.hasNext()) {
             Attribute attribute = iter.next();
 
             // jpa column mapping is for non id columns only.
-            if (!entityMetadata.getIdAttribute().equals(attribute))
-            {
+            if (!entityMetadata.getIdAttribute().equals(attribute)) {
                 entityMetadata.addJPAColumnMapping(((AbstractAttribute) attribute).getJPAColumnName(),
                         attribute.getName());
             }
@@ -684,12 +541,11 @@ public class MetadataUtils
     /**
      * Returns true if an entity contains attributes with validation constraints
      * enabled
-     * 
+     *
      * @param attribute
      * @return
      */
-    public static boolean onCheckValidationConstraints(Field attribute)
-    {
+    public static boolean onCheckValidationConstraints(Field attribute) {
         // / Checks if attribute contains any validation constraint enabled
         return attribute.isAnnotationPresent(AssertFalse.class) || attribute.isAnnotationPresent(AssertTrue.class)
                 || attribute.isAnnotationPresent(DecimalMax.class) || attribute.isAnnotationPresent(DecimalMin.class)
@@ -700,18 +556,17 @@ public class MetadataUtils
                 || attribute.isAnnotationPresent(Size.class);
 
     }
-    
+
     /**
      * Returns true if an entity contains embedded attribute
      * enabled
-     * 
+     *
      * @param attribute
      * @return
      */
-    public static boolean onCheckEmbeddableAttribute(Field attribute)
-    {
+    public static boolean onCheckEmbeddableAttribute(Field attribute) {
         // / Checks if attribute is embeddable
-        return attribute.isAnnotationPresent(Embedded.class) ;
+        return attribute.isAnnotationPresent(Embedded.class);
 
     }
 

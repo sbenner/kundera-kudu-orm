@@ -15,47 +15,37 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
+import com.impetus.kundera.property.PropertyAccessException;
+import com.impetus.kundera.property.PropertyAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.impetus.kundera.property.PropertyAccessException;
-import com.impetus.kundera.property.PropertyAccessor;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * The Class ObjectAccessor.
- * 
+ *
  * @author animesh.kumar
  */
-public class ObjectAccessor implements PropertyAccessor<Object>
-{
+public class ObjectAccessor implements PropertyAccessor<Object> {
 
     public static Logger log = LoggerFactory.getLogger(ObjectAccessor.class);
 
     /* @see com.impetus.kundera.property.PropertyAccessor#fromBytes(byte[]) */
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.property.PropertyAccessor#fromBytes(byte[])
      */
     @Override
-    public final Object fromBytes(Class targetClass, byte[] bytes)
-    {
-        try
-        {
-            if (bytes == null)
-            {
+    public final Object fromBytes(Class targetClass, byte[] bytes) {
+        try {
+            if (bytes == null) {
                 return null;
             }
-            if (targetClass != null && targetClass.equals(byte[].class))
-            {
+            if (targetClass != null && targetClass.equals(byte[].class)) {
                 return bytes;
             }
             ObjectInputStream ois;
@@ -63,14 +53,10 @@ public class ObjectAccessor implements PropertyAccessor<Object>
             Object o = ois.readObject();
             ois.close();
             return o;
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             log.error("IO exception, Caused by {}.", e);
             throw new PropertyAccessException(e);
-        }
-        catch (ClassNotFoundException e)
-        {
+        } catch (ClassNotFoundException e) {
             log.error("Class not found exception, Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
@@ -83,20 +69,16 @@ public class ObjectAccessor implements PropertyAccessor<Object>
      */
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toBytes(java.lang.Object)
      */
     @Override
-    public final byte[] toBytes(Object o)
-    {
+    public final byte[] toBytes(Object o) {
 
-        try
-        {
-            if (o != null)
-            {
-                if (o instanceof byte[])
-                {
+        try {
+            if (o != null) {
+                if (o instanceof byte[]) {
                     return (byte[]) o;
                 }
 
@@ -106,9 +88,7 @@ public class ObjectAccessor implements PropertyAccessor<Object>
                 oos.close();
                 return baos.toByteArray();
             }
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             log.error("IO exception, Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
@@ -117,116 +97,87 @@ public class ObjectAccessor implements PropertyAccessor<Object>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toString(java.lang.Object)
      */
     @Override
-    public final String toString(Object object)
-    {
+    public final String toString(Object object) {
         return object != null ? object.toString() : null;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#fromString(java.lang.String
      * )
      */
     @Override
-    public Object fromString(Class targetClass, String s)
-    {
-        try
-        {
-            if (s == null)
-            {
+    public Object fromString(Class targetClass, String s) {
+        try {
+            if (s == null) {
                 return null;
             }
             Object o = (Object) s;
             return o;
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             log.error("Number format exception, Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
     }
 
     @Override
-    public Object getCopy(Object object)
-    {
+    public Object getCopy(Object object) {
         if (object == null)
             return null;
 
-        if (object instanceof byte[])
-        {
+        if (object instanceof byte[]) {
             byte[] byteArr = (byte[]) object;
             return byteArr.clone();
-        }
-        else if (object instanceof Cloneable)
-        {
+        } else if (object instanceof Cloneable) {
             Class<?> clazz = object.getClass();
 
             Object o = null;
-            try
-            {
+            try {
                 Method m = clazz.getMethod("clone");
                 o = m.invoke(object);
-            }
-            catch (SecurityException e)
-            {
+            } catch (SecurityException e) {
                 log.warn("Object of class " + object.getClass() + " can't be cloned, due to exception:"
                         + e.getMessage());
                 return object;
-            }
-            catch (IllegalArgumentException e)
-            {
+            } catch (IllegalArgumentException e) {
                 log.warn("Object of class " + object.getClass() + " can't be cloned, due to exception:"
                         + e.getMessage());
                 return object;
-            }
-            catch (NoSuchMethodException e)
-            {
+            } catch (NoSuchMethodException e) {
                 log.warn("Object of class " + object.getClass() + " can't be cloned, due to exception:"
                         + e.getMessage());
                 return object;
-            }
-            catch (IllegalAccessException e)
-            {
+            } catch (IllegalAccessException e) {
                 log.warn("Object of class " + object.getClass() + " can't be cloned, due to exception:"
                         + e.getMessage());
                 return object;
-            }
-            catch (InvocationTargetException e)
-            {
+            } catch (InvocationTargetException e) {
                 log.warn("Object of class " + object.getClass() + " can't be cloned, due to exception:"
                         + e.getMessage());
                 return object;
             }
             return o;
-        }
-        else
-        {
+        } else {
             return object;
         }
     }
 
-    public Object getInstance(Class<?> clazz)
-    {
+    public Object getInstance(Class<?> clazz) {
         Object o = null;
-        try
-        {
+        try {
             o = clazz.newInstance();
             return o;
-        }
-        catch (InstantiationException ie)
-        {
+        } catch (InstantiationException ie) {
             log.warn("Instantiation exception,caused by :" + ie.getMessage());
             return null;
-        }
-        catch (IllegalAccessException iae)
-        {
+        } catch (IllegalAccessException iae) {
             log.warn("Illegal access exception,caused by :" + iae.getMessage());
             return null;
         }

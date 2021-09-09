@@ -19,33 +19,31 @@ import com.impetus.kundera.proxy.LazyInitializerFactory;
 
 /**
  * The Class CoreMetadata.
- * 
+ *
  * @author amresh.singh
  */
-public class CoreMetadata
-{
+public class CoreMetadata {
 
-    /** The lazy initializer factory. */
+    /**
+     * The lazy initializer factory.
+     */
     private LazyInitializerFactory lazyInitializerFactory;
 
     /**
      * Gets the lazy initializer factory.
-     * 
+     *
      * @return the lazy initializer factory
      */
-    public LazyInitializerFactory getLazyInitializerFactory()
-    {
+    public LazyInitializerFactory getLazyInitializerFactory() {
         return lazyInitializerFactory;
     }
 
     /**
      * Sets the lazy initializer factory.
-     * 
-     * @param lazyInitializerFactory
-     *            the new lazy initializer factory
+     *
+     * @param lazyInitializerFactory the new lazy initializer factory
      */
-    public void setLazyInitializerFactory(LazyInitializerFactory lazyInitializerFactory)
-    {
+    public void setLazyInitializerFactory(LazyInitializerFactory lazyInitializerFactory) {
         this.lazyInitializerFactory = lazyInitializerFactory;
     }
 

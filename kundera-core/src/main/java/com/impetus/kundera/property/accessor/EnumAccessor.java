@@ -15,39 +15,31 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
-import java.io.UnsupportedEncodingException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.kundera.Constants;
 import com.impetus.kundera.property.PropertyAccessException;
 import com.impetus.kundera.property.PropertyAccessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * @author amresh.singh
- * 
  */
 @SuppressWarnings("rawtypes")
-public class EnumAccessor implements PropertyAccessor<Enum>
-{
+public class EnumAccessor implements PropertyAccessor<Enum> {
 
     private final static Logger log = LoggerFactory.getLogger(EnumAccessor.class);
 
     @Override
-    public Enum fromBytes(Class targetClass, byte[] b)
-    {
+    public Enum fromBytes(Class targetClass, byte[] b) {
         String s = null;
-        try
-        {
-            if (b == null)
-            {
+        try {
+            if (b == null) {
                 return null;
             }
             s = new String(b, Constants.ENCODING);
-        }
-        catch (UnsupportedEncodingException e)
-        {
+        } catch (UnsupportedEncodingException e) {
             log.error("Unsupported encoding exception, Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
@@ -55,29 +47,22 @@ public class EnumAccessor implements PropertyAccessor<Enum>
     }
 
     @Override
-    public byte[] toBytes(Object object)
-    {
-        if (object == null)
-        {
+    public byte[] toBytes(Object object) {
+        if (object == null) {
             return null;
         }
         String s = toString(object);
-        try
-        {
+        try {
             return s.getBytes(Constants.ENCODING);
-        }
-        catch (UnsupportedEncodingException e)
-        {
+        } catch (UnsupportedEncodingException e) {
             log.error("Unsupported encoding exception, Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
     }
 
     @Override
-    public String toString(Object object)
-    {
-        if (object == null)
-        {
+    public String toString(Object object) {
+        if (object == null) {
             return null;
         }
         Enum en = (Enum) object;
@@ -85,16 +70,11 @@ public class EnumAccessor implements PropertyAccessor<Enum>
     }
 
     @Override
-    public Enum fromString(Class targetClass, String string)
-    {
-        if (targetClass != null && string != null)
-        {
-            try
-            {
+    public Enum fromString(Class targetClass, String string) {
+        if (targetClass != null && string != null) {
+            try {
                 return Enum.valueOf(targetClass, string.trim());
-            }
-            catch (IllegalArgumentException ex)
-            {
+            } catch (IllegalArgumentException ex) {
                 log.error("Illegal argument exception, Caused by {}.", ex);
                 throw new PropertyAccessException(ex);
             }
@@ -104,17 +84,14 @@ public class EnumAccessor implements PropertyAccessor<Enum>
     }
 
     @Override
-    public Enum getCopy(Object object)
-    {
-        if (object != null)
-        {
+    public Enum getCopy(Object object) {
+        if (object != null) {
             return fromString(object.getClass(), toString(object));
         }
         return null;
     }
 
-    public Enum getInstance(Class<?> clazz)
-    {
+    public Enum getInstance(Class<?> clazz) {
         return null;
     }
 }

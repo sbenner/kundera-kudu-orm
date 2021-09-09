@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,16 +17,14 @@ package com.impetus.kundera.gis.geometry;
 
 /**
  * Geometric Coordinate implementation
- * 
+ *
  * @author amresh.singh
  */
-public class Coordinate extends com.vividsolutions.jts.geom.Coordinate
-{
+public class Coordinate extends com.vividsolutions.jts.geom.Coordinate {
     /**
-     * 
+     *
      */
-    public Coordinate()
-    {
+    public Coordinate() {
         super();
 
     }
@@ -34,8 +32,7 @@ public class Coordinate extends com.vividsolutions.jts.geom.Coordinate
     /**
      * @param c
      */
-    public Coordinate(com.vividsolutions.jts.geom.Coordinate c)
-    {
+    public Coordinate(com.vividsolutions.jts.geom.Coordinate c) {
         super(c);
 
     }
@@ -45,8 +42,7 @@ public class Coordinate extends com.vividsolutions.jts.geom.Coordinate
      * @param y
      * @param z
      */
-    public Coordinate(double x, double y, double z)
-    {
+    public Coordinate(double x, double y, double z) {
         super(x, y, z);
 
     }
@@ -55,8 +51,7 @@ public class Coordinate extends com.vividsolutions.jts.geom.Coordinate
      * @param x
      * @param y
      */
-    public Coordinate(double x, double y)
-    {
+    public Coordinate(double x, double y) {
         super(x, y);
 
     }

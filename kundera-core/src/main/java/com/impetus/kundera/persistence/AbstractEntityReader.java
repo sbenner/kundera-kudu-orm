@@ -15,19 +15,6 @@
  ******************************************************************************/
 package com.impetus.kundera.persistence;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.persistence.FetchType;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.kundera.client.Client;
 import com.impetus.kundera.client.ClientBase;
 import com.impetus.kundera.client.EnhanceEntity;
@@ -43,62 +30,58 @@ import com.impetus.kundera.property.PropertyAccessorHelper;
 import com.impetus.kundera.proxy.ProxyHelper;
 import com.impetus.kundera.query.KunderaQuery;
 import com.impetus.kundera.utils.KunderaCoreUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.FetchType;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * The Class AbstractEntityReader.
- * 
+ *
  * @author vivek.mishra
  */
-public class AbstractEntityReader
-{
+public class AbstractEntityReader {
 
-    /** The log. */
+    /**
+     * The log.
+     */
     private static Logger log = LoggerFactory.getLogger(AbstractEntityReader.class);
-
+    protected KunderaQuery kunderaQuery;
+    protected KunderaMetadata kunderaMetadata;
     private AssociationBuilder associationBuilder;
 
-    protected KunderaQuery kunderaQuery;
-
-    protected KunderaMetadata kunderaMetadata;
-
-    public AbstractEntityReader(final KunderaMetadata kunderaMetadata)
-    {
+    public AbstractEntityReader(final KunderaMetadata kunderaMetadata) {
         this.kunderaMetadata = kunderaMetadata;
     }
 
     /**
      * Retrieves an entity from ID
-     * 
+     *
      * @param primaryKey
      * @param m
      * @param client
      * @return
      */
-    protected EnhanceEntity findById(Object primaryKey, EntityMetadata m, Client client)
-    {
-        try
-        {
+    protected EnhanceEntity findById(Object primaryKey, EntityMetadata m, Client client) {
+        try {
             Object o = client.find(m.getEntityClazz(), primaryKey);
 
-            if (o == null)
-            {
+            if (o == null) {
                 // No entity found
                 return null;
-            }
-            else
-            {
+            } else {
                 return o instanceof EnhanceEntity ? (EnhanceEntity) o : new EnhanceEntity(o, getId(o, m), null);
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new EntityReaderException(e);
         }
     }
 
     /**
      * Recursively fetches associated entities for a given <code>entity</code>
-     * 
+     *
      * @param entity
      * @param relationsMap
      * @param client
@@ -108,32 +91,25 @@ public class AbstractEntityReader
      * @return
      */
     private Object handleAssociation(final Object entity, final Map<String, Object> relationsMap,
-            final EntityMetadata m, final PersistenceDelegator pd, boolean lazilyloaded,
-            Map<Object, Object> relationStack)
-    {
+                                     final EntityMetadata m, final PersistenceDelegator pd, boolean lazilyloaded,
+                                     Map<Object, Object> relationStack) {
 
-        for (Relation relation : m.getRelations())
-        {
-            if (relation != null)
-            {
+        for (Relation relation : m.getRelations()) {
+            if (relation != null) {
                 ForeignKey relationType = relation.getType();
 
                 Object relationalObject = PropertyAccessorHelper.getObject(entity, relation.getProperty());
 
                 if (KunderaCoreUtils.isEmptyOrNull(relationalObject)
-                        || ProxyHelper.isProxyOrCollection(relationalObject))
-                {
+                        || ProxyHelper.isProxyOrCollection(relationalObject)) {
                     onRelation(entity, relationsMap, m, pd, relation, relationType, lazilyloaded, relationStack);
                 } // a bit of hack for neo4j only
                 else if (!ProxyHelper.isProxyOrCollection(relationalObject)
-                        && Map.class.isAssignableFrom(relationalObject.getClass()))
-                {
+                        && Map.class.isAssignableFrom(relationalObject.getClass())) {
                     Map relationalMap = (Map) relationalObject;
-                    for (Map.Entry entry : (Set<Map.Entry>) relationalMap.entrySet())
-                    {
+                    for (Map.Entry entry : (Set<Map.Entry>) relationalMap.entrySet()) {
                         Object entityObject = entry.getValue();
-                        if (entityObject != null)
-                        {
+                        if (entityObject != null) {
                             EntityMetadata metadata = KunderaMetadataManager.getEntityMetadata(kunderaMetadata,
                                     entityObject.getClass());
                             PersistenceCacheManager.addEntityToPersistenceCache(entityObject, pd,
@@ -148,7 +124,7 @@ public class AbstractEntityReader
 
     /**
      * Parse over each relation of fetched entity.
-     * 
+     *
      * @param entity
      * @param relationsMap
      * @param m
@@ -159,30 +135,23 @@ public class AbstractEntityReader
      * @param relationStack
      */
     private void onRelation(final Object entity, final Map<String, Object> relationsMap, final EntityMetadata m,
-            final PersistenceDelegator pd, Relation relation, ForeignKey relationType, boolean lazilyloaded,
-            Map<Object, Object> relationStack)
-    {
+                            final PersistenceDelegator pd, Relation relation, ForeignKey relationType, boolean lazilyloaded,
+                            Map<Object, Object> relationStack) {
 
         FetchType fetchType = relation.getFetchType();
 
-        if (!lazilyloaded && fetchType.equals(FetchType.LAZY))
-        {
+        if (!lazilyloaded && fetchType.equals(FetchType.LAZY)) {
             final Object entityId = PropertyAccessorHelper.getId(entity, m);
             getAssociationBuilder().setProxyRelationObject(entity, relationsMap, m, pd, entityId, relation);
-        }
-        else
-        {
-            if (relation.getType().equals(ForeignKey.MANY_TO_MANY))
-            {
+        } else {
+            if (relation.getType().equals(ForeignKey.MANY_TO_MANY)) {
                 // First, Save this entity to persistence cache
                 Field f = relation.getProperty();
                 Object object = PropertyAccessorHelper.getObject(entity, f);
                 final Object entityId = PropertyAccessorHelper.getId(entity, m);
                 PersistenceCacheManager.addEntityToPersistenceCache(entity, pd, entityId);
                 getAssociationBuilder().populateRelationForM2M(entity, m, pd, relation, object, relationsMap);
-            }
-            else
-            {
+            } else {
                 onRelation(entity, relationsMap, relation, m, pd, lazilyloaded, relationStack);
             }
         }
@@ -190,21 +159,16 @@ public class AbstractEntityReader
 
     /**
      * Method to handle one to one association relation events.
-     * 
-     * @param entity
-     *            relation owning entity.
-     * @param entityId
-     *            entity id of relation owning entity.
-     * @param relationsMap
-     *            contains relation name and it's value.
+     *
+     * @param entity        relation owning entity.
+     * @param entityId      entity id of relation owning entity.
+     * @param relationsMap  contains relation name and it's value.
      * @param relationStack
-     * @param m
-     *            entity metadata.
+     * @param m             entity metadata.
      */
     private void onRelation(Object entity, Map<String, Object> relationsMap, final Relation relation,
-            final EntityMetadata metadata, final PersistenceDelegator pd, boolean lazilyloaded,
-            Map<Object, Object> relationStack)
-    {
+                            final EntityMetadata metadata, final PersistenceDelegator pd, boolean lazilyloaded,
+                            Map<Object, Object> relationStack) {
         final Object entityId = PropertyAccessorHelper.getId(entity, metadata);
 
         // if relation map contains value, then invoke target entity with find
@@ -219,20 +183,15 @@ public class AbstractEntityReader
 
         List relationalEntities = fetchRelations(relation, metadata, pd, entityId, relationValue, targetEntityMetadata);
 
-        if (relationalEntities != null)
-        {
+        if (relationalEntities != null) {
 
-            for (Object relationEntity : relationalEntities)
-            {
-                if (relationEntity != null)
-                {
+            for (Object relationEntity : relationalEntities) {
+                if (relationEntity != null) {
                     addToRelationStack(relationStack, relationEntity, targetEntityMetadata);
                 }
             }
-            for (Object relationEntity : relationalEntities)
-            {
-                if (relationEntity != null)
-                {
+            for (Object relationEntity : relationalEntities) {
+                if (relationEntity != null) {
                     onParseRelation(entity, pd, targetEntityMetadata, relationEntity, relation, lazilyloaded,
                             relationStack);
                     PersistenceCacheManager.addEntityToPersistenceCache(getEntity(relationEntity), pd,
@@ -246,7 +205,7 @@ public class AbstractEntityReader
     /**
      * Invokes parseRelations for relation entity and set relational entity
      * within entity
-     * 
+     *
      * @param entity
      * @param pd
      * @param targetEntityMetadata
@@ -256,8 +215,7 @@ public class AbstractEntityReader
      * @param relationStack
      */
     private void onParseRelation(Object entity, final PersistenceDelegator pd, EntityMetadata targetEntityMetadata,
-            Object relationEntity, Relation relation, boolean lazilyloaded, Map<Object, Object> relationStack)
-    {
+                                 Object relationEntity, Relation relation, boolean lazilyloaded, Map<Object, Object> relationStack) {
         parseRelations(entity, getEntity(relationEntity), getPersistedRelations(relationEntity), pd,
                 targetEntityMetadata, lazilyloaded, relationStack);
 
@@ -268,25 +226,19 @@ public class AbstractEntityReader
     /**
      * After successfully parsing set relational entity object within entity
      * object.
-     * 
+     *
      * @param entity
      * @param relationEntity
      * @param relation
      */
-    private void setRelationToEntity(Object entity, Object relationEntity, Relation relation)
-    {
-        if (relation.getTargetEntity().isAssignableFrom(getEntity(relationEntity).getClass()))
-        {
+    private void setRelationToEntity(Object entity, Object relationEntity, Relation relation) {
+        if (relation.getTargetEntity().isAssignableFrom(getEntity(relationEntity).getClass())) {
 
-            if (relation.isUnary())
-            {
+            if (relation.isUnary()) {
                 PropertyAccessorHelper.set(entity, relation.getProperty(), getEntity(relationEntity));
-            }
-            else
-            {
+            } else {
                 Object associationObject = PropertyAccessorHelper.getObject(entity, relation.getProperty());
-                if (associationObject == null || ProxyHelper.isProxyOrCollection(associationObject))
-                {
+                if (associationObject == null || ProxyHelper.isProxyOrCollection(associationObject)) {
                     associationObject = PropertyAccessorHelper.getCollectionInstance(relation.getProperty());
                     PropertyAccessorHelper.set(entity, relation.getProperty(), associationObject);
                 }
@@ -298,7 +250,7 @@ public class AbstractEntityReader
 
     /**
      * Parse relations of provided relationEntity.
-     * 
+     *
      * @param originalEntity
      * @param relationEntity
      * @param relationsMap
@@ -308,44 +260,31 @@ public class AbstractEntityReader
      * @param relationStack
      */
     private void parseRelations(final Object originalEntity, final Object relationEntity,
-            final Map<String, Object> relationsMap, final PersistenceDelegator pd, final EntityMetadata metadata,
-            boolean lazilyloaded, Map<Object, Object> relationStack)
-    {
+                                final Map<String, Object> relationsMap, final PersistenceDelegator pd, final EntityMetadata metadata,
+                                boolean lazilyloaded, Map<Object, Object> relationStack) {
 
-        for (Relation relation : metadata.getRelations())
-        {
-            if (relation != null)
-            {
+        for (Relation relation : metadata.getRelations()) {
+            if (relation != null) {
                 FetchType fetchType = relation.getFetchType();
 
-                if (!lazilyloaded && fetchType.equals(FetchType.LAZY))
-                {
+                if (!lazilyloaded && fetchType.equals(FetchType.LAZY)) {
                     final Object entityId = PropertyAccessorHelper.getId(relationEntity, metadata);
                     getAssociationBuilder().setProxyRelationObject(relationEntity, relationsMap, metadata, pd,
                             entityId, relation);
-                }
-                else
-                {
+                } else {
 
-                    if (relation.isUnary() && relation.getTargetEntity().isAssignableFrom(originalEntity.getClass()))
-                    {
+                    if (relation.isUnary() && relation.getTargetEntity().isAssignableFrom(originalEntity.getClass())) {
                         Object associationObject = PropertyAccessorHelper.getObject(relationEntity,
                                 relation.getProperty());
-                        if (relation.getType().equals(ForeignKey.ONE_TO_ONE))
-                        {
-                            if ((associationObject == null || ProxyHelper.isProxyOrCollection(associationObject)))
-                            {
+                        if (relation.getType().equals(ForeignKey.ONE_TO_ONE)) {
+                            if ((associationObject == null || ProxyHelper.isProxyOrCollection(associationObject))) {
                                 PropertyAccessorHelper.set(relationEntity, relation.getProperty(), originalEntity);
                             }
-                        }
-                        else if (relationsMap != null
-                                && relationsMap.containsKey(relation.getJoinColumnName(kunderaMetadata)))
-                        {
+                        } else if (relationsMap != null
+                                && relationsMap.containsKey(relation.getJoinColumnName(kunderaMetadata))) {
                             PropertyAccessorHelper.set(relationEntity, relation.getProperty(), originalEntity);
                         }
-                    }
-                    else
-                    {
+                    } else {
                         // Here
                         // onRelation(relationEntity, relationsMap, metadata,
                         // pd,
@@ -361,26 +300,20 @@ public class AbstractEntityReader
                         // skip
                         // this
                         // relation as it
-                        if (immediateRelations != null && !immediateRelations.isEmpty())
-                        {
-                            for (Object immediateRelation : immediateRelations)
-                            {
-                                if (immediateRelation != null )
-                                {
-                                    if (existsInRelationStack(relationStack, immediateRelation, targetEntityMetadata))
-                                    {
+                        if (immediateRelations != null && !immediateRelations.isEmpty()) {
+                            for (Object immediateRelation : immediateRelations) {
+                                if (immediateRelation != null) {
+                                    if (existsInRelationStack(relationStack, immediateRelation, targetEntityMetadata)) {
                                         setRelationToEntity(
                                                 relationEntity,
                                                 fetchFromRelationStack(relationStack, immediateRelation,
                                                         targetEntityMetadata), relation);
 
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         addToRelationStack(relationStack, immediateRelation, targetEntityMetadata);
                                         onParseRelation(relationEntity, pd, targetEntityMetadata, immediateRelation,
                                                 relation, lazilyloaded, relationStack);
-                                      
+
 
                                     }
                                     PersistenceCacheManager.addEntityToPersistenceCache(getEntity(relationEntity), pd,
@@ -396,16 +329,15 @@ public class AbstractEntityReader
     }
 
     // Adds an object to the stack for referring
+
     /**
      * @param relationStack
      * @param entity
      * @param m
      */
-    private void addToRelationStack(Map<Object, Object> relationStack, Object entity, EntityMetadata m)
-    {
+    private void addToRelationStack(Map<Object, Object> relationStack, Object entity, EntityMetadata m) {
         Object obj = entity;
-        if (entity instanceof EnhanceEntity)
-        {
+        if (entity instanceof EnhanceEntity) {
             obj = ((EnhanceEntity) entity).getEntity();
         }
         relationStack.put(obj.getClass().getCanonicalName() + "#" + PropertyAccessorHelper.getId(obj, m), obj);
@@ -413,17 +345,16 @@ public class AbstractEntityReader
     }
 
     // Checks whether the object already exists in stack
+
     /**
      * @param relationStack
      * @param entity
      * @param m
      * @return
      */
-    private Boolean existsInRelationStack(Map<Object, Object> relationStack, Object entity, EntityMetadata m)
-    {
+    private Boolean existsInRelationStack(Map<Object, Object> relationStack, Object entity, EntityMetadata m) {
         Object obj = entity;
-        if (entity instanceof EnhanceEntity)
-        {
+        if (entity instanceof EnhanceEntity) {
             obj = ((EnhanceEntity) entity).getEntity();
         }
         return relationStack
@@ -431,73 +362,56 @@ public class AbstractEntityReader
     }
 
     // Fetches the object from stack
+
     /**
      * @param relationStack
      * @param entity
      * @param m
      * @return
      */
-    private Object fetchFromRelationStack(Map<Object, Object> relationStack, Object entity, EntityMetadata m)
-    {
+    private Object fetchFromRelationStack(Map<Object, Object> relationStack, Object entity, EntityMetadata m) {
         Object obj = entity;
-        if (entity instanceof EnhanceEntity)
-        {
+        if (entity instanceof EnhanceEntity) {
             obj = ((EnhanceEntity) entity).getEntity();
         }
         return relationStack.get(obj.getClass().getCanonicalName() + "#" + PropertyAccessorHelper.getId(obj, m));
     }
 
     /**
-     * 
      * Based on relation type, method invokes database to fetch relation
      * entities.
-     * 
-     * @param relation
-     *            relation
-     * @param metadata
-     *            entity metadata
-     * @param pd
-     *            persistence delegator
-     * @param entityId
-     *            entity id
-     * @param relationValue
-     *            relational value
-     * @param targetEntityMetadata
-     *            relational entity's metadata.
-     * 
+     *
+     * @param relation             relation
+     * @param metadata             entity metadata
+     * @param pd                   persistence delegator
+     * @param entityId             entity id
+     * @param relationValue        relational value
+     * @param targetEntityMetadata relational entity's metadata.
      * @return list of fetched relations.
      */
     private List fetchRelations(final Relation relation, final EntityMetadata metadata, final PersistenceDelegator pd,
-            final Object entityId, Object relationValue, EntityMetadata targetEntityMetadata)
-    {
+                                final Object entityId, Object relationValue, EntityMetadata targetEntityMetadata) {
         List relationalEntities = new ArrayList();
 
-        if ((relationValue != null && relation.isUnary()) || (relation.isJoinedByPrimaryKey()))
-        {
+        if ((relationValue != null && relation.isUnary()) || (relation.isJoinedByPrimaryKey())) {
             // Call it
             Object relationEntity = pd.getClient(targetEntityMetadata).find(relation.getTargetEntity(),
                     relationValue != null ? relationValue : entityId);
-            if (relationEntity != null)
-            {
+            if (relationEntity != null) {
                 relationalEntities.add(relationEntity);
             }
-        }
-        else if (!relation.isUnary())
-        {
+        } else if (!relation.isUnary()) {
             // Now these entities may be enhance entities and may not be as
             // well.
             Client associatedClient = pd.getClient(targetEntityMetadata);
 
             if (!MetadataUtils.useSecondryIndex(((ClientBase) associatedClient).getClientMetadata())
-                    && MetadataUtils.indexSearchEnabled(targetEntityMetadata.getPersistenceUnit(), kunderaMetadata))
-            {
+                    && MetadataUtils.indexSearchEnabled(targetEntityMetadata.getPersistenceUnit(), kunderaMetadata)) {
 
                 relationalEntities = getAssociationBuilder().getAssociatedEntitiesFromIndex(
                         relation.getProperty().getDeclaringClass(), entityId, targetEntityMetadata.getEntityClazz(),
                         associatedClient);
-            }
-            else
-            {
+            } else {
                 relationalEntities = associatedClient.findByRelation(relation.getJoinColumnName(kunderaMetadata),
                         entityId, relation.getTargetEntity());
             }
@@ -507,7 +421,7 @@ public class AbstractEntityReader
 
     /**
      * Recursively fetches associated entities for a given <code>entity</code>
-     * 
+     *
      * @param entity
      * @param relationsMap
      * @param client
@@ -516,76 +430,62 @@ public class AbstractEntityReader
      * @return
      */
     public Object recursivelyFindEntities(Object entity, Map<String, Object> relationsMap, EntityMetadata m,
-            PersistenceDelegator pd, boolean lazilyLoaded, Map<Object, Object> relationStack)
-    {
+                                          PersistenceDelegator pd, boolean lazilyLoaded, Map<Object, Object> relationStack) {
         return handleAssociation(entity, relationsMap, m, pd, lazilyLoaded, relationStack);
 
     }
 
     /**
      * Returns wrapped relations.
-     * 
+     *
      * @param relationEntity
      * @return
      */
-    private Map<String, Object> getPersistedRelations(Object relationEntity)
-    {
+    private Map<String, Object> getPersistedRelations(Object relationEntity) {
         return relationEntity != null && relationEntity.getClass().isAssignableFrom(EnhanceEntity.class) ? ((EnhanceEntity) relationEntity)
                 .getRelations() : null;
     }
 
     /**
      * Returns wrapped entity.
-     * 
+     *
      * @param relationEntity
      * @return
      */
-    private Object getEntity(Object relationEntity)
-    {
+    private Object getEntity(Object relationEntity) {
         return relationEntity != null && relationEntity.getClass().isAssignableFrom(EnhanceEntity.class) ? ((EnhanceEntity) relationEntity)
                 .getEntity() : relationEntity;
     }
 
     /**
      * On association using lucene.
-     * 
-     * @param m
-     *            the m
-     * @param client
-     *            the client
-     * @param ls
-     *            the ls
+     *
+     * @param m      the m
+     * @param client the client
+     * @param ls     the ls
      * @return the list
      */
-    protected List<EnhanceEntity> onAssociationUsingLucene(EntityMetadata m, Client client, List<EnhanceEntity> ls)
-    {
+    protected List<EnhanceEntity> onAssociationUsingLucene(EntityMetadata m, Client client, List<EnhanceEntity> ls) {
         Set<String> rSet = fetchDataFromLucene(m.getEntityClazz(), client);
-        List resultList = client.findAll(m.getEntityClazz(), null, rSet.toArray(new String[] {}));
+        List resultList = client.findAll(m.getEntityClazz(), null, rSet.toArray(new String[]{}));
         return m.getRelationNames() != null && !m.getRelationNames().isEmpty() ? resultList : transform(m, ls,
                 resultList);
     }
 
     /**
      * Transform.
-     * 
-     * @param m
-     *            the m
-     * @param ls
-     *            the ls
-     * @param resultList
-     *            the result list
+     *
+     * @param m          the m
+     * @param ls         the ls
+     * @param resultList the result list
      * @return the list
      */
-    protected List<EnhanceEntity> transform(EntityMetadata m, List<EnhanceEntity> ls, List resultList)
-    {
-        if ((ls == null || ls.isEmpty()) && resultList != null && !resultList.isEmpty())
-        {
+    protected List<EnhanceEntity> transform(EntityMetadata m, List<EnhanceEntity> ls, List resultList) {
+        if ((ls == null || ls.isEmpty()) && resultList != null && !resultList.isEmpty()) {
             ls = new ArrayList<EnhanceEntity>(resultList.size());
         }
-        for (Object r : resultList)
-        {
-            if (r != null && !r.getClass().isAssignableFrom(EnhanceEntity.class))
-            {
+        for (Object r : resultList) {
+            if (r != null && !r.getClass().isAssignableFrom(EnhanceEntity.class)) {
                 EnhanceEntity e = new EnhanceEntity(r, getId(r, m), null);
                 ls.add(e);
             }
@@ -595,13 +495,11 @@ public class AbstractEntityReader
 
     /**
      * Fetch data from lucene.
-     * 
-     * @param client
-     *            the client
+     *
+     * @param client the client
      * @return the sets the
      */
-    protected Set<String> fetchDataFromLucene(Class<?> clazz, Client client)
-    {
+    protected Set<String> fetchDataFromLucene(Class<?> clazz, Client client) {
         // use lucene to query and get Pk's only.
         // go to client and get relation with values.!
         // populate EnhanceEntity
@@ -616,21 +514,15 @@ public class AbstractEntityReader
 
     /**
      * Gets the id.
-     * 
-     * @param entity
-     *            the entity
-     * @param metadata
-     *            the metadata
+     *
+     * @param entity   the entity
+     * @param metadata the metadata
      * @return the id
      */
-    protected Object getId(Object entity, EntityMetadata metadata)
-    {
-        try
-        {
+    protected Object getId(Object entity, EntityMetadata metadata) {
+        try {
             return PropertyAccessorHelper.getId(entity, metadata);
-        }
-        catch (PropertyAccessException e)
-        {
+        } catch (PropertyAccessException e) {
             log.error("Error while Getting ID for entity {}, Caused by: {}.", entity, e);
             throw new EntityReaderException("Error while Getting ID for entity " + entity, e);
         }
@@ -639,16 +531,14 @@ public class AbstractEntityReader
 
     /**
      * Compares original with relational entity.
-     * 
+     *
      * @param relationalEntity
      * @param originalEntity
      * @return
      */
-    private boolean compareTo(Object relationalEntity, Object originalEntity)
-    {
+    private boolean compareTo(Object relationalEntity, Object originalEntity) {
         if (relationalEntity != null && originalEntity != null
-                && relationalEntity.getClass().isAssignableFrom(originalEntity.getClass()))
-        {
+                && relationalEntity.getClass().isAssignableFrom(originalEntity.getClass())) {
             EntityMetadata metadata = KunderaMetadataManager.getEntityMetadata(kunderaMetadata,
                     originalEntity.getClass());
 
@@ -663,13 +553,11 @@ public class AbstractEntityReader
 
     /**
      * Returns association builder instance.
-     * 
+     *
      * @return association builder
      */
-    private AssociationBuilder getAssociationBuilder()
-    {
-        if (this.associationBuilder == null)
-        {
+    private AssociationBuilder getAssociationBuilder() {
+        if (this.associationBuilder == null) {
             this.associationBuilder = new AssociationBuilder();
         }
 

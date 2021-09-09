@@ -15,16 +15,12 @@
  ******************************************************************************/
 package com.impetus.kundera;
 
-import java.util.HashMap;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.LockModeType;
-import javax.persistence.Persistence;
-import javax.persistence.Query;
-
+import com.impetus.kundera.client.DummyDatabase;
+import com.impetus.kundera.metadata.entities.SampleEntity;
+import com.impetus.kundera.persistence.EntityManagerImpl;
+import com.impetus.kundera.polyglot.entities.PersonBMM;
+import com.impetus.kundera.query.Person;
 import junit.framework.Assert;
-
 import org.apache.commons.lang.NotImplementedException;
 import org.junit.After;
 import org.junit.Before;
@@ -32,28 +28,23 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.impetus.kundera.client.DummyDatabase;
-import com.impetus.kundera.metadata.entities.SampleEntity;
-import com.impetus.kundera.persistence.EntityManagerImpl;
-import com.impetus.kundera.polyglot.entities.PersonBMM;
-import com.impetus.kundera.query.Person;
+import javax.persistence.*;
+import java.util.HashMap;
 
 /**
  * @author vivek.mishra junit for {@link EntityManagerImpl}
  */
-public class EntityManagerImplTest
-{
+public class EntityManagerImplTest {
 
-    private EntityManager em;
-
-    /** The log. */
+    /**
+     * The log.
+     */
     private static Logger log = LoggerFactory.getLogger(EntityManagerImplTest.class);
-
+    private EntityManager em;
     private EntityManagerFactory emf;
 
     @Before
-    public void setUp()
-    {
+    public void setUp() {
 
         emf = Persistence.createEntityManagerFactory("kunderatest");
 
@@ -62,36 +53,28 @@ public class EntityManagerImplTest
 
     /**
      * On test persist.
-     * 
      */
     @Test
-    public void testPersist()
-    {
-        try
-        {
-            for (int i = 1; i <= 1000000; i++)
-            {
+    public void testPersist() {
+        try {
+            for (int i = 1; i <= 1000000; i++) {
                 final SampleEntity entity = new SampleEntity();
                 entity.setKey(i);
                 entity.setName("name" + i);
-                if (i % 5000 == 0)
-                {
+                if (i % 5000 == 0) {
                     em.clear();
                 }
 
                 em.persist(entity);
 
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Assert.fail(e.getMessage());
         }
     }
 
     @After
-    public void tearDown()
-    {
+    public void tearDown() {
         if (em != null)
             em.close();
         if (emf != null)
@@ -100,14 +83,12 @@ public class EntityManagerImplTest
         dropDatabase();
     }
 
-    private void dropDatabase()
-    {
+    private void dropDatabase() {
         DummyDatabase.INSTANCE.dropDatabase();
     }
 
     @Test
-    public void testSingleEntityCRUD_EmNotCleared()
-    {
+    public void testSingleEntityCRUD_EmNotCleared() {
         // Persist
         final SampleEntity entity = new SampleEntity();
         entity.setKey(1);
@@ -133,8 +114,7 @@ public class EntityManagerImplTest
     }
 
     @Test
-    public void testSingleEntityCRUD_EmCleared()
-    {
+    public void testSingleEntityCRUD_EmCleared() {
         // Persist
         final SampleEntity entity = new SampleEntity();
         entity.setKey(1);
@@ -178,8 +158,7 @@ public class EntityManagerImplTest
     }
 
     @Test
-    public void testNativeQuery()
-    {
+    public void testNativeQuery() {
         final String nativeQuery = "Select * from persontable";
         Query query = em.createNativeQuery(nativeQuery, SampleEntity.class);
 
@@ -188,112 +167,81 @@ public class EntityManagerImplTest
     }
 
     @Test
-    public void testUnsupportedMethod()
-    {
+    public void testUnsupportedMethod() {
 
-        try
-        {
+        try {
             // find(Class<T> paramClass, Object paramObject, LockModeType
             // paramLockModeType)
             em.find(PersonBMM.class, null, LockModeType.NONE);
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (NotImplementedException niex)
-        {
+        } catch (NotImplementedException niex) {
             Assert.assertNotNull(niex);
         }
 
-        try
-        {
+        try {
             // find(Class<T> arg0, Object arg1, LockModeType arg2, Map<String,
             // Object> arg3)
             em.find(PersonBMM.class, null, LockModeType.NONE, null);
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (NotImplementedException niex)
-        {
+        } catch (NotImplementedException niex) {
             Assert.assertNotNull(niex);
         }
 
-        try
-        {
+        try {
             // createNativeQuery(String sqlString)
             em.createNativeQuery("Query without class is not supported");
-        }
-        catch (NotImplementedException niex)
-        {
+        } catch (NotImplementedException niex) {
             Assert.fail();
         }
-        try
-        {
+        try {
             // createNativeQuery(String sqlString, String resultSetMapping)
             em.createNativeQuery("Query without class is not supported", "noreuslt");
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (NotImplementedException niex)
-        {
+        } catch (NotImplementedException niex) {
             Assert.assertNotNull(niex);
         }
-        try
-        {
+        try {
             // getReference(Class<T> entityClass, Object primaryKey)
             em.getReference(Person.class, null);
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (NotImplementedException niex)
-        {
+        } catch (NotImplementedException niex) {
             Assert.assertNotNull(niex);
         }
-        try
-        {
+        try {
             // lock(Object paramObject, LockModeType paramLockModeType,
             // Map<String, Object> paramMap)
             em.lock(null, LockModeType.NONE, null);
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (NotImplementedException niex)
-        {
+        } catch (NotImplementedException niex) {
             Assert.assertNotNull(niex);
         }
-        try
-        {
+        try {
             // refresh(Object paramObject, LockModeType paramLockModeType)
             em.refresh(null, LockModeType.NONE);
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (NotImplementedException niex)
-        {
+        } catch (NotImplementedException niex) {
             Assert.assertNotNull(niex);
         }
-        try
-        {
+        try {
             // refresh(Object paramObject, LockModeType paramLockModeType,
             // Map<String, Object> paramMap)
             em.refresh(null, LockModeType.NONE, null);
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (NotImplementedException niex)
-        {
+        } catch (NotImplementedException niex) {
             Assert.assertNotNull(niex);
         }
-        try
-        {
+        try {
             // getLockMode(Object paramObject)
             em.getLockMode(null);
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (NotImplementedException niex)
-        {
+        } catch (NotImplementedException niex) {
             Assert.assertNotNull(niex);
         }
-        try
-        {
+        try {
             // unwrap(Class<T> paramClass)
             em.unwrap(null);
             Assert.fail("Should have gone to catch block!");
-        }
-        catch (NotImplementedException niex)
-        {
+        } catch (NotImplementedException niex) {
             Assert.assertNotNull(niex);
         }
 
@@ -302,8 +250,7 @@ public class EntityManagerImplTest
     /**
      * @param found
      */
-    private void assertSampleEntity(SampleEntity found)
-    {
+    private void assertSampleEntity(SampleEntity found) {
         Assert.assertNotNull(found);
         Assert.assertEquals(new Integer(1), found.getKey());
         Assert.assertEquals("Amry", found.getName());
@@ -313,8 +260,7 @@ public class EntityManagerImplTest
     /**
      * @param found
      */
-    private void assertUpdatedSampleEntity(SampleEntity found)
-    {
+    private void assertUpdatedSampleEntity(SampleEntity found) {
         Assert.assertNotNull(found);
         Assert.assertEquals(new Integer(1), found.getKey());
         Assert.assertEquals("Xamry", found.getName());

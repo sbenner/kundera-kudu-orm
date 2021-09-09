@@ -1,12 +1,12 @@
 /**
  * Copyright 2013 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,19 +14,6 @@
  * limitations under the License.
  */
 package com.impetus.kundera.persistence;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
 
 import com.impetus.kundera.CoreTestUtilities;
 import com.impetus.kundera.client.Client;
@@ -36,13 +23,22 @@ import com.impetus.kundera.polyglot.entities.AddressU11FK;
 import com.impetus.kundera.polyglot.entities.PersonU11FK;
 import com.impetus.kundera.proxy.ProxyHelper;
 import com.impetus.kundera.utils.LuceneCleanupUtilities;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author vivek.mishra junit for {@link AssociationBuilder}
- * 
+ *
  */
-public class AssociationBuilderTest
-{
+public class AssociationBuilderTest {
 
     private static final String PU = "patest";
 
@@ -54,8 +50,7 @@ public class AssociationBuilderTest
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
 
         emf = Persistence.createEntityManagerFactory(PU);
         em = emf.createEntityManager();
@@ -64,8 +59,7 @@ public class AssociationBuilderTest
 
     @Test
     public void testAssociatedEntitiesFromIndex() throws NoSuchFieldException, SecurityException,
-            IllegalArgumentException, IllegalAccessException
-    {
+            IllegalArgumentException, IllegalAccessException {
         AddressU11FK address = new AddressU11FK();
         address.setAddressId("addr1");
         address.setStreet("street");
@@ -109,19 +103,16 @@ public class AssociationBuilderTest
     }
 
     @After
-    public void tearDown()
-    {
-        if (emf != null)
-        {
+    public void tearDown() {
+        if (emf != null) {
             emf.close();
         }
 
-        if (em != null)
-        {
+        if (em != null) {
             em.close();
         }
 
-        LuceneCleanupUtilities.cleanLuceneDirectory(((EntityManagerFactoryImpl)emf).getKunderaMetadataInstance().getApplicationMetadata().getPersistenceUnitMetadata(PU));
+        LuceneCleanupUtilities.cleanLuceneDirectory(((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance().getApplicationMetadata().getPersistenceUnitMetadata(PU));
     }
 
 }

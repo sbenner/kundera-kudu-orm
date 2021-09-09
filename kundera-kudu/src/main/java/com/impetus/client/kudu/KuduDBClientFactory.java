@@ -30,26 +30,25 @@ import java.util.Properties;
 
 /**
  * A factory for creating KuduDBClient objects.
- * 
+ *
  * @author karthikp.manchala
  */
-public class KuduDBClientFactory extends GenericClientFactory
-{
+public class KuduDBClientFactory extends GenericClientFactory {
 
-    /** The kudu client. */
+    /**
+     * The kudu client.
+     */
     private KuduClient kuduClient;
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.loader.ClientFactory#getSchemaManager(java.util.Map)
      */
     @Override
-    public SchemaManager getSchemaManager(Map<String, Object> puProperties)
-    {
-        if (schemaManager == null)
-        {
+    public SchemaManager getSchemaManager(Map<String, Object> puProperties) {
+        if (schemaManager == null) {
             initializePropertyReader();
             setExternalProperties(puProperties);
             schemaManager = new KuduDBSchemaManager(KuduDBClientFactory.class.getName(), puProperties, kunderaMetadata);
@@ -59,12 +58,11 @@ public class KuduDBClientFactory extends GenericClientFactory
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.loader.ClientLifeCycleManager#destroy()
      */
     @Override
-    public void destroy()
-    {
+    public void destroy() {
         try {
             this.kuduClient.close();
         } catch (KuduException e) {
@@ -77,13 +75,12 @@ public class KuduDBClientFactory extends GenericClientFactory
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.loader.GenericClientFactory#initialize(java.util.Map)
      */
     @Override
-    public void initialize(Map<String, Object> puProperties)
-    {
+    public void initialize(Map<String, Object> puProperties) {
         reader = new KuduDBEntityReader(kunderaMetadata);
         setExternalProperties(puProperties);
         initializePropertyReader();
@@ -92,8 +89,7 @@ public class KuduDBClientFactory extends GenericClientFactory
 
         Properties pumProps = pum.getProperties();
 
-        if (puProperties != null)
-        {
+        if (puProperties != null) {
             pumProps.putAll(puProperties);
         }
 
@@ -113,8 +109,7 @@ public class KuduDBClientFactory extends GenericClientFactory
             opTimeout = Long.valueOf(op);
 
 
-        if (kuduMasterHost == null || kuduMasterPort == null)
-        {
+        if (kuduMasterHost == null || kuduMasterPort == null) {
             throw new KunderaException("Hostname/IP or Port is null.");
         }
         KuduClient.KuduClientBuilder builder = new KuduClient.KuduClientBuilder(
@@ -132,53 +127,49 @@ public class KuduDBClientFactory extends GenericClientFactory
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.loader.GenericClientFactory#createPoolOrConnection()
      */
     @Override
-    protected Object createPoolOrConnection()
-    {
+    protected Object createPoolOrConnection() {
         // TODO Auto-generated method stub
         return null;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.loader.GenericClientFactory#instantiateClient(java.
      * lang.String)
      */
     @Override
-    protected Client instantiateClient(String persistenceUnit)
-    {
+    protected Client instantiateClient(String persistenceUnit) {
         return new KuduDBClient(kunderaMetadata, indexManager, reader, externalProperties, persistenceUnit,
                 this.kuduClient, this.clientMetadata);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.loader.GenericClientFactory#isThreadSafe()
      */
     @Override
-    public boolean isThreadSafe()
-    {
+    public boolean isThreadSafe() {
         // TODO Auto-generated method stub
         return false;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.loader.GenericClientFactory#initializeLoadBalancer(
      * java.lang.String)
      */
     @Override
-    protected void initializeLoadBalancer(String loadBalancingPolicyName)
-    {
+    protected void initializeLoadBalancer(String loadBalancingPolicyName) {
         // TODO Auto-generated method stub
 
     }
@@ -186,10 +177,8 @@ public class KuduDBClientFactory extends GenericClientFactory
     /**
      * Initialize property reader.
      */
-    private void initializePropertyReader()
-    {
-        if (propertyReader == null)
-        {
+    private void initializePropertyReader() {
+        if (propertyReader == null) {
             propertyReader = new KuduDBPropertyReader(externalProperties,
                     kunderaMetadata.getApplicationMetadata().getPersistenceUnitMetadata(getPersistenceUnit()));
             propertyReader.read(getPersistenceUnit());

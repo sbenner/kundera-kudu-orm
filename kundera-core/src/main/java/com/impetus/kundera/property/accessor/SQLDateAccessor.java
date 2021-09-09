@@ -15,37 +15,31 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
-import java.sql.Date;
-
+import com.impetus.kundera.property.PropertyAccessException;
+import com.impetus.kundera.property.PropertyAccessor;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.impetus.kundera.property.PropertyAccessException;
-import com.impetus.kundera.property.PropertyAccessor;
+import java.sql.Date;
 
 /**
  * The Class SQLDateAccessor.
- * 
+ *
  * @author amresh.singh
  */
-public class SQLDateAccessor implements PropertyAccessor<Date>
-
-{
+public class SQLDateAccessor implements PropertyAccessor<Date> {
     public static Logger log = LoggerFactory.getLogger(SQLDateAccessor.class);
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.impetus.kundera.property.PropertyAccessor#fromBytes(byte[])
      */
     @Override
-    public Date fromBytes(Class targetClass, byte[] b)
-    {
-        try
-        {
-            if (b == null)
-            {
+    public Date fromBytes(Class targetClass, byte[] b) {
+        try {
+            if (b == null) {
                 return null;
             }
 
@@ -53,9 +47,7 @@ public class SQLDateAccessor implements PropertyAccessor<Date>
             LongAccessor longAccessor = new LongAccessor();
 
             return new Date(longAccessor.fromBytes(targetClass, b));
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("Error occured, Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
@@ -64,27 +56,22 @@ public class SQLDateAccessor implements PropertyAccessor<Date>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toBytes(java.lang.Object)
      */
     @Override
-    public byte[] toBytes(Object object)
-    {
+    public byte[] toBytes(Object object) {
 
-        try
-        {
-            if (object == null)
-            {
+        try {
+            if (object == null) {
                 return null;
             }
             LongAccessor longAccessor = new LongAccessor();
             return longAccessor.toBytes(((Date) object).getTime());
             // return DATE_FORMATTER.format(((Date)
             // date)).getBytes(Constants.ENCODING);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("Error occured, Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
@@ -93,17 +80,15 @@ public class SQLDateAccessor implements PropertyAccessor<Date>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toString(java.lang.Object)
      */
     @Override
-    public String toString(Object object)
-    {
+    public String toString(Object object) {
         Date date = (Date) object;
 
-        if (date == null)
-        {
+        if (date == null) {
             return null;
         }
 
@@ -112,21 +97,18 @@ public class SQLDateAccessor implements PropertyAccessor<Date>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#fromString(java.lang.String
      * )
      */
     @Override
-    public Date fromString(Class targetClass, String s)
-    {
+    public Date fromString(Class targetClass, String s) {
 
-        if (s == null)
-        {
+        if (s == null) {
             return null;
         }
-        if (StringUtils.isNumeric(s))
-        {
+        if (StringUtils.isNumeric(s)) {
             return new Date(Long.parseLong(s));
         }
         Date d = Date.valueOf(s);
@@ -134,14 +116,12 @@ public class SQLDateAccessor implements PropertyAccessor<Date>
     }
 
     @Override
-    public Date getCopy(Object object)
-    {
+    public Date getCopy(Object object) {
         Date d = (Date) object;
         return d != null ? new Date(d.getTime()) : null;
     }
 
-    public Date getInstance(Class<?> clazz)
-    {
+    public Date getInstance(Class<?> clazz) {
         return new Date(Integer.MAX_VALUE);
     }
 }

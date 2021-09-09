@@ -15,57 +15,47 @@
  ******************************************************************************/
 package com.impetus.kundera.cache;
 
-import java.util.Map;
-
 import javax.persistence.Cache;
+import java.util.Map;
 
 /**
  * CacheProvider.
- * 
+ *
  * @author animesh.kumar
  */
-public interface CacheProvider
-{
+public interface CacheProvider {
 
     /**
      * Called once to load up the CacheManager.
-     * 
-     * @param properties
-     *            the properties
-     * @throws CacheException
-     *             the cache exception
+     *
+     * @param properties the properties
+     * @throws CacheException the cache exception
      */
     void init(Map<?, ?> properties);
 
     /**
      * Inits the.
-     * 
-     * @param cacheResourceName
-     *            the cache resource name
-     * @throws CacheException
-     *             the cache exception
+     *
+     * @param cacheResourceName the cache resource name
+     * @throws CacheException the cache exception
      */
     void init(String cacheResourceName);
 
     /**
      * Creates cache for a given name.
-     * 
-     * @param name
-     *            the name
+     *
+     * @param name the name
      * @return the cache
-     * @throws CacheException
-     *             the cache exception
+     * @throws CacheException the cache exception
      */
     Cache createCache(String name);
 
     /**
      * Returns cache for a given cache name.
-     * 
-     * @param name
-     *            Cache Name
+     *
+     * @param name Cache Name
      * @return the cache
-     * @throws CacheException
-     *             the cache exception
+     * @throws CacheException the cache exception
      */
     Cache getCache(String name);
 

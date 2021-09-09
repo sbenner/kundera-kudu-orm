@@ -15,18 +15,17 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.UUID;
 
-import javax.persistence.Column;
-
 /**
- * Class used as an object for conversion within test cases 
+ * Class used as an object for conversion within test cases
+ *
  * @author amresh.singh
  */
 
-public class PersonalDetail implements Serializable
-{
+public class PersonalDetail implements Serializable {
     @Column(name = "personal_detail_id")
     private String personalDetailId;
 
@@ -39,13 +38,11 @@ public class PersonalDetail implements Serializable
     @Column(name = "rel_status")
     private String relationshipStatus;
 
-    public PersonalDetail()
-    {
+    public PersonalDetail() {
 
     }
 
-    public PersonalDetail(String name, String password, String relationshipStatus)
-    {
+    public PersonalDetail(String name, String password, String relationshipStatus) {
         setPersonalDetailId(UUID.randomUUID().toString());
         setName(name);
         setPassword(password);
@@ -55,83 +52,70 @@ public class PersonalDetail implements Serializable
     /**
      * @return the personalDetailId
      */
-    public String getPersonalDetailId()
-    {
+    public String getPersonalDetailId() {
         return personalDetailId;
     }
 
     /**
-     * @param personalDetailId
-     *            the personalDetailId to set
+     * @param personalDetailId the personalDetailId to set
      */
-    public void setPersonalDetailId(String personalDetailId)
-    {
+    public void setPersonalDetailId(String personalDetailId) {
         this.personalDetailId = personalDetailId;
     }
 
     /**
      * @return the name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param name the name to set
      */
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     /**
      * @return the password
      */
-    public String getPassword()
-    {
+    public String getPassword() {
         return password;
     }
 
     /**
-     * @param password
-     *            the password to set
+     * @param password the password to set
      */
-    public void setPassword(String password)
-    {
+    public void setPassword(String password) {
         this.password = password;
     }
 
     /**
      * @return the relationshipStatus
      */
-    public String getRelationshipStatus()
-    {
+    public String getRelationshipStatus() {
         return relationshipStatus;
     }
 
     /**
-     * @param relationshipStatus
-     *            the relationshipStatus to set
+     * @param relationshipStatus the relationshipStatus to set
      */
-    public void setRelationshipStatus(String relationshipStatus)
-    {
+    public void setRelationshipStatus(String relationshipStatus) {
         this.relationshipStatus = relationshipStatus;
     }
-    
+
     @Override
-    public boolean equals(Object o)
-    {
-        if (this == o ) return true;       
-        if (!(o instanceof PersonalDetail) ) return false;
-        
-        PersonalDetail that = (PersonalDetail)o;
-        
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PersonalDetail)) return false;
+
+        PersonalDetail that = (PersonalDetail) o;
+
         return that.getPersonalDetailId().equals(this.getPersonalDetailId())
-        && that.getName().equals(this.getName())
-        && that.getPassword().equals(this.getPassword())
-        && that.getRelationshipStatus().equals(this.getRelationshipStatus());
+                && that.getName().equals(this.getName())
+                && that.getPassword().equals(this.getPassword())
+                && that.getRelationshipStatus().equals(this.getRelationshipStatus());
     }
 
 }

@@ -15,40 +15,35 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.validator;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.TableGenerator;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.kundera.client.ClientResolver;
 import com.impetus.kundera.configure.schema.api.SchemaManager;
 import com.impetus.kundera.metadata.KunderaMetadataManager;
 import com.impetus.kundera.metadata.model.EntityMetadata;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.*;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Validates entity for JPA rules.
- * 
+ *
  * @author animesh.kumar
  */
-public class EntityValidatorImpl implements EntityValidator
-{
+public class EntityValidatorImpl implements EntityValidator {
 
-    /** The Constant log. */
+    /**
+     * The Constant log.
+     */
     private static final Logger log = LoggerFactory.getLogger(EntityValidatorImpl.class);
 
-    /** cache for validated classes. */
+    /**
+     * cache for validated classes.
+     */
     private List<Class<?>> classes = new ArrayList<Class<?>>();
 
     private Map<String, Object> puProperties;
@@ -56,34 +51,28 @@ public class EntityValidatorImpl implements EntityValidator
     /**
      * @param puPropertyMap
      */
-    public EntityValidatorImpl(Map puPropertyMap)
-    {
+    public EntityValidatorImpl(Map puPropertyMap) {
         this.puProperties = puPropertyMap;
     }
 
     /**
      * @param externalPropertyMap
      */
-    public EntityValidatorImpl()
-    {
+    public EntityValidatorImpl() {
         this(null);
     }
 
     /**
      * Checks the validity of a class for Cassandra entity.
-     * 
-     * @param clazz
-     *            validates this class
-     * 
+     *
+     * @param clazz validates this class
      * @return returns 'true' if valid
      */
     @Override
     // TODO: reduce Cyclomatic complexity
-    public final void validate(final Class<?> clazz)
-    {
+    public final void validate(final Class<?> clazz) {
 
-        if (classes.contains(clazz))
-        {
+        if (classes.contains(clazz)) {
             return;
         }
 
@@ -95,17 +84,16 @@ public class EntityValidatorImpl implements EntityValidator
 //        {
 //            throw new InvalidEntityDefinitionException("JPA operation over MappedSuperclass are not allowed" + clazz);
 //        }
-        
-        
+
+
         // Is Entity?
-        if (!clazz.isAnnotationPresent(Entity.class))
-        {
+        if (!clazz.isAnnotationPresent(Entity.class)) {
             throw new InvalidEntityDefinitionException(clazz.getName() + " is not annotated with @Entity.");
         }
 
-        
+
         // TODO:: add validation for MappedSuperClass.
-        
+
 //        // Must be annotated with @Table
 //        if (!clazz.isAnnotationPresent(Table.class))
 //        {
@@ -113,12 +101,9 @@ public class EntityValidatorImpl implements EntityValidator
 //        }
 
         // must have a default no-argument constructor
-        try
-        {
+        try {
             clazz.getConstructor();
-        }
-        catch (NoSuchMethodException nsme)
-        {
+        } catch (NoSuchMethodException nsme) {
             throw new InvalidEntityDefinitionException(clazz.getName()
                     + " must have a default no-argument constructor.");
         }
@@ -126,35 +111,26 @@ public class EntityValidatorImpl implements EntityValidator
         // Check for @Key and ensure that there is just 1 @Key field of String
         // type.
         List<Field> keys = new ArrayList<Field>();
-        for (Field field : clazz.getDeclaredFields())
-        {
-            if (field.isAnnotationPresent(Id.class) && field.isAnnotationPresent(EmbeddedId.class))
-            {
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.isAnnotationPresent(Id.class) && field.isAnnotationPresent(EmbeddedId.class)) {
                 throw new InvalidEntityDefinitionException(clazz.getName()
                         + " must have either @Id field or @EmbeddedId field");
             }
 
-            if (field.isAnnotationPresent(Id.class))
-            {
+            if (field.isAnnotationPresent(Id.class)) {
                 keys.add(field);
                 // validate @GeneratedValue annotation if given
-                if (field.isAnnotationPresent(GeneratedValue.class))
-                {
+                if (field.isAnnotationPresent(GeneratedValue.class)) {
                     validateGeneratedValueAnnotation(clazz, field);
                 }
-            }
-            else if (field.isAnnotationPresent(EmbeddedId.class))
-            {
+            } else if (field.isAnnotationPresent(EmbeddedId.class)) {
                 keys.add(field);
             }
         }
 
-        if (keys.size() < 0)
-        {
+        if (keys.size() < 0) {
             throw new InvalidEntityDefinitionException(clazz.getName() + " must have an @Id field.");
-        }
-        else if (keys.size() > 1)
-        {
+        } else if (keys.size() > 1) {
             throw new InvalidEntityDefinitionException(clazz.getName() + " can only have 1 @Id field.");
         }
 
@@ -165,34 +141,27 @@ public class EntityValidatorImpl implements EntityValidator
 
     /**
      * validate generated value annotation if given.
-     * 
+     *
      * @param clazz
      * @param field
      */
-    private void validateGeneratedValueAnnotation(final Class<?> clazz, Field field)
-    {
+    private void validateGeneratedValueAnnotation(final Class<?> clazz, Field field) {
         Table table = clazz.getAnnotation(Table.class);
         // Still we need to validate for this after post metadata population.
-        if (table != null)
-        {
+        if (table != null) {
             String schemaName = table.schema();
-            if (schemaName != null && schemaName.indexOf('@') > 0)
-            {
+            if (schemaName != null && schemaName.indexOf('@') > 0) {
                 schemaName = schemaName.substring(0, schemaName.indexOf('@'));
                 GeneratedValue generatedValue = field.getAnnotation(GeneratedValue.class);
                 if (generatedValue != null && generatedValue.generator() != null
-                        && !generatedValue.generator().isEmpty())
-                {
+                        && !generatedValue.generator().isEmpty()) {
                     if (!(field.isAnnotationPresent(TableGenerator.class)
                             || field.isAnnotationPresent(SequenceGenerator.class)
                             || clazz.isAnnotationPresent(TableGenerator.class) || clazz
-                                .isAnnotationPresent(SequenceGenerator.class)))
-                    {
+                            .isAnnotationPresent(SequenceGenerator.class))) {
                         log.error("Unknown Id.generator{}: for class{}", generatedValue.generator(), clazz);
                         throw new IllegalArgumentException("Unknown Id.generator: " + generatedValue.generator());
-                    }
-                    else
-                    {
+                    } else {
                         checkForGenerator(clazz, field, generatedValue, schemaName);
                     }
                 }
@@ -202,51 +171,42 @@ public class EntityValidatorImpl implements EntityValidator
 
     /**
      * Validate for generator.
-     * 
+     *
      * @param clazz
      * @param field
      * @param generatedValue
      * @param schemaName
      */
-    private void checkForGenerator(final Class<?> clazz, Field field, GeneratedValue generatedValue, String schemaName)
-    {
+    private void checkForGenerator(final Class<?> clazz, Field field, GeneratedValue generatedValue, String schemaName) {
         TableGenerator tableGenerator = field.getAnnotation(TableGenerator.class);
         SequenceGenerator sequenceGenerator = field.getAnnotation(SequenceGenerator.class);
-        if (tableGenerator == null || !tableGenerator.name().equals(generatedValue.generator()))
-        {
+        if (tableGenerator == null || !tableGenerator.name().equals(generatedValue.generator())) {
             tableGenerator = clazz.getAnnotation(TableGenerator.class);
         }
-        if (sequenceGenerator == null || !sequenceGenerator.name().equals(generatedValue.generator()))
-        {
+        if (sequenceGenerator == null || !sequenceGenerator.name().equals(generatedValue.generator())) {
             sequenceGenerator = clazz.getAnnotation(SequenceGenerator.class);
         }
 
         if ((tableGenerator == null && sequenceGenerator == null)
                 || (tableGenerator != null && !tableGenerator.name().equals(generatedValue.generator()))
-                || (sequenceGenerator != null && !sequenceGenerator.name().equals(generatedValue.generator())))
-        {
+                || (sequenceGenerator != null && !sequenceGenerator.name().equals(generatedValue.generator()))) {
             throw new IllegalArgumentException("Unknown Id.generator: " + generatedValue.generator());
-        }
-        else if ((tableGenerator != null && !tableGenerator.schema().isEmpty() && !tableGenerator.schema().equals(
+        } else if ((tableGenerator != null && !tableGenerator.schema().isEmpty() && !tableGenerator.schema().equals(
                 schemaName))
                 || (sequenceGenerator != null && !sequenceGenerator.schema().isEmpty() && !sequenceGenerator.schema()
-                        .equals(schemaName)))
-        {
+                .equals(schemaName))) {
             throw new InvalidEntityDefinitionException("Generator " + generatedValue.generator() + " in entity : "
                     + clazz.getName() + " has different schema name ,it should be same as entity have");
         }
     }
 
     @Override
-    public void validateEntity(Class<?> clazz, final KunderaMetadata kunderaMetadata)
-    {
+    public void validateEntity(Class<?> clazz, final KunderaMetadata kunderaMetadata) {
         EntityMetadata metadata = KunderaMetadataManager.getEntityMetadata(kunderaMetadata, clazz);
-        if (metadata != null)
-        {
+        if (metadata != null) {
             SchemaManager schemaManager = ClientResolver.getClientFactory(metadata.getPersistenceUnit())
                     .getSchemaManager(puProperties);
-            if (schemaManager != null && !schemaManager.validateEntity(clazz))
-            {
+            if (schemaManager != null && !schemaManager.validateEntity(clazz)) {
                 log.warn("Validation for : " + clazz + " failed , any operation on this class will result in fail.");
             }
         }

@@ -15,17 +15,15 @@
  ******************************************************************************/
 package com.impetus.kundera.validation.rules;
 
-public abstract class AbstractEntityRule
-{
-     
-  /**
- * @param clazz
- * @throws RuleValidationException
- */
-public void validate(Class<?> clazz) throws RuleValidationException
-  {
-      throw new UnsupportedOperationException("Validation Not Supported");
-      
-  }
+public abstract class AbstractEntityRule {
+
+    /**
+     * @param clazz
+     * @throws RuleValidationException
+     */
+    public void validate(Class<?> clazz) throws RuleValidationException {
+        throw new UnsupportedOperationException("Validation Not Supported");
+
+    }
 
 }

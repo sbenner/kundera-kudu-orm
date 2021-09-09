@@ -15,26 +15,22 @@
  ******************************************************************************/
 package com.impetus.kundera.lifecycle.states;
 
-import javax.persistence.CascadeType;
-import javax.persistence.PersistenceContextType;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.impetus.kundera.graph.BillingCounter;
 import com.impetus.kundera.graph.Node;
 import com.impetus.kundera.graph.StoreBuilder;
 import com.impetus.kundera.persistence.context.PersistenceCache;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.persistence.CascadeType;
+import javax.persistence.PersistenceContextType;
 
 /**
  * @author amresh.singh
- * 
  */
-public class RemovedStateTest
-{
+public class RemovedStateTest {
 
     PersistenceCache pc;
 
@@ -44,8 +40,7 @@ public class RemovedStateTest
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         pc = new PersistenceCache();
         state = new RemovedState();
     }
@@ -54,8 +49,7 @@ public class RemovedStateTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         pc = null;
     }
 
@@ -65,8 +59,7 @@ public class RemovedStateTest
      * .
      */
     @Test
-    public void testInitialize()
-    {
+    public void testInitialize() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.initialize(storeNode);
         Assert.assertNotNull(pc);
@@ -78,8 +71,7 @@ public class RemovedStateTest
      * .
      */
     @Test
-    public void testHandlePersist()
-    {
+    public void testHandlePersist() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handlePersist(storeNode);
 
@@ -98,15 +90,13 @@ public class RemovedStateTest
      * .
      */
     @Test
-    public void testHandleRemove()
-    {
+    public void testHandleRemove() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.REMOVE);
         state.handleRemove(storeNode);
 
         Assert.assertEquals(RemovedState.class, storeNode.getCurrentNodeState().getClass());
 
-        for (Node childNode : storeNode.getChildren().values())
-        {
+        for (Node childNode : storeNode.getChildren().values()) {
             Assert.assertEquals(BillingCounter.class, childNode.getDataClass());
             Assert.assertEquals(RemovedState.class, childNode.getCurrentNodeState().getClass());
         }
@@ -118,16 +108,12 @@ public class RemovedStateTest
      * .
      */
     @Test
-    public void testHandleRefresh()
-    {
+    public void testHandleRefresh() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.REFRESH);
-        try
-        {
+        try {
             state.handleRefresh(storeNode);
             Assert.fail("Refresh operation in Removed state should have thrown exception");
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Assert.assertEquals(IllegalArgumentException.class, e.getClass());
         }
     }
@@ -138,16 +124,12 @@ public class RemovedStateTest
      * .
      */
     @Test
-    public void testHandleMerge()
-    {
+    public void testHandleMerge() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.MERGE);
-        try
-        {
+        try {
             state.handleMerge(storeNode);
             Assert.fail("Merge operation in Removed state should have thrown exception");
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Assert.assertEquals(IllegalArgumentException.class, e.getClass());
         }
     }
@@ -158,15 +140,13 @@ public class RemovedStateTest
      * .
      */
     @Test
-    public void testHandleDetach()
-    {
+    public void testHandleDetach() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.DETACH);
         state.handleDetach(storeNode);
 
         Assert.assertEquals(DetachedState.class, storeNode.getCurrentNodeState().getClass());
 
-        for (Node childNode : storeNode.getChildren().values())
-        {
+        for (Node childNode : storeNode.getChildren().values()) {
             Assert.assertEquals(BillingCounter.class, childNode.getDataClass());
             Assert.assertEquals(DetachedState.class, childNode.getCurrentNodeState().getClass());
         }
@@ -178,8 +158,7 @@ public class RemovedStateTest
      * .
      */
     @Test
-    public void testHandleClose()
-    {
+    public void testHandleClose() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleClose(storeNode);
     }
@@ -190,8 +169,7 @@ public class RemovedStateTest
      * .
      */
     @Test
-    public void testHandleLock()
-    {
+    public void testHandleLock() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleLock(storeNode);
     }
@@ -202,15 +180,13 @@ public class RemovedStateTest
      * .
      */
     @Test
-    public void testHandleCommit()
-    {
+    public void testHandleCommit() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleCommit(storeNode);
 
         Assert.assertEquals(TransientState.class, storeNode.getCurrentNodeState().getClass());
 
-        for (Node childNode : storeNode.getChildren().values())
-        {
+        for (Node childNode : storeNode.getChildren().values()) {
             Assert.assertEquals(BillingCounter.class, childNode.getDataClass());
             Assert.assertEquals(RemovedState.class, childNode.getCurrentNodeState().getClass());
         }
@@ -222,8 +198,7 @@ public class RemovedStateTest
      * .
      */
     @Test
-    public void testHandleRollback()
-    {
+    public void testHandleRollback() {
         // Extended
         pc.setPersistenceContextType(PersistenceContextType.EXTENDED);
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
@@ -231,8 +206,7 @@ public class RemovedStateTest
 
         Assert.assertEquals(ManagedState.class, storeNode.getCurrentNodeState().getClass());
 
-        for (Node childNode : storeNode.getChildren().values())
-        {
+        for (Node childNode : storeNode.getChildren().values()) {
             Assert.assertEquals(BillingCounter.class, childNode.getDataClass());
             Assert.assertEquals(RemovedState.class, childNode.getCurrentNodeState().getClass());
         }
@@ -244,8 +218,7 @@ public class RemovedStateTest
 
         Assert.assertEquals(DetachedState.class, storeNode.getCurrentNodeState().getClass());
 
-        for (Node childNode : storeNode.getChildren().values())
-        {
+        for (Node childNode : storeNode.getChildren().values()) {
             Assert.assertEquals(BillingCounter.class, childNode.getDataClass());
             Assert.assertEquals(RemovedState.class, childNode.getCurrentNodeState().getClass());
         }
@@ -257,8 +230,7 @@ public class RemovedStateTest
      * .
      */
     @Test
-    public void testHandleFind()
-    {
+    public void testHandleFind() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleFind(storeNode);
     }
@@ -269,8 +241,7 @@ public class RemovedStateTest
      * .
      */
     @Test
-    public void testHandleGetReference()
-    {
+    public void testHandleGetReference() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleGetReference(storeNode);
     }
@@ -281,8 +252,7 @@ public class RemovedStateTest
      * .
      */
     @Test
-    public void testHandleContains()
-    {
+    public void testHandleContains() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleContains(storeNode);
     }
@@ -293,8 +263,7 @@ public class RemovedStateTest
      * .
      */
     @Test
-    public void testHandleClear()
-    {
+    public void testHandleClear() {
         Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
         state.handleClear(storeNode);
     }
@@ -305,16 +274,12 @@ public class RemovedStateTest
      * .
      */
     @Test
-    public void testHandleFlush()
-    {
-        try
-        {
+    public void testHandleFlush() {
+        try {
             Node storeNode = StoreBuilder.buildStoreNode(pc, state, CascadeType.PERSIST);
             state.handleFlush(storeNode);
             Assert.fail("Exception should be thrown because client is not available");
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Assert.assertNotNull(e);
         }
     }

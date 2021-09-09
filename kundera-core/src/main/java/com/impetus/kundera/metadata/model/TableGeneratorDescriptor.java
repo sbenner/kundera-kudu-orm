@@ -78,72 +78,63 @@ public class TableGeneratorDescriptor {
     /**
      * @return the table
      */
-    public String getTable()
-    {
+    public String getTable() {
         return table;
     }
 
     /**
      * @return the catalog
      */
-    public String getCatalog()
-    {
+    public String getCatalog() {
         return catalog;
     }
 
     /**
      * @return the schema
      */
-    public String getSchema()
-    {
+    public String getSchema() {
         return schema;
     }
 
     /**
      * @return the pkColumnName
      */
-    public String getPkColumnName()
-    {
+    public String getPkColumnName() {
         return pkColumnName;
     }
 
     /**
      * @return the valueColumnName
      */
-    public String getValueColumnName()
-    {
+    public String getValueColumnName() {
         return valueColumnName;
     }
 
     /**
      * @return the pkColumnValue
      */
-    public String getPkColumnValue()
-    {
+    public String getPkColumnValue() {
         return pkColumnValue;
     }
 
     /**
      * @return the initialValue
      */
-    public int getInitialValue()
-    {
+    public int getInitialValue() {
         return initialValue;
     }
 
     /**
      * @return the allocationSize
      */
-    public int getAllocationSize()
-    {
+    public int getAllocationSize() {
         return allocationSize;
     }
 
     /**
      * @return the uniqueConstraints
      */
-    public UniqueConstraint[] getUniqueConstraints()
-    {
+    public UniqueConstraint[] getUniqueConstraints() {
         return uniqueConstraints;
     }
 

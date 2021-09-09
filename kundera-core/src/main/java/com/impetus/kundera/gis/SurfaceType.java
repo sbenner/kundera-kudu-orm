@@ -17,9 +17,7 @@ package com.impetus.kundera.gis;
 
 /**
  * @author amresh
- * 
  */
-public enum SurfaceType
-{
+public enum SurfaceType {
     FLAT, SPHERICAL;
 }

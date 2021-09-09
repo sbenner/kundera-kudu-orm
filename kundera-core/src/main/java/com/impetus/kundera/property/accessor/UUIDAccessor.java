@@ -15,33 +15,55 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
-import java.util.UUID;
-
+import com.impetus.kundera.property.PropertyAccessException;
+import com.impetus.kundera.property.PropertyAccessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.impetus.kundera.property.PropertyAccessException;
-import com.impetus.kundera.property.PropertyAccessor;
+import java.util.UUID;
 
 /**
  * The Class UUIDAccessor.
- * 
+ *
  * @author kcarlson
  */
-public class UUIDAccessor implements PropertyAccessor<UUID>
-{
+public class UUIDAccessor implements PropertyAccessor<UUID> {
 
     public static Logger log = LoggerFactory.getLogger(UUIDAccessor.class);
+
+    /**
+     * Returns as byte array.
+     *
+     * @param uuid UUID
+     * @return byte[] array.
+     */
+    private static byte[] asByteArray(UUID uuid) {
+        if (uuid == null) {
+            return null;
+        }
+        long msb = uuid.getMostSignificantBits();
+        long lsb = uuid.getLeastSignificantBits();
+        byte[] buffer = new byte[16];
+
+        for (int i = 0; i < 8; i++) {
+            buffer[i] = (byte) (msb >>> 8 * (7 - i));
+        }
+        for (int i = 8; i < 16; i++) {
+            buffer[i] = (byte) (lsb >>> 8 * (7 - i));
+        }
+
+        return buffer;
+    }
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#fromBytes(java.lang.Class,
      * byte[])
      */
     @Override
-    public UUID fromBytes(Class targetClass, byte[] bytes) throws PropertyAccessException
-    {
+    public UUID fromBytes(Class targetClass, byte[] bytes) throws PropertyAccessException {
         // try
         // {
         // if(bytes == null)
@@ -73,10 +95,8 @@ public class UUIDAccessor implements PropertyAccessor<UUID>
         //
         // return java.util.UUID.fromString(u.toString());
 
-        try
-        {
-            if (bytes == null)
-            {
+        try {
+            if (bytes == null) {
                 return null;
             }
             long msb = 0;
@@ -86,9 +106,7 @@ public class UUIDAccessor implements PropertyAccessor<UUID>
             for (int i = 8; i < 16; i++)
                 lsb = (lsb << 8) | (bytes[i] & 0xff);
             return new UUID(msb, lsb);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("Error occured, Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
@@ -96,24 +114,19 @@ public class UUIDAccessor implements PropertyAccessor<UUID>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toBytes(java.lang.Object)
      */
     @Override
-    public byte[] toBytes(Object object) throws PropertyAccessException
-    {
-        try
-        {
-            if (object == null)
-            {
+    public byte[] toBytes(Object object) throws PropertyAccessException {
+        try {
+            if (object == null) {
                 return null;
             }
             UUID uuid = (UUID) object;
             return asByteArray(uuid);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("Error occured, Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
@@ -121,15 +134,13 @@ public class UUIDAccessor implements PropertyAccessor<UUID>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#toString(java.lang.Object)
      */
     @Override
-    public String toString(Object object)
-    {
-        if (object == null)
-        {
+    public String toString(Object object) {
+        if (object == null) {
             return null;
         }
         return ((UUID) object).toString();
@@ -137,68 +148,32 @@ public class UUIDAccessor implements PropertyAccessor<UUID>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.impetus.kundera.property.PropertyAccessor#fromString(java.lang.Class,
      * java.lang.String)
      */
     @Override
-    public UUID fromString(Class targetClass, String s) throws PropertyAccessException
-    {
-        try
-        {
-            if (s == null)
-            {
+    public UUID fromString(Class targetClass, String s) throws PropertyAccessException {
+        try {
+            if (s == null) {
                 return null;
             }
             return UUID.fromString(s);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             log.error("Error occured, Caused by {}.", e);
             throw new PropertyAccessException(e);
         }
     }
 
-    /**
-     * Returns as byte array.
-     * 
-     * @param uuid
-     *            UUID
-     * @return byte[] array.
-     */
-    private static byte[] asByteArray(UUID uuid)
-    {
-        if (uuid == null)
-        {
-            return null;
-        }
-        long msb = uuid.getMostSignificantBits();
-        long lsb = uuid.getLeastSignificantBits();
-        byte[] buffer = new byte[16];
-
-        for (int i = 0; i < 8; i++)
-        {
-            buffer[i] = (byte) (msb >>> 8 * (7 - i));
-        }
-        for (int i = 8; i < 16; i++)
-        {
-            buffer[i] = (byte) (lsb >>> 8 * (7 - i));
-        }
-
-        return buffer;
-    }
-
     @Override
-    public UUID getCopy(Object object)
-    {
+    public UUID getCopy(Object object) {
         UUID uuid = (UUID) object;
 
         return uuid != null ? UUID.fromString(uuid.toString()) : null;
     }
 
-    public UUID getInstance(Class<?> clazz)
-    {
+    public UUID getInstance(Class<?> clazz) {
         return UUID.randomUUID();
     }
 }

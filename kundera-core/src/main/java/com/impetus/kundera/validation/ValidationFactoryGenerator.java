@@ -17,39 +17,36 @@ package com.impetus.kundera.validation;
 
 /**
  * @author Chhavi Gangwal
- *
  */
-public final class ValidationFactoryGenerator
-{
-    /**
-     * Defines the levels of validation factory     
-     */
-    public static enum ValidationFactoryType
-    {
-        BOOT_STRAP_VALIDATION, OPERATIONAL_VALIDATION, LISTENER_VALIDATION
-    };
-
+public final class ValidationFactoryGenerator {
     /**
      * @param validatorFactoryType
      * @return
      */
-    public ValidationFactory getFactory(ValidationFactoryType validatorFactoryType)
-    {
+    public ValidationFactory getFactory(ValidationFactoryType validatorFactoryType) {
         ValidationFactory validationFactory = null;
-        switch (validatorFactoryType)
-        {
-        case BOOT_STRAP_VALIDATION:
-            validationFactory = new BootstrapValidationFactory();
-            break;
-        case OPERATIONAL_VALIDATION:
-            validationFactory = new OperationValidationFactory();
-            break;
-        case LISTENER_VALIDATION:
-            validationFactory = new ListenerValidationFactory();
-            break;
+        switch (validatorFactoryType) {
+            case BOOT_STRAP_VALIDATION:
+                validationFactory = new BootstrapValidationFactory();
+                break;
+            case OPERATIONAL_VALIDATION:
+                validationFactory = new OperationValidationFactory();
+                break;
+            case LISTENER_VALIDATION:
+                validationFactory = new ListenerValidationFactory();
+                break;
         }
         return validationFactory;
 
+    }
+
+    ;
+
+    /**
+     * Defines the levels of validation factory
+     */
+    public static enum ValidationFactoryType {
+        BOOT_STRAP_VALIDATION, OPERATIONAL_VALIDATION, LISTENER_VALIDATION
     }
 
 }

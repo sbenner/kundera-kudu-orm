@@ -17,37 +17,38 @@ package com.impetus.kundera.db;
 
 /**
  * The Class RelationHolder.
- * 
+ *
  * @author vivek.mishra
  */
-public class RelationHolder
-{
+public class RelationHolder {
 
-    /** The relation name. */
+    /**
+     * The relation name.
+     */
     private String relationName;
 
-    /** The relation value. */
+    /**
+     * The relation value.
+     */
     private Object relationValue;
 
-    /** Holds object through which this relation is maintained */
+    /**
+     * Holds object through which this relation is maintained
+     */
     private Object relationVia;
 
     /**
      * Instantiates a new relation holder.
-     * 
-     * @param relationName
-     *            the relation name
-     * @param relationValue
-     *            the relation value
+     *
+     * @param relationName  the relation name
+     * @param relationValue the relation value
      */
-    public RelationHolder(String relationName, Object relationValue)
-    {
+    public RelationHolder(String relationName, Object relationValue) {
         this.relationName = relationName;
         this.relationValue = relationValue;
     }
 
-    public RelationHolder(String relationName, Object relationValue, Object relationVia)
-    {
+    public RelationHolder(String relationName, Object relationValue, Object relationVia) {
         this.relationName = relationName;
         this.relationValue = relationValue;
         this.relationVia = relationVia;
@@ -55,29 +56,26 @@ public class RelationHolder
 
     /**
      * Gets the relation name.
-     * 
+     *
      * @return the relationName
      */
-    public String getRelationName()
-    {
+    public String getRelationName() {
         return relationName;
     }
 
     /**
      * Gets the relation value.
-     * 
+     *
      * @return the relationValue
      */
-    public Object getRelationValue()
-    {
+    public Object getRelationValue() {
         return relationValue;
     }
 
     /**
      * @return the relationVia
      */
-    public Object getRelationVia()
-    {
+    public Object getRelationVia() {
         return relationVia;
     }
 

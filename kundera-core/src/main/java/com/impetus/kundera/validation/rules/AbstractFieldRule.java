@@ -17,29 +17,26 @@ package com.impetus.kundera.validation.rules;
 
 import java.lang.reflect.Field;
 
-public abstract class AbstractFieldRule
-{
-    
-   
+public abstract class AbstractFieldRule {
+
+
     /**
      * @param f
      * @param fieldValue
      * @return
      * @throws RuleValidationException
      */
-    public boolean validate(Field f, Object fieldValue) throws RuleValidationException
-    {
+    public boolean validate(Field f, Object fieldValue) throws RuleValidationException {
         throw new UnsupportedOperationException("Validation Not supported.");
     }
 
-  
+
     /**
      * @param f
      * @return
      * @throws RuleValidationException
      */
-    public boolean validate(Field f) throws RuleValidationException
-    {
+    public boolean validate(Field f) throws RuleValidationException {
         throw new UnsupportedOperationException("Validation Not supported.");
     }
 

@@ -15,30 +15,25 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
-import java.math.BigInteger;
-
+import com.impetus.kundera.property.PropertyAccessor;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.property.PropertyAccessor;
+import java.math.BigInteger;
 
 /**
  * @author amresh.singh
- *
  */
-public class BigIntegerAccessorTest
-{
+public class BigIntegerAccessorTest {
     PropertyAccessor<BigInteger> accessor;
 
     /**
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         accessor = new BigIntegerAccessor();
     }
 
@@ -46,8 +41,7 @@ public class BigIntegerAccessorTest
      * @throws java.lang.Exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         accessor = null;
     }
 
@@ -55,14 +49,13 @@ public class BigIntegerAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.BigIntegerAccessor#fromBytes(java.lang.Class, byte[])}.
      */
     @Test
-    public void testFromBytes()
-    {
+    public void testFromBytes() {
         Assert.assertNull(accessor.fromBytes(BigInteger.class, null));
-        
+
         BigInteger v1 = new BigInteger("1111111111");
         byte[] b = accessor.toBytes(v1);
-        
-        BigInteger v2 = accessor.fromBytes(BigInteger.class, b);        
+
+        BigInteger v2 = accessor.fromBytes(BigInteger.class, b);
         Assert.assertEquals(v1, v2);
     }
 
@@ -70,13 +63,12 @@ public class BigIntegerAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.BigIntegerAccessor#toBytes(java.lang.Object)}.
      */
     @Test
-    public void testToBytes()
-    {
+    public void testToBytes() {
         Assert.assertNull(accessor.toString(null));
         BigInteger v1 = new BigInteger("1111111111");
         byte[] b = accessor.toBytes(v1);
-        
-        BigInteger v2 = accessor.fromBytes(BigInteger.class, b);        
+
+        BigInteger v2 = accessor.fromBytes(BigInteger.class, b);
         Assert.assertEquals(v1, v2);
     }
 
@@ -84,12 +76,11 @@ public class BigIntegerAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.BigIntegerAccessor#toString(java.lang.Object)}.
      */
     @Test
-    public void testToStringObject()
-    {
+    public void testToStringObject() {
         Assert.assertNull(accessor.toString(null));
         BigInteger v1 = new BigInteger("1111111111");
         String s1 = v1.toString();
-        
+
         String s2 = accessor.toString(v1);
         Assert.assertTrue(s1.equals(s2));
     }
@@ -98,15 +89,14 @@ public class BigIntegerAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.BigIntegerAccessor#fromString(java.lang.Class, java.lang.String)}.
      */
     @Test
-    public void testFromString()
-    {
+    public void testFromString() {
         Assert.assertNull(accessor.fromString(BigInteger.class, null));
-        
+
         BigInteger v1 = new BigInteger("1111111111");
         String s = v1.toString();
-        
+
         BigInteger v2 = accessor.fromString(BigInteger.class, s);
-        
+
         Assert.assertEquals(v1, v2);
     }
 
@@ -114,13 +104,12 @@ public class BigIntegerAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.BigIntegerAccessor#getCopy(java.lang.Object)}.
      */
     @Test
-    public void testGetCopy()
-    {
+    public void testGetCopy() {
         Assert.assertNull(accessor.getCopy(null));
-        
+
         BigInteger v1 = new BigInteger("1111111111");
         BigInteger v2 = accessor.getCopy(v1);
-        
+
         Assert.assertEquals(v1, v2);
     }
 
@@ -128,8 +117,7 @@ public class BigIntegerAccessorTest
      * Test method for {@link com.impetus.kundera.property.accessor.BigIntegerAccessor#getInstance(java.lang.Class)}.
      */
     @Test
-    public void testGetInstance()
-    {
+    public void testGetInstance() {
         Assert.assertEquals(BigInteger.TEN, accessor.getInstance(BigInteger.class));
     }
 

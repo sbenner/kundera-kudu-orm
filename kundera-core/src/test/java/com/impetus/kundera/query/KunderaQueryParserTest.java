@@ -15,30 +15,26 @@
  ******************************************************************************/
 package com.impetus.kundera.query;
 
-import java.util.List;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 import com.impetus.kundera.query.KunderaQuery.SortOrder;
 import com.impetus.kundera.query.KunderaQuery.SortOrdering;
 import com.impetus.kundera.query.KunderaQuery.UpdateClause;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.util.List;
 
 /**
  * The Class KunderaQueryParserTest.
- * 
+ *
  * @author vivek.mishra
  */
-public class KunderaQueryParserTest
-{
+public class KunderaQueryParserTest {
 
     private EntityManagerFactory emf;
 
@@ -46,13 +42,11 @@ public class KunderaQueryParserTest
 
     /**
      * Sets the up.
-     * 
-     * @throws Exception
-     *             the exception
+     *
+     * @throws Exception the exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         emf = Persistence.createEntityManagerFactory("kunderatest");
         kunderaMetadata = ((EntityManagerFactoryImpl) emf).getKunderaMetadataInstance();
     }
@@ -61,8 +55,7 @@ public class KunderaQueryParserTest
      * On query parse.
      */
     @Test
-    public void onQueryParse()
-    {
+    public void onQueryParse() {
 
         // Valid Query with clause.
         String validQuery = "SELECT c FROM Country c ORDER BY c.currency, c.population DESC";
@@ -103,8 +96,7 @@ public class KunderaQueryParserTest
     }
 
     @Test
-    public void onUpdateDeleteQueryParse()
-    {
+    public void onUpdateDeleteQueryParse() {
 
         // update with single set value in SET clause.
         String updateQuery = "UPDATE Country SET population = 10 where currency = INR";
@@ -118,8 +110,7 @@ public class KunderaQueryParserTest
         Assert.assertNull(kunderaQuery.getResult());
         Assert.assertTrue(kunderaQuery.isUpdateClause());
         Assert.assertEquals(true, kunderaQuery.isDeleteUpdate());
-        for (UpdateClause q : kunderaQuery.getUpdateClauseQueue())
-        {
+        for (UpdateClause q : kunderaQuery.getUpdateClauseQueue()) {
             Assert.assertEquals("population", q.getProperty());
             Assert.assertEquals("10", q.getValue());
         }
@@ -138,7 +129,7 @@ public class KunderaQueryParserTest
         Assert.assertEquals(true, kunderaQuery.isDeleteUpdate());
         Assert.assertEquals(2, kunderaQuery.getUpdateClauseQueue().size());
 
-        UpdateClause[] result = kunderaQuery.getUpdateClauseQueue().toArray(new UpdateClause[] {});
+        UpdateClause[] result = kunderaQuery.getUpdateClauseQueue().toArray(new UpdateClause[]{});
         Assert.assertEquals("population", result[0].getProperty());
         Assert.assertEquals("10", result[0].getValue());
 
@@ -160,20 +151,16 @@ public class KunderaQueryParserTest
     }
 
     @Test
-    public void onInvalidQueryParse()
-    {
+    public void onInvalidQueryParse() {
 
         // Valid Query with where clause.
         String validQuery = "SELECT c,c.currency FROM Country c where c.currency = INR";
 
         KunderaQuery kunderQuery = new KunderaQuery(validQuery, kunderaMetadata);
         KunderaQueryParser parser = new KunderaQueryParser(kunderQuery);
-        try
-        {
+        try {
             parser.parse();
-        }
-        catch (JPQLParseException jpqlpe)
-        {
+        } catch (JPQLParseException jpqlpe) {
             Assert.assertTrue(jpqlpe.getMessage().startsWith("Bad query format"));
         }
 
@@ -182,12 +169,9 @@ public class KunderaQueryParserTest
 
         kunderQuery = new KunderaQuery(validQuery, kunderaMetadata);
         parser = new KunderaQueryParser(kunderQuery);
-        try
-        {
+        try {
             parser.parse();
-        }
-        catch (JPQLParseException jpqlpe)
-        {
+        } catch (JPQLParseException jpqlpe) {
             Assert.assertTrue(jpqlpe.getMessage().startsWith("Bad query format"));
         }
 
@@ -197,12 +181,9 @@ public class KunderaQueryParserTest
         kunderQuery = new KunderaQuery(validQuery, kunderaMetadata);
 
         parser = new KunderaQueryParser(kunderQuery);
-        try
-        {
+        try {
             parser.parse();
-        }
-        catch (JPQLParseException jpqlpe)
-        {
+        } catch (JPQLParseException jpqlpe) {
 
             Assert.assertTrue(jpqlpe.getMessage().startsWith(
                     "You have not given any column name after . ,Column name should not be empty"));
@@ -211,13 +192,11 @@ public class KunderaQueryParserTest
 
     /**
      * Tear down.
-     * 
-     * @throws Exception
-     *             the exception
+     *
+     * @throws Exception the exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
 
     }
 

@@ -26,57 +26,54 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "CoreEntityAddressUni1To1", schema = "KunderaCoreExmples@cassandra")
-public class CoreEntityAddressUni1To1
-{
+public class CoreEntityAddressUni1To1 {
 
-    /** The address id. */
+    /**
+     * The address id.
+     */
     @Id
     @Column(name = "ADDRESS_ID")
     private String addressId;
 
-    /** The street. */
+    /**
+     * The street.
+     */
     @Column(name = "STREET")
     private String street;
 
     /**
      * Gets the address id.
-     * 
+     *
      * @return the address id
      */
-    public String getAddressId()
-    {
+    public String getAddressId() {
         return addressId;
     }
 
     /**
      * Sets the address id.
-     * 
-     * @param addressId
-     *            the new address id
+     *
+     * @param addressId the new address id
      */
-    public void setAddressId(String addressId)
-    {
+    public void setAddressId(String addressId) {
         this.addressId = addressId;
     }
 
     /**
      * Gets the street.
-     * 
+     *
      * @return the street
      */
-    public String getStreet()
-    {
+    public String getStreet() {
         return street;
     }
 
     /**
      * Sets the street.
-     * 
-     * @param street
-     *            the new street
+     *
+     * @param street the new street
      */
-    public void setStreet(String street)
-    {
+    public void setStreet(String street) {
         this.street = street;
     }
 

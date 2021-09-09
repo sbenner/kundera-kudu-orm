@@ -1,12 +1,12 @@
 /**
  * Copyright 2015 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,11 +21,10 @@ import javax.persistence.Id;
 
 /**
  * @author Devender Yadav
- * 
+ *
  */
 @Entity
-public class InvalidBookEntity
-{
+public class InvalidBookEntity {
 
     @Id
     @Column(name = "ID")
@@ -40,51 +39,42 @@ public class InvalidBookEntity
     @Column(name = "PAGES")
     private int pages;
 
-    protected InvalidBookEntity(int bookId, String title, String author, int pages)
-    {
+    protected InvalidBookEntity(int bookId, String title, String author, int pages) {
         this.bookId = bookId;
         this.title = title;
         this.author = author;
         this.pages = pages;
     }
 
-    public int getBookId()
-    {
+    public int getBookId() {
         return bookId;
     }
 
-    public void setBookId(int bookId)
-    {
+    public void setBookId(int bookId) {
         this.bookId = bookId;
     }
 
-    public String getTitle()
-    {
+    public String getTitle() {
         return title;
     }
 
-    public void setTitle(String title)
-    {
+    public void setTitle(String title) {
         this.title = title;
     }
 
-    public String getAuthor()
-    {
+    public String getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author)
-    {
+    public void setAuthor(String author) {
         this.author = author;
     }
 
-    public int getPages()
-    {
+    public int getPages() {
         return pages;
     }
 
-    public void setPages(int pages)
-    {
+    public void setPages(int pages) {
         this.pages = pages;
     }
 }

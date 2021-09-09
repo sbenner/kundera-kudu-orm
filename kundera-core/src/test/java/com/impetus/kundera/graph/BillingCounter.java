@@ -1,12 +1,12 @@
 /**
  * Copyright 2012 Impetus Infotech.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,14 +22,13 @@ import javax.persistence.Table;
 
 /**
  * Dummy BillingCounter enity class
- * 
+ *
  * @author amresh.singh
  */
 
 @Entity
 @Table(name = "BILLING_COUNTER", schema = "KunderaTest@kunderatest")
-public class BillingCounter
-{
+public class BillingCounter {
     @Id
     @Column(name = "COUNTER_ID")
     private int counterId;
@@ -37,13 +36,11 @@ public class BillingCounter
     @Column(name = "COUNTER_CODE")
     private String counterCode;
 
-    public BillingCounter()
-    {
+    public BillingCounter() {
 
     }
 
-    public BillingCounter(int id, String code)
-    {
+    public BillingCounter(int id, String code) {
         this.counterId = id;
         this.counterCode = code;
     }
@@ -51,8 +48,7 @@ public class BillingCounter
     /**
      * @return the counterId
      */
-    public int getCounterId()
-    {
+    public int getCounterId() {
         return counterId;
     }
 
@@ -60,16 +56,14 @@ public class BillingCounter
      * @param counterId
      *            the counterId to set
      */
-    public void setCounterId(int counterId)
-    {
+    public void setCounterId(int counterId) {
         this.counterId = counterId;
     }
 
     /**
      * @return the counterCode
      */
-    public String getCounterCode()
-    {
+    public String getCounterCode() {
         return counterCode;
     }
 
@@ -77,8 +71,7 @@ public class BillingCounter
      * @param counterCode
      *            the counterCode to set
      */
-    public void setCounterCode(String counterCode)
-    {
+    public void setCounterCode(String counterCode) {
         this.counterCode = counterCode;
     }
 

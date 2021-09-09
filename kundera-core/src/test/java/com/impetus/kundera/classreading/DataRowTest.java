@@ -15,44 +15,40 @@
  ******************************************************************************/
 package com.impetus.kundera.classreading;
 
+import com.impetus.kundera.db.DataRow;
+import com.impetus.kundera.query.Person;
+import junit.framework.Assert;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
-import org.junit.Test;
-
-import com.impetus.kundera.db.DataRow;
-import com.impetus.kundera.query.Person;
-
 /**
  * @author vivek.mishra
- * 
+ * <p>
  * Data row test junit test. Such POJO junits are just to code coverage happy.
  */
-public class DataRowTest
-{
+public class DataRowTest {
 
     @Test
-    public void test()
-    {
+    public void test() {
         Person p = new Person();
-        
+
         List<String> columns = new ArrayList<String>();
         columns.add("column1");
         columns.add("column2");
         columns.add("column3");
-        
-        DataRow<String> row = new DataRow<String>("1","person",columns);
-        
-        
+
+        DataRow<String> row = new DataRow<String>("1", "person", columns);
+
+
         Assert.assertNotNull(row.getColumnFamilyName());
         Assert.assertNotNull(row.getId());
         Assert.assertNotNull(row.getColumns());
-        Assert.assertEquals(3,row.getColumns().size());
-        
+        Assert.assertEquals(3, row.getColumns().size());
+
         row.addColumn("column4");
-        Assert.assertEquals(4,row.getColumns().size());
+        Assert.assertEquals(4, row.getColumns().size());
 
     }
 

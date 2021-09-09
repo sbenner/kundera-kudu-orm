@@ -15,48 +15,45 @@
  ******************************************************************************/
 package com.impetus.kundera.persistence.event;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * The Class PersonnelDTO.
- * 
+ *
  * @author amresh.singh
  */
 
 @Entity
 @Table(name = "person", schema = "KunderaTest@kunderatest")
-@EntityListeners({ PersonHandler.class })
-public class PersonEventDispatch
-{
+@EntityListeners({PersonHandler.class})
+public class PersonEventDispatch {
 
-    /** The person id. */
+    /**
+     * The person id.
+     */
     @Id
     private String personId;
 
-    /** The first name. */
+    /**
+     * The first name.
+     */
     @Column(name = "first_name")
     private String firstName;
 
-    /** The last name. */
+    /**
+     * The last name.
+     */
     @Column(name = "last_name")
     private String lastName;
 
     /**
      * Instantiates a new personnel dto.
-     * 
-     * @param personId
-     *            the person id
-     * @param firstName
-     *            the first name
-     * @param lastName
-     *            the last name
+     *
+     * @param personId  the person id
+     * @param firstName the first name
+     * @param lastName  the last name
      */
-    public PersonEventDispatch(String personId, String firstName, String lastName)
-    {
+    public PersonEventDispatch(String personId, String firstName, String lastName) {
         this.personId = personId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -65,71 +62,61 @@ public class PersonEventDispatch
     /**
      * Instantiates a new personnel dto.
      */
-    public PersonEventDispatch()
-    {
+    public PersonEventDispatch() {
 
     }
 
     /**
      * Gets the person id.
-     * 
+     *
      * @return the personId
      */
-    public String getPersonId()
-    {
+    public String getPersonId() {
         return personId;
     }
 
     /**
      * Sets the person id.
-     * 
-     * @param personId
-     *            the personId to set
+     *
+     * @param personId the personId to set
      */
-    public void setPersonId(String personId)
-    {
+    public void setPersonId(String personId) {
         this.personId = personId;
     }
 
     /**
      * Gets the first name.
-     * 
+     *
      * @return the firstName
      */
-    public String getFirstName()
-    {
+    public String getFirstName() {
         return firstName;
     }
 
     /**
      * Sets the first name.
-     * 
-     * @param firstName
-     *            the firstName to set
+     *
+     * @param firstName the firstName to set
      */
-    public void setFirstName(String firstName)
-    {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
     /**
      * Gets the last name.
-     * 
+     *
      * @return the lastName
      */
-    public String getLastName()
-    {
+    public String getLastName() {
         return lastName;
     }
 
     /**
      * Sets the last name.
-     * 
-     * @param lastName
-     *            the lastName to set
+     *
+     * @param lastName the lastName to set
      */
-    public void setLastName(String lastName)
-    {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 

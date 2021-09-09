@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.impetus.kundera.metadata.entities;
 
@@ -8,11 +8,10 @@ import javax.persistence.Embeddable;
 
 /**
  * @author Kuldeep Mishra
- * 
+ *
  */
 @Embeddable
-public class EmbeddableTransientEntity
-{
+public class EmbeddableTransientEntity {
 
     @Column(name = "field")
     private Float embeddedField;
@@ -23,8 +22,7 @@ public class EmbeddableTransientEntity
     /**
      * @return the field
      */
-    public Float getField()
-    {
+    public Float getField() {
         return embeddedField;
     }
 
@@ -32,16 +30,14 @@ public class EmbeddableTransientEntity
      * @param field
      *            the field to set
      */
-    public void setField(Float field)
-    {
+    public void setField(Float field) {
         this.embeddedField = field;
     }
 
     /**
      * @return the name
      */
-    public String getName()
-    {
+    public String getName() {
         return embeddedName;
     }
 
@@ -49,8 +45,7 @@ public class EmbeddableTransientEntity
      * @param name
      *            the name to set
      */
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.embeddedName = name;
     }
 }

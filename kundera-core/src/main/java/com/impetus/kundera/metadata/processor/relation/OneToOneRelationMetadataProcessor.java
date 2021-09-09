@@ -15,15 +15,6 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.processor.relation;
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
-
-import javax.persistence.AssociationOverride;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-
 import com.impetus.kundera.loader.MetamodelLoaderException;
 import com.impetus.kundera.metadata.KunderaMetadataManager;
 import com.impetus.kundera.metadata.model.EntityMetadata;
@@ -32,26 +23,27 @@ import com.impetus.kundera.metadata.model.attributes.AbstractAttribute;
 import com.impetus.kundera.metadata.processor.AbstractEntityFieldProcessor;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
 
+import javax.persistence.*;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+
 /**
  * The Class OneToOneRelationMetadataProcessor.
- * 
+ *
  * @author Amresh Singh
  */
 public class OneToOneRelationMetadataProcessor extends AbstractEntityFieldProcessor implements
-        RelationMetadataProcessor
-{
+        RelationMetadataProcessor {
 
     /**
      * Instantiates a new one to one relation metadata processor.
      */
-    public OneToOneRelationMetadataProcessor(KunderaMetadata kunderaMetadata)
-    {
+    public OneToOneRelationMetadataProcessor(KunderaMetadata kunderaMetadata) {
         super(kunderaMetadata);
     }
 
     @Override
-    public void addRelationIntoMetadata(Field relationField, EntityMetadata metadata)
-    {
+    public void addRelationIntoMetadata(Field relationField, EntityMetadata metadata) {
         // taking field's type as foreign entity, ignoring "targetEntity"
         Class<?> targetEntity = relationField.getType();
 
@@ -67,26 +59,21 @@ public class OneToOneRelationMetadataProcessor extends AbstractEntityFieldProces
                 Arrays.asList(oneToOneAnn.cascade()), oneToOneAnn.optional(), oneToOneAnn.mappedBy(),
                 Relation.ForeignKey.ONE_TO_ONE);
 
-        if (relationField.isAnnotationPresent(AssociationOverride.class))
-        {
+        if (relationField.isAnnotationPresent(AssociationOverride.class)) {
             AssociationOverride annotation = relationField.getAnnotation(AssociationOverride.class);
             JoinColumn[] joinColumns = annotation.joinColumns();
             relation.setJoinColumnName(joinColumns[0].name());
 
             JoinTable joinTable = annotation.joinTable();
             onJoinTable(joinTable);
-        }
-        else if (isJoinedByPK)
-        {
+        } else if (isJoinedByPK) {
 
             relation.setJoinedByPrimaryKey(true);
             EntityMetadata joinClassMetadata = KunderaMetadataManager.getEntityMetadata(kunderaMetadata,
                     targetEntity.getClass());
             relation.setJoinColumnName(joinClassMetadata != null ? ((AbstractAttribute) joinClassMetadata
                     .getIdAttribute()).getJPAColumnName() : null);
-        }
-        else if (isJoinedByFK)
-        {
+        } else if (isJoinedByFK) {
             JoinColumn joinColumnAnn = relationField.getAnnotation(JoinColumn.class);
             relation.setJoinColumnName(joinColumnAnn.name());
         }
@@ -95,17 +82,14 @@ public class OneToOneRelationMetadataProcessor extends AbstractEntityFieldProces
         metadata.addRelation(relationField.getName(), relation);
     }
 
-    private void onJoinTable(JoinTable joinTable)
-    {
-        if (joinTable != null)
-        {
+    private void onJoinTable(JoinTable joinTable) {
+        if (joinTable != null) {
             throw new UnsupportedOperationException("@JoinTable not supported for many to one association");
         }
     }
 
     @Override
-    public void process(Class<?> clazz, EntityMetadata metadata)
-    {
+    public void process(Class<?> clazz, EntityMetadata metadata) {
         throw new MetamodelLoaderException("Method call not applicable for Relation processors");
     }
 }

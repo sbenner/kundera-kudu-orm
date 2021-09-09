@@ -15,61 +15,52 @@
  ******************************************************************************/
 package com.impetus.kundera.persistence;
 
-import java.util.List;
-
 import javax.persistence.criteria.CompoundSelection;
 import javax.persistence.criteria.Selection;
+import java.util.List;
 
 /**
  * Implementation class for multi column selection {@link CompoundSelection}
- * @author vivek.mishra
  *
+ * @author vivek.mishra
  */
-public class DefaultCompoundSelection<X> implements CompoundSelection<X>
-{
+public class DefaultCompoundSelection<X> implements CompoundSelection<X> {
 
     private List<Selection<?>> selections;
     private Class<? extends X> resultType;
     private String alias;
 
-    DefaultCompoundSelection(List<Selection<?>> selections, Class resultClazz)
-    {
+    DefaultCompoundSelection(List<Selection<?>> selections, Class resultClazz) {
         this.selections = selections;
         this.resultType = resultClazz;
-        if(isCompoundSelection())
-        {
+        if (isCompoundSelection()) {
             this.alias = selections.get(0).getAlias();
         }
     }
-    
+
     @Override
-    public Selection<X> alias(String paramString)
-    {
+    public Selection<X> alias(String paramString) {
         this.alias = paramString;
         return this;
     }
 
     @Override
-    public boolean isCompoundSelection()
-    {
+    public boolean isCompoundSelection() {
         return this.selections != null && !this.selections.isEmpty() && this.selections.size() > 1;
     }
 
     @Override
-    public List<Selection<?>> getCompoundSelectionItems()
-    {
+    public List<Selection<?>> getCompoundSelectionItems() {
         return this.selections;
     }
 
     @Override
-    public Class<? extends X> getJavaType()
-    {
+    public Class<? extends X> getJavaType() {
         return this.resultType;
     }
 
     @Override
-    public String getAlias()
-    {
+    public String getAlias() {
         return this.alias;
     }
 

@@ -15,48 +15,43 @@
  ******************************************************************************/
 package com.impetus.kundera.property.accessor;
 
-import java.util.Date;
-
+import com.impetus.kundera.property.PropertyAccessException;
 import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.property.PropertyAccessException;
+import java.util.Date;
 
 /**
  * The Class DateAccessorTest.
- * 
+ *
  * @author vivek.mishra
  */
-public class DateAccessorTest
-{
+public class DateAccessorTest {
 
-    /** The accessor. */
+    /**
+     * The accessor.
+     */
     private DateAccessor accessor;
 
     /**
      * Sets the up.
-     * 
-     * @throws Exception
-     *             the exception
+     *
+     * @throws Exception the exception
      */
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         accessor = new DateAccessor();
     }
 
     /**
      * Test date from string.
-     * 
-     * @throws PropertyAccessException
-     *             the property access exception
+     *
+     * @throws PropertyAccessException the property access exception
      */
     @Test
-    public void testDateFromString() throws PropertyAccessException
-    {
+    public void testDateFromString() throws PropertyAccessException {
         String dateInMMddYYHHmmss = "02/01/2012 00:00:00";
         String newDateAsStr = "Wed Feb 01 07:58:02 IST 2012";
         String dateInMMddYY = "02/01/2012";
@@ -73,19 +68,16 @@ public class DateAccessorTest
 
     /**
      * Tear down.
-     * 
-     * @throws Exception
-     *             the exception
+     *
+     * @throws Exception the exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         accessor = null;
     }
 
     @Test
-    public void testFromBytes()
-    {
+    public void testFromBytes() {
         Assert.assertNull(accessor.fromBytes(Date.class, null));
 
         Date d1 = new Date(4);
@@ -97,8 +89,7 @@ public class DateAccessorTest
     }
 
     @Test
-    public void testToBytes()
-    {
+    public void testToBytes() {
         Assert.assertNull(accessor.toBytes(null));
 
         Date d1 = new Date(4);
@@ -112,8 +103,7 @@ public class DateAccessorTest
     }
 
     @Test
-    public void testToStringObject()
-    {
+    public void testToStringObject() {
         Assert.assertNull(accessor.toString(null));
 
         Date d1 = new Date();
@@ -125,16 +115,14 @@ public class DateAccessorTest
     }
 
     @Test
-    public void testGetCopy()
-    {
+    public void testGetCopy() {
         Date d1 = new Date();
         Date d2 = accessor.getCopy(d1);
         Assert.assertEquals(d1, d2);
     }
 
     @Test
-    public void testGetInstance()
-    {
+    public void testGetInstance() {
         Object o = accessor.getInstance(Date.class);
         Assert.assertNotNull(o);
     }

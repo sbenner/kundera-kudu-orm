@@ -16,16 +16,12 @@
 package com.impetus.kundera.utils;
 
 /**
- * 
  * @author Kuldeep.Mishra
- * 
  */
-public class DefaultTimestampGenerator implements TimestampGenerator
-{
+public class DefaultTimestampGenerator implements TimestampGenerator {
 
     @Override
-    public long getTimestamp()
-    {
+    public long getTimestamp() {
         return System.currentTimeMillis();
     }
 

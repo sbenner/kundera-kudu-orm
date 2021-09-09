@@ -15,67 +15,51 @@
  ******************************************************************************/
 package com.impetus.kundera.client.crud.mappedsuperclass;
 
+import javax.persistence.*;
 import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Table;
 
 /**
  * @author vivek.mishra
  * Transaction {@link MappedSuperclass}
- *
  */
 @MappedSuperclass
 @Table(name = "TRNX")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "tx_type")
-public class Transaction 
-{
+public class Transaction {
 
     @Id
     private String txId;
-    
+
     @Column
     private String bankIdentifier;
 
-    
+
     @Column
     private Date transactionDt;
 
-    public Date getTransactionDt()
-    {
+    public Date getTransactionDt() {
         return transactionDt;
     }
 
-    public void setTransactionDt(Date transactionDt)
-    {
+    public void setTransactionDt(Date transactionDt) {
         this.transactionDt = transactionDt;
     }
 
 
-
-    public String getTxId()
-    {
+    public String getTxId() {
         return txId;
     }
 
-    public void setTxId(String txId)
-    {
+    public void setTxId(String txId) {
         this.txId = txId;
     }
 
-    public String getBankIdentifier()
-    {
+    public String getBankIdentifier() {
         return bankIdentifier;
     }
 
-    public void setBankIdentifier(String bankIdentifier)
-    {
+    public void setBankIdentifier(String bankIdentifier) {
         this.bankIdentifier = bankIdentifier;
     }
 

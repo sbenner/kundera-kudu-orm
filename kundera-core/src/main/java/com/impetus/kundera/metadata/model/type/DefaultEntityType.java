@@ -20,58 +20,52 @@ import javax.persistence.metamodel.Type;
 
 /**
  * Default implementation of {@link EntityType}
- * 
+ *
  * <code> DefaultEmbeddableType</code> implements <code>EntityType</code>
  * interface, invokes constructor with PersistenceType.ENTITY. Default
  * implementation of {@link Type} interface is provided by {@link AbstractType}
- * 
+ *
+ * @param <X> Entity generic java type.
  * @author vivek.mishra
- * @param <X>
- *            Entity generic java type.
  */
 
-public class DefaultEntityType<X> extends AbstractIdentifiableType<X> implements EntityType<X>
-{
+public class DefaultEntityType<X> extends AbstractIdentifiableType<X> implements EntityType<X> {
 
     /**
      * Default constructor using fields.
      */
     public DefaultEntityType(Class<X> clazz, javax.persistence.metamodel.Type.PersistenceType persistenceType,
-            AbstractIdentifiableType<? super X> superClazzType)
-    {
+                             AbstractIdentifiableType<? super X> superClazzType) {
         super(clazz, persistenceType, superClazzType);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.metamodel.Bindable#getBindableType()
      */
     @Override
-    public javax.persistence.metamodel.Bindable.BindableType getBindableType()
-    {
+    public javax.persistence.metamodel.Bindable.BindableType getBindableType() {
         return BindableType.ENTITY_TYPE;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.metamodel.Bindable#getBindableJavaType()
      */
     @Override
-    public Class<X> getBindableJavaType()
-    {
+    public Class<X> getBindableJavaType() {
         return super.getJavaType();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see javax.persistence.metamodel.EntityType#getName()
      */
     @Override
-    public String getName()
-    {
+    public String getName() {
         return getBindableJavaType().getSimpleName();
     }
 

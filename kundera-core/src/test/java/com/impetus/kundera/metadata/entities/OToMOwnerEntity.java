@@ -15,24 +15,15 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.entities;
 
+import javax.persistence.*;
 import java.util.Collection;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
 /**
  * @author vivek.mishra
- * 
  */
 @Entity
 @Table(name = "table", schema = "testSchema@keyspace")
-public class OToMOwnerEntity
-{
+public class OToMOwnerEntity {
 
     @Id
     @Column(name = "ROW_KEY")
@@ -51,68 +42,56 @@ public class OToMOwnerEntity
     /**
      * @return the rowKey
      */
-    public byte getRowKey()
-    {
+    public byte getRowKey() {
         return rowKey;
     }
 
     /**
-     * @param rowKey
-     *            the rowKey to set
+     * @param rowKey the rowKey to set
      */
-    public void setRowKey(byte rowKey)
-    {
+    public void setRowKey(byte rowKey) {
         this.rowKey = rowKey;
     }
 
     /**
      * @return the name
      */
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
     /**
-     * @param name
-     *            the name to set
+     * @param name the name to set
      */
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
     /**
      * @return the amount
      */
-    public int getAmount()
-    {
+    public int getAmount() {
         return amount;
     }
 
     /**
-     * @param amount
-     *            the amount to set
+     * @param amount the amount to set
      */
-    public void setAmount(int amount)
-    {
+    public void setAmount(int amount) {
         this.amount = amount;
     }
 
     /**
      * @return the association
      */
-    public Collection<AssociationEntity> getAssociation()
-    {
+    public Collection<AssociationEntity> getAssociation() {
         return association;
     }
 
     /**
-     * @param association
-     *            the association to set
+     * @param association the association to set
      */
-    public void setAssociation(Collection<AssociationEntity> association)
-    {
+    public void setAssociation(Collection<AssociationEntity> association) {
         this.association = association;
     }
 

@@ -15,40 +15,37 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata;
 
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.impetus.kundera.KunderaException;
 import com.impetus.kundera.metadata.model.EntityMetadata;
 import com.impetus.kundera.metadata.model.MetamodelImpl;
 import com.impetus.kundera.metadata.model.PersistenceUnitMetadata;
 import com.impetus.kundera.persistence.EntityManagerFactoryImpl.KunderaMetadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * The Class KunderaMetadataManager.
- * 
+ *
  * @author amresh.singh
  */
-public class KunderaMetadataManager
-{
+public class KunderaMetadataManager {
 
-    /** The log. */
+    /**
+     * The log.
+     */
     private static Logger log = LoggerFactory.getLogger(KunderaMetadataManager.class);
 
     /**
      * Gets the persistence unit metadata.
-     * 
-     * @param persistenceUnit
-     *            the persistence unit
+     *
+     * @param persistenceUnit the persistence unit
      * @return the persistence unit metadata
      */
     public static PersistenceUnitMetadata getPersistenceUnitMetadata(final KunderaMetadata kunderaMetadata,
-            String persistenceUnit)
-    {
-        if (persistenceUnit != null && kunderaMetadata != null)
-        {
+                                                                     String persistenceUnit) {
+        if (persistenceUnit != null && kunderaMetadata != null) {
             return kunderaMetadata.getApplicationMetadata().getPersistenceUnitMetadata(persistenceUnit);
         }
         return null;
@@ -56,13 +53,11 @@ public class KunderaMetadataManager
 
     /**
      * Gets the metamodel.
-     * 
-     * @param persistenceUnit
-     *            the persistence unit
+     *
+     * @param persistenceUnit the persistence unit
      * @return the metamodel
      */
-    public static MetamodelImpl getMetamodel(final KunderaMetadata kunderaMetadata, String persistenceUnit)
-    {
+    public static MetamodelImpl getMetamodel(final KunderaMetadata kunderaMetadata, String persistenceUnit) {
         MetamodelImpl metamodel = (MetamodelImpl) kunderaMetadata.getApplicationMetadata()
                 .getMetamodel(persistenceUnit);
 
@@ -71,20 +66,16 @@ public class KunderaMetadataManager
 
     /**
      * Gets the metamodel.
-     * 
-     * @param persistenceUnits
-     *            the persistence units
+     *
+     * @param persistenceUnits the persistence units
      * @return the metamodel
      */
-    public static MetamodelImpl getMetamodel(final KunderaMetadata kunderaMetadata, String... persistenceUnits)
-    {
+    public static MetamodelImpl getMetamodel(final KunderaMetadata kunderaMetadata, String... persistenceUnits) {
         MetamodelImpl metamodel = null;
-        for (String pu : persistenceUnits)
-        {
+        for (String pu : persistenceUnits) {
             metamodel = (MetamodelImpl) kunderaMetadata.getApplicationMetadata().getMetamodel(pu);
 
-            if (metamodel != null)
-            {
+            if (metamodel != null) {
                 return metamodel;
             }
         }
@@ -101,46 +92,36 @@ public class KunderaMetadataManager
 
     /**
      * Gets the entity metadata.
-     * 
-     * @param persistenceUnit
-     *            the persistence unit
-     * @param entityClass
-     *            the entity class
+     *
+     * @param persistenceUnit the persistence unit
+     * @param entityClass     the entity class
      * @return the entity metadata
      */
     public static EntityMetadata getEntityMetadata(final KunderaMetadata kunderaMetadata, String persistenceUnit,
-            Class entityClass)
-    {
+                                                   Class entityClass) {
         return getMetamodel(kunderaMetadata, persistenceUnit).getEntityMetadata(entityClass);
     }
 
     /**
      * Finds ands returns Entity metadata for a given array of PUs.
-     * 
-     * @param entityClass
-     *            the entity class
-     * @param persistenceUnits
-     *            the persistence units
+     *
+     * @param entityClass      the entity class
+     * @param persistenceUnits the persistence units
      * @return the entity metadata
      */
-    public static EntityMetadata getEntityMetadata(final KunderaMetadata kunderaMetadata, Class entityClass)
-    {
-        if (entityClass == null)
-        {
+    public static EntityMetadata getEntityMetadata(final KunderaMetadata kunderaMetadata, Class entityClass) {
+        if (entityClass == null) {
             throw new KunderaException("Invalid class provided " + entityClass);
         }
         List<String> persistenceUnits = kunderaMetadata.getApplicationMetadata().getMappedPersistenceUnit(entityClass);
 
         // persistence units will only have more than 1 persistence unit in case
         // of RDBMS.
-        if (persistenceUnits != null)
-        {
-            for (String pu : persistenceUnits)
-            {
+        if (persistenceUnits != null) {
+            for (String pu : persistenceUnits) {
                 MetamodelImpl metamodel = getMetamodel(kunderaMetadata, pu);
                 EntityMetadata metadata = metamodel.getEntityMetadata(entityClass);
-                if (metadata != null && metadata.getPersistenceUnit().equals(pu))
-                {
+                if (metadata != null && metadata.getPersistenceUnit().equals(pu)) {
                     return metadata;
                 }
             }

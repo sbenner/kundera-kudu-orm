@@ -19,28 +19,24 @@ import com.impetus.kundera.KunderaException;
 
 /**
  * @author vivek.mishra
- * 
  */
-public class KunderaAuthenticationException extends KunderaException
-{
+public class KunderaAuthenticationException extends KunderaException {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -708462011401566049L;
 
     /**
-     * 
+     *
      */
-    public KunderaAuthenticationException()
-    {
+    public KunderaAuthenticationException() {
     }
 
     /**
      * @param arg0
      */
-    public KunderaAuthenticationException(String arg0)
-    {
+    public KunderaAuthenticationException(String arg0) {
         super(arg0);
 
     }
@@ -48,8 +44,7 @@ public class KunderaAuthenticationException extends KunderaException
     /**
      * @param arg0
      */
-    public KunderaAuthenticationException(Throwable arg0)
-    {
+    public KunderaAuthenticationException(Throwable arg0) {
         super(arg0);
 
     }
@@ -58,8 +53,7 @@ public class KunderaAuthenticationException extends KunderaException
      * @param arg0
      * @param arg1
      */
-    public KunderaAuthenticationException(String arg0, Throwable arg1)
-    {
+    public KunderaAuthenticationException(String arg0, Throwable arg1) {
         super(arg0, arg1);
 
     }

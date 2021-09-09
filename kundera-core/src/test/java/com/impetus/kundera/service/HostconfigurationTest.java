@@ -15,23 +15,19 @@
  ******************************************************************************/
 package com.impetus.kundera.service;
 
-import javax.persistence.Persistence;
-
+import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
 import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
-import com.impetus.kundera.persistence.EntityManagerFactoryImpl;
+import javax.persistence.Persistence;
 
 /**
  * @author vivek.mishra
- * 
- *         junit test case for HostConfiguration.
- * 
+ * <p>
+ * junit test case for HostConfiguration.
  */
-public class HostconfigurationTest
-{
+public class HostconfigurationTest {
     /* persistence unit. */
     private String persistenceUnit = "metaDataTest";
 
@@ -41,8 +37,7 @@ public class HostconfigurationTest
      * on setup
      */
     @Before
-    public void setUp()
-    {
+    public void setUp() {
         emf = getEntityManagerFactory("create");
     }
 
@@ -50,8 +45,7 @@ public class HostconfigurationTest
      * test method.
      */
     @Test
-    public void test()
-    {
+    public void test() {
         CoreHostConfiguration hostConfiguration = new CoreHostConfiguration(null, null, persistenceUnit, emf.getKunderaMetadataInstance());
         Assert.assertNotNull(hostConfiguration.hosts);
         Assert.assertNotNull(hostConfiguration.port);
@@ -59,12 +53,9 @@ public class HostconfigurationTest
         Assert.assertEquals("localhost", hostConfiguration.hosts);
         Assert.assertEquals("9160", hostConfiguration.port);
 
-        try
-        {
+        try {
             hostConfiguration.onValidation(null, null);
-        }
-        catch (IllegalArgumentException iaex)
-        {
+        } catch (IllegalArgumentException iaex) {
             Assert.assertNotNull(iaex.getMessage());
         }
 
@@ -72,14 +63,12 @@ public class HostconfigurationTest
 
     /**
      * Gets the entity manager factory.
-     * 
+     *
      * @param useLucene
      * @param property
-     * 
      * @return the entity manager factory
      */
-    private EntityManagerFactoryImpl getEntityManagerFactory(final String schemaProperty)
-    {
+    private EntityManagerFactoryImpl getEntityManagerFactory(final String schemaProperty) {
         return (EntityManagerFactoryImpl) Persistence.createEntityManagerFactory(persistenceUnit);
     }
 

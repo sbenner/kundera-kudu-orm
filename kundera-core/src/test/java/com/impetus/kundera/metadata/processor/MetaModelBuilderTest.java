@@ -15,123 +15,81 @@
  ******************************************************************************/
 package com.impetus.kundera.metadata.processor;
 
-import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.persistence.InheritanceType;
-import javax.persistence.metamodel.Attribute;
-import javax.persistence.metamodel.Attribute.PersistentAttributeType;
-import javax.persistence.metamodel.Bindable;
-import javax.persistence.metamodel.Bindable.BindableType;
-import javax.persistence.metamodel.CollectionAttribute;
-import javax.persistence.metamodel.EmbeddableType;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.IdentifiableType;
-import javax.persistence.metamodel.ListAttribute;
-import javax.persistence.metamodel.MapAttribute;
-import javax.persistence.metamodel.PluralAttribute;
-import javax.persistence.metamodel.SetAttribute;
-import javax.persistence.metamodel.SingularAttribute;
-import javax.persistence.metamodel.Type;
-import javax.persistence.metamodel.Type.PersistenceType;
-
-import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.impetus.kundera.metadata.entities.AssociationEntity;
-import com.impetus.kundera.metadata.entities.AttributeOverrideSubClass;
-import com.impetus.kundera.metadata.entities.CollectionTypeAssociationEntity;
-import com.impetus.kundera.metadata.entities.EmbeddableEntity;
-import com.impetus.kundera.metadata.entities.EmbeddableEntityTwo;
-import com.impetus.kundera.metadata.entities.EmbeddedIdOwnerEntity;
-import com.impetus.kundera.metadata.entities.EntityWithAttributeOverrides;
-import com.impetus.kundera.metadata.entities.EntityWithIdAttributeOverride;
-import com.impetus.kundera.metadata.entities.IDClassEntity;
-import com.impetus.kundera.metadata.entities.IDClassOwnerEntity;
-import com.impetus.kundera.metadata.entities.ListTypeAssociationEntity;
-import com.impetus.kundera.metadata.entities.MapTypeAssociationEntity;
-import com.impetus.kundera.metadata.entities.OToMOwnerEntity;
-import com.impetus.kundera.metadata.entities.OToOOwnerEntity;
-import com.impetus.kundera.metadata.entities.PluralOwnerType;
-import com.impetus.kundera.metadata.entities.SetTypeAssociationEntity;
-import com.impetus.kundera.metadata.entities.SingularEntity;
-import com.impetus.kundera.metadata.entities.SingularEntityEmbeddable;
-import com.impetus.kundera.metadata.entities.SubClassA;
-import com.impetus.kundera.metadata.entities.SubClassB;
-import com.impetus.kundera.metadata.entities.SubSingularEntity;
+import com.impetus.kundera.metadata.entities.*;
 import com.impetus.kundera.metadata.entities.bi.AssociationBiEntity;
 import com.impetus.kundera.metadata.entities.bi.OToOOwnerBiEntity;
 import com.impetus.kundera.metadata.model.attributes.AbstractAttribute;
 import com.impetus.kundera.metadata.model.type.AbstractIdentifiableType;
 import com.impetus.kundera.metadata.model.type.AbstractManagedType;
 import com.impetus.kundera.utils.KunderaCoreUtils;
+import junit.framework.Assert;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.persistence.InheritanceType;
+import javax.persistence.metamodel.*;
+import javax.persistence.metamodel.Attribute.PersistentAttributeType;
+import javax.persistence.metamodel.Bindable.BindableType;
+import javax.persistence.metamodel.Type.PersistenceType;
+import java.lang.reflect.Field;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * MetaModelBuilderTest.
- * 
+ *
  * @author vivek.mishra
- * 
  */
-public class MetaModelBuilderTest
-{
-    /** the log used by this class. */
+public class MetaModelBuilderTest {
+    /**
+     * the log used by this class.
+     */
     private static Logger log = LoggerFactory.getLogger(MetaModelBuilderTest.class);
 
-    /** The builder. */
+    /**
+     * The builder.
+     */
     @SuppressWarnings("rawtypes")
     private MetaModelBuilder builder;
 
     /**
      * Sets the up.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param <T>
-     *            the generic type
-     * @throws Exception
-     *             the exception
+     *
+     * @param <X> the generic type
+     * @param <T> the generic type
+     * @throws Exception the exception
      */
     @SuppressWarnings("rawtypes")
     @Before
-    public <X extends Class, T extends Object> void setUp() throws Exception
-    {
+    public <X extends Class, T extends Object> void setUp() throws Exception {
         builder = new MetaModelBuilder<X, T>();
     }
 
     /**
      * Test construct.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param <T>
-     *            the generic type
+     *
+     * @param <X> the generic type
+     * @param <T> the generic type
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Test
-    public <X extends Class, T extends Object> void testEntityWithSingularAttribute()
-    {
+    public <X extends Class, T extends Object> void testEntityWithSingularAttribute() {
         X clazz = (X) SingularEntity.class;
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         Field[] field = SingularEntity.class.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(SingularEntity.class, f);
         }
 
-        try
-        {
+        try {
             Field managedTypeField = builder.getClass().getDeclaredField("managedType");
-            if (!managedTypeField.isAccessible())
-            {
+            if (!managedTypeField.isAccessible()) {
                 managedTypeField.setAccessible(true);
             }
 
@@ -146,25 +104,19 @@ public class MetaModelBuilderTest
             Assert.assertEquals(String.class, managedType.getSingularAttribute("name").getJavaType());
 
             Boolean found = null;
-            try
-            {
+            try {
                 found = managedType.getSingularAttribute("name", Integer.class) != null;
                 Assert.fail("should not be called");
-            }
-            catch (IllegalArgumentException iaex)
-            {
+            } catch (IllegalArgumentException iaex) {
                 log.info("Assert on invalid case");
                 Assert.assertNull(found);
             }
 
-            try
-            {
+            try {
                 found = managedType.getSingularAttribute("name", String.class) != null;
                 Assert.assertNotNull(found);
                 Assert.assertTrue(found);
-            }
-            catch (IllegalArgumentException iaex)
-            {
+            } catch (IllegalArgumentException iaex) {
                 log.info("Error on positive case");
                 Assert.fail(iaex.getMessage());
             }
@@ -174,54 +126,39 @@ public class MetaModelBuilderTest
             Assert.assertFalse(managedType.getSingularAttribute("field").isOptional());
             Assert.assertEquals(String.class, managedType.getSingularAttribute("field").getJavaType());
 
-        }
-        catch (SecurityException e)
-        {
+        } catch (SecurityException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (NoSuchFieldException e)
-        {
+        } catch (NoSuchFieldException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (IllegalArgumentException e)
-        {
+        } catch (IllegalArgumentException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (IllegalAccessException e)
-        {
+        } catch (IllegalAccessException e) {
             Assert.fail(e.getMessage());
         }
     }
 
     /**
      * Test on entity with embeddable.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param <T>
-     *            the generic type
+     *
+     * @param <X> the generic type
+     * @param <T> the generic type
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Test
-    public <X extends Class, T extends Object> void testOnEntityWithEmbeddable()
-
-    {
+    public <X extends Class, T extends Object> void testOnEntityWithEmbeddable() {
         X clazz = (X) SingularEntityEmbeddable.class;
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         Field[] field = SingularEntityEmbeddable.class.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(SingularEntityEmbeddable.class, f);
         }
 
         MetaModelBuilder.class.getDeclaredFields();
         Field embeddableField;
-        try
-        {
+        try {
             embeddableField = builder.getClass().getDeclaredField("embeddables");
-            if (!embeddableField.isAccessible())
-            {
+            if (!embeddableField.isAccessible()) {
                 embeddableField.setAccessible(true);
             }
             Map<Class<?>, AbstractManagedType<?>> embeddables = ((Map<Class<?>, AbstractManagedType<?>>) embeddableField
@@ -229,8 +166,7 @@ public class MetaModelBuilderTest
             Assert.assertEquals(2, embeddables.size());
 
             Field managedTypeField = builder.getClass().getDeclaredField("managedType");
-            if (!managedTypeField.isAccessible())
-            {
+            if (!managedTypeField.isAccessible()) {
                 managedTypeField.setAccessible(true);
             }
 
@@ -254,21 +190,13 @@ public class MetaModelBuilderTest
             assertOnEmbeddableType(EmbeddableEntityTwo.class, attribute, embeddableTypeTwo, "embeddedField",
                     Float.class);
 
-        }
-        catch (SecurityException e)
-        {
+        } catch (SecurityException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (NoSuchFieldException e)
-        {
+        } catch (NoSuchFieldException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (IllegalArgumentException e)
-        {
+        } catch (IllegalArgumentException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (IllegalAccessException e)
-        {
+        } catch (IllegalAccessException e) {
             Assert.fail(e.getMessage());
         }
 
@@ -276,22 +204,18 @@ public class MetaModelBuilderTest
 
     /**
      * Combined test.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param <T>
-     *            the generic type
+     *
+     * @param <X> the generic type
+     * @param <T> the generic type
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Test
-    public <X extends Class, T extends Object> void combinedTest()
-    {
+    public <X extends Class, T extends Object> void combinedTest() {
         X clazz = (X) SingularEntity.class;
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         Field[] field = SingularEntity.class.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(SingularEntity.class, f);
         }
 
@@ -299,8 +223,7 @@ public class MetaModelBuilderTest
 
         builder.process(clazz);
         field = SingularEntityEmbeddable.class.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(SingularEntityEmbeddable.class, f);
         }
         Map<Class<?>, AbstractManagedType<?>> managedTypes = getManagedTypes();
@@ -309,22 +232,18 @@ public class MetaModelBuilderTest
 
     /**
      * test case for 1-1 uni association.
-     * 
-     * @param <X>
-     *            entity class
-     * @param <T>
-     *            field type.
+     *
+     * @param <X> entity class
+     * @param <T> field type.
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Test
-    public <X extends Class, T extends Object> void testOneToOneUniAssociation()
-    {
+    public <X extends Class, T extends Object> void testOneToOneUniAssociation() {
         X clazz = (X) OToOOwnerEntity.class;
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         Field[] field = OToOOwnerEntity.class.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(OToOOwnerEntity.class, f);
         }
 
@@ -332,8 +251,7 @@ public class MetaModelBuilderTest
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         field = AssociationEntity.class.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(AssociationEntity.class, f);
 
         }
@@ -389,22 +307,18 @@ public class MetaModelBuilderTest
 
     /**
      * test case for 1-1 uni association.
-     * 
-     * @param <X>
-     *            entity class
-     * @param <T>
-     *            field type.
+     *
+     * @param <X> entity class
+     * @param <T> field type.
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Test
-    public <X extends Class, T extends Object> void testOneToOneBiAssociation()
-    {
+    public <X extends Class, T extends Object> void testOneToOneBiAssociation() {
         X clazz = (X) OToOOwnerBiEntity.class;
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         Field[] field = OToOOwnerBiEntity.class.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(OToOOwnerBiEntity.class, f);
         }
 
@@ -412,8 +326,7 @@ public class MetaModelBuilderTest
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         field = AssociationBiEntity.class.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(AssociationBiEntity.class, f);
         }
 
@@ -484,22 +397,18 @@ public class MetaModelBuilderTest
 
     /**
      * Test on collection.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param <T>
-     *            the generic type
+     *
+     * @param <X> the generic type
+     * @param <T> the generic type
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @Test
-    public <X extends Class, T extends Object> void testOnUniOneToManyCollection()
-    {
+    public <X extends Class, T extends Object> void testOnUniOneToManyCollection() {
         X clazz = (X) OToMOwnerEntity.class;
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         Field[] field = OToMOwnerEntity.class.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(OToMOwnerEntity.class, f);
         }
 
@@ -507,8 +416,7 @@ public class MetaModelBuilderTest
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         field = AssociationEntity.class.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(AssociationEntity.class, f);
         }
         Map<Class<?>, AbstractManagedType<?>> managedTypes = getManagedTypes();
@@ -547,27 +455,21 @@ public class MetaModelBuilderTest
         Assert.assertNotNull(declaredCollectionAttributeParam);
 
         // assert with invalid collection type class.
-        try
-        {
+        try {
             collectionAttribute = null;
             collectionAttribute = (CollectionAttribute<? super X, ?>) managedType.getCollection("association",
                     AssociationBiEntity.class);
             Assert.fail();
-        }
-        catch (IllegalArgumentException iaex)
-        {
+        } catch (IllegalArgumentException iaex) {
             log.info("on invalid case with getCollection");
             Assert.assertNull(collectionAttribute);
         }
 
-        try
-        {
+        try {
             collectionAttribute = null;
             collectionAttribute = (CollectionAttribute<? super X, ?>) managedType.getCollection("associationInvalid");
             Assert.fail();
-        }
-        catch (IllegalArgumentException iaex)
-        {
+        } catch (IllegalArgumentException iaex) {
             log.info("on invalid case with getCollection");
             Assert.assertNull(collectionAttribute);
         }
@@ -585,22 +487,18 @@ public class MetaModelBuilderTest
 
     /**
      * Test on list.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param <T>
-     *            the generic type
+     *
+     * @param <X> the generic type
+     * @param <T> the generic type
      */
     @SuppressWarnings("unchecked")
     @Test
-    public <X extends Class, T extends Object> void testOnAllUniPlural()
-    {
+    public <X extends Class, T extends Object> void testOnAllUniPlural() {
         X clazz = (X) PluralOwnerType.class;
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         Field[] field = PluralOwnerType.class.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(PluralOwnerType.class, f);
         }
 
@@ -652,21 +550,17 @@ public class MetaModelBuilderTest
 
     /**
      * On id class test.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param <T>
-     *            the generic type
+     *
+     * @param <X> the generic type
+     * @param <T> the generic type
      */
     @Test
-    public <X extends Class, T extends Object> void onIdClassTest()
-    {
+    public <X extends Class, T extends Object> void onIdClassTest() {
         X clazz = (X) IDClassOwnerEntity.class;
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         Field[] field = clazz.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(clazz, f);
         }
 
@@ -679,13 +573,10 @@ public class MetaModelBuilderTest
         Attribute idAttribute = managedType.getAttribute("id");
 
         SingularAttribute idAttrib = null;
-        try
-        {
+        try {
             idAttrib = ((IdentifiableType) managedType).getId(IDClassEntity.class);
             Assert.fail();
-        }
-        catch (IllegalArgumentException iaex)
-        {
+        } catch (IllegalArgumentException iaex) {
             Assert.assertNull(idAttrib);
         }
         Assert.assertEquals(2, ((IdentifiableType) managedType).getIdClassAttributes().size());
@@ -695,21 +586,17 @@ public class MetaModelBuilderTest
 
     /**
      * On embedded id test.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param <T>
-     *            the generic type
+     *
+     * @param <X> the generic type
+     * @param <T> the generic type
      */
     @Test
-    public <X extends Class, T extends Object> void onEmbeddedIdTest()
-    {
+    public <X extends Class, T extends Object> void onEmbeddedIdTest() {
         X clazz = (X) EmbeddedIdOwnerEntity.class;
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         Field[] field = clazz.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(clazz, f);
         }
 
@@ -722,13 +609,10 @@ public class MetaModelBuilderTest
         Attribute idAttribute = managedType.getAttribute("id");
 
         SingularAttribute idAttrib = null;
-        try
-        {
+        try {
             idAttrib = ((IdentifiableType) managedType).getId(EmbeddableEntity.class);
             Assert.fail();
-        }
-        catch (IllegalArgumentException iaex)
-        {
+        } catch (IllegalArgumentException iaex) {
             Assert.assertNull(idAttrib);
         }
         Assert.assertEquals(1, ((IdentifiableType) managedType).getIdClassAttributes().size());
@@ -738,21 +622,17 @@ public class MetaModelBuilderTest
 
     /**
      * Test mapped super class.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param <T>
-     *            the generic type
+     *
+     * @param <X> the generic type
+     * @param <T> the generic type
      */
     @Test
-    public <X extends Class, T extends Object> void testMappedSuperClass()
-    {
+    public <X extends Class, T extends Object> void testMappedSuperClass() {
         X clazz = (X) SubClassA.class;
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         Field[] field = clazz.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(clazz, f);
         }
 
@@ -760,8 +640,7 @@ public class MetaModelBuilderTest
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         field = clazz.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(clazz, f);
         }
 
@@ -785,38 +664,33 @@ public class MetaModelBuilderTest
         Assert.assertNotNull(managedType.getAttribute("mappedInt"));
         Assert.assertNotNull(managedType.getSingularAttribute("mappedInt", int.class));
     }
-    
+
     /**
      * Test mapped super class.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param <T>
-     *            the generic type
+     *
+     * @param <X> the generic type
+     * @param <T> the generic type
      */
     @Test
-    public <X extends Class, T extends Object> void testAssociationMappedSuperClass()
-    {
+    public <X extends Class, T extends Object> void testAssociationMappedSuperClass() {
         X clazz = (X) CarPart.class;
-      
+
         builder.process(clazz);
-        
+
         Map<Class<?>, AbstractManagedType<?>> managedTypes = getManagedTypes();
         Assert.assertNotNull(managedTypes);
         Assert.assertEquals(0, builder.getMappedSuperClassTypes().size());
-        
+
         Field[] field = clazz.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(clazz, f);
         }
 
         clazz = (X) CarPartResource.class;
-       
+
         builder.process(clazz);
         field = clazz.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(clazz, f);
         }
 
@@ -830,49 +704,44 @@ public class MetaModelBuilderTest
         AbstractManagedType managedType = managedTypes.get(CarPart.class);
         Assert.assertNotNull(managedType);
         Assert.assertEquals(2, managedType.getAttributes().size());
-    
+
 
         // on class CarPartResource
         managedType = managedTypes.get(CarPartResource.class);
         Assert.assertNotNull(managedType);
         Assert.assertEquals(5, managedType.getAttributes().size());
-       
+
     }
-    
+
     /**
      * Test mapped super class.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param <T>
-     *            the generic type
+     *
+     * @param <X> the generic type
+     * @param <T> the generic type
      */
     @Test
-    public <X extends Class, T extends Object> void testEmbeddableForMappedSuperClass()
-    {
+    public <X extends Class, T extends Object> void testEmbeddableForMappedSuperClass() {
         Field embeddableField;
-        
+
         X clazz = (X) CarPart.class;
-      
+
         builder.process(clazz);
-        
+
         Map<Class<?>, AbstractManagedType<?>> managedTypes = getManagedTypes();
         Assert.assertNotNull(managedTypes);
         Assert.assertEquals(0, builder.getMappedSuperClassTypes().size());
-     
-        
+
+
         Field[] field = clazz.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(clazz, f);
         }
 
         clazz = (X) CarPartResource.class;
-       
+
         builder.process(clazz);
         field = clazz.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(clazz, f);
         }
 
@@ -880,25 +749,19 @@ public class MetaModelBuilderTest
         Assert.assertNotNull(managedTypes);
         Assert.assertEquals(2, managedTypes.size());
 
-       
+
         Assert.assertEquals(1, builder.getMappedSuperClassTypes().size());
 
-       
-    
 
         // on class CarPartResource
         AbstractManagedType managedType = managedTypes.get(CarPartResource.class);
         Assert.assertNotNull(managedType);
-       
-        
-       
-        
-        try
-        {
+
+
+        try {
             embeddableField = builder.getClass().getDeclaredField("embeddables");
-         
-            if (!embeddableField.isAccessible())
-            {
+
+            if (!embeddableField.isAccessible()) {
                 embeddableField.setAccessible(true);
             }
             Map<Class<?>, AbstractManagedType<?>> embeddables = ((Map<Class<?>, AbstractManagedType<?>>) embeddableField
@@ -906,12 +769,10 @@ public class MetaModelBuilderTest
             Assert.assertEquals(2, embeddables.size());
 
             Field managedTypeField = builder.getClass().getDeclaredField("managedType");
-            if (!managedTypeField.isAccessible())
-            {
+            if (!managedTypeField.isAccessible()) {
                 managedTypeField.setAccessible(true);
             }
 
-         
 
             // assert on embeddable first attribute
             SingularAttribute embeddableAttrib = managedType.getSingularAttribute("engine");
@@ -920,39 +781,28 @@ public class MetaModelBuilderTest
             Attribute<X, String> attribute = (Attribute<X, String>) embeddableType.getAttribute("engineId");
             assertOnEmbeddableType(CarEngine.class, attribute, embeddableType, "engineId", String.class);
 
-           
 
-        }
-        catch (SecurityException e)
-        {
+        } catch (SecurityException e) {
+            Assert.fail(e.getMessage());
+        } catch (NoSuchFieldException e) {
+            Assert.fail(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            Assert.fail(e.getMessage());
+        } catch (IllegalAccessException e) {
             Assert.fail(e.getMessage());
         }
-        catch (NoSuchFieldException e)
-        {
-            Assert.fail(e.getMessage());
-        }
-        catch (IllegalArgumentException e)
-        {
-            Assert.fail(e.getMessage());
-        }
-        catch (IllegalAccessException e)
-        {
-            Assert.fail(e.getMessage());
-        }
-       
+
     }
 
 
     @Test
-    public <X extends Class, T extends Object> void testAttributeOverride()
-    {
+    public <X extends Class, T extends Object> void testAttributeOverride() {
 
         X clazz = (X) AttributeOverrideSubClass.class;
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         Field[] field = clazz.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(clazz, f);
         }
 
@@ -960,8 +810,7 @@ public class MetaModelBuilderTest
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         field = clazz.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(clazz, f);
         }
 
@@ -1005,8 +854,7 @@ public class MetaModelBuilderTest
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         field = clazz.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(clazz, f);
         }
 
@@ -1025,50 +873,42 @@ public class MetaModelBuilderTest
     }
 
     @Test
-    public <X extends Class, T extends Object> void testInheritenceStrategy()
-    {
+    public <X extends Class, T extends Object> void testInheritenceStrategy() {
         X clazz = (X) SubSingularEntity.class;
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         Field[] field = clazz.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(clazz, f);
         }
-        
+
         EntityType<X> managedType = (EntityType<X>) builder.getManagedTypes().get(SubSingularEntity.class);
-        
-        InheritanceType type = ((AbstractManagedType<X>)managedType).getInheritenceType();
-        
+
+        InheritanceType type = ((AbstractManagedType<X>) managedType).getInheritenceType();
+
         Assert.assertEquals(InheritanceType.TABLE_PER_CLASS, type);
-        
-        
-         clazz = (X) SingularEntity.class;
+
+
+        clazz = (X) SingularEntity.class;
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         field = clazz.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(clazz, f);
         }
-        
+
     }
 
     /**
      * Assert on owner type attributes.
-     * 
-     * @param managedType
-     *            the managed type
-     * @param fieldName
-     *            the field name
-     * @param fieldClazz
-     *            the field clazz
-     * @param javaClazz
-     *            the java clazz
+     *
+     * @param managedType the managed type
+     * @param fieldName   the field name
+     * @param fieldClazz  the field clazz
+     * @param javaClazz   the java clazz
      */
     private void assertOnOwnerTypeAttributes(AbstractManagedType managedType, String fieldName, Class fieldClazz,
-            Class javaClazz)
-    {
+                                             Class javaClazz) {
         Assert.assertNotNull(managedType);
         Assert.assertNotNull(managedType.getPluralAttributes());
         Assert.assertEquals(4, managedType.getPluralAttributes().size());
@@ -1086,21 +926,15 @@ public class MetaModelBuilderTest
 
     /**
      * Assert on collection attribute.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param managedType
-     *            the managed type
-     * @param id
-     *            the id
-     * @param otherAttribute
-     *            the other attribute
-     * @param clazz
-     *            the clazz
+     *
+     * @param <X>            the generic type
+     * @param managedType    the managed type
+     * @param id             the id
+     * @param otherAttribute the other attribute
+     * @param clazz          the clazz
      */
     private <X> void assertOnCollectionAttribute(AbstractManagedType<? super X> managedType, String id,
-            String otherAttribute, Class clazz)
-    {
+                                                 String otherAttribute, Class clazz) {
         Assert.assertNotNull(managedType);
         Assert.assertEquals(clazz, managedType.getJavaType());
         SingularAttribute<? super X, String> rowId = (SingularAttribute<? super X, String>) managedType
@@ -1119,45 +953,34 @@ public class MetaModelBuilderTest
 
     /**
      * On collection association.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param clazz
-     *            the clazz
+     *
+     * @param <X>   the generic type
+     * @param clazz the clazz
      */
-    private <X extends Class> void onCollectionAssociation(X clazz)
-    {
+    private <X extends Class> void onCollectionAssociation(X clazz) {
         Field[] field;
         // X clazz = (X) SetTypeAssociationEntity.class;
         // MetaModelBuilder builder = new MetaModelBuilder<X, T>();
         builder.process(clazz);
         field = clazz.getDeclaredFields();
-        for (Field f : field)
-        {
+        for (Field f : field) {
             builder.construct(clazz, f);
         }
     }
 
     /**
      * Assert on embeddable type.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param entityClazz
-     *            the entity clazz
-     * @param attribute
-     *            the attribute
-     * @param embeddableType
-     *            the embeddable type
-     * @param attributeName
-     *            the attribute name
-     * @param attributeClazz
-     *            the attribute clazz
+     *
+     * @param <X>            the generic type
+     * @param entityClazz    the entity clazz
+     * @param attribute      the attribute
+     * @param embeddableType the embeddable type
+     * @param attributeName  the attribute name
+     * @param attributeClazz the attribute clazz
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private <X> void assertOnEmbeddableType(Class entityClazz, Attribute<X, String> attribute,
-            EmbeddableType<X> embeddableType, String attributeName, Class attributeClazz)
-    {
+                                            EmbeddableType<X> embeddableType, String attributeName, Class attributeClazz) {
         // Assert.assertEquals(entityClazz.getDeclaredFields().length,
         // embeddableType.getAttributes().size());
         Assert.assertEquals(KunderaCoreUtils.countNonSyntheticFields(entityClazz), embeddableType.getAttributes()
@@ -1171,15 +994,12 @@ public class MetaModelBuilderTest
 
     /**
      * Assert on embeddable.
-     * 
-     * @param embeddableAttrib
-     *            the embeddable attrib
-     * @param clazz
-     *            the clazz
+     *
+     * @param embeddableAttrib the embeddable attrib
+     * @param clazz            the clazz
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private void assertOnEmbeddable(SingularAttribute embeddableAttrib, Class clazz)
-    {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private void assertOnEmbeddable(SingularAttribute embeddableAttrib, Class clazz) {
         Assert.assertNotNull(embeddableAttrib);
         Assert.assertEquals(PersistentAttributeType.EMBEDDED, embeddableAttrib.getPersistentAttributeType());
         Assert.assertEquals(PersistenceType.EMBEDDABLE, embeddableAttrib.getType().getPersistenceType());
@@ -1188,23 +1008,17 @@ public class MetaModelBuilderTest
 
     /**
      * Assert on managed type.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param builder
-     *            the builder
-     * @param managedTypeField
-     *            the managed type field
-     * @param clazz
-     *            the clazz
+     *
+     * @param <X>              the generic type
+     * @param builder          the builder
+     * @param managedTypeField the managed type field
+     * @param clazz            the clazz
      * @return the abstract managed type
-     * @throws IllegalAccessException
-     *             the illegal access exception
+     * @throws IllegalAccessException the illegal access exception
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private <X> AbstractManagedType<X> assertOnManagedType(MetaModelBuilder builder, Field managedTypeField,
-            Class<?> clazz) throws IllegalAccessException
-    {
+                                                           Class<?> clazz) throws IllegalAccessException {
         log.info("Assert on managedType");
         AbstractManagedType<X> managedType = (AbstractManagedType<X>) managedTypeField.get(builder);
         Assert.assertNotNull(managedType);
@@ -1221,31 +1035,24 @@ public class MetaModelBuilderTest
 
     /**
      * Tear down.
-     * 
-     * @throws Exception
-     *             the exception
+     *
+     * @throws Exception the exception
      */
     @After
-    public void tearDown() throws Exception
-    {
+    public void tearDown() throws Exception {
         builder = null;
     }
 
     /**
      * Assert on id attribute.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param managedType
-     *            the managed type
-     * @param key
-     *            the key
-     * @param clazz
-     *            the clazz
+     *
+     * @param <X>         the generic type
+     * @param managedType the managed type
+     * @param key         the key
+     * @param clazz       the clazz
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private <X> void assertOnIdAttribute(AbstractManagedType<X> managedType, String key, Class clazz)
-    {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private <X> void assertOnIdAttribute(AbstractManagedType<X> managedType, String key, Class clazz) {
         // assert on id attribute.
         log.info("Assert on id attribute");
         Assert.assertEquals(key, managedType.getSingularAttribute(key).getName());
@@ -1278,19 +1085,14 @@ public class MetaModelBuilderTest
 
     /**
      * Assert on set attributes.
-     * 
-     * @param managedType
-     *            the managed type
-     * @param fieldName
-     *            the field name
-     * @param fieldClazz
-     *            the field clazz
-     * @param javaClazz
-     *            the java clazz
+     *
+     * @param managedType the managed type
+     * @param fieldName   the field name
+     * @param fieldClazz  the field clazz
+     * @param javaClazz   the java clazz
      */
     private <X> void assertOnSetAttribute(AbstractManagedType<? super X> managedType, String fieldName,
-            Class fieldClazz, Class javaClazz)
-    {
+                                          Class fieldClazz, Class javaClazz) {
         SetAttribute<? super X, ?> rowSetId = (SetAttribute<? super X, ?>) managedType.getSet(fieldName);
         Assert.assertNotNull(rowSetId);
         Assert.assertEquals(rowSetId.getName(), fieldName);
@@ -1317,19 +1119,14 @@ public class MetaModelBuilderTest
 
     /**
      * Assert on List attributes.
-     * 
-     * @param managedType
-     *            the managed type
-     * @param fieldName
-     *            the field name
-     * @param fieldClazz
-     *            the field clazz
-     * @param javaClazz
-     *            the java clazz
+     *
+     * @param managedType the managed type
+     * @param fieldName   the field name
+     * @param fieldClazz  the field clazz
+     * @param javaClazz   the java clazz
      */
     private <X> void assertOnListAttribute(AbstractManagedType<? super X> managedType, String fieldName,
-            Class fieldClazz, Class javaClazz)
-    {
+                                           Class fieldClazz, Class javaClazz) {
         ListAttribute<? super X, ?> rowListId = (ListAttribute<? super X, ?>) managedType.getList(fieldName);
         Assert.assertNotNull(rowListId);
         Assert.assertEquals(rowListId.getName(), fieldName);
@@ -1357,19 +1154,14 @@ public class MetaModelBuilderTest
 
     /**
      * Assert on Map attributes.
-     * 
-     * @param managedType
-     *            the managed type
-     * @param fieldName
-     *            the field name
-     * @param fieldClazz
-     *            the field clazz
-     * @param javaClazz
-     *            the java clazz
+     *
+     * @param managedType the managed type
+     * @param fieldName   the field name
+     * @param fieldClazz  the field clazz
+     * @param javaClazz   the java clazz
      */
     private <X> void assertOnMapAttribute(AbstractManagedType<? super X> managedType, String fieldName,
-            Class fieldClazz, Class javaClazz)
-    {
+                                          Class fieldClazz, Class javaClazz) {
         MapAttribute<? super X, ?, ?> mapSetId = (MapAttribute<? super X, ?, ?>) managedType.getMap(fieldName);
         Assert.assertNotNull(mapSetId);
         Assert.assertEquals(mapSetId.getName(), fieldName);
@@ -1385,8 +1177,8 @@ public class MetaModelBuilderTest
          * MapAttribute<? super X, ?, ?> rowClassSetId = (MapAttribute<? super
          * X, ?, ?>) managedType .getMap(fieldName,int.class,String.class);
          * Assert.assertNotNull(rowClassSetId);
-         * 
-         * 
+         *
+         *
          * MapAttribute<? super X, ?, ?> rowClassDeclaredId = (MapAttribute<?
          * super X, ?, ?> ) managedType .getDeclaredMap(fieldName, fieldClazz,
          * javaClazz); Assert.assertNotNull(rowClassSetId);
@@ -1396,36 +1188,25 @@ public class MetaModelBuilderTest
 
     /**
      * Gets the managed types.
-     * 
+     *
      * @return the managed types
      */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    private Map<Class<?>, AbstractManagedType<?>> getManagedTypes()
-    {
-        try
-        {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private Map<Class<?>, AbstractManagedType<?>> getManagedTypes() {
+        try {
             Field managedTypesFields = builder.getClass().getDeclaredField("managedTypes");
-            if (!managedTypesFields.isAccessible())
-            {
+            if (!managedTypesFields.isAccessible()) {
                 managedTypesFields.setAccessible(true);
             }
 
             return ((Map<Class<?>, AbstractManagedType<?>>) managedTypesFields.get(builder));
-        }
-        catch (SecurityException e)
-        {
+        } catch (SecurityException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (NoSuchFieldException e)
-        {
+        } catch (NoSuchFieldException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (IllegalArgumentException e)
-        {
+        } catch (IllegalArgumentException e) {
             Assert.fail(e.getMessage());
-        }
-        catch (IllegalAccessException e)
-        {
+        } catch (IllegalAccessException e) {
             Assert.fail(e.getMessage());
         }
         return null;
@@ -1433,25 +1214,18 @@ public class MetaModelBuilderTest
 
     /**
      * On embedded id test.
-     * 
-     * @param <X>
-     *            the generic type
-     * @param <T>
-     *            the generic type
+     *
+     * @param <X> the generic type
+     * @param <T> the generic type
      */
 
-    private <X> void illeagaltypesTest(AbstractManagedType<X> managedType)
-    {
-        try
-        {
+    private <X> void illeagaltypesTest(AbstractManagedType<X> managedType) {
+        try {
 
             SingularAttribute<? super X, Double> idNullAttribute = ((AbstractIdentifiableType<X>) managedType)
                     .getId(Double.class);
 
-        }
-
-        catch (IllegalArgumentException e)
-        {
+        } catch (IllegalArgumentException e) {
             Assert.fail(e.getMessage());
         }
 
